@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -x
+set -e
 
 # nothing else supported yet
 OS=linux
