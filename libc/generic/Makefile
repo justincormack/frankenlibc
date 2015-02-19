@@ -6,6 +6,7 @@ COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
 OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
 INCLUDES=-I../../include
+RUMPINC=-I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
@@ -36,7 +37,7 @@ $(OBJDIR)/errno.o:		errno.c
 				$(COMPILE.c) -o $@ errno.c
 
 $(OBJDIR)/__libc_start_main.o:	__libc_start_main.c
-				$(COMPILE.c) -o $@ __libc_start_main.c
+				$(COMPILE.c) $(RUMPINC) -o $@ __libc_start_main.c
 
 $(OBJDIR)/malloc.o:		malloc.c
 				$(COMPILE.c) -o $@ malloc.c
