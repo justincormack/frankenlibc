@@ -11,7 +11,7 @@ CFLAGS+=-fno-stack-protector
 
 default:		$(OBJDIR) $(OBJ)
 
-$(OBJDIR)		
+$(OBJDIR):		
 			mkdir -p $(OBJDIR)
 
 $(OBJDIR)/crti.o:	crti.c
