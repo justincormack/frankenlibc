@@ -1,0 +1,380 @@
+Common subdirectories: rumpsrc/lib/librumpuser/build-aux and src/lib/librumpuser/build-aux
+diff -uN rumpsrc/lib/librumpuser/Makefile src/lib/librumpuser/Makefile
+--- rumpsrc/lib/librumpuser/Makefile	2015-02-19 22:50:11.980037279 +0000
++++ src/lib/librumpuser/Makefile	2015-02-15 21:00:22.585182519 +0000
+@@ -42,12 +42,12 @@
+ .endif
+ 
+ SRCS+=		rumpuser_component.c rumpuser_random.c
+-SRCS+=		rumpuser_file.c rumpuser_mem.c
++SRCS+=		rumpuser_file_dummy.c rumpuser_mem.c
+ 
+ SRCS+=		rumpuser_errtrans.c rumpuser_sigtrans.c
+ 
+ # optional
+-SRCS+=		rumpuser_dl.c rumpuser_daemonize.c
++SRCS+=		rumpuser_dl.c rumpuser_daemonize_dummy.c
+ 
+ INCSDIR=	/usr/include/rump
+ INCS=		rumpuser_component.h rumpuser_port.h
+diff -uN rumpsrc/lib/librumpuser/rumpfiber.c src/lib/librumpuser/rumpfiber.c
+--- rumpsrc/lib/librumpuser/rumpfiber.c	2015-02-19 22:50:11.984037280 +0000
++++ src/lib/librumpuser/rumpfiber.c	2015-02-19 22:54:52.560049114 +0000
+@@ -71,7 +71,6 @@
+ __RCSID("$NetBSD: rumpfiber.c,v 1.9 2014/12/29 21:50:09 justin Exp $");
+ #endif /* !lint */
+ 
+-#include <sys/ioctl.h>
+ #include <sys/mman.h>
+ #include <sys/time.h>
+ 
+@@ -482,7 +481,7 @@
+ rumpuser_clock_sleep(int enum_rumpclock, int64_t sec, long nsec)
+ {
+ 	enum rumpclock rclk = enum_rumpclock;
+-	uint32_t msec;
++	uint64_t msec;
+ 	int nlocks;
+ 
+ 	rumpkern_unsched(&nlocks, NULL);
+@@ -511,14 +510,17 @@
+ 		strncpy(buf, ncpu, blen);
+ 		rv = 0;
+ 	} else if (strcmp(name, RUMPUSER_PARAM_HOSTNAME) == 0) {
+-		char tmp[MAXHOSTNAMELEN];
+-
+-		if (gethostname(tmp, sizeof(tmp)) == -1) {
+-			snprintf(buf, blen, "rump-%05d", (int)getpid());
+-		} else {
+-			snprintf(buf, blen, "rump-%05d.%s",
+-			    (int)getpid(), tmp);
+-		}
++		strncpy(buf, "rump", blen);
++	//} else if (strcmp(name, RUMPUSER_PARAM_HOSTNAME) == 0) {
++		//char tmp[MAXHOSTNAMELEN];
++
++		//if (gethostname(tmp, sizeof(tmp)) == -1) {
++		//	snprintf(buf, blen, "rump-%05d", (int)getpid());
++		//} else {
++		//	snprintf(buf, blen, "rump-%05d.%s",
++		//	    (int)getpid(), tmp);
++		//}
++	//	strncpy(buf, rump, blen);
+ 		rv = 0;
+ 	} else if (*name == '_') {
+ 		rv = EINVAL;
+@@ -562,11 +564,12 @@
+ void
+ rumpuser_dprintf(const char *format, ...)
+ {
+-	va_list ap;
++	//va_list ap;
+ 
+-	va_start(ap, format);
+-	vfprintf(stderr, format, ap);
+-	va_end(ap);
++	printk("something\n");
++	//va_start(ap, format);
++	//vfprintf(stderr, format, ap);
++	//va_end(ap);
+ }
+ 
+ int
+diff -uN rumpsrc/lib/librumpuser/rumpfiber.h src/lib/librumpuser/rumpfiber.h
+--- rumpsrc/lib/librumpuser/rumpfiber.h	2015-02-19 22:50:11.984037280 +0000
++++ src/lib/librumpuser/rumpfiber.h	2015-02-14 19:59:07.053383283 +0000
+@@ -40,7 +40,7 @@
+     int64_t wakeup_time;
+     TAILQ_ENTRY(thread) thread_list;
+     ucontext_t ctx;
+-    uint32_t flags;
++    int flags;
+     int threrrno;
+ };
+ 
+diff -uN rumpsrc/lib/librumpuser/rumpfiber_sp.c src/lib/librumpuser/rumpfiber_sp.c
+--- rumpsrc/lib/librumpuser/rumpfiber_sp.c	2015-02-19 22:50:11.984037280 +0000
++++ src/lib/librumpuser/rumpfiber_sp.c	2015-02-15 00:41:48.902098705 +0000
+@@ -33,6 +33,7 @@
+ __RCSID("$NetBSD: rumpfiber_sp.c,v 1.3 2014/12/29 21:50:09 justin Exp $");
+ #endif /* !lint */
+ 
++#include <stdint.h>
+ #include <stdlib.h>
+ 
+ #include <rump/rumpuser.h>
+diff -uN rumpsrc/lib/librumpuser/rumpuser_daemonize_dummy.c src/lib/librumpuser/rumpuser_daemonize_dummy.c
+--- rumpsrc/lib/librumpuser/rumpuser_daemonize_dummy.c	1970-01-01 00:00:00.000000000 +0000
++++ src/lib/librumpuser/rumpuser_daemonize_dummy.c	2015-02-15 20:57:32.041175325 +0000
+@@ -0,0 +1,51 @@
++/*
++ * Copyright (c) 2014 Justin Cormack.  All Rights Reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
++ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
++ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ */
++
++#include "rumpuser_port.h"
++
++#if !defined(lint)
++__RCSID("$NetBSD$");
++#endif /* !lint */
++
++#include <stdint.h>
++#include <stdlib.h>
++
++#include "rumpuser_int.h"
++
++#include <rump/rumpuser.h>
++
++int
++rumpuser_daemonize_begin(void)
++{
++
++	abort();
++}
++
++int
++rumpuser_daemonize_done(int error)
++{
++
++	abort();
++}
+diff -uN rumpsrc/lib/librumpuser/rumpuser_file_dummy.c src/lib/librumpuser/rumpuser_file_dummy.c
+--- rumpsrc/lib/librumpuser/rumpuser_file_dummy.c	1970-01-01 00:00:00.000000000 +0000
++++ src/lib/librumpuser/rumpuser_file_dummy.c	2015-02-15 21:05:21.445195124 +0000
+@@ -0,0 +1,92 @@
++/*
++ * Copyright (c) 2007-2010 Antti Kantee.  All Rights Reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS
++ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
++ * DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
++ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ */
++
++/* NOTE this code will move to a new driver in the next hypercall revision */
++
++#include "rumpuser_port.h"
++
++#if !defined(lint)
++__RCSID("$NetBSD: rumpuser_file.c,v 1.1 2014/07/09 23:41:40 justin Exp $");
++#endif /* !lint */
++
++#include <errno.h>
++#include <stdint.h>
++#include <stdlib.h>
++
++#include <rump/rumpuser.h>
++
++#include "rumpuser_int.h"
++
++int
++rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)
++{
++
++	ET(ENOENT);
++}
++
++int
++rumpuser_open(const char *path, int ruflags, int *fdp)
++{
++
++	ET(ENOENT);
++}
++
++int
++rumpuser_close(int fd)
++{
++
++	ET(EBADF);
++}
++
++int
++rumpuser_iovread(int fd, struct rumpuser_iovec *ruiov, size_t iovlen,
++	int64_t roff, size_t *retp)
++{
++
++	ET(EBADF);
++}
++
++int
++rumpuser_iovwrite(int fd, const struct rumpuser_iovec *ruiov, size_t iovlen,
++	int64_t roff, size_t *retp)
++{
++
++	ET(EBADF);
++}
++
++int
++rumpuser_syncfd(int fd, int flags, uint64_t start, uint64_t len)
++{
++
++	ET(EBADF);
++}
++
++void
++rumpuser_bio(int fd, int op, void *data, size_t dlen, int64_t doff,
++        rump_biodone_fn biodone, void *bioarg)
++{
++
++	biodone(bioarg, (size_t)0, EBADF); /* convert error no */
++}
+diff -uN rumpsrc/lib/librumpuser/rumpuser_mem.c src/lib/librumpuser/rumpuser_mem.c
+--- rumpsrc/lib/librumpuser/rumpuser_mem.c	2015-02-19 22:50:11.988037280 +0000
++++ src/lib/librumpuser/rumpuser_mem.c	2015-02-15 21:34:47.233269602 +0000
+@@ -47,22 +47,17 @@
+ rumpuser_malloc(size_t howmuch, int alignment, void **memp)
+ {
+ 	void *mem = NULL;
+-	int rv;
+ 
+ 	if (alignment == 0)
+ 		alignment = sizeof(void *);
+ 
+-	rv = posix_memalign(&mem, (size_t)alignment, howmuch);
+-	if (__predict_false(rv != 0)) {
+-		if (rv == EINVAL) {
+-			printf("rumpuser_malloc: invalid alignment %d\n",
+-			    alignment);
+-			abort();
+-		}
++	mem = aligned_alloc((size_t)alignment, howmuch);
++	if (__predict_false(mem == NULL)) {
++		ET(EINVAL);
+ 	}
+ 
+ 	*memp = mem;
+-	ET(rv);
++	ET(0);
+ }
+ 
+ /*ARGSUSED1*/
+@@ -83,8 +78,9 @@
+ #ifndef MAP_ALIGNED
+ #define MAP_ALIGNED(a) 0
+ 	if (alignbit)
+-		fprintf(stderr, "rumpuser_anonmmap: warning, requested "
+-		    "alignment not supported by hypervisor\n");
++/*		fprintf(stderr, "rumpuser_anonmmap: warning, requested "
++		    "alignment not supported by hypervisor\n");*/
++abort();
+ #endif
+ 
+ 	prot = PROT_READ|PROT_WRITE;
+diff -uN rumpsrc/lib/librumpuser/rumpuser_port.h src/lib/librumpuser/rumpuser_port.h
+--- rumpsrc/lib/librumpuser/rumpuser_port.h	2015-02-19 22:50:11.988037280 +0000
++++ src/lib/librumpuser/rumpuser_port.h	2015-02-15 21:31:48.061262045 +0000
+@@ -174,10 +174,9 @@
+ 	}
+ }
+ #endif
+-
++/*
+ #if !defined(HAVE_POSIX_MEMALIGN)
+ #if !defined(HAVE_MEMALIGN)
+-#error method for aligned memory allocation required
+ #endif
+ #include <sys/sysmacros.h>
+ #include <stdlib.h>
+@@ -191,7 +190,7 @@
+ 	return 0;
+ }
+ #endif
+-
++*/
+ /*
+  * For NetBSD, use COHERENCY_UNIT as the lock alignment size.
+  * On other platforms, just guess it to be 64.
+diff -uN rumpsrc/lib/librumpuser/rumpuser_random.c src/lib/librumpuser/rumpuser_random.c
+--- rumpsrc/lib/librumpuser/rumpuser_random.c	2015-02-19 22:50:11.988037280 +0000
++++ src/lib/librumpuser/rumpuser_random.c	2015-02-15 22:41:14.917437796 +0000
+@@ -42,13 +42,17 @@
+ #include <string.h>
+ #include <unistd.h>
+ 
++#ifdef HAVE_GETRANDOM
++#include <linux/random.h>
++#endif
++
+ #include <rump/rumpuser.h>
+ 
+ #include "rumpuser_int.h"
+ 
+ static const size_t random_maxread = 32;
+ 
+-#ifdef HAVE_ARC4RANDOM_BUF
++#if defined(HAVE_ARC4RANDOM_BUF) || defined(HAVE_GETRANDOM)
+ int
+ rumpuser__random_init(void)
+ {
+@@ -75,18 +79,28 @@
+ int
+ rumpuser_getrandom(void *buf, size_t buflen, int flags, size_t *retp)
+ {
+-#ifndef HAVE_ARC4RANDOM_BUF
+-	ssize_t rv;
++#ifdef HAVE_ARC4RANDOM_BUF
++	buflen = buflen > random_maxread ? random_maxread : buflen;
++	arc4random_buf(buf, buflen);
++	*retp = buflen;
++#elif HAVE_GETRANDOM
++	int rv;
+ 
+-	rv = read(random_fd, buf, buflen > random_maxread ? random_maxread : buflen);
+-	if (rv < 0) {
++	buflen = buflen > random_maxread ? random_maxread : buflen;
++	rv = getrandom(buf, buflen, 0);
++	if (rv == -1) {
+ 		ET(errno);
+ 	}
+-	*retp = rv;
++	*retp = rv;	
+ #else
++	ssize_t rv;
++
+ 	buflen = buflen > random_maxread ? random_maxread : buflen;
+-	arc4random_buf(buf, buflen);
+-	*retp = buflen;
++	rv = read(random_fd, buf, buflen);
++	if (rv == -1) {
++		ET(errno);
++	}
++	*retp = rv;
+ #endif
+ 
+ 	return 0;
