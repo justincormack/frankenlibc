@@ -2,44 +2,63 @@ ASRC=__clock_gettime.S clock_nanosleep.S exit.S getrandom.S kill.S __mmap.S munm
 AOBJ=$(ASRC:.S=.o)
 CSRC=clock_gettime.c getenv.c getpagesize.c mmap.c __platform_init.c putchar.c raise.c
 COBJ=$(CSRC:.c=.o)
-OBJ=$(AOBJ) $(COBJ)
+OBJDIR=../../obj/libc
+OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
 HEADERS=syscall.h syscall_nr.h
 INCLUDES=-I../../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
-default:		$(OBJ)
+default:			$(OBJDIR) $(OBJ)
 
-clock_gettime.o:	clock_gettime.c $(HEADERS)
+$(OBJDIR):			
+				mkdir -p $(OBJDIR)
 
-__clock_gettime.o:	__clock_gettime.S $(HEADERS)
+$(OBJDIR)/clock_gettime.o:	clock_gettime.c $(HEADERS)
+				$(COMPILE.c) -o $@ clock_gettime.c
 
-clock_nanosleep.o:	clock_nanosleep.S $(HEADERS)
+$(OBJDIR)/__clock_gettime.o:	__clock_gettime.S $(HEADERS)
+				$(COMPILE.S) -o $@ __clock_gettime.S
 
-exit.o:			exit.S $(HEADERS)
+$(OBJDIR)/clock_nanosleep.o:	clock_nanosleep.S $(HEADERS)
+				$(COMPILE.S) -o $@ clock_nanosleep.S
 
-getenv.o:		getenv.c $(HEADERS)
+$(OBJDIR)/exit.o:		exit.S $(HEADERS)
+				$(COMPILE.S) -o $@ exit.S
 
-getpagesize.o:		getpagesize.c $(HEADERS)
+$(OBJDIR)/getenv.o:		getenv.c $(HEADERS)
+				$(COMPILE.c) -o $@ getenv.c
 
-getrandom.o:		getrandom.S $(HEADERS)
+$(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
+				$(COMPILE.c) -o $@ getpagesize.c
 
-kill.o:			kill.S $(HEADERS)
+$(OBJDIR)/getrandom.o:		getrandom.S $(HEADERS)
+				$(COMPILE.S) -o $@ getrandom.S
 
-__mmap.o:		__mmap.S $(HEADERS)
+$(OBJDIR)/kill.o:		kill.S $(HEADERS)
+				$(COMPILE.S) -o $@ kill.S
 
-mmap.o:			mmap.c $(HEADERS)
+$(OBJDIR)/__mmap.o:		__mmap.S $(HEADERS)
+				$(COMPILE.S) -o $@ __mmap.S
 
-munmap.o:		munmap.S $(HEADERS)
+$(OBJDIR)/mmap.o:		mmap.c $(HEADERS)
+				$(COMPILE.c) -o $@ mmap.c
 
-__platform_init.o:	__platform_init.c $(HEADERS)
+$(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
+				$(COMPILE.S) -o $@ munmap.S
 
-putchar.o:		putchar.c $(HEADERS)
+$(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
+				$(COMPILE.c) -o $@ __platform_init.c
 
-raise.o:		raise.c $(HEADERS)
+$(OBJDIR)/putchar.o:		putchar.c $(HEADERS)
+				$(COMPILE.c) -o $@ putchar.c
 
-write.o:		write.S $(HEADERS)
+$(OBJDIR)/raise.o:		raise.c $(HEADERS)
+				$(COMPILE.c) -o $@ raise.c
 
-.PHONY:			clean
+$(OBJDIR)/write.o:		write.S $(HEADERS)
+				$(COMPILE.S) -o $@ write.S
+
+.PHONY:				clean
 clean:		
-			rm -f *.o
+				rm -f $(OBJ)

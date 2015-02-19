@@ -1,47 +1,67 @@
 ARCH=x86_64
-ASRC=$(ARCH)/swapcontext.s
+ASRC=swapcontext.s
 AOBJ=$(ASRC:.s=.o)
-CSRC=$(ARCH)/context.c abort.c aligned_alloc.c assert.c calloc.c errno.c __libc_start_main.c malloc.c memcpy.c memset.c strcmp.c strcpy.c strdup.c strlen.c strncpy.c
+CSRC=abort.c aligned_alloc.c assert.c calloc.c context.c errno.c __libc_start_main.c malloc.c memcpy.c memset.c strcmp.c strcpy.c strdup.c strlen.c strncpy.c
 COBJ=$(CSRC:.c=.o)
-OBJ=$(AOBJ) $(COBJ)
+OBJDIR=../../obj/libc
+OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
 INCLUDES=-I../../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
-default:		$(OBJ)
+default:			$(OBJDIR) $(OBJ)
 
-context.o:		$(ARCH)/context.c
+$(OBJDIR):			
+				mkdir -p $(OBJDIR)
 
-swapcontext.o:		$(ARCH)/swapcontext.s
+$(OBJDIR)/context.o:		$(ARCH)/context.c
+				$(COMPILE.c) -o $@ $(ARCH)/context.c
 
-abort.o:		abort.c
+$(OBJDIR)/swapcontext.o:	$(ARCH)/swapcontext.s
+				$(COMPILE.s) -o $@ $(ARCH)/swapcontext.s
 
-aligned_alloc.o:	aligned_alloc.c
+$(OBJDIR)/abort.o:		abort.c
+				$(COMPILE.c) -o $@ abort.c
 
-assert.o:		assert.c
+$(OBJDIR)/aligned_alloc.o:	aligned_alloc.c
+				$(COMPILE.c) -o $@ aligned_alloc.c
 
-calloc.o:		calloc.c
+$(OBJDIR)/assert.o:		assert.c
+				$(COMPILE.c) -o $@ assert.c
 
-errno.o:		errno.c
+$(OBJDIR)/calloc.o:		calloc.c
+				$(COMPILE.c) -o $@ calloc.c
 
-__libc_start_main.o:	__libc_start_main.c
+$(OBJDIR)/errno.o:		errno.c
+				$(COMPILE.c) -o $@ errno.c
 
-malloc.o:		malloc.c
+$(OBJDIR)/__libc_start_main.o:	__libc_start_main.c
+				$(COMPILE.c) -o $@ __libc_start_main.c
 
-memcpy.o:		memcpy.c
+$(OBJDIR)/malloc.o:		malloc.c
+				$(COMPILE.c) -o $@ malloc.c
 
-memset.o:		memset.c
+$(OBJDIR)/memcpy.o:		memcpy.c
+				$(COMPILE.c) -o $@ memcpy.c
 
-strcmp.o:		strcmp.c
+$(OBJDIR)/memset.o:		memset.c
+				$(COMPILE.c) -o $@ memset.c
 
-strcpy.o:		strcpy.c
+$(OBJDIR)/strcmp.o:		strcmp.c
+				$(COMPILE.c) -o $@ strcmp.c
 
-strdup.o:		strdup.c
+$(OBJDIR)/strcpy.o:		strcpy.c
+				$(COMPILE.c) -o $@ strcpy.c
 
-strlen.o:		strlen.c
+$(OBJDIR)/strdup.o:		strdup.c
+				$(COMPILE.c) -o $@ strdup.c
 
-strncpy.o:		strncpy.c
+$(OBJDIR)/strlen.o:		strlen.c
+				$(COMPILE.c) -o $@ strlen.c
 
-.PHONY:			clean
+$(OBJDIR)/strncpy.o:		strncpy.c
+				$(COMPILE.c) -o $@ strncpy.c
+
+.PHONY:				clean
 clean:		
-			rm -f *.o */*.o
+				rm -f $(OBJ)

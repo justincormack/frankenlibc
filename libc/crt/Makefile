@@ -2,20 +2,27 @@ ARCH=x86_64
 OS=linux
 CSRC=crti.c crtn.c
 COBJ=$(CSRC:.c=.o)
-ASRC=$(OS)/$(ARCH)/crt1.s
+ASRC=crt1.s
 AOBJ=$(ASRC:.s=.o)
-OBJ=$(AOBJ) $(COBJ)
+OBJDIR=../../lib
+OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
 CPPFLAGS+=-nostdinc
 CFLAGS+=-fno-stack-protector
 
-default:	$(OBJ)
+default:		$(OBJDIR) $(OBJ)
 
-crti.o:		crti.c
+$(OBJDIR)		
+			mkdir -p $(OBJDIR)
 
-crtn.o:		crtn.c
+$(OBJDIR)/crti.o:	crti.c
+			$(COMPILE.c) -o $@ crti.c
 
-crt1.o:		$(OS)/$(ARCH)/crt1.s
+$(OBJDIR)/crtn.o:	crtn.c
+			$(COMPILE.c) -o $@ crtn.c
 
-.PHONY:		clean
+$(OBJDIR)/crt1.o:	$(OS)/$(ARCH)/crt1.s
+			$(COMPILE.s) -o $@ $(OS)/$(ARCH)/crt1.s
+
+.PHONY:			clean
 clean:		
-		rm -f *.o
+			rm -f $(OBJ)
