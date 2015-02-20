@@ -1,8 +1,16 @@
 diff --git a/lib/librumpuser/Makefile b/lib/librumpuser/Makefile
-index 2994dc8..d2d6c5d 100644
+index 2994dc8..df6ce82 100644
 --- a/lib/librumpuser/Makefile
 +++ b/lib/librumpuser/Makefile
-@@ -42,12 +42,12 @@ SRCS+=		rumpfiber_sp.c
+@@ -35,19 +35,19 @@ SRCS+=		rumpuser_sp.c
+ .error Unsupported curlwp scheme for thread model: ${RUMP_CURLWP}
+ .endif
+ .endif
+-SRCS=		rumpfiber.c rumpfiber_bio.c
++SRCS=		rumpfiber.c
+ SRCS+=		rumpfiber_sp.c
+ .else
+ .error Unsupported rumpuser threading type: ${RUMPUSER_THREADS}
  .endif
  
  SRCS+=		rumpuser_component.c rumpuser_random.c
