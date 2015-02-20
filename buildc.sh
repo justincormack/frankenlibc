@@ -28,6 +28,9 @@ mkdir -p rump/include/rump
 cp ${RUMPSRC}/lib/librumpuser/rumpuser_component.h rump/include/rump
 
 MAKE=${MAKE-make}
+CC=${CC-cc}
+AR=${AR-ar}
+OBJCOPY=${OBJCOPY-objcopy}
 
 ${MAKE} -C libc
 
@@ -40,6 +43,18 @@ cp rumpuser_config.h ${RUMPSRC}/lib/librumpuser/
 	cd ${RUMPSRC}/lib/librumpuser && \
 	${RUMPMAKE} RUMPUSER_THREADS=fiber
 	${RUMPMAKE} RUMPUSER_THREADS=fiber install )
+
+# now combine our C library and librumpuser, with only needed symbols exposed
+# may be a better way of doing this
+${CC} -Wl,-r -nostdlib obj/lib/librumpuser/*.o obj/libc/*.o -o obj/join.o
+${OBJCOPY} -w --localize-symbol='*' obj/join.o
+for s in calloc errno __errno _exit free malloc _lwp_kill _lwp_self mmap _mmap munmap __platform_init posix_memalign realloc __sigaction_sigtramp __sigprocmask14
+do
+	${OBJCOPY} --globalize-symbol=${s} obj/join.o
+done
+${OBJCOPY} -w --globalize-symbol='rumpuser*' obj/join.o
+rm -f rump/lib/librumpuser.a
+${AR} cr rump/lib/librumpuser.a obj/join.o 
 
 # rebuild tools with -N option to emulate NetBSD
 ./buildrump.sh/buildrump.sh \
@@ -63,11 +78,8 @@ done
 
 # tests
 
-set -x
-
-CC=${CC-cc}
-
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
 ${CC} -nostdlib lib/crt1.o lib/crti.o obj/test/hello.o rump/lib/libc.a -Wl,--no-as-needed rump/lib/librump.a rump/lib/librumpuser.a -Wl,--as-needed lib/libc.a lib/crtn.o -o bin/test
 
+./bin/test

@@ -18,7 +18,7 @@ index 2994dc8..d2d6c5d 100644
  INCSDIR=	/usr/include/rump
  INCS=		rumpuser_component.h rumpuser_port.h
 diff --git a/lib/librumpuser/rumpfiber.c b/lib/librumpuser/rumpfiber.c
-index 4a19383..cf57907 100644
+index 4a19383..7d879fd 100644
 --- a/lib/librumpuser/rumpfiber.c
 +++ b/lib/librumpuser/rumpfiber.c
 @@ -71,7 +71,6 @@
@@ -97,7 +97,7 @@ index 4a19383..cf57907 100644
  
 -	mtx = malloc(sizeof(*mtx));
 -	memset(mtx, 0, sizeof(*mtx));
-+	mtx = calloc(sizeof(*mtx));
++	mtx = calloc(1, sizeof(*mtx));
 +	if (! mtx) abort();
  	mtx->flags = flags;
  	TAILQ_INIT(&mtx->waiters);
@@ -108,7 +108,7 @@ index 4a19383..cf57907 100644
  
 -	rw = malloc(sizeof(*rw));
 -	memset(rw, 0, sizeof(*rw));
-+	rw = calloc(sizeof(*rw));
++	rw = calloc(1, sizeof(*rw));
 +	if (!rw) abort();
  	TAILQ_INIT(&rw->rwait);
  	TAILQ_INIT(&rw->wwait);
@@ -119,7 +119,7 @@ index 4a19383..cf57907 100644
  
 -	cv = malloc(sizeof(*cv));
 -	memset(cv, 0, sizeof(*cv));
-+	cv = calloc(sizeof(*cv));
++	cv = calloc(1, sizeof(*cv));
 +	if (!cv) abort();
  	TAILQ_INIT(&cv->waiters);
  	*cvp = cv;

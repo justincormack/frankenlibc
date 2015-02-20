@@ -44,9 +44,7 @@
  *  + use ANSI C (hey, there's no rush!)
  */
 
-/*#define PAGE_SIZE getpagesize()*/
-/* XXX hack due to problems with symbols */
-#define PAGE_SIZE 4096
+#define PAGE_SIZE getpagesize()
 
 #include <sys/cdefs.h>
 #include <sys/mman.h>
