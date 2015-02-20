@@ -14,13 +14,10 @@ set -e
 
 . ./buildrump.sh/subr.sh
 
-# We should not have to undefine Linux, wrapper already should XXX
-
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector -F CPPFLAGS=-nostdinc \
-	-F CPPFLAGS='-Ulinux -U__linux -U__linux__ -U__gnu_linux__ -D__NetBSD__' \
-	-k -s ${RUMPSRC} \
+	-k -N -s ${RUMPSRC} \
 	tools build kernelheaders install
 
 RUMPMAKE=${PWD}/obj/tooldir/rumpmake
