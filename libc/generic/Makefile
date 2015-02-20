@@ -5,7 +5,7 @@ CSRC=abort.c aligned_alloc.c assert.c calloc.c context.c errno.c __libc_start_ma
 COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
 OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
-INCLUDES=-I../../include
+INCLUDES=-I../include
 RUMPINC=-I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector

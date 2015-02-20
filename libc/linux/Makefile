@@ -5,7 +5,7 @@ COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
 OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
 HEADERS=syscall.h syscall_nr.h
-INCLUDES=-I../../include
+INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 

@@ -36,7 +36,7 @@ mkdir -p obj/lib/librumpuser
 # We don't yet have enough to be able to run configure, coming soon
 cp rumpuser_config.h ${RUMPSRC}/lib/librumpuser/
 
-( export CPPFLAGS="-DRUMPUSER_CONFIG=yes -nostdinc -I${PWD}/include -I${PWD}/rump/include -I${PWD}/src/sys/rump/include" \
+( export CPPFLAGS="-DRUMPUSER_CONFIG=yes -nostdinc -I${PWD}/libc/include -I${PWD}/rump/include -I${PWD}/src/sys/rump/include" \
 	&& cd ${RUMPSRC}/lib/librumpuser && ${RUMPMAKE} RUMPUSER_THREADS=fiber )
 
 # rebuild tools with -N option to emulate NetBSD
