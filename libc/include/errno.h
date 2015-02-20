@@ -14,9 +14,11 @@ int *__errno(void);
 #if defined(__linux__)
 #define ETIMEDOUT	110
 #define ENOSYS		38
+#define ENOTSUP		95
 #else /* NetBSD */
 #define ETIMEDOUT	60
 #define ENOSYS		78
+#define ENOTSUP		86
 #endif
 
 #endif

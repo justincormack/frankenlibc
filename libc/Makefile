@@ -1,5 +1,5 @@
 OS=linux
-DIRS=$(OS) generic crt
+DIRS=$(OS) generic crt lwp
 LIB=../lib/libc.a
 OBJDIR=../obj/libc
 
