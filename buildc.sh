@@ -69,5 +69,5 @@ CC=${CC-cc}
 
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
-${CC} -nostdlib lib/crt1.o lib/crti.o obj/test/hello.o rump/lib/libc.a rump/lib/librump.a rump/lib/librumpuser.a lib/libc.a lib/crtn.o -o bin/test
+${CC} -nostdlib lib/crt1.o lib/crti.o obj/test/hello.o rump/lib/libc.a -Wl,--no-as-needed rump/lib/librump.a rump/lib/librumpuser.a -Wl,--as-needed lib/libc.a lib/crtn.o -o bin/test
 
