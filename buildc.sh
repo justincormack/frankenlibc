@@ -14,11 +14,10 @@ set -e
 
 . ./buildrump.sh/subr.sh
 
-# Make tools wwithout -N as we need to expose native platform for buildrump
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
-	-k -s ${RUMPSRC} \
+	-k -N -s ${RUMPSRC} \
 	tools build kernelheaders install
 
 RUMPMAKE=${PWD}/obj/tooldir/rumpmake
@@ -55,13 +54,6 @@ done
 ${OBJCOPY} -w --globalize-symbol='rumpuser*' obj/join.o
 rm -f rump/lib/librumpuser.a
 ${AR} cr rump/lib/librumpuser.a obj/join.o 
-
-# rebuild tools with -N option to emulate NetBSD
-./buildrump.sh/buildrump.sh \
-	-V RUMP_CURLWP=hypercall -V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
-	-F CFLAGS=-fno-stack-protector -F CPPFLAGS=-nostdinc \
-	-k -N -s ${RUMPSRC} \
-	tools
 
 LIBS="$(stdlibs ${RUMPSRC})"
 if [ "$(${RUMPMAKE} -f rumptools/mk.conf -V '${_BUILDRUMP_CXX}')" = 'yes' ]

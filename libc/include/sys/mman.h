@@ -12,16 +12,8 @@
 #define MAP_SHARED  	0x01
 #define MAP_PRIVATE 	0x02
 #define MAP_FIXED	0x10
-#if defined(__linux__)
-#define MAP_ANON    	0x20
-#define MAP_STACK	0x20000
-#else /* NetBSD */
 #define MAP_ANON	0x1000
 #define MAP_STACK	0x2000
-#endif
-
-/* Linux does not support alignment options for mmap so for now we use and
-   emulate the NetBSD values; they do not conflict with any options we use */
 
 #define MAP_ALIGNED(n)		((n) << MAP_ALIGNMENT_SHIFT)
 #define MAP_ALIGNMENT_SHIFT	24

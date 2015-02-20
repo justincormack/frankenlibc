@@ -1,6 +1,6 @@
-ASRC=__clock_gettime.S clock_nanosleep.S _exit.S getrandom.S kill.S __mmap.S munmap.S write.S
+ASRC=__clock_gettime.S clock_nanosleep.S _exit.S getrandom.S kill.S __mmap.S __munmap.S write.S
 AOBJ=$(ASRC:.S=.o)
-CSRC=clock_gettime.c getenv.c getpagesize.c mmap.c __platform_init.c putchar.c raise.c
+CSRC=clock_gettime.c getenv.c getpagesize.c mmap.c munmap.c __platform_init.c putchar.c raise.c
 COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
 OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
@@ -44,8 +44,11 @@ $(OBJDIR)/__mmap.o:		__mmap.S $(HEADERS)
 $(OBJDIR)/mmap.o:		mmap.c $(HEADERS)
 				$(COMPILE.c) -o $@ mmap.c
 
-$(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
-				$(COMPILE.S) -o $@ munmap.S
+$(OBJDIR)/__munmap.o:		__munmap.S $(HEADERS)
+				$(COMPILE.S) -o $@ __munmap.S
+
+$(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
+				$(COMPILE.S) -o $@ munmap.c
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
 				$(COMPILE.c) -o $@ __platform_init.c
