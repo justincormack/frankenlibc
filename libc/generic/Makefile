@@ -1,7 +1,7 @@
 ARCH=x86_64
 ASRC=swapcontext.s
 AOBJ=$(ASRC:.s=.o)
-CSRC=abort.c aligned_alloc.c assert.c calloc.c context.c errno.c __errno.c __libc_start_main.c malloc.c memcpy.c memset.c strcmp.c strcpy.c strdup.c strlen.c strncpy.c
+CSRC=abort.c aligned_alloc.c assert.c calloc.c context.c errno.c __errno.c __libc_start_main.c malloc.c madvise.c memcpy.c memset.c _mmap.c __sigprocmask14.c strcmp.c strcpy.c strdup.c strlen.c strncpy.c
 COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
 OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
@@ -42,6 +42,9 @@ $(OBJDIR)/__errno.o:		__errno.c
 $(OBJDIR)/__libc_start_main.o:	__libc_start_main.c
 				$(COMPILE.c) $(RUMPINC) -o $@ __libc_start_main.c
 
+$(OBJDIR)/madvise.o:		madvise.c
+				$(COMPILE.c) -o $@ madvise.c
+
 $(OBJDIR)/malloc.o:		malloc.c
 				$(COMPILE.c) -o $@ malloc.c
 
@@ -50,6 +53,12 @@ $(OBJDIR)/memcpy.o:		memcpy.c
 
 $(OBJDIR)/memset.o:		memset.c
 				$(COMPILE.c) -o $@ memset.c
+
+$(OBJDIR)/_mmap.o:		_mmap.c
+				$(COMPILE.c) -o $@ _mmap.c
+
+$(OBJDIR)/__sigprocmask14.o:	__sigprocmask14.c
+				$(COMPILE.c) -o $@ __sigprocmask14.c
 
 $(OBJDIR)/strcmp.o:		strcmp.c
 				$(COMPILE.c) -o $@ strcmp.c

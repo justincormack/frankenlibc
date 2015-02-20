@@ -35,6 +35,7 @@
 
 #define MAP_FAILED ((void *) -1)
 
+int madvise(void *, size_t, int);
 void *mmap(void *, size_t, int, int, int, off_t);
 int munmap(void *, size_t);
 

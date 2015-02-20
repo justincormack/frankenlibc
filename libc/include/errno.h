@@ -13,8 +13,10 @@ int *__errno(void);
 #define ERANGE		34
 #if defined(__linux__)
 #define ETIMEDOUT	110
+#define ENOSYS		38
 #else /* NetBSD */
 #define ETIMEDOUT	60
+#define ENOSYS		78
 #endif
 
 #endif
