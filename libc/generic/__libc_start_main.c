@@ -4,6 +4,8 @@
 
 #include <rump/rump.h>
 
+extern char **environ;
+
 /* move to a header somewhere */
 int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
 
@@ -19,6 +21,7 @@ __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char *
 	uintptr_t a;
 
 	/* XXX init environment first as rump_init will use it */
+	environ = calloc(1, sizeof(char *));
 
 	rump_boot_setsigmodel(RUMP_SIGMODEL_IGNORE);
 	rump_init();
