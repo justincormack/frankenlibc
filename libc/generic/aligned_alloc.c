@@ -396,7 +396,6 @@ free(void *cp)
  *   + nbytes == 0 ==> free
  *   + else ==> realloc
  */
-#ifdef REALLOC
 void *
 realloc(void *cp, size_t nbytes)
 {   
@@ -430,7 +429,6 @@ realloc(void *cp, size_t nbytes)
 	free(cp);
 	return np;
 }
-#endif
 
 #ifdef MSTATS
 /*

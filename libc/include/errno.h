@@ -3,6 +3,8 @@
 
 extern int errno;
 
+int *__errno(void);
+
 #define ENOENT		2
 #define EBADF		9
 #define	ENOMEM		12

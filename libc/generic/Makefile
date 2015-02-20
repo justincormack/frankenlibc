@@ -1,7 +1,7 @@
 ARCH=x86_64
 ASRC=swapcontext.s
 AOBJ=$(ASRC:.s=.o)
-CSRC=abort.c aligned_alloc.c assert.c calloc.c context.c errno.c __libc_start_main.c malloc.c memcpy.c memset.c strcmp.c strcpy.c strdup.c strlen.c strncpy.c
+CSRC=abort.c aligned_alloc.c assert.c calloc.c context.c errno.c __errno.c __libc_start_main.c malloc.c memcpy.c memset.c strcmp.c strcpy.c strdup.c strlen.c strncpy.c
 COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
 OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
@@ -35,6 +35,9 @@ $(OBJDIR)/calloc.o:		calloc.c
 
 $(OBJDIR)/errno.o:		errno.c
 				$(COMPILE.c) -o $@ errno.c
+
+$(OBJDIR)/__errno.o:		__errno.c
+				$(COMPILE.c) -o $@ __errno.c
 
 $(OBJDIR)/__libc_start_main.o:	__libc_start_main.c
 				$(COMPILE.c) $(RUMPINC) -o $@ __libc_start_main.c
