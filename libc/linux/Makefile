@@ -1,4 +1,4 @@
-ASRC=__clock_gettime.S clock_nanosleep.S exit.S getrandom.S kill.S __mmap.S munmap.S write.S
+ASRC=__clock_gettime.S clock_nanosleep.S _exit.S getrandom.S kill.S __mmap.S munmap.S write.S
 AOBJ=$(ASRC:.S=.o)
 CSRC=clock_gettime.c getenv.c getpagesize.c mmap.c __platform_init.c putchar.c raise.c
 COBJ=$(CSRC:.c=.o)
@@ -23,8 +23,8 @@ $(OBJDIR)/__clock_gettime.o:	__clock_gettime.S $(HEADERS)
 $(OBJDIR)/clock_nanosleep.o:	clock_nanosleep.S $(HEADERS)
 				$(COMPILE.S) -o $@ clock_nanosleep.S
 
-$(OBJDIR)/exit.o:		exit.S $(HEADERS)
-				$(COMPILE.S) -o $@ exit.S
+$(OBJDIR)/_exit.o:		_exit.S $(HEADERS)
+				$(COMPILE.S) -o $@ _exit.S
 
 $(OBJDIR)/getenv.o:		getenv.c $(HEADERS)
 				$(COMPILE.c) -o $@ getenv.c

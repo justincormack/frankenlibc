@@ -6,5 +6,5 @@ abort(void)
 {
 
 	raise(SIGABRT);
-	exit(1);
+	_exit(1);
 }

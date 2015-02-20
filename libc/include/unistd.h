@@ -6,6 +6,7 @@
 
 #define MAXHOSTNAMELEN 64
 
+void _exit(int);
 int fsync(int);
 int gethostname(char *, size_t);
 int getpagesize(void);

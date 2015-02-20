@@ -27,9 +27,9 @@ RUMPMAKE=${PWD}/obj/tooldir/rumpmake
 mkdir -p rump/include/rump
 cp ${RUMPSRC}/lib/librumpuser/rumpuser_component.h rump/include/rump
 
-( cd libc && make )
+MAKE=${MAKE-make}
 
-ar cr lib/libc.a obj/libc/*.o
+${MAKE} -C libc
 
 mkdir -p obj/lib/librumpuser
 
@@ -67,6 +67,7 @@ set -x
 
 CC=${CC-cc}
 
+mkdir -p obj/test
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
 ${CC} -nostdlib lib/crt1.o lib/crti.o obj/test/hello.o rump/lib/libc.a rump/lib/librump.a rump/lib/librumpuser.a lib/libc.a lib/crtn.o
 
