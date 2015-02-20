@@ -8,7 +8,7 @@ typedef	long time_t;
 struct timespec { time_t tv_sec; long tv_nsec; };
 
 #define CLOCK_REALTIME 0
-#if defined(__linux)
+#if defined(__linux__)
 #define CLOCK_MONOTONIC 1
 #else /* NetBSD */
 #define CLOCK_MONOTONIC 3
