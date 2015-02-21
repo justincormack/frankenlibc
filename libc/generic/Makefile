@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/context.o $(OBJDIR)/swapcontext.o $(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o $(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/__errno.o $(OBJDIR)/getenv.o $(OBJDIR)/__libc_start_main.o $(OBJDIR)/madvise.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o $(OBJDIR)/_mmap.o $(OBJDIR)/posix_memalign.o $(OBJDIR)/__sigaction_sigtramp.o $(OBJDIR)/__sigprocmask14.o $(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o $(OBJDIR)/strlen.o $(OBJDIR)/strncpy.o
+OBJ=$(OBJDIR)/context.o $(OBJDIR)/swapcontext.o $(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o $(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/__errno.o $(OBJDIR)/getenv.o $(OBJDIR)/__libc_start_main.o $(OBJDIR)/madvise.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o $(OBJDIR)/_mmap.o $(OBJDIR)/posix_memalign.o $(OBJDIR)/__sigaction_sigtramp.o $(OBJDIR)/__sigprocmask14.o $(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o $(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
 INCLUDES=-I../include
 RUMPINC=-I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -75,6 +75,9 @@ $(OBJDIR)/strdup.o:		strdup.c
 
 $(OBJDIR)/strlen.o:		strlen.c
 				$(COMPILE.c) -o $@ strlen.c
+
+$(OBJDIR)/strncmp.o:		strncmp.c
+				$(COMPILE.c) -o $@ strncmp.c
 
 $(OBJDIR)/strncpy.o:		strncpy.c
 				$(COMPILE.c) -o $@ strncpy.c

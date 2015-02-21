@@ -10,6 +10,7 @@ int strcmp(const char *, const char *);
 char *strcpy(char *, const char *);
 char *strdup(const char *);
 size_t strlen(const char *);
+int strncmp(const char *, const char *, size_t);
 char *strncpy(char *, const char *, size_t);
 
 #endif
