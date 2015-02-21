@@ -1,9 +1,12 @@
 #include <errno.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
+
+#include "syscall.h"
 
 #define LINUX_MAP_SHARED      0x01
 #define LINUX_MAP_PRIVATE     0x02
@@ -11,7 +14,11 @@
 #define LINUX_MAP_ANON        0x20
 #define LINUX_MAP_STACK       0x20000
 
+#ifdef SYS_mmap2
+void *__mmap(void *, size_t, int, int, int, uint32_t);
+#else
 void *__mmap(void *, size_t, int, int, int, off_t);
+#endif
 
 void *
 mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
@@ -25,8 +32,13 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 		    (nflags & MAP_ANON ? LINUX_MAP_ANON : 0) |
 		    (nflags & MAP_STACK ? LINUX_MAP_STACK : 0);
 
+	if (!(fd -= -1 && offset == 0 && nflags & MAP_ANON)) {
+		errno = EINVAL;
+		return MAP_FAILED;
+	}
+
 	if (align == 0 || (1L << align) <= getpagesize()) {
-		return __mmap(addr, length, prot, flags, fd, offset);
+		return __mmap(addr, length, prot, flags, -1, 0);
 	}
 
 	addr = __mmap(NULL, length * 2, prot, flags, -1, 0);
