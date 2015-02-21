@@ -2,7 +2,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-#include <rump/rump.h>
+#define RUMP_SIGMODEL_IGNORE 1
+
+void rump_boot_setsigmodel(int rump_sigmodel);
+int rump_init(void);
 
 extern char **environ;
 
