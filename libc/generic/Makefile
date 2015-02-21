@@ -22,7 +22,7 @@ $(OBJDIR)/assert.o:		assert.c
 $(OBJDIR)/calloc.o:		calloc.c
 				$(COMPILE.c) -o $@ calloc.c
 
-$(OBJDIR)/context.o:		context.c
+$(OBJDIR)/context.o:		context.c x86_64/context.c
 				$(COMPILE.c) -o $@ context.c
 
 $(OBJDIR)/errno.o:		errno.c
@@ -73,7 +73,7 @@ $(OBJDIR)/strlen.o:		strlen.c
 $(OBJDIR)/strncpy.o:		strncpy.c
 				$(COMPILE.c) -o $@ strncpy.c
 
-$(OBJDIR)/swapcontext.o:	swapcontext.S
+$(OBJDIR)/swapcontext.o:	swapcontext.S x86_64/swapcontext.s
 				$(COMPILE.S) -o $@ swapcontext.S
 
 .PHONY:				clean

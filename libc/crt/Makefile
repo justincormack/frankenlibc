@@ -15,8 +15,8 @@ $(OBJDIR)/crti.o:	crti.c
 $(OBJDIR)/crtn.o:	crtn.c
 			$(COMPILE.c) -o $@ crtn.c
 
-$(OBJDIR)/crt1.o:	$(OS)/$(ARCH)/crt1.s
-			$(COMPILE.s) -o $@ $(OS)/$(ARCH)/crt1.s
+$(OBJDIR)/crt1.o:	$(OS)/crt1.S $(OS)/crt1.S $(OS)/x86_64/crt1.s 
+			$(COMPILE.S) -o $@ $(OS)/crt1.S
 
 .PHONY:			clean
 clean:		
