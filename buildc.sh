@@ -1,8 +1,11 @@
 #!/bin/sh
 
-# nothing else supported yet
-OS=linux
-ARCH=x86_64
+MAKE=${MAKE-make}
+CC=${CC-cc}
+AR=${AR-ar}
+OBJCOPY=${OBJCOPY-objcopy}
+
+OS=${OS-"$($CC -v 2>&1| grep Target: | perl -p -e 's/.*(netbsd|linux).*/\1/')"}
 
 RUMPSRC=rumpsrc
 
@@ -26,12 +29,7 @@ RUMPMAKE=${PWD}/obj/tooldir/rumpmake
 mkdir -p rump/include/rump
 cp ${RUMPSRC}/lib/librumpuser/rumpuser_component.h rump/include/rump
 
-MAKE=${MAKE-make}
-CC=${CC-cc}
-AR=${AR-ar}
-OBJCOPY=${OBJCOPY-objcopy}
-
-${MAKE} -C libc
+${MAKE} OS=${OS} -C libc
 
 mkdir -p obj/lib/librumpuser
 

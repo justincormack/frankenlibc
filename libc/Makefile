@@ -1,4 +1,4 @@
-OS=linux
+OS?=linux
 DIRS=$(OS) generic crt lwp
 LIB=../lib/libc.a
 OBJDIR=../obj/libc
@@ -8,14 +8,14 @@ OBJDIR=../obj/libc
 default:	$(DIRS) $(LIB)
 
 $(DIRS):	
-		$(MAKE) -C $@
+		$(MAKE) OS=$(OS) -C $@
 
 $(LIB):		$(DIRS)
 		mkdir -p $(OBJDIR)
 		ar cr $(LIB) $(OBJDIR)/*.o
 
 clean:		
-		for dir in $(DIRS); do \
-			$(MAKE) -C $$dir clean; \
+		for dir in linux netbsd generic crt lwp; do \
+			$(MAKE) -C $$dir OS= clean; \
 		done
 		rm -f $(LIB)

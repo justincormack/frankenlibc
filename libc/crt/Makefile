@@ -1,4 +1,4 @@
-OS=linux
+OS?=linux
 OBJDIR=../../lib
 OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/crt1.o
 CPPFLAGS+=-nostdinc
