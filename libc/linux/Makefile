@@ -1,6 +1,6 @@
 OBJDIR=../../obj/libc
 OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getenv.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/kill.o $(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o $(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o $(OBJDIR)/write.o
-HEADERS=syscall.h x86_64/syscall.h
+HEADERS=syscall.h arm/syscall.h x86_64/syscall.h
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
