@@ -44,7 +44,7 @@ $(OBJDIR)/__munmap.o:		__munmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ __munmap.S
 
 $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
-				$(COMPILE.S) -o $@ munmap.c
+				$(COMPILE.c) -o $@ munmap.c
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
 				$(COMPILE.c) -o $@ __platform_init.c
