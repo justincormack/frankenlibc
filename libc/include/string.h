@@ -5,6 +5,7 @@
 
 void *memcpy(void *, const void *, size_t);
 void *memset(void *, int, size_t);
+char *strchr(const char *, int);
 int strcmp(const char *, const char *);
 char *strcpy(char *, const char *);
 char *strdup(const char *);
