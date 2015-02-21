@@ -1,10 +1,6 @@
 ARCH=x86_64
-ASRC=swapcontext.s
-AOBJ=$(ASRC:.s=.o)
-CSRC=abort.c aligned_alloc.c assert.c calloc.c context.c errno.c __errno.c __libc_start_main.c malloc.c madvise.c memcpy.c memset.c _mmap.c posix_memalign.c __sigaction_sigtramp.c __sigprocmask14.c strcmp.c strcpy.c strdup.c strlen.c strncpy.c
-COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
-OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
+OBJ=$(OBJDIR)/context.o $(OBJDIR)/swapcontext.o $(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o $(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/__errno.o $(OBJDIR)/__libc_start_main.o $(OBJDIR)/madvise.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o $(OBJDIR)/_mmap.o $(OBJDIR)/posix_memalign.o $(OBJDIR)/__sigaction_sigtramp.o $(OBJDIR)/__sigprocmask14.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o $(OBJDIR)/strlen.o $(OBJDIR)/strncpy.o
 INCLUDES=-I../include
 RUMPINC=-I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
