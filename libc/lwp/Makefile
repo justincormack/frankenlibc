@@ -1,7 +1,5 @@
-CSRC=_lwp_kill.c _lwp_self.c
-COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
-OBJ=$(addprefix $(OBJDIR)/,$(COBJ))
+OBJ=$(OBJDIR)/_lwp_kill.o $(OBJDIR)/_lwp_self.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector

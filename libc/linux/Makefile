@@ -1,9 +1,5 @@
-ASRC=__clock_gettime.S clock_nanosleep.S _exit.S getrandom.S kill.S __mmap.S __munmap.S write.S
-AOBJ=$(ASRC:.S=.o)
-CSRC=clock_gettime.c getenv.c getpagesize.c mmap.c munmap.c __platform_init.c putchar.c raise.c
-COBJ=$(CSRC:.c=.o)
 OBJDIR=../../obj/libc
-OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
+OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getenv.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/kill.o $(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o $(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o $(OBJDIR)/write.o
 HEADERS=syscall.h syscall_nr.h
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
