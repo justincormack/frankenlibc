@@ -1,6 +1,6 @@
 OS?=linux
 DIRS=$(OS) generic crt lwp
-LIB=../lib/libc.a
+LIB=../lib/libfranken.a
 OBJDIR=../obj/libc
 
 .PHONY:		$(DIRS) clean
