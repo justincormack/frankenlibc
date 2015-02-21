@@ -1,4 +1,3 @@
-ARCH=x86_64
 OS=linux
 OBJDIR=../../lib
 OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/crt1.o
