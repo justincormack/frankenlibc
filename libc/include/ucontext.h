@@ -1,3 +1,5 @@
+#include <rename.h>
+
 #if defined(__x86_64__)
 #include <x86_64/ucontext.h>
 #elif defined(__i386__)

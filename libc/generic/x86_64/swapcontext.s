@@ -1,6 +1,6 @@
-.global swapcontext
-.type swapcontext,@function
-swapcontext:
+.global __franken_swapcontext
+.type __franken_swapcontext,@function
+__franken_swapcontext:
 	mov %rbx,(%rdi)		/* first buffer (prev) */
 	mov %rbp,8(%rdi)
 	mov %r12,16(%rdi)

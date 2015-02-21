@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-ssize_t write(int, const void *, size_t);
+#include <unistd.h>
 
 int
 putchar(int c)

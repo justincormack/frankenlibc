@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include <rename.h>
+
 int getrandom(void *, size_t, unsigned int);
 
 #endif

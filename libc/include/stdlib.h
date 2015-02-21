@@ -4,13 +4,15 @@
 #include <stddef.h>
 #include <sys/cdefs.h>
 
+#include <rename.h>
+
 typedef __SIZE_TYPE__ size_t;
 typedef __INTPTR_TYPE__ ssize_t;
 
-void abort(void);
+void abort(void) __attribute__ ((noreturn));
 void *aligned_alloc(size_t, size_t);
 void *calloc(size_t, size_t);
-void exit(int);
+void exit(int) __attribute__ ((noreturn));
 void free(void *);
 char *getenv(const char *);
 void *malloc(size_t);

@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 
-int	putchar(int c);
+#include <rename.h>
+
+int putchar(int c);
 
 #endif
