@@ -1,11 +1,7 @@
 ARCH=x86_64
 OS=linux
-CSRC=crti.c crtn.c
-COBJ=$(CSRC:.c=.o)
-ASRC=crt1.s
-AOBJ=$(ASRC:.s=.o)
 OBJDIR=../../lib
-OBJ=$(addprefix $(OBJDIR)/,$(AOBJ) $(COBJ))
+OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/crt1.o
 CPPFLAGS+=-nostdinc
 CFLAGS+=-fno-stack-protector
 
