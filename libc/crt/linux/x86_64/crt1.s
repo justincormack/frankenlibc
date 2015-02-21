@@ -13,4 +13,4 @@ _start:
 	mov $_init,%rcx	/* 4th arg: init/ctors function */
 	mov $main,%rdi	/* 1st arg: application entry ip */
 	call __platform_init
-1:      jmp 1b
+1:	jmp 1b
