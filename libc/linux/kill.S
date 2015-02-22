@@ -1,3 +1,3 @@
 #include "syscall.h"
 
-SYSCALL(kill, __kill);
+SYSCALL(kill, __franken_kill);

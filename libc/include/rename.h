@@ -7,6 +7,7 @@
 #define getrandom(b, s, f) __franken_getrandom(b, s, f)
 
 /* signal.h */
+#define kill(p, s) __franken_kill(p, s)
 #define raise(s) __franken_raise(s)
 
 /* stdio.h */
