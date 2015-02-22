@@ -26,20 +26,20 @@ except for one, and the implementation should convert to whatever it needs.
 There is very little to implement so this should not be onerous.
 
 NetBSD ABI:
-clock\_gettime(CLOCK\_{REALTIME,MONOTONIC}, ...) - clocks
-clock\_nanosleep(CLOCK\_MONOTONIC, ...) - sleep
-mmap() map anonymous memory (page allocator)
-munmap() unmap anonymous memory
-kill(0, SIGABRT) - abort program
+* clock\_gettime(CLOCK\_{REALTIME,MONOTONIC}, ...) clocks
+* clock\_nanosleep(CLOCK\_MONOTONIC, ...) sleep
+* mmap() map anonymous memory (page allocator)
+* munmap() unmap anonymous memory
+* kill(0, SIGABRT) abort program
 
 Common ABI:
-\_exit(...) - normal exit
-write(1, ...) - write to stdout.
-isatty(1) - is stdout a tty?
-getpagesize() - return the page size.
+* \_exit(...) normal exit
+* write(1, ...) write to stdout.
+* isatty(1) is stdout a tty?
+* getpagesize() return the page size.
 
 Linux ABI:
-getrandom() - get random numbers to buffer. May fail or return short reads.
+* getrandom() get random numbers to buffer. May fail or return short reads.
 No flags supported.
 
 Of these calls, only mmap and munmap are exposed to the NetBSD libc, so the
