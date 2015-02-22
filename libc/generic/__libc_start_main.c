@@ -9,7 +9,8 @@ int rump_init(void);
 
 extern char **environ;
 
-/* move to a header somewhere */
+void _libc_init(void);
+
 int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 void _init(void) __attribute__ ((weak));
@@ -27,6 +28,8 @@ __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char *
 
 	rump_boot_setsigmodel(RUMP_SIGMODEL_IGNORE);
 	rump_init();
+
+	_libc_init();
 
 	_init();
 	a = (uintptr_t)&__init_array_start;
