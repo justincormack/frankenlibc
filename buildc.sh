@@ -68,7 +68,7 @@ RUMP_LDLIBS="-Lrump/lib -Wl,--whole-archive ${RUMP_LIBS_FS} -lrump -lrumpuser -W
 
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
-${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -lc ${RUMP_LDLIBS} -lfranken lib/crtn.o -o bin/test
+${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -Lrump/lib -lc ${RUMP_LDLIBS} -lfranken lib/crtn.o -o bin/test
 
 export RUMP_VERBOSE=1
 
