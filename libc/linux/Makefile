@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/kill.o $(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o $(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o $(OBJDIR)/write.o
+OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/kill.o $(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o $(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o $(OBJDIR)/raise.o $(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -45,9 +45,6 @@ $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
 				$(COMPILE.c) -o $@ __platform_init.c
-
-$(OBJDIR)/putchar.o:		putchar.c $(HEADERS)
-				$(COMPILE.c) -o $@ putchar.c
 
 $(OBJDIR)/raise.o:		raise.c $(HEADERS)
 				$(COMPILE.c) -o $@ raise.c

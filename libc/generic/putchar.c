@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+/* XXX add buffering. Will need an isatty ioctl */
+
 int
 putchar(int c)
 {
