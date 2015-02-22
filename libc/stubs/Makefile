@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/madvise.o $(OBJDIR)/setpriority.o $(OBJDIR)/__sigaction_sigtramp.o $(OBJDIR)/__sigprocmask14.o
+OBJ=$(OBJDIR)/madvise.o $(OBJDIR)/minherit.o $(OBJDIR)/setpriority.o $(OBJDIR)/__sigaction_sigtramp.o $(OBJDIR)/__sigprocmask14.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -11,6 +11,9 @@ $(OBJDIR):
 
 $(OBJDIR)/madvise.o:		madvise.c
 				$(COMPILE.c) -o $@ madvise.c
+
+$(OBJDIR)/minherit.o:		minherit.c
+				$(COMPILE.c) -o $@ minherit.c
 
 $(OBJDIR)/setpriority.o:	setpriority.c
 				$(COMPILE.c) -o $@ setpriority.c
