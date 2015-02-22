@@ -6,6 +6,9 @@ AR=${AR-ar}
 
 OS=${OS-"$($CC -v 2>&1| grep Target: | perl -p -e 's/.*(netbsd|linux).*/\1/')"}
 
+STDJ="-j 8"
+QUIET="-qq"
+
 RUMPSRC=rumpsrc
 
 [ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
@@ -19,7 +22,7 @@ set -e
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
-	-k -N -s ${RUMPSRC} \
+	-k -N -s ${RUMPSRC} ${QUIET} ${STDJ} \
 	tools build kernelheaders install
 
 RUMPMAKE=${PWD}/obj/tooldir/rumpmake
