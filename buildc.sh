@@ -43,11 +43,14 @@ cp rumpuser_config.h ${RUMPSRC}/lib/librumpuser/
 	${RUMPMAKE} RUMPUSER_THREADS=fiber
 	${RUMPMAKE} RUMPUSER_THREADS=fiber install )
 
-LIBS="$(stdlibs ${RUMPSRC})"
-if [ "$(${RUMPMAKE} -f rumptools/mk.conf -V '${_BUILDRUMP_CXX}')" = 'yes' ]
-then
-	LIBS="${LIBS} $(stdlibsxx ${RUMPSRC})"
-fi
+#LIBS="$(stdlibs ${RUMPSRC})"
+#if [ "$(${RUMPMAKE} -f rumptools/mk.conf -V '${_BUILDRUMP_CXX}')" = 'yes' ]
+#then
+#	LIBS="${LIBS} $(stdlibsxx ${RUMPSRC})"
+#fi
+
+# for now just build libc
+LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libpthread"
 
 usermtree rump
 userincludes ${RUMPSRC} ${LIBS}
