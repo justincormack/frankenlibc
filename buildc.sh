@@ -31,7 +31,7 @@ RUMPMAKE=${PWD}/obj/tooldir/rumpmake
 mkdir -p rump/include/rump
 cp ${RUMPSRC}/lib/librumpuser/rumpuser_component.h rump/include/rump
 
-${MAKE} OS=${OS} -C libc
+CFLAGS=-g ${MAKE} OS=${OS} -C libc
 
 mkdir -p obj/lib/librumpuser
 
@@ -61,7 +61,8 @@ done
 
 # tests
 
-RUMPLIBS="-lrumpvfs -lrumpfs_kernfs -lrumpfs_ffs -lrumpdev_disk -lrumpdev -lrumpdev_rnd -lrumpnet -lrumpnet_net -lrumpnet_netinet -lrumpnet_netinet6 -lrump -lrumpuser"
+#RUMPLIBS="-lrumpvfs -lrumpfs_kernfs -lrumpfs_ffs -lrumpdev_disk -lrumpdev -lrumpdev_rnd -lrumpnet -lrumpnet_net -lrumpnet_netinet -lrumpnet_netinet6 -lrump -lrumpuser"
+RUMPLIBS="-lrumpvfs -lrumpfs_kernfs -lrumpfs_ffs -lrumpdev_disk -lrumpdev -lrumpdev_rnd -lrump -lrumpuser"
 
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
