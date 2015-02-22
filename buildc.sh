@@ -64,11 +64,13 @@ done
 RUMP_LIBS_FS="-lrumpfs_ffs -lrumpfs_cd9660 -lrumpdev_disk -lrumpdev -lrumpvfs"
 RUMP_LIBS_NET="-lrumpnet_config -lrumpdev_bpf -lrumpnet_netinet -lrumpnet_netinet6 -lrumpnet_net -lrumpnet"
 
-RUMP_LDLIBS="-Lrump/lib -Wl,--whole-archive ${RUMP_LIBS_FS} -lrump -lrumpuser -Wl,--no-whole-archive"
+RUMP_LDLIBS="-Wl,--whole-archive ${RUMP_LIBS_FS} -lrump -lrumpuser -Wl,--no-whole-archive"
+
+LIBDIR="${PWD}/rump/lib"
 
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
-${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -Lrump/lib -lc ${RUMP_LDLIBS} -lfranken lib/crtn.o -o bin/test
+${CC} -nostdinc -nostdlib -L${LIBDIR} ${LIBDIR}/crt1.o ${LIBDIR}/crti.o obj/test/hello.o -lc ${RUMP_LDLIBS} -lfranken ${LIBDIR}/crtn.o -o bin/test
 
 export RUMP_VERBOSE=1
 

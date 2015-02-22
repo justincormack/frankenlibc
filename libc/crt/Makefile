@@ -1,5 +1,5 @@
 OS?=linux
-OBJDIR=../../lib
+OBJDIR=../../rump/lib
 OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/crt1.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
