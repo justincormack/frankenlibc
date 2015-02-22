@@ -62,7 +62,7 @@ RUMPLIBS="-lrumpvfs -lrumpfs_kernfs -lrumpfs_ffs -lrumpdev_disk -lrumpdev -lrump
 
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
-${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -Lrump/lib -lc -Wl,--no-as-needed ${RUMPLIBS} -Wl,--as-needed -lfranken lib/crtn.o -o bin/test
+${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -Lrump/lib -lc -Wl,--whole-archive ${RUMPLIBS} -Wl,--no-whole-archive -lfranken lib/crtn.o -o bin/test
 
 export RUMP_VERBOSE=1
 
