@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__sysctl.o $(OBJDIR)/write.o
+OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o $(OBJDIR)/munmap.o $(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h x86_64/syscall.h
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -34,8 +34,8 @@ $(OBJDIR)/mmap.o:		mmap.S $(HEADERS)
 $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ munmap.S
 
-$(OBJDIR)/__sysctl.o:		__sysctl.S $(HEADERS)
-				$(COMPILE.S) -o $@ __sysctl.S
+$(OBJDIR)/sysctl.o:		sysctl.S $(HEADERS)
+				$(COMPILE.S) -o $@ sysctl.S
 
 $(OBJDIR)/write.o:		write.S $(HEADERS)
 				$(COMPILE.S) -o $@ write.S

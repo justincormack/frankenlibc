@@ -1,10 +1,11 @@
+#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 
 #define CTL_HW 6
 #define HW_PAGESIZE 7
 
-int __sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
+int __franken_sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 
 int
 getpagesize(void)
@@ -17,9 +18,9 @@ getpagesize(void)
 	if (pgsize > 0)
 		return pgsize;
 
-	res = __sysctl(ctl, 2, &pgsize, &lenp, NULL, 0);
+	res = __franken_sysctl(ctl, 2, &pgsize, &lenp, NULL, 0);
 	if (res == -1)
-		return -1;
+		abort();
 
 	return pgsize;
 }
