@@ -1,5 +1,5 @@
 OS?=linux
-DIRS=$(OS) generic crt lwp
+DIRS=$(OS) generic crt lwp stubs
 LIB=../lib/libfranken.a
 OBJDIR=../obj/libc
 
