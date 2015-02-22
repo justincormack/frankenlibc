@@ -21,6 +21,7 @@ name:; \
 #define SYS_write			4
 #define SYS_mmap2			192
 #define SYS_munmap			91
+#define SYS_ioctl			54
 #define SYS_kill			37
 #define SYS_clock_gettime		263
 #define SYS_clock_nanosleep		265

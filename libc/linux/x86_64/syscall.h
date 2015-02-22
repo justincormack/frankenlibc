@@ -14,6 +14,7 @@ _syscall_return:; \
 #define SYS_write			1
 #define SYS_mmap			9
 #define SYS_munmap			11
+#define SYS_ioctl			16
 #define SYS_kill			62
 #define SYS_clock_gettime		228
 #define SYS_clock_nanosleep		230
