@@ -15,7 +15,7 @@ $(LIB):		$(DIRS)
 		ar cr $(LIB) $(OBJDIR)/*.o
 
 clean:		
-		for dir in linux netbsd generic crt lwp; do \
+		for dir in linux netbsd generic crt lwp stubs; do \
 			$(MAKE) -C $$dir OS= clean; \
 		done
 		rm -f $(LIB)
