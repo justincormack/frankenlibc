@@ -4,8 +4,6 @@
 
 extern char **environ;
 
-/* TODO once we set up initialization */
-
 char *
 getenv(const char *name)
 {
