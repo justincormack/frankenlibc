@@ -13,13 +13,13 @@ getrandom(void *buf, size_t size, unsigned int flags)
 {
 	const int ctl[2] = {CTL_KERN, KERN_URND};
 	char rand[4];
-	size_t lenp;
+	size_t lenp = sizeof(int);
 	int res;
 
 	res = __sysctl(ctl, 2, rand, &lenp, NULL, 0);
 	if (res == -1)
 		return -1;
-	if (lenp != 4) {
+	if (lenp != sizeof(int)) {
 		errno = ENOSYS;
 		return -1;
 	}
