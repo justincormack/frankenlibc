@@ -40,6 +40,7 @@
 
 /* unistd.h */
 #define getpagesize __franken_getpagesize
+#define isatty(f) __franken_isatty(f)
 #define write(f, b, c) __franken_write(f, b, c)
 
 #endif

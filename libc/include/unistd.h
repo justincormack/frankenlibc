@@ -8,6 +8,7 @@
 
 void _exit(int) __attribute__ ((noreturn));
 int getpagesize(void);
+int isatty(int);
 ssize_t write(int, const void *, size_t);
 
 #endif
