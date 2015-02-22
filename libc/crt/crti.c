@@ -9,6 +9,9 @@ int rump_init(void);
 
 extern char **environ;
 
+static char empty_string[] = "";
+char *__progname = empty_string;
+
 void _libc_init(void);
 
 int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
@@ -25,6 +28,15 @@ __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char *
 	uintptr_t a;
 
 	environ = envp;
+
+	if (argv[0] != NULL) {
+		char *c;
+		__progname = argv[0];
+		for (c = argv[0]; *c; ++c) {
+			if (*c == '/')
+				__progname = c + 1;
+		}
+	}
 
 	rump_boot_setsigmodel(RUMP_SIGMODEL_IGNORE);
 	rump_init();
