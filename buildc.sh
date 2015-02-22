@@ -61,12 +61,14 @@ done
 
 # tests
 
-#RUMPLIBS="-lrumpvfs -lrumpfs_kernfs -lrumpfs_ffs -lrumpdev_disk -lrumpdev -lrumpdev_rnd -lrumpnet -lrumpnet_net -lrumpnet_netinet -lrumpnet_netinet6 -lrump -lrumpuser"
-RUMPLIBS="-lrumpvfs -lrumpfs_kernfs -lrumpfs_ffs -lrumpdev_disk -lrumpdev -lrumpdev_rnd -lrump -lrumpuser"
+RUMP_LIBS_FS="-lrumpfs_ffs -lrumpfs_cd9660 -lrumpdev_disk -lrumpdev -lrumpvfs"
+RUMP_LIBS_NET="-lrumpnet_config -lrumpdev_bpf -lrumpnet_netinet -lrumpnet_netinet6 -lrumpnet_net -lrumpnet"
+
+RUMP_LDLIBS="-Lrump/lib -Wl,--whole-archive ${RUMP_LIBS_FS} -lrump -lrumpuser -Wl,--no-whole-archive"
 
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
-${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -Lrump/lib -lc -Wl,--whole-archive ${RUMPLIBS} -Wl,--no-whole-archive -lfranken lib/crtn.o -o bin/test
+${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -lc ${RUMP_LDLIBS} -lfranken lib/crtn.o -o bin/test
 
 export RUMP_VERBOSE=1
 
