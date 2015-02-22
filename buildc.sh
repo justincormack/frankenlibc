@@ -55,9 +55,11 @@ done
 
 # tests
 
+RUMPLIBS="-lrumpvfs -lrumpfs_kernfs -lrumpfs_ffs -lrumpdev_disk -lrumpdev -lrumpdev_rnd -lrumpnet -lrumpnet_net -lrumpnet_netinet -lrumpnet_netinet6 -lrump -lrumpuser"
+
 mkdir -p obj/test bin
 ${CC} -nostdinc -I rump/include -c test/hello.c -o obj/test/hello.o
-${CC} -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -Lrump/lib -lc -Wl,--no-as-needed -lrump -lrumpuser -Wl,--as-needed -lfranken lib/crtn.o -o bin/test
+${CC} -nostdinc -nostdlib -Llib lib/crt1.o lib/crti.o obj/test/hello.o -Lrump/lib -lc -Wl,--no-as-needed ${RUMPLIBS} -Wl,--as-needed -lfranken lib/crtn.o -o bin/test
 
 export RUMP_VERBOSE=1
 

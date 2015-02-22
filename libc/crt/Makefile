@@ -1,7 +1,8 @@
 OS?=linux
 OBJDIR=../../lib
 OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/crt1.o
-CPPFLAGS+=-nostdinc
+INCLUDES=-I../include
+CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
 default:		$(OBJDIR) $(OBJ)
