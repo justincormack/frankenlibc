@@ -4,5 +4,5 @@ void *
 malloc(size_t size)
 {
 
-	return aligned_alloc(size, 0);
+	return aligned_alloc(0, size);
 }

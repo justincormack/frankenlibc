@@ -181,7 +181,7 @@ botch(const char *s)
 #endif
 
 void *
-aligned_alloc(size_t nbytes, size_t align)
+aligned_alloc(size_t align, size_t nbytes)
 {
   	union overhead *op;
 	void *rv;
