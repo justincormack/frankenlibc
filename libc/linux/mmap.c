@@ -49,6 +49,7 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 
 	off = (long) addr & amask;
 
+	/* XXX we could just top and tail the allocations always */
 	if (off == 0) { /* we were lucky, just unmap the excess */
 		if (munmap(addr + length, length) == -1)
 			abort();
