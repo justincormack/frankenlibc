@@ -295,11 +295,15 @@ aligned_alloc(size_t nbytes, size_t align)
 static void *
 corealloc(int shift)
 {
-
 #ifdef MEMALLOC_TESTING
+
 	return malloc((1<<shift) * pagesz);
 #else
-	return mmap(0, (1<<shift) * pagesz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+	void *mem = mmap(0, (1<<shift) * pagesz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+
+	if (mem == MAP_FAILED)
+		return NULL;
+	return mem;
 #endif
 }
 
