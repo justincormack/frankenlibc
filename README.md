@@ -27,7 +27,7 @@ There is very little to implement so this should not be onerous.
 
 NetBSD ABI:
 * clock\_gettime(CLOCK\_{REALTIME,MONOTONIC}, ...) clocks
-* clock\_nanosleep(CLOCK\_MONOTONIC, ...) sleep
+* clock\_nanosleep(CLOCK\_MONOTONIC, 0, ...) sleep
 * mmap() map anonymous memory (page allocator)
 * munmap() unmap anonymous memory
 * kill(0, SIGABRT) abort program

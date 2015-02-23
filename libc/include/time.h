@@ -2,11 +2,12 @@
 #define _TIME_H_
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include <rename.h>
 
 typedef	int clockid_t;
-typedef	long time_t;
+typedef	int64_t time_t;
 struct timespec { time_t tv_sec; long tv_nsec; };
 
 #define CLOCK_REALTIME 0
