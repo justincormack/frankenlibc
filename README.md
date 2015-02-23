@@ -3,7 +3,9 @@
 Frankenlibc is an experimental build tool to make writing applications
 against rump kernels easier, and to unify code.
 
-There are known bugs!
+There are known and unknown bugs!
+
+build with "./buildc.sh"
 
 It is a small C library that serves several functions, that should perhaps
 be isolated better.
