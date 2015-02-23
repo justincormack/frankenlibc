@@ -220,6 +220,20 @@ aligned_alloc(size_t align, size_t nbytes)
 
 	if (align & (align-1))
 		return NULL;
+
+	if (nbytes > PAGE_SIZE && align >= PAGE_SIZE) {
+		int af = 0;
+		if (align > 0) {
+			for (; align != 0; align >>= 1)
+				af++;
+			af = af << MAP_ALIGNMENT_SHIFT;
+		}
+		rv = mmap(0, nbytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | af, -1, 0);
+		if (rv == MAP_FAILED)
+			return NULL;
+		return rv;
+	}
+
 	if (align < MINALIGN)
 		align = MINALIGN;
 	
