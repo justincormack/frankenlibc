@@ -24,4 +24,5 @@ __franken_swapcontext:
 
 	mov 64(%rsi), %rdi	/* load initial argument into rdi */
 
+	xor %rax, %rax;		/* return value of zero */
 	jmp *%rdx		/* goto saved address without altering rsp */
