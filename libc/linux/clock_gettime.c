@@ -38,8 +38,13 @@ clock_gettime(clockid_t clk_id, struct timespec *tp)
 	}
 	ret = __clock_gettime(lid, &ltp);
 
+	if (ret != 0) {
+		errno = EINVAL;
+		return -1;
+	}
+
 	tp->tv_sec = ltp.tv_sec;
 	tp->tv_nsec = ltp.tv_nsec;
 
-	return ret;
+	return 0;
 }

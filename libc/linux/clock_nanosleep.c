@@ -42,5 +42,10 @@ int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request,
 
 	ret = __clock_nanosleep(lid, 0, &ltp, NULL);
 
-	return ret;
+	if (ret != 0) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	return 0;
 }
