@@ -34,5 +34,5 @@ test:			$(OUTDIR) $(FILES)
 
 .PHONY:			clean
 clean:			
-			rm -f $(FILES) $(OUTDIR)/linkstub.o
+			rm -f $(FILES) $(OUTDIR)/*.o
 
