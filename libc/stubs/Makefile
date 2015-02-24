@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o
+OBJ=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub___wait450.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -27,6 +27,9 @@ $(OBJDIR)/stub___sigaction_sigtramp.o:	__sigaction_sigtramp.c
 
 $(OBJDIR)/stub___sigprocmask14.o:	__sigprocmask14.c
 				$(COMPILE.c) -o $@ __sigprocmask14.c
+
+$(OBJDIR)/stub___wait450.o:	__wait450.c
+				$(COMPILE.c) -o $@ __wait450.c
 
 .PHONY:				clean
 clean:		
