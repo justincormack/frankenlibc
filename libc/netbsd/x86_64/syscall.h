@@ -18,7 +18,7 @@ name:; \
 	sub	$0x10, %rsp; \
 	mov	%r9, 0x8(%rsp); \
 	mov	$0, %r9; \
-	mov	$SYS_mmap, %rax; \
+	mov	$SYS_ ## sc, %rax; \
 	mov	%rcx, %r10; \
 	syscall; \
 	add	$0x10, %rsp; \
