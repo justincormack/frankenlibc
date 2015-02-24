@@ -18,13 +18,13 @@ $(OUTDIR)/linkstub.o:	linkstub.c
 $(OUTDIR)/_exit.o:	_exit.c
 			$(COMPILE.c) -o $@ _exit.c
 
-$(OUTDIR)/_exit:	_exit.o $(OUTDIR)/linkstub.o
+$(OUTDIR)/_exit:	$(OUTDIR)/_exit.o $(OUTDIR)/linkstub.o
 			$(LINK.o) -o $@ $(OUTDIR)/_exit.o $(LDLIBS)
 
 $(OUTDIR)/mmap.o:	mmap.c
 			$(COMPILE.c) -o $@ mmap.c
 
-$(OUTDIR)/mmap:		mmap.o $(OUTDIR)/linkstub.o
+$(OUTDIR)/mmap:		$(OUTDIR)/mmap.o $(OUTDIR)/linkstub.o
 			$(LINK.o) -o $@ $(OUTDIR)/mmap.o $(LDLIBS)
 
 .PHONY:			test
