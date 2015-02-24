@@ -1,11 +1,3 @@
-#include <errno.h>
+#include "stub.h"
 
-int __sigprocmask14(int, const void *, void *);
-
-int
-__sigprocmask14(int how, const void *set, void *oset)
-{
-
-	errno = EINVAL;
-	return -1;
-}
+NOTSUP(__sigprocmask14);

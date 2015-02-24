@@ -3,6 +3,7 @@ OBJ=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
+HEADERS=stub.h
 
 default:			$(OBJDIR) $(OBJ)
 

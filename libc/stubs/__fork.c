@@ -1,12 +1,3 @@
-#include <unistd.h>
-#include <errno.h>
+#include "stub.h"
 
-pid_t __fork(void);
-
-pid_t
-__fork()
-{
-
-	errno = ENOTSUP;
-	return -1;
-}
+NOTSUP(__fork);

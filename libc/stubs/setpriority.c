@@ -1,10 +1,3 @@
-#include <sys/time.h>
+#include "stub.h"
 
-int setpriority(int, int, int);
-
-int
-setpriority(int which, int who, int prio)
-{
-
-	return 0;
-}
+NOTHING(setpriority);
