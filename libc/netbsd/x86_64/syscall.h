@@ -21,9 +21,9 @@ name:; \
 	mov	$SYS_ ## sc, %rax; \
 	mov	%rcx, %r10; \
 	syscall; \
-	add	$0x10, %rsp; \
 	jnc	_syscall_return; \
 	mov	%rax, errno; \
 	mov	$-1, %rax; \
 _syscall_return:; \
+	add	$0x10, %rsp; \
 	ret
