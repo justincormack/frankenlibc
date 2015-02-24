@@ -3,7 +3,7 @@ LIBDIR=../../rump/lib
 FILES=$(OUTDIR)/_exit $(OUTDIR)/mmap
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
-CFLAGS+=-g -fno-stack-protector
+CFLAGS+=-g -fno-stack-protector -nostdlib
 LDFLAGS=-static -B$(LIBDIR)
 LDLIBS=$(OUTDIR)/linkstub.o -L$(LIBDIR) -lfranken
 
@@ -15,11 +15,17 @@ $(OUTDIR):
 $(OUTDIR)/linkstub.o:	linkstub.c
 			$(COMPILE.c) -o $@ linkstub.c
 
-$(OUTDIR)/_exit:	_exit.c $(OUTDIR)/linkstub.o
-			$(LINK.c) -o $@ _exit.c $(LDLIBS)
+$(OUTDIR)/_exit.o:	_exit.c
+			$(COMPILE.c) -o $@ _exit.c
 
-$(OUTDIR)/mmap:		mmap.c $(OUTDIR)/linkstub.o
-			$(LINK.c) -o $@ mmap.c $(LDLIBS)
+$(OUTDIR)/_exit:	_exit.o $(OUTDIR)/linkstub.o
+			$(LINK.o) -o $@ _exit.o $(LDLIBS)
+
+$(OUTDIR)/mmap.o:	mmap.c
+			$(COMPILE.c) -o $@ mmap.c
+
+$(OUTDIR)/mmap:		mmap.o $(OUTDIR)/linkstub.o
+			$(LINK.o) -o $@ mmap.o $(LDLIBS)
 
 .PHONY:			test
 test:			$(OUTDIR) $(FILES)
