@@ -15,10 +15,13 @@ _syscall_return:; \
 .global name; \
 .type name,@function; \
 name:; \
+	sub	$0x10, %rsp; \
+	mov	%r9, 0x8(%rsp); \
 	mov	$0, %r9; \
 	mov	$SYS_mmap, %rax; \
 	mov	%rcx, %r10; \
 	syscall; \
+	add	$0x10, %rsp; \
 	jnc	_syscall_return; \
 	mov	%rax, errno; \
 	mov	$-1, %rax; \
