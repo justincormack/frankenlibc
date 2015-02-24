@@ -8,7 +8,7 @@ CFLAGS+=-fno-stack-protector -nostdlib -L$(LIBDIR)
 LINK1=$(CC) $(CPPFLAGS) $(CFLAGS) -L${LIBDIR} ${LIBDIR}/crt1.o ${LIBDIR}/crti.o
 LINK2=-lfranken $(OUTDIR)/linkstub.o $(LIBDIR)/crtn.o
 
-default:		$(OUTDIR) $(FILES) $(OUTDIR)/linkstub.o test
+default:		test
 
 $(OUTDIR):		
 			mkdir -p $(OUTDIR)
@@ -23,7 +23,7 @@ $(OUTDIR)/mmap:		mmap.c $(OUTDIR)/linkstub.o
 			$(LINK1) -o $@ mmap.c $(LINK2)
 
 .PHONY:			test
-test:			
+test:			$(OUTDIR) $(FILES)
 			$(OUTDIR)/_exit || exit 1
 			$(OUTDIR)/mmap || exit 1
 

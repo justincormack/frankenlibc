@@ -23,7 +23,7 @@ void *__mmap(void *, size_t, int, int, int, off_t);
 void *
 mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 {
-	long align = (nflags & MAP_ALIGNMENT_MASK) >> MAP_ALIGNMENT_SHIFT;
+	int align = (nflags & MAP_ALIGNMENT_MASK) >> MAP_ALIGNMENT_SHIFT;
 	long amask = (1L << align) - 1L;
 	long off;
 	int flags = (nflags & MAP_SHARED ? LINUX_MAP_SHARED : 0) | 
