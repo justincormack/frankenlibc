@@ -1,15 +1,32 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o $(OBJDIR)/munmap.o $(OBJDIR)/sysctl.o $(OBJDIR)/write.o
+CRTDIR=../../rump/lib
+CRTOBJDIR=../../obj/crt
+OBJ=$(CRTDIR)/crt0.o $(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o $(OBJDIR)/munmap.o $(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h x86_64/syscall.h
-INCLUDES=-I../include
+INCLUDES=-I../include -I../crt
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
-default:			$(OBJDIR) $(OBJ)
+default:			$(OBJDIR) $(CRTDIR) $(OBJCRTDIR) $(OBJ)
 
 $(OBJDIR):			
 				mkdir -p $(OBJDIR)
 
+$(CRTDIR):			
+				mkdir -p $(CRTDIR)
+
+$(CRTOBJDIR):			
+				mkdir -p $(CRTOBJDIR)
+
+$(CRTDIR)/crt0.o:		$(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o $(CRTDIR)
+				$(CC) $(LDFLAGS) -nostdlib -Wl,-r $(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o -o $@
+
+$(CRTOBJDIR)/start.o:		start.s $(CRTOBJDIR)
+				$(COMPILE.s) -o $@ start.s
+
+$(CRTOBJDIR)/crt0.o:		crt0.c x86_64/crt0.c $(CRTOBJDIR)
+				$(COMPILE.c) -o $@ crt0.c
+	
 $(OBJDIR)/clock_gettime.o:	clock_gettime.S $(HEADERS)
 				$(COMPILE.S) -o $@ clock_gettime.S
 

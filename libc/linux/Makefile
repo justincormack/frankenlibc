@@ -1,14 +1,21 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o $(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o $(OBJDIR)/write.o
+CRTDIR=../../rump/lib
+OBJ=$(CRTDIR)/crt1.o $(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o $(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o $(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
-INCLUDES=-I../include
+INCLUDES=-I../include -I../crt
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
-default:			$(OBJDIR) $(OBJ)
+default:			$(CRTDIR) $(OBJDIR) $(OBJ)
 
 $(OBJDIR):			
 				mkdir -p $(OBJDIR)
+
+$(CRTDIR):			
+				mkdir -p $(CRTDIR)
+
+$(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c
+				$(COMPILE.c) -o $@ crt1.c
 
 $(OBJDIR)/clock_gettime.o:	clock_gettime.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_gettime.c
