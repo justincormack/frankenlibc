@@ -31,7 +31,7 @@ RUMPMAKE=${PWD}/obj/tooldir/rumpmake
 mkdir -p rump/include/rump
 cp ${RUMPSRC}/lib/librumpuser/rumpuser_component.h rump/include/rump
 
-CFLAGS=-g ${MAKE} OS=${OS} -C libc
+CFLAGS=-g ${MAKE} OS=${OS} -C libc test
 
 mkdir -p obj/lib/librumpuser
 
