@@ -313,25 +313,24 @@ index 0000000..88f03cd
 +	biodone(bioarg, (size_t)0, EBADF); /* convert error no */
 +}
 diff --git a/lib/librumpuser/rumpuser_mem.c b/lib/librumpuser/rumpuser_mem.c
-index 880640e..f3f33dc 100644
+index 880640e..0b1d5e0 100644
 --- a/lib/librumpuser/rumpuser_mem.c
 +++ b/lib/librumpuser/rumpuser_mem.c
-@@ -47,22 +47,31 @@ int
+@@ -47,24 +47,40 @@ int
  rumpuser_malloc(size_t howmuch, int alignment, void **memp)
  {
  	void *mem = NULL;
 -	int rv;
- 
 +/* use mmap if alignment possible */
-+#if defined(MAP_ALIGNMENT_SHIFT)
++#ifdef MAP_ALIGNED
 +	int af = 0;
-+
-+	if (alignment > 0) {
-+		for (; alignment != 0; alignment >>= 1)
-+			af++;
-+		af = af << MAP_ALIGNMENT_SHIFT;
+ 
++	while (alignment > 1) {
++		alignment >>= 1;
++		af++;
 +	}
-+	mem = mmap(0, howmuch, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | af, -1, 0);
++
++	mem = mmap(0, howmuch, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(af), -1, 0);
 +	if (__predict_false(mem == MAP_FAILED)) {
 +		ET(EINVAL);
 +	}
@@ -357,20 +356,26 @@ index 880640e..f3f33dc 100644
 +	ET(0);
  }
  
- /*ARGSUSED1*/
-@@ -70,7 +79,11 @@ void
- rumpuser_free(void *ptr, size_t size)
- {
- 
-+#if defined(MAP_ALIGNMENT_SHIFT)
++#ifdef MAP_ALIGNED
++void
++rumpuser_free(void *ptr, size_t size)
++{
++
 +	munmap(ptr, size);
++}
 +#else
+ /*ARGSUSED1*/
+ void
+ rumpuser_free(void *ptr, size_t size)
+@@ -72,6 +88,7 @@ rumpuser_free(void *ptr, size_t size)
+ 
  	free(ptr);
-+#endif
  }
++#endif
  
  int
-@@ -83,8 +96,9 @@ rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
+ rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
+@@ -83,8 +100,9 @@ rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
  #ifndef MAP_ALIGNED
  #define MAP_ALIGNED(a) 0
  	if (alignbit)
