@@ -21,7 +21,7 @@ main()
 	assert(ret == 0);
 
 	/* test aligned allocations */
-	for (i = 1; i < 24; i++) {
+	for (i = 12; i < 24; i++) {
 		long align = 1L << i;
 		long mask = align - 1L;
 		long testalign;
@@ -31,14 +31,19 @@ main()
 		mem = mmap(0, align, PROT_READ | PROT_WRITE,
 			MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(i), -1, 0);
 		assert(mem != MAP_FAILED);
-		//assert((long)mem & mask == 0);
-		if ((long)mem & mask != 0)
-			abort();
 		testalign = (long)mem & mask;
 		assert(testalign == 0);
 		ret = munmap(mem, align);
 		assert(ret == 0);
 	}
+
+	/* test failure cases */
+	mem = mmap(0, (size_t)-1, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+	assert(mem == MAP_FAILED);
+	assert(errno > 0);
+	ret = munmap(MAP_FAILED, 4096);
+	assert(ret == -1);
+	assert(errno > 0);
 
 	return 0;
 }

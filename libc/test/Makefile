@@ -3,7 +3,7 @@ LIBDIR=../../rump/lib
 FILES=$(OUTDIR)/_exit $(OUTDIR)/mmap
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
-CFLAGS+=-fno-stack-protector -nostdlib -L$(LIBDIR)
+CFLAGS+=-g -fno-stack-protector -nostdlib -L$(LIBDIR)
 # XXX fix this up when we have a better build process
 LINK1=$(CC) $(CPPFLAGS) $(CFLAGS) -L${LIBDIR} ${LIBDIR}/crt1.o ${LIBDIR}/crti.o
 LINK2=-lfranken $(OUTDIR)/linkstub.o $(LIBDIR)/crtn.o
