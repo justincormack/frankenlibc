@@ -4,7 +4,9 @@ __asm__ (".section \".note.netbsd.ident\", \"a\"\n\t"
 	 ".long   7\n\t"
 	 ".long   4\n\t"
 	 ".long   1\n\t"
-	 ".ascii  \"NetBSD\0\0\"\n\t"
+	 ".ascii  \"NetBSD\"\n\t"
+	 ".byte   0\n\t"
+	 ".byte   0\n\t"
 	 ".long   600000000\n\t"       /* requires NetBSD 6.0 */
 	 ".previous\n\t"
 	 ".p2align 2\n\t");
