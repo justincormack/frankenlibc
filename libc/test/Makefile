@@ -3,10 +3,9 @@ LIBDIR=../../rump/lib
 FILES=$(OUTDIR)/_exit $(OUTDIR)/mmap
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
-CFLAGS+=-g -fno-stack-protector -nostdlib -L$(LIBDIR)
-# XXX fix this up when we have a better build process
-LINK1=$(CC) $(CPPFLAGS) $(CFLAGS) -L${LIBDIR} ${LIBDIR}/crt1.o ${LIBDIR}/crti.o
-LINK2=-lfranken $(OUTDIR)/linkstub.o $(LIBDIR)/crtn.o
+CFLAGS+=-g -fno-stack-protector
+LDFLAGS=-static -B$(LIBDIR)
+LDLIBS=-L$(LIBDIR) -lc ${RUMP_LDLIBS} -lfranken
 
 default:		test
 
@@ -17,10 +16,10 @@ $(OUTDIR)/linkstub.o:	linkstub.c
 			$(COMPILE.c) -o $@ linkstub.c
 
 $(OUTDIR)/_exit:	_exit.c $(OUTDIR)/linkstub.o
-			$(LINK1) -o $@ _exit.c $(LINK2)
+			$(LINK.c) -o $@ _exit.c $(LDLIBS)
 
 $(OUTDIR)/mmap:		mmap.c $(OUTDIR)/linkstub.o
-			$(LINK1) -o $@ mmap.c $(LINK2)
+			$(LINK.c) -o $@ mmap.c $(LDLIBS)
 
 .PHONY:			test
 test:			$(OUTDIR) $(FILES)
