@@ -5,7 +5,7 @@ name:; \
 	mov	$SYS_ ## sc, %rax; \
 	mov	%rcx, %r10; \
 	syscall; \
-	cmpq	$-4096, %rax; \
+	cmpq	$-4095, %rax; \
 	jbe	_syscall_return; \
 	neg	%rax; \
 	mov	%rax, errno; \
