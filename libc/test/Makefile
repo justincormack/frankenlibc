@@ -5,7 +5,7 @@ INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-g -fno-stack-protector
 LDFLAGS=-static -B$(LIBDIR)
-LDLIBS=-L$(LIBDIR) -lc ${RUMP_LDLIBS} -lfranken
+LDLIBS=$(OUTDIR)/linkstub.o -L$(LIBDIR) -lfranken
 
 default:		test
 
