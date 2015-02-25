@@ -69,10 +69,11 @@ RUMP_LDLIBS="-Wl,--whole-archive ${RUMP_LIBS_NET} ${RUMP_LIBS_FS} -lrump -lrumpu
 
 LIBDIR="${PWD}/rump/lib"
 
-mkdir -p bin
+TESTDIR="obj/test"
+mkdir -p ${TESTDIR}
 
-${CC} -static -nostdinc -Brump/lib -Irump/include -Lrump/lib test/hello.c -lc ${RUMP_LDLIBS} -lfranken -o bin/test
+${CC} -static -nostdinc -Brump/lib -Irump/include -Lrump/lib test/hello.c -lc ${RUMP_LDLIBS} -lfranken -o ${TESTDIR}/test
 
 export RUMP_VERBOSE=1
 
-./bin/test
+${TESTDIR}/test
