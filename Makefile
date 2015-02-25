@@ -3,4 +3,4 @@ default:
 
 PHONY:		clean
 clean:		
-		rm -rf obj rump
+		rm -rf rumpobj rump
