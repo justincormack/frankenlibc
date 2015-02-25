@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/stub_execve.o $(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub__mmap.o $(OBJDIR)/stub___msync13.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub___wait450.o
+OBJ=$(OBJDIR)/stub___errno.o $(OBJDIR)/stub_execve.o $(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub__mmap.o $(OBJDIR)/stub___msync13.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub___wait450.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -9,6 +9,9 @@ default:			$(OBJDIR) $(OBJ)
 
 $(OBJDIR):			
 				mkdir -p $(OBJDIR)
+
+$(OBJDIR)/stub___errno.o:	__errno.c
+				$(COMPILE.c) -o $@ __errno.c
 
 $(OBJDIR)/stub_execve.o:	execve.c
 				$(COMPILE.c) -o $@ execve.c
