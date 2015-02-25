@@ -7,7 +7,7 @@ There are known and unknown bugs!
 
 [![Build Status](https://travis-ci.org/justincormack/frankenlibc.png?branch=master)](https://travis-ci.org/justincormack/frankenlibc)
 
-build with "./buildc.sh"
+build with "make"
 
 It is a small C library that serves several functions, that should perhaps
 be isolated better.

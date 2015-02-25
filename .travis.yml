@@ -6,4 +6,4 @@ compiler:
 
 script:
   - patch -d rumpsrc -p1 < rumpuser.patch
-  - ./buildc.sh
+  - make
