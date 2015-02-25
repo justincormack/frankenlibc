@@ -7,7 +7,7 @@ AR=${AR-ar}
 OS=${OS-"$($CC -v 2>&1| grep Target: | perl -p -e 's/.*(netbsd|linux).*/\1/')"}
 
 STDJ="-j 8"
-QUIET=""
+QUIET="-qq"
 
 RUMPSRC=rumpsrc
 
