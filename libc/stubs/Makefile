@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/stub___errno.o $(OBJDIR)/stub_execve.o $(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub__mmap.o $(OBJDIR)/stub___msync13.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub___wait450.o
+OBJ=$(OBJDIR)/stub___errno.o $(OBJDIR)/stub_execve.o $(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub__mmap.o $(OBJDIR)/stub___msync13.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub___vfork14.o $(OBJDIR)/stub___wait450.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -42,6 +42,9 @@ $(OBJDIR)/stub___sigprocmask14.o:	__sigprocmask14.c
 
 $(OBJDIR)/stub___sigsuspend14.o:	__sigsuspend14.c
 				$(COMPILE.c) -o $@ __sigsuspend14.c
+
+$(OBJDIR)/stub___vfork14.o:	__vfork14.c
+				$(COMPILE.c) -o $@ __vfork14.c
 
 $(OBJDIR)/stub___wait450.o:	__wait450.c
 				$(COMPILE.c) -o $@ __wait450.c
