@@ -5,6 +5,8 @@ against rump kernels easier, and to unify code.
 
 There are known and unknown bugs!
 
+[![Build Status](https://travis-ci.org/justincormack/frankenlibc.png?branch=master)](https://travis-ci.org/justincormack/frankenlibc)
+
 build with "./buildc.sh"
 
 It is a small C library that serves several functions, that should perhaps
