@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/stub_execve.o $(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub___msync13.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub___wait450.o
+OBJ=$(OBJDIR)/stub_execve.o $(OBJDIR)/stub___fork.o $(OBJDIR)/stub_madvise.o $(OBJDIR)/stub_minherit.o $(OBJDIR)/stub__mmap.o $(OBJDIR)/stub___msync13.o $(OBJDIR)/stub_setpriority.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub___wait450.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -21,6 +21,9 @@ $(OBJDIR)/stub_madvise.o:	madvise.c
 
 $(OBJDIR)/stub_minherit.o:	minherit.c
 				$(COMPILE.c) -o $@ minherit.c
+
+$(OBJDIR)/stub__mmap.o:		_mmap.c
+				$(COMPILE.c) -o $@ _mmap.c
 
 $(OBJDIR)/stub___msync13.o:	__msync13.c
 				$(COMPILE.c) -o $@ __msync13.c
