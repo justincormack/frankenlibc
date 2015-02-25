@@ -1,18 +1,24 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/stub___errno.o $(OBJDIR)/stub_execve.o $(OBJDIR)/stub__Exit.o
-OBJ+=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub__getcontext.o $(OBJDIR)/stub_getpriority.o
-OBJ+=$(OBJDIR)/stub___getrusage50.o $(OBJDIR)/stub_kill.o $(OBJDIR)/stub___lfs_segwait50.o
-OBJ+=$(OBJDIR)/stub_madvise.o $(OBJDIR)/stub___minbrk.o $(OBJDIR)/stub_minherit.o
-OBJ+=$(OBJDIR)/stub__mmap.o $(OBJDIR)/stub___msgctl50.o $(OBJDIR)/stub___msync13.o
-OBJ+=$(OBJDIR)/stub___mq_timedreceive50.o $(OBJDIR)/stub___mq_timedsend50.o $(OBJDIR)/stub___ntp_gettime50.o
-OBJ+=$(OBJDIR)/stub_posix_spawn.o $(OBJDIR)/stub_profil.o $(OBJDIR)/stub__sbrk.o
+OBJ=$(OBJDIR)/stub___cerror.o $(OBJDIR)/stub___errno.o
+OBJ+=$(OBJDIR)/stub_execve.o $(OBJDIR)/stub__Exit.o
+OBJ+=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub__getcontext.o
+OBJ+=$(OBJDIR)/stub_getpriority.o $(OBJDIR)/stub___getrusage50.o
+OBJ+=$(OBJDIR)/stub_kill.o $(OBJDIR)/stub___lfs_segwait50.o
+OBJ+=$(OBJDIR)/stub_madvise.o $(OBJDIR)/stub___minbrk.o
+OBJ+=$(OBJDIR)/stub_minherit.o $(OBJDIR)/stub__mmap.o
+OBJ+=$(OBJDIR)/stub___msgctl50.o $(OBJDIR)/stub___msync13.o
+OBJ+=$(OBJDIR)/stub___mq_timedreceive50.o $(OBJDIR)/stub___mq_timedsend50.o
+OBJ+=$(OBJDIR)/stub___ntp_gettime50.o $(OBJDIR)/stub_posix_spawn.o
+OBJ+=$(OBJDIR)/stub_profil.o $(OBJDIR)/stub__sbrk.o
 OBJ+=$(OBJDIR)/stub__sched_getaffinity.o $(OBJDIR)/stub__sched_getparam.o
-OBJ+=$(OBJDIR)/stub__sched_setaffinity.o $(OBJDIR)/stub__sched_setparam.o $(OBJDIR)/stub___shmctl50.o
-OBJ+=$(OBJDIR)/stub_____semctl50.o $(OBJDIR)/stub_setcontext.o $(OBJDIR)/stub_setpriority.o
-OBJ+=$(OBJDIR)/stub___sigaltstack14.o $(OBJDIR)/stub___sigaction_sigtramp.o $(OBJDIR)/stub___sigprocmask14.o
-OBJ+=$(OBJDIR)/stub_sigqueueinfo.o
-OBJ+=$(OBJDIR)/stub___sigsuspend14.o $(OBJDIR)/stub_____sigtimedwait50.o $(OBJDIR)/stub_swapctl.o
-OBJ+=$(OBJDIR)/stub_uuidgen.o $(OBJDIR)/stub___vfork14.o $(OBJDIR)/stub___wait450.o
+OBJ+=$(OBJDIR)/stub__sched_setaffinity.o $(OBJDIR)/stub__sched_setparam.o
+OBJ+=$(OBJDIR)/stub___shmctl50.o $(OBJDIR)/stub_____semctl50.o
+OBJ+=$(OBJDIR)/stub_setcontext.o $(OBJDIR)/stub_setpriority.o
+OBJ+=$(OBJDIR)/stub___sigaltstack14.o $(OBJDIR)/stub___sigaction_sigtramp.o
+OBJ+=$(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub_sigqueueinfo.o
+OBJ+=$(OBJDIR)/stub___sigsuspend14.o $(OBJDIR)/stub_____sigtimedwait50.o
+OBJ+=$(OBJDIR)/stub_swapctl.o $(OBJDIR)/stub_uuidgen.o
+OBJ+=$(OBJDIR)/stub___vfork14.o $(OBJDIR)/stub___wait450.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -22,6 +28,9 @@ default:				$(OBJDIR) $(OBJ)
 
 $(OBJDIR):			
 					mkdir -p $(OBJDIR)
+
+$(OBJDIR)/stub___cerror.o:		__cerror.c
+					$(COMPILE.c) -o $@ __cerror.c
 
 $(OBJDIR)/stub___errno.o:		__errno.c
 					$(COMPILE.c) -o $@ __errno.c
