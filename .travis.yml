@@ -4,5 +4,5 @@ compiler:
   - gcc
   - clang
 
-script:	( cd rumpsrc && cat ../rumpuser.patch | patch -p1 )
-	./buildc.sh
+script: ( cd rumpsrc && cat ../rumpuser.patch | patch -p1 )
+        ./buildc.sh
