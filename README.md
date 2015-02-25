@@ -34,6 +34,7 @@ NetBSD ABI:
 * clock\_nanosleep(CLOCK\_MONOTONIC, 0, ...) sleep
 * mmap() map anonymous memory (page allocator)
 * munmap() unmap anonymous memory
+* mprotect() change memory permissions
 * kill(0, SIGABRT) abort program
 
 Common ABI:

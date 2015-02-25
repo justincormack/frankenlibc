@@ -1,6 +1,13 @@
 OBJDIR=../../obj/libc
 CRTDIR=../../rump/lib
-OBJ=$(CRTDIR)/crt1.o $(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o $(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o $(OBJDIR)/write.o
+OBJ=$(CRTDIR)/crt1.o $(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
+OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
+OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
+OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
+OBJ+=$(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o
+OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
+OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
 INCLUDES=-I../include -I../crt
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -52,6 +59,12 @@ $(OBJDIR)/__mmap.o:		__mmap.S $(HEADERS)
 
 $(OBJDIR)/mmap.o:		mmap.c $(HEADERS)
 				$(COMPILE.c) -o $@ mmap.c
+
+$(OBJDIR)/__mprotect.o:		__mprotect.S
+				$(COMPILE.S) -o $@ __mprotect.S
+
+$(OBJDIR)/mprotect.o:		mprotect.c
+				$(COMPILE.c) -o $@ mprotect.c
 
 $(OBJDIR)/__munmap.o:		__munmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ __munmap.S

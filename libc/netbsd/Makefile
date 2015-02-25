@@ -1,7 +1,10 @@
 OBJDIR=../../obj/libc
 CRTDIR=../../rump/lib
 CRTOBJDIR=../../obj/crt
-OBJ=$(CRTDIR)/crt0.o $(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o $(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o $(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o $(OBJDIR)/munmap.o $(OBJDIR)/sysctl.o $(OBJDIR)/write.o
+OBJ=$(CRTDIR)/crt0.o $(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o
+OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
+OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
+OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h x86_64/syscall.h
 INCLUDES=-I../include -I../crt
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -53,6 +56,9 @@ $(OBJDIR)/kill.o:		kill.S $(HEADERS)
 
 $(OBJDIR)/mmap.o:		mmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ mmap.S
+
+$(OBJDIR)/mprotect.o:		mprotect.S $(HEADERS)
+				$(COMPILE.S) -o $@ mprotect.S
 
 $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ munmap.S
