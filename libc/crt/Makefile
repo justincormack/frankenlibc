@@ -1,5 +1,5 @@
 OBJDIR=../../rump/lib
-OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/crtbeginT.o $(OBJDIR)/crtend.o
+OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o $(OBJDIR)/crtend.o
 CPPFLAGS+=-nostdinc
 CFLAGS+=-fno-stack-protector
 
@@ -13,9 +13,6 @@ $(OBJDIR)/crti.o:	crti.c
 
 $(OBJDIR)/crtn.o:	crtn.c
 			$(COMPILE.c) -o $@ crtn.c
-
-$(OBJDIR)/crtbeginT.o:	crtbeginT.c
-			$(COMPILE.c) -o $@ crtbeginT.c
 
 $(OBJDIR)/crtend.o:	crtend.c
 			$(COMPILE.c) -o $@ crtend.c
