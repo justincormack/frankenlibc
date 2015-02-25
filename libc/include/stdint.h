@@ -10,8 +10,8 @@
 #ifndef __UINT32_TYPE__
 #define __UINT32_TYPE__ unsigned __INT32_TYPE__
 #endif
-#ifndef __UINT32_TYPE__
-#define __UINT32_TYPE__ unsigned __INT32_TYPE__
+#ifndef __UINT64_TYPE__
+#define __UINT64_TYPE__ unsigned __INT64_TYPE__
 #endif
 #ifndef __UINTPTR_TYPE__
 #define __UINTPTR_TYPE__ unsigned __INTPTR_TYPE__
