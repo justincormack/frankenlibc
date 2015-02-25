@@ -8,6 +8,6 @@
 int kill(pid_t, int);
 int raise(int);
 
-#define SIGABRT		6
+#define SIGABRT 6
 
 #endif
