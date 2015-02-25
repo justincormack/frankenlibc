@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/context.o $(OBJDIR)/swapcontext.o $(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o $(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/getenv.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o $(OBJDIR)/posix_memalign.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o $(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o $(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
+OBJ=$(OBJDIR)/makecontext.o $(OBJDIR)/getcontext.o $(OBJDIR)/swapcontext.o $(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o $(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/getenv.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o $(OBJDIR)/posix_memalign.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o $(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o $(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
 INCLUDES=-I../include
 RUMPINC=-I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -22,14 +22,17 @@ $(OBJDIR)/assert.o:		assert.c
 $(OBJDIR)/calloc.o:		calloc.c
 				$(COMPILE.c) -o $@ calloc.c
 
-$(OBJDIR)/context.o:		context.c x86_64/context.c
-				$(COMPILE.c) -o $@ context.c
-
 $(OBJDIR)/errno.o:		errno.c
 				$(COMPILE.c) -o $@ errno.c
 
+$(OBJDIR)/getcontext.o:		getcontext.c
+				$(COMPILE.c) -o $@ getcontext.c
+
 $(OBJDIR)/getenv.o:		getenv.c
 				$(COMPILE.c) -o $@ getenv.c
+
+$(OBJDIR)/makecontext.o:	makecontext.c x86_64/makecontext.c
+				$(COMPILE.c) -o $@ makecontext.c
 
 $(OBJDIR)/malloc.o:		malloc.c
 				$(COMPILE.c) -o $@ malloc.c

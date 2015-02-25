@@ -1,14 +1,6 @@
 #include <stdlib.h>
 #include <ucontext.h>
 
-/* does not need to do anything */
-int
-getcontext(ucontext_t *ucp)
-{
-
-	return 0;
-}
-
 void
 makecontext(ucontext_t *ucp, void (*fn)(void), int argc, void *arg)
 {

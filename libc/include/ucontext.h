@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <rename.h>
 
 #if defined(__x86_64__)
