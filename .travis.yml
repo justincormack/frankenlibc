@@ -1,3 +1,7 @@
 language: c
 
+compiler:
+  - gcc
+  - clang
+
 script: ./buildc.sh
