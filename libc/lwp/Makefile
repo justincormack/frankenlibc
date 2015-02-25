@@ -1,4 +1,4 @@
-OBJDIR=../../obj/libc
+OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/_lwp_exit.o $(OBJDIR)/_lwp_kill.o $(OBJDIR)/___lwp_park60.o $(OBJDIR)/_lwp_self.o $(OBJDIR)/__libc_static_tls_setup.o
 INCLUDES=-I../include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)

@@ -4,6 +4,8 @@ MAKE=${MAKE-make}
 CC=${CC-cc}
 AR=${AR-ar}
 
+OBJDIR=rumpobj
+
 OS=${OS-"$($CC -v 2>&1| grep Target: | perl -p -e 's/.*(netbsd|linux).*/\1/')"}
 
 STDJ="-j 8"
@@ -22,10 +24,10 @@ set -e
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
-	-k -N -s ${RUMPSRC} ${QUIET} ${STDJ} \
+	-k -N -s ${RUMPSRC} -o ${OBJDIR} ${QUIET} ${STDJ} \
 	tools build kernelheaders install
 
-RUMPMAKE=${PWD}/obj/tooldir/rumpmake
+RUMPMAKE=${PWD}/rumpobj/tooldir/rumpmake
 
 # -k build does not install rumpuser headers
 mkdir -p rump/include/rump
@@ -33,7 +35,7 @@ cp ${RUMPSRC}/lib/librumpuser/rumpuser_component.h rump/include/rump
 
 CFLAGS=-g ASFLAGS=-g AFLAGS=-g ${MAKE} OS=${OS} -C libc test
 
-mkdir -p obj/lib/librumpuser
+mkdir -p rumpobj/lib/librumpuser
 
 # We don't yet have enough to be able to run configure, coming soon
 cp rumpuser_config.h ${RUMPSRC}/lib/librumpuser/
@@ -69,7 +71,7 @@ RUMP_LDLIBS="-Wl,--whole-archive ${RUMP_LIBS_NET} ${RUMP_LIBS_FS} -lrump -lrumpu
 
 LIBDIR="${PWD}/rump/lib"
 
-TESTDIR="obj/test"
+TESTDIR="rumpobj/test"
 mkdir -p ${TESTDIR}
 
 ${CC} -static -nostdinc -Brump/lib -Irump/include -Lrump/lib test/hello.c -lc ${RUMP_LDLIBS} -lfranken -o ${TESTDIR}/test

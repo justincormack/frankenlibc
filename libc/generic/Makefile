@@ -1,4 +1,4 @@
-OBJDIR=../../obj/libc
+OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/makecontext.o $(OBJDIR)/getcontext.o $(OBJDIR)/swapcontext.o $(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o $(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/getenv.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o $(OBJDIR)/posix_memalign.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o $(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o $(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
 INCLUDES=-I../include
 RUMPINC=-I../../rump/include

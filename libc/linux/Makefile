@@ -1,4 +1,4 @@
-OBJDIR=../../obj/libc
+OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
 OBJ=$(CRTDIR)/crt1.o $(CRTDIR)/crtbeginT.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o

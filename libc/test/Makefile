@@ -1,4 +1,4 @@
-OUTDIR=../../obj/libc-test
+OUTDIR=../../rumpobj/libc-test
 LIBDIR=../../rump/lib
 FILES=$(OUTDIR)/_exit $(OUTDIR)/mmap
 INCLUDES=-I../include

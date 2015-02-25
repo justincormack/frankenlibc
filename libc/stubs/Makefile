@@ -1,4 +1,4 @@
-OBJDIR=../../obj/libc
+OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/stub___cerror.o $(OBJDIR)/stub___errno.o
 OBJ+=$(OBJDIR)/stub_execve.o $(OBJDIR)/stub__Exit.o
 OBJ+=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub__getcontext.o

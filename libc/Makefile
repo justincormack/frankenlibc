@@ -2,7 +2,7 @@ OS?=linux
 DIRS=$(OS) generic crt lwp stubs
 LIBDIR=../rump/lib
 LIB=$(LIBDIR)/libfranken.a
-OBJDIR=../obj/libc
+OBJDIR=../rumpobj/libc
 
 .PHONY:		$(DIRS) clean test
 
