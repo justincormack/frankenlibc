@@ -1,5 +1,5 @@
 OBJDIR=../../obj/libc
-OBJ=$(OBJDIR)/_lwp_exit.o $(OBJDIR)/_lwp_kill.o $(OBJDIR)/_lwp_self.o $(OBJDIR)/__libc_static_tls_setup.o
+OBJ=$(OBJDIR)/_lwp_exit.o $(OBJDIR)/_lwp_kill.o $(OBJDIR)/___lwp_park60.o $(OBJDIR)/_lwp_self.o $(OBJDIR)/__libc_static_tls_setup.o
 INCLUDES=-I../include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -17,6 +17,9 @@ $(OBJDIR)/_lwp_exit.o:		_lwp_exit.c
 
 $(OBJDIR)/_lwp_kill.o:		_lwp_kill.c
 				$(COMPILE.c) -o $@ _lwp_kill.c
+
+$(OBJDIR)/___lwp_park60.o:	___lwp_park60.c
+				$(COMPILE.c) -o $@ ___lwp_park60.c
 
 $(OBJDIR)/_lwp_self.o:		_lwp_self.c
 				$(COMPILE.c) -o $@ _lwp_self.c
