@@ -17,5 +17,7 @@ putchar(int c)
 		initialized = 1;
 	}
 
-	ret = write(1, &ch, 1);		
+	ret = write(1, &ch, 1);
+
+	return c;
 }
