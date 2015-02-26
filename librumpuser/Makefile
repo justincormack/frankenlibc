@@ -6,13 +6,6 @@ LIB=		../rump/lib/librumpuser.a
 
 CPPFLAGS+=	-DLIBRUMPUSER
 
-SRCS=		rumpfiber.c
-SRCS+=		rumpfiber_sp.c
-SRCS+=		rumpuser_component.c rumpuser_random.c
-SRCS+=		rumpuser_file_dummy.c rumpuser_mem.c
-SRCS+=		rumpuser_errtrans.c rumpuser_sigtrans.c
-SRCS+=		rumpuser_dl.c rumpuser_daemonize_dummy.c
-
 INCS=		rumpuser_component.h rumpuser_port.h
 
 OBJDIR=../rumpobj/librumpuser
