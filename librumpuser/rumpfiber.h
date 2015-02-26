@@ -1,4 +1,4 @@
-/*	$NetBSD: rumpfiber.h,v 1.4 2015/02/15 00:54:32 justin Exp $	*/
+/*	$NetBSD: rumpfiber.h,v 1.3 2014/12/29 21:50:09 justin Exp $	*/
 
 /*
  * Copyright (c) 2014 Justin Cormack.  All Rights Reserved.

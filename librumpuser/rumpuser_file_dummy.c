@@ -1,5 +1,3 @@
-/*	$NetBSD: rumpuser_mem.c,v 1.2 2014/08/24 14:37:31 pooka Exp $	*/
-
 /*
  * Copyright (c) 2007-2010 Antti Kantee.  All Rights Reserved.
  *
@@ -25,18 +23,16 @@
  * SUCH DAMAGE.
  */
 
+/* NOTE this code will move to a new driver in the next hypercall revision */
+
 #include "rumpuser_port.h"
 
 #if !defined(lint)
-__RCSID("$NetBSD: rumpuser_mem.c,v 1.2 2014/08/24 14:37:31 pooka Exp $");
+__RCSID("$NetBSD: rumpuser_file.c,v 1.1 2014/07/09 23:41:40 justin Exp $");
 #endif /* !lint */
 
-#include <sys/mman.h>
-
-#include <assert.h>
 #include <errno.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include <rump/rumpuser.h>
@@ -44,86 +40,53 @@ __RCSID("$NetBSD: rumpuser_mem.c,v 1.2 2014/08/24 14:37:31 pooka Exp $");
 #include "rumpuser_int.h"
 
 int
-rumpuser_malloc(size_t howmuch, int alignment, void **memp)
-{
-	void *mem = NULL;
-/* use mmap if alignment possible */
-#ifdef MAP_ALIGNED
-	int af = 0;
-
-	while (alignment > 1) {
-		alignment >>= 1;
-		af++;
-	}
-
-	mem = mmap(0, howmuch, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(af), -1, 0);
-	if (__predict_false(mem == MAP_FAILED)) {
-		ET(EINVAL);
-	}
-#else
-	if (alignment == 0)
-		alignment = sizeof(void *);
-
-	mem = aligned_alloc((size_t)alignment, howmuch);
-	if (__predict_false(mem == NULL)) {
-		ET(EINVAL);
-	}
-#endif
-	*memp = mem;
-	ET(0);
-}
-
-#ifdef MAP_ALIGNED
-void
-rumpuser_free(void *ptr, size_t size)
+rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)
 {
 
-	munmap(ptr, size);
+	ET(ENOENT);
 }
-#else
-/*ARGSUSED1*/
-void
-rumpuser_free(void *ptr, size_t size)
-{
-
-	free(ptr);
-}
-#endif
 
 int
-rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
-	int exec, void **memp)
+rumpuser_open(const char *path, int ruflags, int *fdp)
 {
-	void *mem;
-	int prot, rv;
 
-#ifndef MAP_ALIGNED
-#define MAP_ALIGNED(a) 0
-	if (alignbit)
-/*		fprintf(stderr, "rumpuser_anonmmap: warning, requested "
-		    "alignment not supported by hypervisor\n");*/
-abort();
-#endif
+	ET(ENOENT);
+}
 
-	prot = PROT_READ|PROT_WRITE;
-	if (exec)
-		prot |= PROT_EXEC;
-	mem = mmap(prefaddr, size, prot,
-	    MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(alignbit), -1, 0);
-	if (mem == MAP_FAILED) {
-		rv = errno;
-	} else {
-		*memp = mem;
-		rv = 0;
-	}
+int
+rumpuser_close(int fd)
+{
 
-	ET(rv);
+	ET(EBADF);
+}
+
+int
+rumpuser_iovread(int fd, struct rumpuser_iovec *ruiov, size_t iovlen,
+	int64_t roff, size_t *retp)
+{
+
+	ET(EBADF);
+}
+
+int
+rumpuser_iovwrite(int fd, const struct rumpuser_iovec *ruiov, size_t iovlen,
+	int64_t roff, size_t *retp)
+{
+
+	ET(EBADF);
+}
+
+int
+rumpuser_syncfd(int fd, int flags, uint64_t start, uint64_t len)
+{
+
+	ET(EBADF);
 }
 
 void
-rumpuser_unmap(void *addr, size_t len)
+rumpuser_bio(int fd, int op, void *data, size_t dlen, int64_t doff,
+        rump_biodone_fn biodone, void *bioarg)
 {
 
-	munmap(addr, len);
+	biodone(bioarg, (size_t)0, EBADF); /* convert error no */
 }
-

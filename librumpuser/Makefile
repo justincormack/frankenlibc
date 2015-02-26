@@ -35,19 +35,19 @@ SRCS+=		rumpuser_sp.c
 .error Unsupported curlwp scheme for thread model: ${RUMP_CURLWP}
 .endif
 .endif
-SRCS=		rumpfiber.c rumpfiber_bio.c
+SRCS=		rumpfiber.c
 SRCS+=		rumpfiber_sp.c
 .else
 .error Unsupported rumpuser threading type: ${RUMPUSER_THREADS}
 .endif
 
 SRCS+=		rumpuser_component.c rumpuser_random.c
-SRCS+=		rumpuser_file.c rumpuser_mem.c
+SRCS+=		rumpuser_file_dummy.c rumpuser_mem.c
 
 SRCS+=		rumpuser_errtrans.c rumpuser_sigtrans.c
 
 # optional
-SRCS+=		rumpuser_dl.c rumpuser_daemonize.c
+SRCS+=		rumpuser_dl.c rumpuser_daemonize_dummy.c
 
 INCSDIR=	/usr/include/rump
 INCS=		rumpuser_component.h rumpuser_port.h

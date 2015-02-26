@@ -1,4 +1,4 @@
-/*	$NetBSD: rumpfiber.c,v 1.12 2015/02/15 00:54:32 justin Exp $	*/
+/*	$NetBSD: rumpfiber.c,v 1.9 2014/12/29 21:50:09 justin Exp $	*/
 
 /*
  * Copyright (c) 2007-2013 Antti Kantee.  All Rights Reserved.
@@ -68,7 +68,7 @@
 #include "rumpuser_port.h"
 
 #if !defined(lint)
-__RCSID("$NetBSD: rumpfiber.c,v 1.12 2015/02/15 00:54:32 justin Exp $");
+__RCSID("$NetBSD: rumpfiber.c,v 1.9 2014/12/29 21:50:09 justin Exp $");
 #endif /* !lint */
 
 #include <sys/mman.h>
@@ -397,9 +397,8 @@ init_sched(void)
 {
 	struct thread *thread = calloc(1, sizeof(struct thread));
 
-	if (!thread) {
+	if (! thread)
 		abort();
-	}
 
 	thread->name = strdup("init");
 	thread->flags = 0;
@@ -444,11 +443,11 @@ rumpuser_init(int version, const struct rumpuser_hyperup *hyp)
 		ET(rv);
 	}
 
-	rumpuser__hyp = *hyp;
+        rumpuser__hyp = *hyp;
 
 	init_sched();
 
-	return 0;
+        return 0;
 }
 
 int
@@ -514,14 +513,17 @@ rumpuser_getparam(const char *name, void *buf, size_t blen)
 		strncpy(buf, ncpu, blen);
 		rv = 0;
 	} else if (strcmp(name, RUMPUSER_PARAM_HOSTNAME) == 0) {
-		char tmp[MAXHOSTNAMELEN];
+		strncpy(buf, "rump", blen);
+	//} else if (strcmp(name, RUMPUSER_PARAM_HOSTNAME) == 0) {
+		//char tmp[MAXHOSTNAMELEN];
 
-		if (gethostname(tmp, sizeof(tmp)) == -1) {
-			snprintf(buf, blen, "rump-%05d", (int)getpid());
-		} else {
-			snprintf(buf, blen, "rump-%05d.%s",
-			    (int)getpid(), tmp);
-		}
+		//if (gethostname(tmp, sizeof(tmp)) == -1) {
+		//	snprintf(buf, blen, "rump-%05d", (int)getpid());
+		//} else {
+		//	snprintf(buf, blen, "rump-%05d.%s",
+		//	    (int)getpid(), tmp);
+		//}
+	//	strncpy(buf, rump, blen);
 		rv = 0;
 	} else if (*name == '_') {
 		rv = EINVAL;
@@ -565,11 +567,12 @@ rumpuser_seterrno(int error)
 void
 rumpuser_dprintf(const char *format, ...)
 {
-	va_list ap;
+	//va_list ap;
 
-	va_start(ap, format);
-	vfprintf(stderr, format, ap);
-	va_end(ap);
+	printk("something\n");
+	//va_start(ap, format);
+	//vfprintf(stderr, format, ap);
+	//va_end(ap);
 }
 
 int
@@ -638,40 +641,39 @@ wakeup_all(struct waithead *wh)
 
 int
 rumpuser_thread_create(void *(*f)(void *), void *arg, const char *thrname,
-	int joinable, int pri, int cpuidx, void **tptr)
+        int joinable, int pri, int cpuidx, void **tptr)
 {
-	struct thread *thr;
+        struct thread *thr;
 
-	thr = create_thread(thrname, NULL, (void (*)(void *))f, arg, NULL, 0);
+        thr = create_thread(thrname, NULL, (void (*)(void *))f, arg, NULL, 0);
+        /*
+         * XXX: should be supplied as a flag to create_thread() so as to
+         * _ensure_ it's set before the thread runs (and could exit).
+         * now we're trusting unclear semantics of create_thread()
+         */
+        if (thr && joinable)
+                thr->flags |= THREAD_MUSTJOIN;
 
-	if (!thr)
-		return EINVAL;
+        if (!thr)
+                return EINVAL;
 
-	/*
-	 * XXX: should be supplied as a flag to create_thread() so as to
-	 * _ensure_ it's set before the thread runs (and could exit).
-	 * now we're trusting unclear semantics of create_thread()
-	 */
-	if (thr && joinable)
-		thr->flags |= THREAD_MUSTJOIN;
-
-	*tptr = thr;
-	return 0;
+        *tptr = thr;
+        return 0;
 }
 
 void
 rumpuser_thread_exit(void)
 {
 
-	exit_thread();
+        exit_thread();
 }
 
 int
 rumpuser_thread_join(void *p)
 {
 
-	join_thread(p);
-	return 0;
+        join_thread(p);
+        return 0;
 }
 
 struct rumpuser_mtx {
@@ -686,8 +688,8 @@ rumpuser_mutex_init(struct rumpuser_mtx **mtxp, int flags)
 {
 	struct rumpuser_mtx *mtx;
 
-	mtx = malloc(sizeof(*mtx));
-	memset(mtx, 0, sizeof(*mtx));
+	mtx = calloc(1, sizeof(*mtx));
+	if (! mtx) abort();
 	mtx->flags = flags;
 	TAILQ_INIT(&mtx->waiters);
 	*mtxp = mtx;
@@ -770,8 +772,8 @@ rumpuser_rw_init(struct rumpuser_rw **rwp)
 {
 	struct rumpuser_rw *rw;
 
-	rw = malloc(sizeof(*rw));
-	memset(rw, 0, sizeof(*rw));
+	rw = calloc(1, sizeof(*rw));
+	if (!rw) abort();
 	TAILQ_INIT(&rw->rwait);
 	TAILQ_INIT(&rw->wwait);
 
@@ -904,8 +906,8 @@ rumpuser_cv_init(struct rumpuser_cv **cvp)
 {
 	struct rumpuser_cv *cv;
 
-	cv = malloc(sizeof(*cv));
-	memset(cv, 0, sizeof(*cv));
+	cv = calloc(1, sizeof(*cv));
+	if (!cv) abort();
 	TAILQ_INIT(&cv->waiters);
 	*cvp = cv;
 }
