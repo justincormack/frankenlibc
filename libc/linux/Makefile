@@ -1,6 +1,6 @@
 OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
-OBJ=$(CRTDIR)/crt1.o $(CRTDIR)/crtbeginT.o
+OBJ=$(CRTDIR)/crt1.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
@@ -24,9 +24,6 @@ $(CRTDIR):
 
 $(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c
 				$(COMPILE.c) -o $@ crt1.c
-
-$(CRTDIR)/crtbeginT.o:		crtbeginT.c
-				$(COMPILE.c) -o $@ crtbeginT.c
 
 $(OBJDIR)/clock_gettime.o:	clock_gettime.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_gettime.c

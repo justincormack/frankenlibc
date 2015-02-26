@@ -1,7 +1,7 @@
 OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
 CRTOBJDIR=../../rumpobj/crt
-OBJ=$(CRTDIR)/crt0.o $(CRTDIR)/crtbegin.o
+OBJ=$(CRTDIR)/crt0.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
