@@ -68,30 +68,8 @@
 #define MAX(a,b)        ((/*CONSTCOND*/(a)>(b))?(a):(b))
 #endif
 
-#if !defined(HAVE_GETSUBOPT)
-static inline int
-getsubopt(char **optionp, char * const *tokens, char **valuep)
-{
-
-	/* TODO make a definition */
-	return -1;
-}
-#endif
-
 #if !defined(HAVE_CLOCKID_T)
 typedef int clockid_t;
-#endif
-
-#ifdef __ANDROID__
-#include <stdint.h>
-typedef uint16_t in_port_t;
-#include <sys/select.h>
-#define atomic_inc_uint(x)  __sync_fetch_and_add(x, 1)
-#define atomic_dec_uint(x)  __sync_fetch_and_sub(x, 1)
-#include <time.h>
-int clock_nanosleep (clockid_t, int, const struct timespec *, struct timespec *);
-#include <stdlib.h>
-void arc4random_buf(void*, size_t);
 #endif
 
 /* sunny magic */
@@ -117,12 +95,6 @@ clock_gettime(clockid_t clk, struct timespec *ts)
 	}
 	return -1;
 }
-#endif
-
-#if defined(__APPLE__)
-#include <libkern/OSAtomic.h>
-#define	atomic_inc_uint(x)	OSAtomicIncrement32((volatile int32_t *)(x))
-#define	atomic_dec_uint(x)	OSAtomicDecrement32((volatile int32_t *)(x))
 #endif
 
 #include <sys/types.h>
@@ -249,26 +221,6 @@ aligned_alloc(size_t alignment, size_t size)
 
 #ifndef __NetBSD_Prereq__
 #define __NetBSD_Prereq__(a,b,c) 0
-#endif
-
-#include <sys/socket.h>
-
-#if !defined(__CMSG_ALIGN)
-#ifdef CMSG_ALIGN
-#define __CMSG_ALIGN(a) CMSG_ALIGN(a)
-#endif
-#endif
-
-#ifndef PF_LOCAL
-#define PF_LOCAL PF_UNIX
-#endif
-#ifndef AF_LOCAL
-#define AF_LOCAL AF_UNIX
-#endif
-
-/* pfft, but what are you going to do? */
-#ifndef MSG_NOSIGNAL
-#define MSG_NOSIGNAL 0
 #endif
 
 #if !defined(HAVE_REGISTER_T) && !defined(RUMP_REGISTER_T)
