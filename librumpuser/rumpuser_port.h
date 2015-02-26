@@ -66,14 +66,6 @@
 typedef int clockid_t;
 #endif
 
-/* sunny magic */
-#if defined(__sun__)
-#  if defined(RUMPUSER_NO_FILE_OFFSET_BITS)
-#    undef _FILE_OFFSET_BITS
-#    define _FILE_OFFSET_BITS 32
-#  endif
-#endif
-
 #if !defined(HAVE_CLOCK_GETTIME)
 #include <sys/time.h>
 #define	CLOCK_REALTIME	0
