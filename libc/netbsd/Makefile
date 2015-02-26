@@ -23,7 +23,7 @@ $(CRTOBJDIR):
 				mkdir -p $(CRTOBJDIR)
 
 $(CRTDIR)/crt0.o:		$(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o $(CRTDIR)
-				$(CC) $(LDFLAGS) -nostdlib -Wl,-r $(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o -o $@
+				$(CC) $(CFLAGS) -nostdlib -Wl,-r $(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o -o $@
 
 $(CRTOBJDIR)/start.o:		start.s $(CRTOBJDIR)
 				$(COMPILE.s) -o $@ start.s
@@ -75,4 +75,4 @@ $(OBJDIR)/write.o:		write.S $(HEADERS)
 
 .PHONY:				clean
 clean:		
-				rm -f $(OBJ)
+				rm -f $(OBJ) $(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o
