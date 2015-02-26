@@ -528,10 +528,13 @@ rumpuser_getparam(const char *name, void *buf, size_t blen)
 	} else if (*name == '_') {
 		rv = EINVAL;
 	} else {
-		if (getenv_r(name, buf, blen) == -1)
-			rv = errno;
-		else
+		char *value = getenv(name);
+
+		if (value != NULL && strlen(value) + 1 <= blen) {
+			strncpy(buf, value, blen);
 			rv = 0;
+		} else
+			rv = EINVAL;
 	}
 
 	ET(rv);

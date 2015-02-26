@@ -99,29 +99,6 @@ clock_gettime(clockid_t clk, struct timespec *ts)
 
 #include <sys/types.h>
 
-#if !defined(HAVE_GETENV_R)
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include <inttypes.h>
-static inline int 
-getenv_r(const char *name, char *buf, size_t buflen)
-{
-	char *tmp;
-
-	if ((tmp = getenv(name)) != NULL) {
-		if (strlen(tmp) >= buflen) {
-			errno = ERANGE;
-			return -1;
-		}
-		strcpy(buf, tmp);
-		return 0;
-	} else {
-		errno = ENOENT;
-		return -1;
-	}
-}
-#endif
 #if !defined(HAVE_POSIX_MEMALIGN)
 #if !defined(HAVE_MEMALIGN)
 #endif
