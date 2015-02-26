@@ -26,12 +26,6 @@
 #define HAVE_SYS_CDEFS_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_UNISTD_H 1
-#define PACKAGE_BUGREPORT "http://rumpkernel.org/"
-#define PACKAGE_NAME "rumpuser-posix"
-#define PACKAGE_STRING "rumpuser-posix 999"
-#define PACKAGE_TARNAME "rumpuser-posix"
-#define PACKAGE_URL ""
-#define PACKAGE_VERSION "999"
 #define STDC_HEADERS 1
 
 #else /* RUMPUSER_CONFIG */
@@ -114,15 +108,6 @@ posix_memalign(void **ptr, size_t align, size_t size)
 	return 0;
 }
 #endif
-/*
- * For NetBSD, use COHERENCY_UNIT as the lock alignment size.
- * On other platforms, just guess it to be 64.
- */
-#ifdef __NetBSD__
-#define RUMPUSER_LOCKALIGN COHERENCY_UNIT
-#else
-#define RUMPUSER_LOCKALIGN 64
-#endif
 
 #if !defined(HAVE_ALIGNED_ALLOC)
 #include <stdlib.h>
@@ -147,12 +132,6 @@ aligned_alloc(size_t alignment, size_t size)
 
 #ifndef _DIAGASSERT
 #define _DIAGASSERT(_p_)
-#endif
-
-#if !defined(HAVE_STRUCT_SOCKADDR_IN_SIN_LEN)
-#define SIN_SETLEN(a,b)
-#else
-#define SIN_SETLEN(_sin_, _len_) _sin_.sin_len = _len_
 #endif
 
 #ifndef __predict_true
@@ -213,10 +192,6 @@ do {						\
 	(ts)->tv_sec  = (tv)->tv_sec;		\
 	(ts)->tv_nsec = (tv)->tv_usec * 1000;	\
 } while (/*CONSTCOND*/0)
-#endif
-
-#if !defined(HAVE_SETPROGNAME)
-#define setprogname(a)
 #endif
 
 #endif /* _LIB_LIBRUMPUSER_RUMPUSER_PORT_H_ */
