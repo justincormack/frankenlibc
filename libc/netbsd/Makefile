@@ -5,7 +5,8 @@ OBJ=$(CRTDIR)/crt0.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
-OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/sysctl.o $(OBJDIR)/write.o
+OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h x86_64/syscall.h
 INCLUDES=-I../include -I../crt
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -66,6 +67,9 @@ $(OBJDIR)/mprotect.o:		mprotect.S $(HEADERS)
 
 $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ munmap.S
+
+$(OBJDIR)/__platform_init.o:	__platform_init.c
+				$(COMPILE.c) -o $@ __platform_init.c
 
 $(OBJDIR)/sysctl.o:		sysctl.S $(HEADERS)
 				$(COMPILE.S) -o $@ sysctl.S
