@@ -14,8 +14,7 @@ QUIET="-qq"
 RUMPSRC=rumpsrc
 
 [ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
-( [ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc \
-	&& cd rumpsrc && cat ../rumpuser.patch | patch -p1 )
+[ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
 
 set -e
 
@@ -26,8 +25,6 @@ set -e
 	-F CFLAGS=-fno-stack-protector \
 	-k -N -s ${RUMPSRC} -o ${OBJDIR} ${QUIET} ${STDJ} \
 	tools build kernelheaders install
-
-RUMPMAKE=${PWD}/rumpobj/tooldir/rumpmake
 
 CFLAGS=-g ASFLAGS=-g AFLAGS=-g ${MAKE} OS=${OS} -C libc test
 
@@ -42,6 +39,8 @@ CFLAGS=-g ${MAKE} -C librumpuser
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libpthread"
+
+RUMPMAKE=${PWD}/rumpobj/tooldir/rumpmake
 
 usermtree rump
 userincludes ${RUMPSRC} ${LIBS}
