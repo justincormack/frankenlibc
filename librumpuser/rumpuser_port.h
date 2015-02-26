@@ -150,7 +150,6 @@ getenv_r(const char *name, char *buf, size_t buflen)
 	}
 }
 #endif
-/*
 #if !defined(HAVE_POSIX_MEMALIGN)
 #if !defined(HAVE_MEMALIGN)
 #endif
@@ -166,7 +165,6 @@ posix_memalign(void **ptr, size_t align, size_t size)
 	return 0;
 }
 #endif
-*/
 /*
  * For NetBSD, use COHERENCY_UNIT as the lock alignment size.
  * On other platforms, just guess it to be 64.
