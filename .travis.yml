@@ -5,5 +5,4 @@ compiler:
   - clang
 
 script:
-  - patch -d rumpsrc -p1 < rumpuser.patch
   - make
