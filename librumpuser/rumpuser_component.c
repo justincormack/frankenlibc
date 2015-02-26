@@ -40,7 +40,7 @@ __RCSID("$NetBSD: rumpuser_component.c,v 1.6 2013/05/07 15:18:35 pooka Exp $");
  * are versioned by RUMPUSER_VERSION.
  */
 
-#include <rump/rumpuser_component.h>
+#include "rumpuser_component.h"
 
 #include "rumpuser_int.h"
 

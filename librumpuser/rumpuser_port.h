@@ -12,41 +12,20 @@
  */
 #if !defined(RUMPUSER_CONFIG)
 
-#define HAVE_ARC4RANDOM_BUF 1
-#define HAVE_CHFLAGS 1
+#define HAVE_ALIGNED_ALLOC 1
 #define HAVE_CLOCKID_T 1
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_CLOCK_NANOSLEEP 1
-#define HAVE_DLINFO 1
-#define HAVE_FSYNC_RANGE 1
-#define HAVE_GETENV_R 1
-#define HAVE_GETPROGNAME 1
-#define HAVE_GETSUBOPT 1
+#define HAVE_GETRANDOM 1
 #define HAVE_INTTYPES_H 1
-#define HAVE_KQUEUE 1
-#define HAVE_MEMORY_H 1
-#define HAVE_PATHS_H 1
 #define HAVE_POSIX_MEMALIGN 1
-#define HAVE_PTHREAD_SETNAME3 1
 #define HAVE_REGISTER_T 1
-#define HAVE_SETPROGNAME 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
-#define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
-#define HAVE_STRSUFTOLL 1
-#define HAVE_STRUCT_SOCKADDR_IN_SIN_LEN 1
-#define HAVE_SYS_ATOMIC_H 1
 #define HAVE_SYS_CDEFS_H 1
-#define HAVE_SYS_DISKLABEL_H 1
-#define HAVE_SYS_DISK_H 1
-#define HAVE_SYS_DKIO_H 1
-#define HAVE_SYS_PARAM_H 1
-#define HAVE_SYS_STAT_H 1
-#define HAVE_SYS_SYSCTL_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_UNISTD_H 1
-#define HAVE___QUOTACTL 1
 #define PACKAGE_BUGREPORT "http://rumpkernel.org/"
 #define PACKAGE_NAME "rumpuser-posix"
 #define PACKAGE_STRING "rumpuser-posix 999"
@@ -54,9 +33,6 @@
 #define PACKAGE_URL ""
 #define PACKAGE_VERSION "999"
 #define STDC_HEADERS 1
-#ifndef _DARWIN_USE_64_BIT_INODE
-# define _DARWIN_USE_64_BIT_INODE 1
-#endif
 
 #else /* RUMPUSER_CONFIG */
 #include "rumpuser_config.h"

@@ -29,21 +29,9 @@ set -e
 
 RUMPMAKE=${PWD}/rumpobj/tooldir/rumpmake
 
-# -k build does not install rumpuser headers
-mkdir -p rump/include/rump
-cp ${RUMPSRC}/lib/librumpuser/rumpuser_component.h rump/include/rump
-
 CFLAGS=-g ASFLAGS=-g AFLAGS=-g ${MAKE} OS=${OS} -C libc test
 
-mkdir -p rumpobj/lib/librumpuser
-
-# We don't yet have enough to be able to run configure, coming soon
-cp rumpuser_config.h ${RUMPSRC}/lib/librumpuser/
-
-( export CPPFLAGS="-DRUMPUSER_CONFIG=yes -nostdinc -I${PWD}/libc/include -I${PWD}/rump/include -I${PWD}/src/sys/rump/include" && \
-	cd ${RUMPSRC}/lib/librumpuser && \
-	${RUMPMAKE} RUMPUSER_THREADS=fiber
-	${RUMPMAKE} RUMPUSER_THREADS=fiber install )
+CFLAGS=-g ${MAKE} -C librumpuser
 
 # Build libs
 #LIBS="$(stdlibs ${RUMPSRC})"
