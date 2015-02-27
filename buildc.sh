@@ -13,10 +13,33 @@ elif $(echo ${TARGET} | grep -q netbsd); then OS=netbsd
 fi
 
 STDJ="-j 8"
-QUIET="-qq"
+BUILD_QUIET="-qq"
+
+while getopts '?Hj:qs:' opt; do
+	case "$opt" in
+	"H")
+		EXTRAFLAGS="${EXTRAFLAGS} -H"
+		;;
+	"j")
+		STDJ=${OPTARG}
+		;;
+	"q")
+		BUILD_QUIET=${BUILD_QUIET:=-}q
+		;;
+	"s")
+		RUMPSRC=${OPTARG}
+		;;
+	"?")
+		exit 1
+	esac
+done
+shift $((${OPTIND} - 1))
 
 [ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
-[ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
+
+if [ ${RUMPSRC} = "rumpsrc" ]; then
+	[ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
+fi
 
 set -e
 
@@ -29,7 +52,8 @@ fi
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
-	-k -N -s ${RUMPSRC} -o ${OBJDIR} ${QUIET} ${STDJ} \
+	-k -N -s ${RUMPSRC} -o ${OBJDIR} \
+	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
 CFLAGS=-g ASFLAGS=-g AFLAGS=-g ${MAKE} OS=${OS} -C libc test
