@@ -4,13 +4,16 @@ MAKE=${MAKE-make}
 CC=${CC-cc}
 
 OBJDIR=rumpobj
+RUMPSRC=rumpsrc
 
-OS=${OS-"$($CC -v 2>&1| grep Target: | perl -p -e 's/.*(netbsd|linux).*/\1/')"}
+OS=unknown
+TARGET="$(${CC} -v 2>&1 | grep 'Target:' )"
+if $(echo ${TARGET} | grep -q linux); then OS=linux
+elif $(echo ${TARGET} | grep -q netbsd); then OS=netbsd
+fi
 
 STDJ="-j 8"
 QUIET="-qq"
-
-RUMPSRC=rumpsrc
 
 [ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
 [ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
@@ -18,6 +21,10 @@ RUMPSRC=rumpsrc
 set -e
 
 . ./buildrump.sh/subr.sh
+
+if [ "${OS}" = "unknown" ]; then
+	die "Unknown or unsupported platform"
+fi
 
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
