@@ -31,6 +31,8 @@
 #include <ucontext.h>
 #include <unistd.h>
 
+#include "rename.h"
+
 struct thread {
     char *name;
     void *lwp;

@@ -1,6 +1,6 @@
 OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/thread.o
-HEADERS=thread.h
+HEADERS=thread.h rename.h
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
