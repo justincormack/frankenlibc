@@ -1,5 +1,3 @@
-/*	$NetBSD: rumpfiber_sp.c,v 1.3 2014/12/29 21:50:09 justin Exp $	*/
-
 /*
  * Copyright (c) 2014 Justin Cormack.  All Rights Reserved.
  *
@@ -28,10 +26,6 @@
 /* stubs for sp functions as not supported for fibers yet */
 
 #include "rumpuser_port.h"
-
-#if !defined(lint)
-__RCSID("$NetBSD: rumpfiber_sp.c,v 1.3 2014/12/29 21:50:09 justin Exp $");
-#endif /* !lint */
 
 #include <stdint.h>
 #include <stdlib.h>

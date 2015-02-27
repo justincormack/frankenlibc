@@ -1,5 +1,3 @@
-/*	$NetBSD: rumpuser_random.c,v 1.4 2014/11/04 19:05:17 pooka Exp $	*/
-
 /*
  * Copyright (c) 2014 Justin Cormack.  All Rights Reserved.
  *
@@ -26,10 +24,6 @@
  */
 
 #include "rumpuser_port.h"
-
-#if !defined(lint)
-__RCSID("$NetBSD: rumpuser_random.c,v 1.4 2014/11/04 19:05:17 pooka Exp $");
-#endif /* !lint */
 
 #include <sys/types.h>
 

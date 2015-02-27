@@ -25,10 +25,6 @@
 
 #include "rumpuser_port.h"
 
-#if !defined(lint)
-__RCSID("$NetBSD$");
-#endif /* !lint */
-
 #include <stdint.h>
 #include <stdlib.h>
 

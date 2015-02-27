@@ -1,5 +1,3 @@
-/*	$NetBSD: rumpuser_mem.c,v 1.2 2014/08/24 14:37:31 pooka Exp $	*/
-
 /*
  * Copyright (c) 2007-2010 Antti Kantee.  All Rights Reserved.
  *
@@ -26,10 +24,6 @@
  */
 
 #include "rumpuser_port.h"
-
-#if !defined(lint)
-__RCSID("$NetBSD: rumpuser_mem.c,v 1.2 2014/08/24 14:37:31 pooka Exp $");
-#endif /* !lint */
 
 #include <sys/mman.h>
 
@@ -100,9 +94,7 @@ rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
 #ifndef MAP_ALIGNED
 #define MAP_ALIGNED(a) 0
 	if (alignbit)
-/*		fprintf(stderr, "rumpuser_anonmmap: warning, requested "
-		    "alignment not supported by hypervisor\n");*/
-abort();
+		abort();
 #endif
 
 	prot = PROT_READ|PROT_WRITE;
@@ -126,4 +118,3 @@ rumpuser_unmap(void *addr, size_t len)
 
 	munmap(addr, len);
 }
-

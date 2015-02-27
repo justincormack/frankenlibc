@@ -1,5 +1,3 @@
-/*	$NetBSD: rumpuser_sigtrans.c,v 1.1 2014/02/20 00:42:27 pooka Exp $	*/
-
 /*
  * pseudo-automatically generated.  PLEASE DO EDIT (e.g. in case there
  * are errnos which are defined to be the same value)
