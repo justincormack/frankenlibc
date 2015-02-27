@@ -2,7 +2,6 @@
 
 MAKE=${MAKE-make}
 CC=${CC-cc}
-AR=${AR-ar}
 
 OBJDIR=rumpobj
 
