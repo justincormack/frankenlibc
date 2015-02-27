@@ -35,6 +35,17 @@ while getopts '?Hj:qs:' opt; do
 done
 shift $((${OPTIND} - 1))
 
+for arg in "$@"; do
+        case ${arg} in
+	"clean")
+		${MAKE} clean
+		;;
+	*)
+		OS=${arg}
+		;;
+	esac
+done
+
 [ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
 
 if [ ${RUMPSRC} = "rumpsrc" ]; then
