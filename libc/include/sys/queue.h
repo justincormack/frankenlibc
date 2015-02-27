@@ -80,24 +80,11 @@
  * For details on the use of these macros, see the queue(3) manual page.
  */
 
-/*
- * Include the definition of NULL only on NetBSD because sys/null.h
- * is not available elsewhere.  This conditional makes the header
- * portable and it can simply be dropped verbatim into any system.
- * The caveat is that on other systems some other header
- * must provide NULL before the macros can be used.
- */
-#ifdef __NetBSD__
-#include <sys/null.h>
-#endif
+#include <stddef.h>
 
 #if defined(QUEUEDEBUG)
-# if defined(_KERNEL)
-#  define QUEUEDEBUG_ABORT(...) panic(__VA_ARGS__)
-# else
-#  include <err.h>
-#  define QUEUEDEBUG_ABORT(...) err(1, __VA_ARGS__)
-# endif
+#define QUEUEDEBUG_ABORT(...) abort()
+/* #define QUEUEDEBUG_ABORT(...) panic(__VA_ARGS__) */
 #endif
 
 /*
