@@ -14,4 +14,4 @@
 #error "Unknown architecture"
 #endif
 
-#include "__libc_start_main.c"
+#include "../crt/__libc_start_main.c"

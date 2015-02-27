@@ -8,7 +8,7 @@ OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/__platform_init.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h x86_64/syscall.h
-INCLUDES=-I../include -I../crt
+INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
@@ -29,7 +29,7 @@ $(CRTDIR)/crt0.o:		$(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o $(CRTDIR)
 $(CRTOBJDIR)/start.o:		start.s $(CRTOBJDIR)
 				$(COMPILE.s) -o $@ start.s
 
-$(CRTOBJDIR)/crt0.o:		crt0.c x86_64/crt0.c $(CRTOBJDIR)
+$(CRTOBJDIR)/crt0.o:		crt0.c x86_64/crt0.c $(CRTOBJDIR) ../crt/__libc_start_main.c
 				$(COMPILE.c) -o $@ crt0.c
 
 $(CRTDIR)/crtbegin.o:		crtbegin.c

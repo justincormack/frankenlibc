@@ -10,7 +10,7 @@ OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
 OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o
 OBJ+=$(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
-INCLUDES=-I../include -I../crt
+INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
@@ -22,7 +22,7 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c
+$(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c ../crt/__libc_start_main.c
 				$(COMPILE.c) -o $@ crt1.c
 
 $(OBJDIR)/clock_gettime.o:	clock_gettime.c $(HEADERS)
