@@ -85,22 +85,6 @@ clock_gettime(clockid_t clk, struct timespec *ts)
 
 #include <sys/types.h>
 
-#if !defined(HAVE_POSIX_MEMALIGN)
-#if !defined(HAVE_MEMALIGN)
-#endif
-#include <sys/sysmacros.h>
-#include <stdlib.h>
-static inline int
-posix_memalign(void **ptr, size_t align, size_t size)
-{
-
-	*ptr = memalign(align, size);
-	if (*ptr == NULL)
-		return ENOMEM;
-	return 0;
-}
-#endif
-
 #if !defined(HAVE_ALIGNED_ALLOC)
 #include <stdlib.h>
 static inline void *
@@ -114,12 +98,8 @@ aligned_alloc(size_t alignment, size_t size)
 }
 #endif
 
-#ifndef __RCSID
-#define __RCSID(a)
-#endif
-
-#ifndef INFTIM
-#define INFTIM (-1)
+#ifndef __dead
+#define __dead __attribute__((__noreturn__))
 #endif
 
 #ifndef _DIAGASSERT
@@ -129,10 +109,6 @@ aligned_alloc(size_t alignment, size_t size)
 #ifndef __predict_true
 #define __predict_true(a) a
 #define __predict_false(a) a
-#endif
-
-#ifndef __dead
-#define __dead __attribute__((__noreturn__))
 #endif
 
 #ifndef __printflike
