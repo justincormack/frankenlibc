@@ -1,11 +1,7 @@
-#include <stdint.h>
-#include <stdlib.h>
-#include <sys/types.h>
-
-#define RUMP_SIGMODEL_IGNORE 1
-
 void rump_boot_setsigmodel(int rump_sigmodel);
 int rump_init(void);
+
+#define RUMP_SIGMODEL_IGNORE 1
 
 extern char **environ;
 
@@ -22,14 +18,16 @@ void _init() {}
 extern void (*const __init_array_start)() __attribute__((weak));
 extern void (*const __init_array_end)() __attribute__((weak));
 
+void exit(int) __attribute__ ((noreturn));
+
 int
 __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char **envp)
 {
-	uintptr_t a;
+	unsigned long a;
 
 	environ = envp;
 
-	if (argv[0] != NULL) {
+	if (argv[0]) {
 		char *c;
 		__progname = argv[0];
 		for (c = argv[0]; *c; ++c) {
@@ -44,8 +42,8 @@ __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char *
 	_libc_init();
 
 	_init();
-	a = (uintptr_t)&__init_array_start;
-	for (; a < (uintptr_t)&__init_array_end; a += sizeof(void(*)()))
+	a = (unsigned long)&__init_array_start;
+	for (; a < (unsigned long)&__init_array_end; a += sizeof(void(*)()))
 		(*(void (**)())a)();
 
 	exit(main(argc, argv, envp));

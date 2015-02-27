@@ -1,7 +1,7 @@
 #include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
@@ -52,12 +52,12 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	/* XXX we could just top and tail the allocations always */
 	if (off == 0) { /* we were lucky, just unmap the excess */
 		if (munmap(addr + length, length) == -1)
-			abort();
+			kill(0, SIGABRT);
 		return addr;
 	}
 
 	if (munmap(addr, length * 2) == -1)
-		abort();
+		kill(0, SIGABRT);
 
 	return __mmap((char *)addr + length - off, length, prot, flags | MAP_FIXED, -1, 0);
 }

@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -20,7 +21,7 @@ getpagesize(void)
 
 	res = __franken_sysctl(ctl, 2, &pgsize, &lenp, NULL, 0);
 	if (res == -1)
-		abort();
+		kill(0, SIGABRT);
 
 	return pgsize;
 }
