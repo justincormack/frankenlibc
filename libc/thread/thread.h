@@ -59,10 +59,8 @@ struct thread *init_mainthread(void *);
 void exit_thread(void) __attribute__((noreturn));
 void set_sched_hook(void (*)(void *, void *));
 int abssleep_real(uint64_t);
-struct thread *create_thread(const char *name, void *cookie,
-			     void (*f)(void *), void *data,
-			     void *stack, size_t stack_size,
-			     int);
+struct thread *create_thread(const char *, void *,
+	void (*)(void *), void *, void *, size_t, int);
 int is_runnable(struct thread *);
 void set_runnable(struct thread *);
 void clear_runnable(struct thread *);
