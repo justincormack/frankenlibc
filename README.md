@@ -7,7 +7,7 @@ There are known and unknown bugs!
 
 [![Build Status](https://travis-ci.org/justincormack/frankenlibc.png?branch=master)](https://travis-ci.org/justincormack/frankenlibc)
 
-build with "make"
+build with "make", or with "./buildc.sh" for additional options.
 
 It is a small C library that serves several functions, that should perhaps
 be isolated better.
@@ -47,7 +47,7 @@ Linux ABI:
 * getrandom() get random numbers to buffer. May fail or return short reads.
 No flags supported.
 
-Of these calls, only mmap and munmap are exposed to the NetBSD libc, so the
+Of these calls, only mmap, munmap and mprotect are exposed to the NetBSD libc, so the
 rest do not need to worry what error codes they use. In addition the platform
 needs some startup code, which should initialize argc, argv, environ and
 \_\_progname with something suitable. The idea is that it should be very easy
