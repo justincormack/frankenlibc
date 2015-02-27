@@ -1,3 +1,3 @@
 #include "syscall.h"
 
-SYSCALL(write, __franken_write);
+SYSCALL(write, __platform_write);

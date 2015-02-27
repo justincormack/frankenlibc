@@ -1,3 +1,3 @@
 #include "syscall.h"
 
-SYSCALL(clock_nanosleep, __franken_clock_nanosleep);
+SYSCALL(clock_nanosleep, __platform_clock_nanosleep);

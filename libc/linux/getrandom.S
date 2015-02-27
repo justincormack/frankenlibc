@@ -1,3 +1,3 @@
 #include "syscall.h"
 
-SYSCALL(getrandom, __franken_getrandom);
+SYSCALL(getrandom, __platform_getrandom);

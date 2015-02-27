@@ -4,10 +4,10 @@
 /* namespace everything private into our namespace */
 
 /* linux/random.h */
-#define getrandom(b, s, f) __franken_getrandom(b, s, f)
+#define getrandom(b, s, f) __platform_getrandom(b, s, f)
 
 /* signal.h */
-#define kill(p, s) __franken_kill(p, s)
+#define kill(p, s) __platform_kill(p, s)
 #define raise(s) __franken_raise(s)
 
 /* stdio.h */
@@ -30,8 +30,8 @@
 #define strncpy(d, s, n) __franken_strncpy(d, s, n)
 
 /* time.h */
-#define clock_gettime(c, t) __franken_clock_gettime(c, t)
-#define clock_nanosleep(c, f, req, rem) __franken_clock_nanosleep(c, f, req, rem)
+#define clock_gettime(c, t) __platform_clock_gettime(c, t)
+#define clock_nanosleep(c, f, req, rem) __platform_clock_nanosleep(c, f, req, rem)
 
 /* ucontext.h */
 #define getcontext(c) __franken_getcontext(c)
@@ -41,6 +41,6 @@
 /* unistd.h */
 #define getpagesize __franken_getpagesize
 #define isatty(f) __franken_isatty(f)
-#define write(f, b, c) __franken_write(f, b, c)
+#define write(f, b, c) __platform_write(f, b, c)
 
 #endif
