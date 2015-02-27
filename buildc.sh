@@ -15,10 +15,27 @@ fi
 STDJ="-j 8"
 BUILD_QUIET="-qq"
 
-while getopts '?Hj:qs:' opt; do
+helpme()
+{
+	printf "Usage: $0 [-h] [options] [platform]\n"
+	printf "supported options:\n"
+	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
+	printf "Other options are passed to buildrump.sh\n"
+	printf "\n"
+	printf "Supported platforms are currently: linux, netbsd\n"
+	exit 1
+}
+
+while getopts '?F:Hhj:qs:V:' opt; do
 	case "$opt" in
+	"F")
+		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
+		;;
 	"H")
 		EXTRAFLAGS="${EXTRAFLAGS} -H"
+		;;
+	"h")
+		helpme
 		;;
 	"j")
 		STDJ=${OPTARG}
@@ -29,8 +46,12 @@ while getopts '?Hj:qs:' opt; do
 	"s")
 		RUMPSRC=${OPTARG}
 		;;
+	"V")
+		EXTRAFLAGS="${EXTRAFLAGS} -V ${OPTARG}"
+		;;
 	"?")
-		exit 1
+		helpme
+		;;
 	esac
 done
 shift $((${OPTIND} - 1))
