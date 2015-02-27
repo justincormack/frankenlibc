@@ -38,8 +38,6 @@ __RCSID("$NetBSD: rumpfiber_sp.c,v 1.3 2014/12/29 21:50:09 justin Exp $");
 
 #include <rump/rumpuser.h>
 
-#include "rumpfiber.h"
-
 /*ARGSUSED*/
 int
 rumpuser_sp_init(const char *url,

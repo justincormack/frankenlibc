@@ -1,5 +1,3 @@
-/*	$NetBSD: rumpfiber.h,v 1.3 2014/12/29 21:50:09 justin Exp $	*/
-
 /*
  * Copyright (c) 2014 Justin Cormack.  All Rights Reserved.
  *
@@ -52,18 +50,34 @@ struct thread {
 
 #define STACKSIZE 65536
 
-/* used by experimental _lwp code */
+void init_sched(void);
 void schedule(void);
-void wake(struct thread *thread);
-void block(struct thread *thread);
+struct thread *get_current(void);
+void wake(struct thread *);
+void block(struct thread *);
 struct thread *init_mainthread(void *);
 void exit_thread(void) __attribute__((noreturn));
-void set_sched_hook(void (*f)(void *, void *));
-int abssleep_real(uint64_t millisecs);
-struct thread* create_thread(const char *name, void *cookie,
+void set_sched_hook(void (*)(void *, void *));
+int abssleep_real(uint64_t);
+struct thread *create_thread(const char *name, void *cookie,
 			     void (*f)(void *), void *data,
-			     void *stack, size_t stack_size);
+			     void *stack, size_t stack_size,
+			     int);
 int is_runnable(struct thread *);
 void set_runnable(struct thread *);
 void clear_runnable(struct thread *);
 
+void join_thread(struct thread *);
+void msleep(uint64_t);
+void abssleep(uint64_t);
+
+/* mtx */
+TAILQ_HEAD(waithead, waiter);
+struct waiter {
+	struct thread *who;
+	TAILQ_ENTRY(waiter) entries;
+	int onlist;
+};
+int wait(struct waithead *, uint64_t);
+void wakeup_one(struct waithead *);
+void wakeup_all(struct waithead *);

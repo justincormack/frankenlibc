@@ -1,5 +1,6 @@
 OS?=linux
-DIRS=$(OS) generic crt lwp stubs
+GDIRS=generic crt lwp stubs thread
+DIRS=$(OS) $(GDIRS)
 LIBDIR=../rump/lib
 LIB=$(LIBDIR)/libfranken.a
 OBJDIR=../rumpobj/libc
@@ -19,7 +20,7 @@ test:		default
 		$(MAKE) -C $@
 
 clean:		
-		for dir in linux netbsd generic crt lwp stubs test; \
+		for dir in linux netbsd $(GDIRS) test; \
 		do \
 			$(MAKE) -C $$dir OS= clean; \
 		done

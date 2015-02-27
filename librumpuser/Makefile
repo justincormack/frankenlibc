@@ -12,7 +12,7 @@ OBJDIR=../rumpobj/librumpuser
 
 DEPS=$(INCS) $(OBJDIR)
 # do not include libc include here?
-CPPFLAGS+=-nostdinc -I. -I../libc/include -I../rump/include
+CPPFLAGS+=-nostdinc -I. -I../libc/include -I../rump/include -I../libc/thread
 CFLAGS+=-fno-stack-protector
 
 OBJS=$(OBJDIR)/rumpfiber.o
