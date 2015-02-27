@@ -6,6 +6,7 @@ int rump_init() {}
 #define RUMP_SIGMODEL_IGNORE 1
 
 char **environ __attribute__((weak));
+int errno __attribute__((weak));
 
 static char empty_string[] = "";
 char *__progname = empty_string;
