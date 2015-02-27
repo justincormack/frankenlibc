@@ -1,14 +1,17 @@
-void rump_boot_setsigmodel(int rump_sigmodel);
-int rump_init(void);
+void rump_boot_setsigmodel(int) __attribute__((weak));
+void rump_boot_setsigmodel(int m) {}
+int rump_init(void) __attribute__((weak));
+int rump_init() {}
 
 #define RUMP_SIGMODEL_IGNORE 1
 
-extern char **environ;
+char **environ __attribute__((weak));
 
 static char empty_string[] = "";
 char *__progname = empty_string;
 
-void _libc_init(void);
+void _libc_init(void) __attribute__((weak));
+void _libc_init() {}
 
 int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
 
@@ -18,7 +21,9 @@ void _init() {}
 extern void (*const __init_array_start)() __attribute__((weak));
 extern void (*const __init_array_end)() __attribute__((weak));
 
-void exit(int) __attribute__ ((noreturn));
+void _exit(int) __attribute__ ((noreturn));
+void exit(int) __attribute__ ((noreturn)) __attribute__((weak));
+void exit(int v) {_exit(v);}
 
 int
 __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char **envp)
