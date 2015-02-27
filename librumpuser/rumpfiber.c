@@ -169,7 +169,7 @@ rumpuser_putchar(int c)
 	putchar(c);
 }
 
-__dead void
+__attribute__((__noreturn__)) void
 rumpuser_exit(int rv)
 {
 
