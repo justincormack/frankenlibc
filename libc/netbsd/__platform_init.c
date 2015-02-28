@@ -12,6 +12,9 @@ struct ps_strings {
 
 extern int main(int, char **, char **);
 
+/* The second argument is an Obj_Entry from libexec/ld.elf_so/rtld.h
+   this contains TLS information; we will need to include the headers */
+
 int
 __platform_init(void (*cleanup)(void), const void *obj, struct ps_strings *ps_strings)
 {
