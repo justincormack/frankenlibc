@@ -19,8 +19,6 @@ __franken_swapcontext:
 	mov 16(%eax), %ecx	/* this ends up being the stack pointer */
 	mov     %ecx, %esp
 	mov 20(%eax), %ecx      /* this is the instruction pointer */
-	mov 24(%eax), %edx	/* initial argument */
-	push    %edx
 
 	xor     %eax, %eax	/* zero return value */
 	jmp    *%ecx

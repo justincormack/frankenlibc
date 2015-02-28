@@ -15,5 +15,5 @@ __asm__ (".weak _init\n\t"
 	 "        push %eax\n\t"
 	 "        push %ecx\n\t"
 	 "        push $main\n\t"
-	 "        call __libc_start_main\n\t"
+	 "        call __platform_init\n\t"
 	 "1:      jmp 1b\n\t");
