@@ -1,10 +1,11 @@
+#include <stdlib.h>
 #include <unistd.h>
 
-/* To be implemented when we do init */
+extern size_t __platform_pagesize;
 
 int
 getpagesize(void)
 {
 
-	return 4096;
+	return (int)__platform_pagesize;
 }
