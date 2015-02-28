@@ -20,7 +20,6 @@
 
 /* string.h */
 #define memcpy(d, s, n) __franken_memcpy(d, s, n)
-#define memset(s, c, n) __franken_memset(s, c, n)
 #define strchr(s, c) __franken_strchr(s, c)
 #define strcmp(s1, s2) __franken_strcmp(s1, s2)
 #define strcpy(d, s) __franken_strcpy(d, s)
