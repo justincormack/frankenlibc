@@ -4,7 +4,7 @@ FILES=$(OUTDIR)/_exit $(OUTDIR)/mmap
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-g -fno-stack-protector
-LDFLAGS=-static -B$(LIBDIR)
+LDFLAGS+=-static -B$(LIBDIR)
 LDLIBS=-L$(OUTDIR) -lc -L$(LIBDIR) -lfranken
 
 default:		test

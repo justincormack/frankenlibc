@@ -16,8 +16,8 @@ name:; \
 	pop	%esi; \
 	pop	%ebx; \
 .errno:; \
-	cmp	$0, %eax; \
-	jge	.errnoret; \
+	cmp	$-4095, %eax; \
+	jbe	.errnoret; \
 	neg	%eax; \
 	mov	%eax, errno; \
 	mov	$-1, %eax; \

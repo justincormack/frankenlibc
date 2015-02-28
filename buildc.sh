@@ -88,9 +88,13 @@ fi
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
-CFLAGS=-g ASFLAGS=-g AFLAGS=-g ${MAKE} OS=${OS} -C libc test
+export CFLAGS="${CFLAGS} -g"
+export ASFLAGS="${ASFLAGS} -g"
+export AFLAGS="${ASFLAGS}"
 
-CFLAGS=-g ${MAKE} -C librumpuser
+${MAKE} OS=${OS} -C libc
+
+${MAKE} -C librumpuser
 
 # Build libs
 #LIBS="$(stdlibs ${RUMPSRC})"
@@ -113,6 +117,8 @@ done
 
 # tests
 
+${MAKE} -C libc test
+
 RUMP_LIBS_FS="-lrumpfs_ffs -lrumpfs_cd9660 -lrumpdev_disk -lrumpdev -lrumpvfs"
 RUMP_LIBS_NET="-lrumpnet_config -lrumpdev_bpf -lrumpnet_netinet -lrumpnet_netinet6 -lrumpnet_net -lrumpnet"
 
@@ -123,7 +129,7 @@ LIBDIR="${PWD}/rump/lib"
 TESTDIR="rumpobj/test"
 mkdir -p ${TESTDIR}
 
-${CC} -static -nostdinc -Brump/lib -Irump/include -Lrump/lib test/hello.c -lc ${RUMP_LDLIBS} -lfranken -o ${TESTDIR}/test
+${CC} ${CFLAGS} ${LDFLAGS} -static -nostdinc -Brump/lib -Irump/include -Lrump/lib test/hello.c -lc ${RUMP_LDLIBS} -lfranken -o ${TESTDIR}/test
 
 export RUMP_VERBOSE=1
 

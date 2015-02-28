@@ -31,7 +31,7 @@ $(OBJDIR)/getcontext.o:		getcontext.c
 $(OBJDIR)/getenv.o:		getenv.c
 				$(COMPILE.c) -o $@ getenv.c
 
-$(OBJDIR)/makecontext.o:	makecontext.c x86_64/makecontext.c
+$(OBJDIR)/makecontext.o:	makecontext.c i386/makecontext.c x86_64/makecontext.c
 				$(COMPILE.c) -o $@ makecontext.c
 
 $(OBJDIR)/malloc.o:		malloc.c
@@ -73,7 +73,7 @@ $(OBJDIR)/strncmp.o:		strncmp.c
 $(OBJDIR)/strncpy.o:		strncpy.c
 				$(COMPILE.c) -o $@ strncpy.c
 
-$(OBJDIR)/swapcontext.o:	swapcontext.S x86_64/swapcontext.s
+$(OBJDIR)/swapcontext.o:	swapcontext.S i386/swapcontext.s x86_64/swapcontext.s
 				$(COMPILE.S) -o $@ swapcontext.S
 
 .PHONY:				clean
