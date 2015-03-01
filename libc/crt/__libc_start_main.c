@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 void rump_boot_setsigmodel(int) __attribute__((weak));
 void rump_boot_setsigmodel(int m) {}
 int rump_init(void) __attribute__((weak));
@@ -23,13 +25,25 @@ extern void (*const __init_array_start)() __attribute__((weak));
 extern void (*const __init_array_end)() __attribute__((weak));
 
 void _exit(int) __attribute__ ((noreturn));
+
+/* XXX if running NetBSD libc, finalizers should be set via atexit */
 void exit(int) __attribute__ ((noreturn)) __attribute__((weak));
-void exit(int v) {_exit(v);}
+void
+exit(int v)
+{
+	uintptr_t a = (uintptr_t)&__fini_array_end;
+
+	for (; a>(uintptr_t)&__fini_array_start; a -= sizeof(void(*)()))
+		(*(void (**)())(a - sizeof(void(*)())))();
+	_fini();
+
+	_exit(v);
+}
 
 int
 __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char **envp)
 {
-	unsigned long a;
+	uintptr_t a;
 
 	environ = envp;
 
@@ -48,8 +62,8 @@ __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char *
 	_libc_init();
 
 	_init();
-	a = (unsigned long)&__init_array_start;
-	for (; a < (unsigned long)&__init_array_end; a += sizeof(void(*)()))
+	a = (uintptr_t)&__init_array_start;
+	for (; a < (uintptr_t)&__init_array_end; a += sizeof(void(*)()))
 		(*(void (**)())a)();
 
 	exit(main(argc, argv, envp));
