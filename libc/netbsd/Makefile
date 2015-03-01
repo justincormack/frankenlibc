@@ -3,9 +3,11 @@ CRTDIR=../../rump/lib
 CRTOBJDIR=../../rumpobj/crt
 OBJ=$(CRTDIR)/crt0.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o
+OBJ+=$(OBJDIR)/__clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
-OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
+OBJ+=$(OBJDIR)/__platform_init.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h x86_64/syscall.h
 INCLUDES=-I../include
@@ -38,8 +40,11 @@ $(CRTDIR)/crtbegin.o:		crtbegin.c
 $(OBJDIR)/clock_gettime.o:	clock_gettime.S $(HEADERS)
 				$(COMPILE.S) -o $@ clock_gettime.S
 
-$(OBJDIR)/clock_nanosleep.o:	clock_nanosleep.S $(HEADERS)
-				$(COMPILE.S) -o $@ clock_nanosleep.S
+$(OBJDIR)/clock_nanosleep.o:	clock_nanosleep.c $(HEADERS)
+				$(COMPILE.c) -o $@ clock_nanosleep.c
+
+$(OBJDIR)/__clock_nanosleep.o:	__clock_nanosleep.S $(HEADERS)
+				$(COMPILE.S) -o $@ __clock_nanosleep.S
 
 $(OBJDIR)/_exit.o:		_exit.S $(HEADERS)
 				$(COMPILE.S) -o $@ _exit.S
@@ -67,6 +72,9 @@ $(OBJDIR)/mprotect.o:		mprotect.S $(HEADERS)
 
 $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ munmap.S
+
+$(OBJDIR)/nanosleep.o:		nanosleep.S $(HEADERS)
+				$(COMPILE.S) -o $@ nanosleep.S
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c
 				$(COMPILE.c) -o $@ __platform_init.c
