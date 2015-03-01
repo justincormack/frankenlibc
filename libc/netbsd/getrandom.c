@@ -6,7 +6,7 @@
 #define CTL_KERN 1
 #define KERN_URND 61
 
-int __sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
+int __platform_sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 
 int
 getrandom(void *buf, size_t size, unsigned int flags)
@@ -16,7 +16,7 @@ getrandom(void *buf, size_t size, unsigned int flags)
 	size_t lenp = sizeof(int);
 	int res;
 
-	res = __sysctl(ctl, 2, rand, &lenp, NULL, 0);
+	res = __platform_sysctl(ctl, 2, rand, &lenp, NULL, 0);
 	if (res == -1)
 		return -1;
 	if (lenp != sizeof(int)) {
