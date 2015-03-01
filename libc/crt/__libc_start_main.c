@@ -20,9 +20,13 @@ int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 void _init(void) __attribute__ ((weak));
 void _init() {}
+void _fini(void) __attribute__ ((weak));
+void _fini() {}
 
 extern void (*const __init_array_start)() __attribute__((weak));
 extern void (*const __init_array_end)() __attribute__((weak));
+extern void (*const __fini_array_start)() __attribute__((weak));
+extern void (*const __fini_array_end)() __attribute__((weak));
 
 void _exit(int) __attribute__ ((noreturn));
 
