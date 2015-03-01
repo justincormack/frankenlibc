@@ -14,7 +14,7 @@ $(DIRS):
 
 $(LIB):		$(DIRS)
 		mkdir -p $(OBJDIR)
-		ar cr $(LIB) $(OBJDIR)/*.o
+		$(AR) cr $(LIB) $(OBJDIR)/*.o
 
 test:		default
 		$(MAKE) -C $@
