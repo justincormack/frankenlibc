@@ -4,6 +4,8 @@ void rump_boot_setsigmodel(int) __attribute__((weak));
 void rump_boot_setsigmodel(int m) {}
 int rump_init(void) __attribute__((weak));
 int rump_init() {}
+int rump_pub_lwproc_rfork(int);
+void rump_pub_lwproc_releaselwp(void);
 
 #define RUMP_SIGMODEL_IGNORE 1
 
@@ -62,6 +64,9 @@ __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char *
 
 	rump_boot_setsigmodel(RUMP_SIGMODEL_IGNORE);
 	rump_init();
+
+	/* start a new rump process */
+	rump_pub_lwproc_rfork(0);
 
 	_libc_init();
 
