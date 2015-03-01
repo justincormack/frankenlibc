@@ -97,13 +97,6 @@ ${MAKE} OS=${OS} -C libc
 
 ${MAKE} -C librumpuser
 
-# Build libs
-#LIBS="$(stdlibs ${RUMPSRC})"
-#if [ "$(${RUMPMAKE} -f rumptools/mk.conf -V '${_BUILDRUMP_CXX}')" = 'yes' ]
-#then
-#	LIBS="${LIBS} $(stdlibsxx ${RUMPSRC})"
-#fi
-
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libpthread"
 
