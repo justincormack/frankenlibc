@@ -7,7 +7,7 @@ name:; \
 	jnc	_syscall_return; \
 	mov	%eax, errno; \
 	mov	$-1, %eax; \
-._syscall_return:; \
+_syscall_return:; \
 	ret;
 
 #define SYSCALL_MMAP(sc, name) SYSCALL(sc, name)
