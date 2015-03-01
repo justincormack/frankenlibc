@@ -5,7 +5,8 @@ void rump_boot_setsigmodel(int m) {}
 int rump_init(void) __attribute__((weak));
 int rump_init() {}
 int rump_pub_lwproc_rfork(int);
-void rump_pub_lwproc_releaselwp(void);
+void rump_pub_lwproc_releaselwp(void) __attribute__((weak));
+void rump_pub_lwproc_releaselwp() {}
 
 #define RUMP_SIGMODEL_IGNORE 1
 
