@@ -4,7 +4,8 @@ void rump_boot_setsigmodel(int) __attribute__((weak));
 void rump_boot_setsigmodel(int m) {}
 int rump_init(void) __attribute__((weak));
 int rump_init() {}
-int rump_pub_lwproc_rfork(int);
+int rump_pub_lwproc_rfork(int) __attribute__((weak));
+int rump_pub_lwproc_rfork(int f) {}
 void rump_pub_lwproc_releaselwp(void) __attribute__((weak));
 void rump_pub_lwproc_releaselwp() {}
 
