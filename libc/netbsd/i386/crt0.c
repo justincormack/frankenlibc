@@ -1,6 +1,6 @@
 __asm__ (".text\n\t"
-	 ".global _start \n\t"
-	 "_start:\n\t"
+	 ".global __start \n\t"
+	 "__start:\n\t"
 	 "	pushl	%ebx\n\t"
 	 "	pushl	%ecx\n\t"
 	 "	pushl	%edx\n\t"
