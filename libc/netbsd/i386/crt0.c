@@ -1,4 +1,4 @@
-__asm__ (".txt\n\t"
+__asm__ (".text\n\t"
 	 ".global _start \n\t"
 	 "_start:\n\t"
 	 "	pushl	%ebx\n\t"
