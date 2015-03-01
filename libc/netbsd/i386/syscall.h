@@ -9,3 +9,5 @@ name:; \
 	mov	$-1, %eax; \
 ._syscall_return:; \
 	ret;
+
+#define SYSCALL_MMAP(sc, name) SYSCALL(sc, name)
