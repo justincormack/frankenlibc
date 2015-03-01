@@ -2,11 +2,12 @@
 #define _STDLIB_H_
 
 #include <stddef.h>
+#include <stdint.h>
 #include <sys/cdefs.h>
 
 #include <rename.h>
 
-typedef __SIZE_TYPE__ size_t;
+typedef __UINTPTR_TYPE__ size_t;
 typedef __INTPTR_TYPE__ ssize_t;
 
 void abort(void) __attribute__ ((noreturn));
