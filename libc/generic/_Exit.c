@@ -1,6 +1,4 @@
-#include <unistd.h>
-
-void _Exit(int);
+#include <stdlib.h>
 
 void
 _Exit(int status)

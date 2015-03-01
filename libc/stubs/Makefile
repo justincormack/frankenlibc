@@ -1,6 +1,6 @@
 OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/stub___cerror.o $(OBJDIR)/stub___errno.o
-OBJ+=$(OBJDIR)/stub_execve.o $(OBJDIR)/stub__Exit.o
+OBJ+=$(OBJDIR)/stub_execve.o
 OBJ+=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub__getcontext.o
 OBJ+=$(OBJDIR)/stub_getpriority.o $(OBJDIR)/stub___getrusage50.o
 OBJ+=$(OBJDIR)/stub_kill.o $(OBJDIR)/stub___lfs_segwait50.o
@@ -37,9 +37,6 @@ $(OBJDIR)/stub___errno.o:		__errno.c
 
 $(OBJDIR)/stub_execve.o:		execve.c
 					$(COMPILE.c) -o $@ execve.c
-
-$(OBJDIR)/stub__Exit.o:			_Exit.c
-					$(COMPILE.c) -o $@ _Exit.c
 
 $(OBJDIR)/stub___fork.o:		__fork.c
 					$(COMPILE.c) -o $@ __fork.c

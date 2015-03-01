@@ -13,6 +13,7 @@ void abort(void) __attribute__ ((noreturn));
 void *aligned_alloc(size_t, size_t);
 void *calloc(size_t, size_t);
 void exit(int) __attribute__ ((noreturn));
+void _Exit(int) __attribute__ ((noreturn));
 void free(void *);
 char *getenv(const char *);
 void *malloc(size_t);

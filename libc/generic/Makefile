@@ -1,5 +1,11 @@
 OBJDIR=../../rumpobj/libc
-OBJ=$(OBJDIR)/makecontext.o $(OBJDIR)/getcontext.o $(OBJDIR)/swapcontext.o $(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o $(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/getenv.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o $(OBJDIR)/posix_memalign.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o $(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o $(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
+OBJ=$(OBJDIR)/makecontext.o $(OBJDIR)/getcontext.o $(OBJDIR)/swapcontext.o
+OBJ+=$(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o
+OBJ+=$(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/_Exit.o
+OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
+OBJ+=$(OBJDIR)/posix_memalign.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o
+OBJ+=$(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o
+OBJ+=$(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
 INCLUDES=-I../include
 RUMPINC=-I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -24,6 +30,9 @@ $(OBJDIR)/calloc.o:		calloc.c
 
 $(OBJDIR)/errno.o:		errno.c
 				$(COMPILE.c) -o $@ errno.c
+
+$(OBJDIR)/_Exit.o:		_Exit.c
+				$(COMPILE.c) -o $@ _Exit.c
 
 $(OBJDIR)/getcontext.o:		getcontext.c
 				$(COMPILE.c) -o $@ getcontext.c
