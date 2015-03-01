@@ -23,3 +23,4 @@
 #define SYS_clock_nanosleep		477
 #define SYS_exit			1
 #define SYS___sysctl			202
+#define SYS___nanosleep50		430
