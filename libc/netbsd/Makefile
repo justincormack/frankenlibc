@@ -31,7 +31,7 @@ $(CRTDIR)/crt0.o:		$(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o $(CRTDIR)
 $(CRTOBJDIR)/start.o:		start.s $(CRTOBJDIR)
 				$(COMPILE.s) -o $@ start.s
 
-$(CRTOBJDIR)/crt0.o:		crt0.c x86_64/crt0.c $(CRTOBJDIR) ../crt/__libc_start_main.c
+$(CRTOBJDIR)/crt0.o:		crt0.c x86_64/crt0.c i386/crt0.c $(CRTOBJDIR) ../crt/__libc_start_main.c
 				$(COMPILE.c) -o $@ crt0.c
 
 $(CRTDIR)/crtbegin.o:		crtbegin.c
