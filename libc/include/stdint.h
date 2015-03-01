@@ -30,8 +30,8 @@
 #define __UINT64_TYPE__ unsigned __INT64_TYPE__
 #endif
 #ifndef __UINTPTR_TYPE__
-#ifndef __INTPTR_TYPE_
-#define __INTPTR_TYPE __PTRDIFF_TYPE__
+#ifndef __INTPTR_TYPE__
+#define __INTPTR_TYPE__ __PTRDIFF_TYPE__
 #endif
 #define __UINTPTR_TYPE__ unsigned __INTPTR_TYPE__
 #endif
