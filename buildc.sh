@@ -111,7 +111,7 @@ done
 
 # tests
 
-${MAKE} -C libc test
+${MAKE} OS=${OS} -C libc test
 
 RUMP_LIBS_FS="-lrumpfs_ffs -lrumpfs_cd9660 -lrumpdev_disk -lrumpdev -lrumpvfs"
 RUMP_LIBS_NET="-lrumpnet_config -lrumpdev_bpf -lrumpnet_netinet -lrumpnet_netinet6 -lrumpnet_net -lrumpnet"
