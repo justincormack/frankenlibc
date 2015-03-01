@@ -82,7 +82,7 @@ $(OBJDIR)/strncmp.o:		strncmp.c
 $(OBJDIR)/strncpy.o:		strncpy.c
 				$(COMPILE.c) -o $@ strncpy.c
 
-$(OBJDIR)/swapcontext.o:	swapcontext.S i386/swapcontext.s x86_64/swapcontext.s
+$(OBJDIR)/swapcontext.o:	swapcontext.S i386/swapcontext.S x86_64/swapcontext.S
 				$(COMPILE.S) -o $@ swapcontext.S
 
 .PHONY:				clean
