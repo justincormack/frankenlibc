@@ -8,6 +8,7 @@ CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-g -fno-stack-protector
 LDFLAGS+=-static -B$(LIBDIR)
 LDLIBS=-L$(OUTDIR) -lc -L$(LIBDIR) -lfranken
+RANLIB?=ranlib
 
 default:		test
 
@@ -19,6 +20,7 @@ $(OUTDIR)/linkstub.o:	linkstub.c
 
 $(OUTDIR)/libc.a:	$(OUTDIR)/linkstub.o
 			$(AR) cr $@ $(OUTDIR)/linkstub.o
+			$(RANLIB) $@
 
 $(OUTDIR)/_exit.o:	_exit.c
 			$(COMPILE.c) -o $@ _exit.c

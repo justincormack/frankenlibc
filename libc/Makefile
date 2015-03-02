@@ -4,6 +4,7 @@ DIRS=$(OS) $(GDIRS)
 LIBDIR=../rump/lib
 LIB=$(LIBDIR)/libfranken.a
 OBJDIR=../rumpobj/libc
+RANLIB?=ranlib
 
 .PHONY:		$(DIRS) clean test
 
@@ -14,7 +15,8 @@ $(DIRS):
 
 $(LIB):		$(DIRS)
 		mkdir -p $(OBJDIR)
-		$(AR) cr $(LIB) $(OBJDIR)/*.o
+		$(AR) cr $@ $(OBJDIR)/*.o
+		$(RANLIB) $@
 
 test:		default
 		$(MAKE) -C $@
