@@ -12,9 +12,9 @@ build with "make", or with "./buildc.sh" for additional options.
 It is a small C library that serves several functions, that should perhaps
 be isolated better.
 
-1. It provides enough of a libc to compile the fiber-based librumpuser
-implementation that is upstream in NetBSD (modulo some temporary patches
-that are not upstreamed yet).
+1. It provides enough of a libc to compile a fiber-based librumpuser
+implementation. This means it runs in a single thread, using
+cooperative multitasking.
 2. It provides some stubs that the built for rump NetBSD libc is missing,
 some of which overlap with 1, like malloc, free, others of which do nothing.
 3. It will provide the pthread backend implementation that is working on
@@ -49,11 +49,12 @@ No flags supported.
 
 Of these calls, only mmap, munmap and mprotect are exposed to the NetBSD libc, so the
 rest do not need to worry what error codes they use. In addition the platform
-needs some startup code, which should initialize argc, argv, environ and
-\_\_progname with something suitable. The idea is that it should be very easy
+needs some startup code, which should initialize argc, argv, and environ
+with something suitable. The idea is that it should be very easy
 to implement these calls on any platform with only a few lines of code, even
 less than building a hypercall interface from scratch, at which point you can
 support a full application stack on the rump kernel.
 
-Currently there are two implementations included, NetBSD x86\_64 and Linux
-x86\_64. These have a few features missing but work ok.
+Currently there are two implementations included, NetBSD and Linux, and two
+architectures, x86\_64 and i386. These have a few features missing but work ok.
+Additional implementations and architectures will be added soon.
