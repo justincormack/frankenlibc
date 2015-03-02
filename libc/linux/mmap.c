@@ -32,13 +32,22 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 		    (nflags & MAP_ANON ? LINUX_MAP_ANON : 0) |
 		    (nflags & MAP_STACK ? LINUX_MAP_STACK : 0);
 
-	if (!(fd -= -1 && offset == 0 && nflags & MAP_ANON)) {
+	/* XXX fix this up to work with mmap2 */
+#ifdef SYS_mmap2
+	if (offset != 0) {
 		errno = EINVAL;
 		return MAP_FAILED;
 	}
+#endif
 
 	if (align == 0 || (1L << align) <= getpagesize()) {
-		return __mmap(addr, length, prot, flags, -1, 0);
+		return __mmap(addr, length, prot, flags, fd, offset);
+	}
+
+	/* do not support aligned file mappings */
+	if (fd != -1 || offset != 0) {
+		errno = EINVAL;
+		return MAP_FAILED;
 	}
 
 	addr = __mmap(NULL, length * 2, prot, flags, -1, 0);

@@ -12,6 +12,8 @@
 
 void *__mmap(void *, size_t, int, int, int, off_t);
 
+/* XXX check how 32 bit deals with off_t */
+
 void *
 mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 {
@@ -20,10 +22,5 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	if (nflags & MAP_STACK)
 		flags |= FREEBSD_MAP_STACK; 
 
-	if (!(fd -= -1 && offset == 0 && nflags & MAP_ANON)) {
-		errno = EINVAL;
-		return MAP_FAILED;
-	}
-
-	return __mmap(addr, length, prot, flags, -1, 0);
+	return __mmap(addr, length, prot, flags, fd, offset);
 }
