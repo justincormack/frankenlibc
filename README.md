@@ -55,6 +55,6 @@ to implement these calls on any platform with only a few lines of code, even
 less than building a hypercall interface from scratch, at which point you can
 support a full application stack on the rump kernel.
 
-Currently there are two implementations included, NetBSD and Linux, and two
+Currently there are three implementations included, NetBSD, Linux and FreeBSD, and two
 architectures, x86\_64 and i386. These have a few features missing but work ok.
 Additional implementations and architectures will be added soon.
