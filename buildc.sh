@@ -10,6 +10,7 @@ OS=unknown
 TARGET="$(${CC} -v 2>&1 | grep 'Target:' )"
 if $(echo ${TARGET} | grep -q linux); then OS=linux
 elif $(echo ${TARGET} | grep -q netbsd); then OS=netbsd
+elif $(echo ${TARGET} | grep -q freebsd); then OS=freebsd
 fi
 
 STDJ="-j 8"
