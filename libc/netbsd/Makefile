@@ -34,9 +34,6 @@ $(CRTOBJDIR)/start.o:		start.S $(CRTOBJDIR)
 $(CRTOBJDIR)/crt0.o:		crt0.c x86_64/crt0.c i386/crt0.c $(CRTOBJDIR) ../crt/__libc_start_main.c
 				$(COMPILE.c) -o $@ crt0.c
 
-$(CRTDIR)/crtbegin.o:		crtbegin.c
-				$(COMPILE.c) -o $@ crtbegin.c
-	
 $(OBJDIR)/clock_gettime.o:	clock_gettime.S $(HEADERS)
 				$(COMPILE.S) -o $@ clock_gettime.S
 
