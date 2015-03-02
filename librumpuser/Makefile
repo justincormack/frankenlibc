@@ -1,3 +1,4 @@
+COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 
 # rumpuser.h is in sys/rump for inclusion by kernel components
 #.PATH:		${.CURDIR}/../../sys/rump/include/rump
