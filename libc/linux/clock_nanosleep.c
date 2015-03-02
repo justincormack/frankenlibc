@@ -14,7 +14,7 @@ struct linux_timespec {
 	long tv_nsec;
 };
 
-int __clock_nanosleep(clockid_t, int, const struct linux_timespec *, struct timespec *);
+int __clock_nanosleep(clockid_t, int, const struct linux_timespec *, struct linux_timespec *);
 
 int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request, struct timespec *remain)
 {
