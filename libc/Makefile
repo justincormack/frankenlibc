@@ -22,7 +22,7 @@ test:		default
 		$(MAKE) -C $@
 
 clean:		
-		for dir in linux netbsd $(GDIRS) test; \
+		for dir in freebsd linux netbsd $(GDIRS) test; \
 		do \
 			$(MAKE) -C $$dir OS= clean; \
 		done
