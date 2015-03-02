@@ -1,3 +1,5 @@
+COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
+COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/makecontext.o $(OBJDIR)/getcontext.o $(OBJDIR)/swapcontext.o
 OBJ+=$(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o

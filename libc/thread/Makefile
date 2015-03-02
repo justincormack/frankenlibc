@@ -1,3 +1,5 @@
+COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
+COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/thread.o
 HEADERS=thread.h rename.h

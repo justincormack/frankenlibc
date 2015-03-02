@@ -1,3 +1,5 @@
+COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
+COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
 OBJ=$(CRTDIR)/crt1.o

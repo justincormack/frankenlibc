@@ -1,3 +1,5 @@
+COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
+COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/stub___cerror.o $(OBJDIR)/stub___errno.o
 OBJ+=$(OBJDIR)/stub_execve.o

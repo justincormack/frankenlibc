@@ -1,3 +1,5 @@
+COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
+COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OUTDIR=../../rumpobj/libc-test
 LIBDIR=../../rump/lib
 FILES=$(OUTDIR)/_exit $(OUTDIR)/mmap
