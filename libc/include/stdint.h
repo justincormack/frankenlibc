@@ -20,7 +20,7 @@
 #define __UINT32_TYPE__ unsigned __INT32_TYPE__
 #endif
 #ifndef __UINT64_TYPE__
-#ifndef __INT64_TYPE_
+#ifndef __INT64_TYPE__
 #if __SIZEOF_LONG__ == 4
 #define __INT64_TYPE__ long long
 #else
