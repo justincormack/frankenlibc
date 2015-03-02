@@ -6,7 +6,7 @@ __assert_fail(const char *expr, const char *file, int line, const char *func)
 {
 
 	/* XXX TODO */
-	//fprintf(stderr, "Assertion failed: %s (%s: %s: %d)\n", expr, file, func, line);
-	//fflush(NULL);
+	/* fprintf(stderr, "Assertion failed: %s (%s: %s: %d)\n", expr, file, func, line);
+	fflush(NULL); */
 	abort();
 }

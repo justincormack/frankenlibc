@@ -19,7 +19,7 @@ int __clock_nanosleep(clockid_t, int, const struct linux_timespec *, struct linu
 int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request, struct timespec *remain)
 {
 	clockid_t lid;
-	const struct linux_timespec ltp = {request->tv_sec, request->tv_nsec};
+	struct linux_timespec ltp = {request->tv_sec, request->tv_nsec};
 	int ret;
 
 	/* we could support these but not needed */
