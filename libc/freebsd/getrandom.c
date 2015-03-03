@@ -3,8 +3,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define CTL_KERN 1
-#define KERN_ARND 37
+#include "freebsd.h"
 
 int __platform_sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 

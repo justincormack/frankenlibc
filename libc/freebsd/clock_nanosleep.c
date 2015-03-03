@@ -1,18 +1,7 @@
 #include <errno.h>
 #include <time.h>
 
-/* note on 64 bit platforms, FreeBSD timespec is the same as NetBSD,
-   but this is not true on 32 bit platforms */
-
-typedef long freebsd_time_t;
-
-struct freebsd_timespec {
-        freebsd_time_t tv_sec;
-        long tv_nsec;
-};
-
-#define FREEBSD_CLOCK_REALTIME 0
-#define FREEBSD_CLOCK_MONOTONIC 4 
+#include "freebsd.h"
 
 int __platform_nanosleep(const struct freebsd_timespec *, struct freebsd_timespec *);
 
