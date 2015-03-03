@@ -10,6 +10,10 @@ typedef unsigned int mode_t;
 typedef uint64_t dev_t;
 typedef int32_t lwpid_t;
 typedef int64_t off_t;
+typedef uint64_t ino_t;
+typedef uint32_t nlink_t;
+typedef uint64_t blkcnt_t;
+typedef uint32_t blksize_t;
 
 typedef unsigned char u_char;
 typedef unsigned short u_short, ushort;
