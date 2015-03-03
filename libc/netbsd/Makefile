@@ -6,7 +6,8 @@ CRTOBJDIR=../../rumpobj/crt
 OBJ=$(CRTDIR)/crt0.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/__clock_nanosleep.o
-OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
+OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o
+OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
 OBJ+=$(OBJDIR)/__platform_init.o $(OBJDIR)/read.o
@@ -47,6 +48,9 @@ $(OBJDIR)/__clock_nanosleep.o:	__clock_nanosleep.S $(HEADERS)
 
 $(OBJDIR)/_exit.o:		_exit.S $(HEADERS)
 				$(COMPILE.S) -o $@ _exit.S
+
+$(OBJDIR)/fstat.o:		fstat.S $(HEADERS)
+				$(COMPILE.S) -o $@ fstat.S
 
 $(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
 				$(COMPILE.c) -o $@ getpagesize.c

@@ -14,7 +14,9 @@
 #error "Unknown architecture"
 #endif
 
+#define SYS_read			3
 #define SYS_write			4
+#define	SYS_fstat			189
 #define SYS_mmap			477
 #define SYS_munmap			73
 #define SYS_ioctl			54

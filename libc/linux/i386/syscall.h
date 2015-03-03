@@ -24,7 +24,9 @@ name:; \
 .errnoret:; \
 	ret;
 
+#define SYS_read			3
 #define SYS_write			4
+#define SYS_fstat64			197
 #define SYS_mmap2			192
 #define SYS_munmap			91
 #define SYS_ioctl			54

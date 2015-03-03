@@ -13,7 +13,9 @@ name:; \
 _syscall_return:; \
 	ret;
 
+#define SYS_read			0
 #define SYS_write			1
+#define SYS_fstat			5
 #define SYS_mmap			9
 #define SYS_munmap			11
 #define SYS_ioctl			16
