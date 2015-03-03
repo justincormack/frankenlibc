@@ -3,7 +3,7 @@
 #define ARCH_SET_FS 0x1002
 #define TCGETS 0x5401
 
-struct stat {
+struct linux_stat {
 	unsigned long long	st_dev;
 	unsigned char		__pad0[4];
 	unsigned long		__st_ino;
