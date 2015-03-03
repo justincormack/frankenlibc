@@ -3,8 +3,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#define CTL_KERN 1
-#define KERN_OSREV 3
+#include "netbsd.h"
 
 int __platform_sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 
