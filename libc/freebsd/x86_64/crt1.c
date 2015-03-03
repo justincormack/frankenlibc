@@ -6,8 +6,9 @@ __asm__ (".text\n\t"
 	 "mov	%rdi, %rsi\n\t"		/* argv = &argc + 1 */
 	 "mov	(%rdi), %rdi\n\t"	/* argc */
 	 "add	$0x08, %rsi\n\t"
-	 "mov	%rdi, %rdx\n\t"		/* envp = (argc << 3) + argv */
+	 "mov	%rdi, %rdx\n\t"		/* envp = ((argc + 1) << 3) + argv */
 	 "shl	$3, %rdx\n\t"
+	 "add   $0x08, %rdx\n\t"
 	 "add	%rsi, %rdx\n\t"
 	 "	call	__platform_init\n\t"
 	 "1:	jmp 1b\n\t");
