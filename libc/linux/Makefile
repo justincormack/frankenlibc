@@ -6,7 +6,8 @@ OBJ=$(CRTDIR)/crt1.o
 OBJ+=$(OBJDIR)/arch_prctl.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
-OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
+OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/__fstat.o
+OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
@@ -47,6 +48,12 @@ $(OBJDIR)/__clock_nanosleep.o:	__clock_nanosleep.S $(HEADERS)
 
 $(OBJDIR)/_exit.o:		_exit.S $(HEADERS)
 				$(COMPILE.S) -o $@ _exit.S
+
+$(OBJDIR)/fstat.o:		fstat.c $(HEADERS)
+				$(COMPILE.c) -o $@ fstat.c
+
+$(OBJDIR)/__fstat.o:		__fstat.S $(HEADERS)
+				$(COMPILE.S) -o $@ __fstat.S
 
 $(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
 				$(COMPILE.c) -o $@ getpagesize.c
