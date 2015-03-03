@@ -1,6 +1,6 @@
 #include <unistd.h>
 
-#define TCGETS 0x5401
+#include "syscall.h"
 
 typedef unsigned int tcflag_t;
 typedef unsigned char cc_t;

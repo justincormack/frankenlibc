@@ -22,3 +22,9 @@ _syscall_return:; \
 #define SYS_clock_nanosleep		230
 #define SYS_exit_group			231
 #define SYS_getrandom			318
+#define SYS_arch_prctl			158
+
+#define TP_ADJ(p) (p)
+
+#define ARCH_SET_FS 0x1002
+#define TCGETS 0x5401

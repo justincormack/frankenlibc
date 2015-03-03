@@ -11,6 +11,9 @@ size_t __platform_hwcap;
 size_t __platform_sysinfo;
 size_t __platform_pagesize;
 
+int __platform_set_thread_area(void *);
+static long long builtin_tls[4096/sizeof(long long)];
+
 int
 __platform_init(int (*main)(int,char **,char **), int argc, char **argv)
 {
@@ -26,7 +29,8 @@ __platform_init(int (*main)(int,char **,char **), int argc, char **argv)
         __platform_sysinfo = aux[AT_SYSINFO];
         __platform_pagesize = aux[AT_PAGESZ];
 
-	/* init tls */
+	/* init tls; gcc needs this even for some non-tls using programs */
+	__platform_set_thread_area(builtin_tls);
 
 	return __libc_start_main(main, argc, argv, envp);
 }

@@ -3,6 +3,7 @@ COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
 OBJ=$(CRTDIR)/crt1.o
+OBJ+=$(OBJDIR)/arch_prctl.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
@@ -10,7 +11,7 @@ OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
 OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o
-OBJ+=$(OBJDIR)/write.o
+OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -26,6 +27,9 @@ $(CRTDIR):
 
 $(CRTDIR)/crt1.o:		crt1.c i386/crt1.c x86_64/crt1.c ../crt/__libc_start_main.c
 				$(COMPILE.c) -o $@ crt1.c
+
+$(OBJDIR)/arch_prctl.o:		arch_prctl.S $(HEADERS)
+				$(COMPILE.S) -o $@ arch_prctl.S
 
 $(OBJDIR)/clock_gettime.o:	clock_gettime.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_gettime.c
@@ -77,6 +81,9 @@ $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
 				$(COMPILE.c) -o $@ __platform_init.c
+
+$(OBJDIR)/set_thread_area.o:	set_thread_area.c $(HEADERS)
+				$(COMPILE.c) -o $@ set_thread_area.c
 
 $(OBJDIR)/write.o:		write.S $(HEADERS)
 				$(COMPILE.S) -o $@ write.S
