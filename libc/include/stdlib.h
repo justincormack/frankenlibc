@@ -12,6 +12,7 @@ typedef __INTPTR_TYPE__ ssize_t;
 
 void abort(void) __attribute__ ((noreturn));
 void *aligned_alloc(size_t, size_t);
+int atoi(const char *);
 void *calloc(size_t, size_t);
 void exit(int) __attribute__ ((noreturn));
 void _Exit(int) __attribute__ ((noreturn));

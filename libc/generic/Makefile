@@ -2,9 +2,11 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/makecontext.o $(OBJDIR)/getcontext.o $(OBJDIR)/swapcontext.o
-OBJ+=$(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o $(OBJDIR)/assert.o
+OBJ+=$(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o
+OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
 OBJ+=$(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/_Exit.o
-OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
+OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/isspace.o
+OBJ+=$(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
 OBJ+=$(OBJDIR)/posix_memalign.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o
 OBJ+=$(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o
 OBJ+=$(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
@@ -27,6 +29,9 @@ $(OBJDIR)/aligned_alloc.o:	aligned_alloc.c
 $(OBJDIR)/assert.o:		assert.c
 				$(COMPILE.c) -o $@ assert.c
 
+$(OBJDIR)/atoi.o:		atoi.c
+				$(COMPILE.c) -o $@ atoi.c
+
 $(OBJDIR)/calloc.o:		calloc.c
 				$(COMPILE.c) -o $@ calloc.c
 
@@ -41,6 +46,9 @@ $(OBJDIR)/getcontext.o:		getcontext.c
 
 $(OBJDIR)/getenv.o:		getenv.c
 				$(COMPILE.c) -o $@ getenv.c
+
+$(OBJDIR)/isspace.o:		isspace.c
+				$(COMPILE.c) -o $@ isspace.c
 
 $(OBJDIR)/makecontext.o:	makecontext.c i386/makecontext.c x86_64/makecontext.c
 				$(COMPILE.c) -o $@ makecontext.c
