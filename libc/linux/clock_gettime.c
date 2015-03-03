@@ -1,20 +1,9 @@
 #include <time.h>
 #include <errno.h>
 
+#include "linux.h"
+
 /* XXX do a VDSO version for performance */
-
-#define LINUX_CLOCK_REALTIME 0
-#define LINUX_CLOCK_MONOTONIC 1
-
-/* note on 64 bit platforms, Linux timespec is the same as NetBSD,
-   but this is not true on 32 bit platforms */
-
-typedef long linux_time_t;
-
-struct linux_timespec {
-	linux_time_t tv_sec;
-	long tv_nsec;
-};
 
 int __clock_gettime(clockid_t, struct linux_timespec *);
 

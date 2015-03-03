@@ -7,12 +7,7 @@
 #include <sys/mman.h>
 
 #include "syscall.h"
-
-#define LINUX_MAP_SHARED	0x01
-#define LINUX_MAP_PRIVATE	0x02
-#define LINUX_MAP_FIXED		0x10
-#define LINUX_MAP_ANON		0x20
-#define LINUX_MAP_STACK		0x20000
+#include "linux.h"
 
 #ifdef SYS_mmap2
 void *__mmap(void *, size_t, int, int, int, uint32_t);

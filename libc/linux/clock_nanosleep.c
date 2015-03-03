@@ -1,18 +1,7 @@
 #include <time.h>
 #include <errno.h>
 
-#define LINUX_CLOCK_REALTIME 0
-#define LINUX_CLOCK_MONOTONIC 1
-
-/* note on 64 bit platforms, Linux timespec is the same as NetBSD,
-   but this is not true on 32 bit platforms */
-
-typedef long linux_time_t;
-
-struct linux_timespec {
-	linux_time_t tv_sec;
-	long tv_nsec;
-};
+#include "linux.h"
 
 int __clock_nanosleep(clockid_t, int, const struct linux_timespec *, struct linux_timespec *);
 
