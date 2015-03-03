@@ -36,8 +36,3 @@ name:; \
 #define SYS_exit_group			252
 #define SYS_getrandom			355
 #define SYS_arch_prctl			158
-
-#define TP_ADJ(p) (p)
-
-#define ARCH_SET_FS 0x1002
-#define TCGETS 0x5401

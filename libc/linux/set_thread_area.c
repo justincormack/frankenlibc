@@ -1,4 +1,4 @@
-#include "syscall.h"
+#include "linux.h"
 
 int __arch_prctl(int, void *);
 

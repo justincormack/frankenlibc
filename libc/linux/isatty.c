@@ -1,6 +1,6 @@
 #include <unistd.h>
 
-#include "syscall.h"
+#include "linux.h"
 
 typedef unsigned int tcflag_t;
 typedef unsigned char cc_t;

@@ -14,6 +14,7 @@ OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o
 OBJ+=$(OBJDIR)/__platform_init.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
+HEADERS+=linux.h i386/linux.h x86_64/linux.h
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
