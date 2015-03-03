@@ -2,7 +2,7 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OUTDIR=../../rumpobj/libc-test
 LIBDIR=../../rump/lib
-FILES=$(OUTDIR)/args $(OUTDIR)/_exit $(OUTDIR)/mmap
+FILES=$(OUTDIR)/args $(OUTDIR)/env $(OUTDIR)/_exit $(OUTDIR)/mmap
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-g -fno-stack-protector
@@ -25,6 +25,9 @@ $(OUTDIR)/libc.a:	$(OUTDIR)/linkstub.o
 $(OUTDIR)/args:		args.c $(OUTDIR)/libc.a
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ args.c $(LDLIBS)
 
+$(OUTDIR)/env:		env.c $(OUTDIR)/libc.a
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ env.c $(LDLIBS)
+
 $(OUTDIR)/_exit:	_exit.c $(OUTDIR)/libc.a
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ _exit.c $(LDLIBS)
 
@@ -34,6 +37,7 @@ $(OUTDIR)/mmap:		mmap.c $(OUTDIR)/libc.a
 .PHONY:			test
 test:			$(OUTDIR) $(FILES)
 			$(OUTDIR)/args franken rump || exit 1
+			FRANKEN=RUMP $(OUTDIR)/env || exit 1
 			$(OUTDIR)/_exit || exit 1
 			$(OUTDIR)/mmap || exit 1
 
