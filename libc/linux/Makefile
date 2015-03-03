@@ -10,7 +10,8 @@ OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
-OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o $(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o
+OBJ+=$(OBJDIR)/__platform_init.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
 INCLUDES=-I../include
@@ -81,6 +82,9 @@ $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
 				$(COMPILE.c) -o $@ __platform_init.c
+
+$(OBJDIR)/read.o:		read.S $(HEADERS)
+				$(COMPILE.S) -o $@ read.S
 
 $(OBJDIR)/set_thread_area.o:	set_thread_area.c $(HEADERS)
 				$(COMPILE.c) -o $@ set_thread_area.c

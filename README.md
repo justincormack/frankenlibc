@@ -40,6 +40,7 @@ NetBSD ABI:
 Common ABI:
 * \_exit(...) normal exit
 * write(1, ...) write to stdout.
+* read(...) future use, read from console, virtual drivers
 * isatty(1) is stdout a tty?
 * getpagesize() return the page size.
 

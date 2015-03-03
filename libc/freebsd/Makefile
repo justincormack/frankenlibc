@@ -9,7 +9,7 @@ OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/mmap.o $(OBJDIR)/__mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
-OBJ+=$(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/__platform_init.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h x86_64/syscall.h
 INCLUDES=-I../include
@@ -71,6 +71,9 @@ $(OBJDIR)/nanosleep.o:		nanosleep.S $(HEADERS)
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c
 				$(COMPILE.c) -o $@ __platform_init.c
+
+$(OBJDIR)/read.o:		read.S $(HEADERS)
+				$(COMPILE.S) -o $@ read.S
 
 $(OBJDIR)/sysctl.o:		sysctl.S $(HEADERS)
 				$(COMPILE.S) -o $@ sysctl.S
