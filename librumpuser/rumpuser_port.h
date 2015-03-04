@@ -62,42 +62,6 @@
 #define MAX(a,b)        ((/*CONSTCOND*/(a)>(b))?(a):(b))
 #endif
 
-#if !defined(HAVE_CLOCKID_T)
-typedef int clockid_t;
-#endif
-
-#if !defined(HAVE_CLOCK_GETTIME)
-#include <sys/time.h>
-#define	CLOCK_REALTIME	0
-static inline int
-clock_gettime(clockid_t clk, struct timespec *ts)
-{
-	struct timeval tv;
-
-	if (gettimeofday(&tv, 0) == 0) {
-		ts->tv_sec = tv.tv_sec;
-		ts->tv_nsec = tv.tv_usec * 1000;
-		return 0;
-	}
-	return -1;
-}
-#endif
-
-#include <sys/types.h>
-
-#if !defined(HAVE_ALIGNED_ALLOC)
-#include <stdlib.h>
-static inline void *
-aligned_alloc(size_t alignment, size_t size)
-{
-	void *ptr;
-	int rv;
-
-	rv = posix_memalign(&ptr, alignment, size);
-	return rv ? NULL : ptr;
-}
-#endif
-
 #ifndef __dead
 #define __dead __attribute__((__noreturn__))
 #endif
