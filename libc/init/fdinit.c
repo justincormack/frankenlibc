@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 
+#include <rump/rump.h>
+
 #include "fdinit.h"
 
 struct __fdtable __franken_fd[MAXFD];
@@ -35,10 +37,13 @@ __franken_fdinit()
 				if (mem != MAP_FAILED)
 					__franken_fd[fd].flags = PROT_READ;
 			}
-			if (mem == MAP_FAILED)
+			if (mem == MAP_FAILED) {
 				__franken_fd[fd].valid = 0;
-			else
-				__franken_fd[fd].mem = mem;
+				break;
+			}
+			__franken_fd[fd].mem = mem;
+			if (rump_pub_etfs_register("/dev/fblk3", "3", RUMP_ETFS_BLK) != 0)
+				break;
 			break;
 		case S_IFBLK:
 			/* XXX handle block devices but not via mmap */
