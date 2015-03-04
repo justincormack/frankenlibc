@@ -12,21 +12,21 @@ int
 rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)
 {
 
-	ET(ENOENT);
+	return ENOENT;
 }
 
 int
 rumpuser_open(const char *path, int ruflags, int *fdp)
 {
 
-	ET(ENOENT);
+	return EBADF;
 }
 
 int
 rumpuser_close(int fd)
 {
 
-	ET(EBADF);
+	return EBADF;
 }
 
 int
@@ -34,7 +34,7 @@ rumpuser_iovread(int fd, struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
 
-	ET(EBADF);
+	return EBADF;
 }
 
 int
@@ -42,14 +42,14 @@ rumpuser_iovwrite(int fd, const struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
 
-	ET(EBADF);
+	return EBADF;
 }
 
 int
 rumpuser_syncfd(int fd, int flags, uint64_t start, uint64_t len)
 {
 
-	ET(EBADF);
+	return EBADF;
 }
 
 void
@@ -57,5 +57,5 @@ rumpuser_bio(int fd, int op, void *data, size_t dlen, int64_t doff,
         rump_biodone_fn biodone, void *bioarg)
 {
 
-	biodone(bioarg, (size_t)0, EBADF); /* convert error no */
+	biodone(bioarg, (size_t)0, EBADF);
 }
