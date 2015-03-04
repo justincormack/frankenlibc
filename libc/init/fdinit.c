@@ -10,6 +10,15 @@
 
 #include "fdinit.h"
 
+int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type) __attribute__ ((weak));
+
+int
+rump_pub_etfs_register(const char *key, const char *hostpath, enum rump_etfs_type ftype)
+{
+
+	return 0;
+}
+
 struct __fdtable __franken_fd[MAXFD];
 
 void

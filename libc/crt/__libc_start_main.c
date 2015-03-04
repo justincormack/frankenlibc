@@ -17,15 +17,17 @@ int errno __attribute__((weak));
 static char empty_string[] = "";
 char *__progname = empty_string;
 
-void _libc_init(void);
-void _libc_init() {} __attribute__((weak)) 
+void _libc_init(void) __attribute__((weak));
+void _libc_init() {}
+
+void __franken_fdinit(void);
 
 int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
 
-void _init(void);
-void _init() {} __attribute__ ((weak))
-void _fini(void);
-void _fini() {} __attribute__ ((weak))
+void _init(void) __attribute__ ((weak));
+void _init() {}
+void _fini(void) __attribute__ ((weak));
+void _fini() {}
 
 extern void (*const __init_array_start)() __attribute__((weak));
 extern void (*const __init_array_end)() __attribute__((weak));
@@ -71,12 +73,16 @@ __libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char *
 	/* start a new rump process */
 	rump_pub_lwproc_rfork(0);
 
+	/* init NetBSD libc */
 	_libc_init();
 
 	_init();
 	a = (uintptr_t)&__init_array_start;
 	for (; a < (uintptr_t)&__init_array_end; a += sizeof(void(*)()))
 		(*(void (**)())a)();
+
+	/* see if we have any devices to init */
+	__franken_fdinit();
 
 	exit(main(argc, argv, envp));
 	return 0;

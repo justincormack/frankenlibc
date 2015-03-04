@@ -42,4 +42,7 @@
 #define isatty(f) __platform_isatty(f)
 #define write(f, b, c) __platform_write(f, b, c)
 
+/* sys/stat.h */
+#define fstat(f, s) __platform_fstat(f, s)
+
 #endif
