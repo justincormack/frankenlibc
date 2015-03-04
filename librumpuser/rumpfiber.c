@@ -70,11 +70,6 @@ rumpuser_init(int version, const struct rumpuser_hyperup *hyp)
 		abort();
 	}
 
-	rv = rumpuser__random_init();
-	if (rv != 0) {
-		ET(rv);
-	}
-
         rumpuser__hyp = *hyp;
 
 	init_sched();

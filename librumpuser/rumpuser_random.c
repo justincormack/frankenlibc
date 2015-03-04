@@ -36,9 +36,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef HAVE_GETRANDOM
 #include <linux/random.h>
-#endif
 
 #include <rump/rumpuser.h>
 
@@ -46,38 +44,9 @@
 
 static const size_t random_maxread = 32;
 
-#if defined(HAVE_ARC4RANDOM_BUF) || defined(HAVE_GETRANDOM)
-int
-rumpuser__random_init(void)
-{
-
-	return 0;
-}
-#else
-static const char *random_device = "/dev/urandom";
-static int random_fd = -1;
-
-int
-rumpuser__random_init(void)
-{
-
-	random_fd = open(random_device, O_RDONLY);
-	if (random_fd < 0) {
-		fprintf(stderr, "random init open failed\n");
-		return errno;
-	}
-	return 0;
-}
-#endif
-
 int
 rumpuser_getrandom(void *buf, size_t buflen, int flags, size_t *retp)
 {
-#ifdef HAVE_ARC4RANDOM_BUF
-	buflen = buflen > random_maxread ? random_maxread : buflen;
-	arc4random_buf(buf, buflen);
-	*retp = buflen;
-#elif HAVE_GETRANDOM
 	int rv;
 
 	buflen = buflen > random_maxread ? random_maxread : buflen;
@@ -86,16 +55,6 @@ rumpuser_getrandom(void *buf, size_t buflen, int flags, size_t *retp)
 		ET(errno);
 	}
 	*retp = rv;
-#else
-	ssize_t rv;
-
-	buflen = buflen > random_maxread ? random_maxread : buflen;
-	rv = read(random_fd, buf, buflen);
-	if (rv == -1) {
-		ET(errno);
-	}
-	*retp = rv;
-#endif
 
 	return 0;
 }
