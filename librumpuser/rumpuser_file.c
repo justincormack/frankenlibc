@@ -111,7 +111,10 @@ rumpuser_bio(int fd, int op, void *data, size_t dlen, int64_t doff,
 	if (dlen > size - doff)
 		dlen = size - doff;
 
-	memcpy(data, __franken_fd[fd].mem + doff, dlen);
+	if (op & RUMPUSER_BIO_READ)
+		memcpy(data, __franken_fd[fd].mem + doff, dlen);
+	else
+		memcpy(__franken_fd[fd].mem + doff, data, dlen);
 
 	biodone(bioarg, (size_t)dlen, 0);
 }
