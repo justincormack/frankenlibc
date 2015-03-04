@@ -57,9 +57,4 @@
 #define __NetBSD_Prereq__(a,b,c) 0
 #endif
 
-#if !defined(HAVE_REGISTER_T) && !defined(RUMP_REGISTER_T)
-#define RUMP_REGISTER_T long
-typedef RUMP_REGISTER_T register_t;
-#endif
-
 #endif /* _LIB_LIBRUMPUSER_RUMPUSER_PORT_H_ */
