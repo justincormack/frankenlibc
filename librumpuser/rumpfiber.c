@@ -83,7 +83,6 @@ rumpuser_clock_gettime(int enum_rumpclock, int64_t *sec, long *nsec)
 	enum rumpclock rclk = enum_rumpclock;
 	struct timespec ts;
 	clockid_t clk;
-	int rv;
 
 	switch (rclk) {
 	case RUMPUSER_CLOCK_RELWALL:
@@ -93,18 +92,17 @@ rumpuser_clock_gettime(int enum_rumpclock, int64_t *sec, long *nsec)
 		clk = CLOCK_MONOTONIC;
 		break;
 	default:
-		abort();
+		return EINVAL;
 	}
 
 	if (clock_gettime(clk, &ts) == -1) {
-		rv = errno;
-	} else {
-		*sec = ts.tv_sec;
-		*nsec = ts.tv_nsec;
-		rv = 0;
+		return errno;
 	}
 
-	ET(rv);
+	*sec = ts.tv_sec;
+	*nsec = ts.tv_nsec;
+
+	return 0;
 }
 
 int
@@ -133,28 +131,26 @@ rumpuser_clock_sleep(int enum_rumpclock, int64_t sec, long nsec)
 int
 rumpuser_getparam(const char *name, void *buf, size_t blen)
 {
-	int rv;
+	char *value;
 	const char *ncpu = "1";
 
 	if (strcmp(name, RUMPUSER_PARAM_NCPU) == 0) {
 		strncpy(buf, ncpu, blen);
-		rv = 0;
-	} else if (strcmp(name, RUMPUSER_PARAM_HOSTNAME) == 0) {
+		return 0;
+	}
+	if (strcmp(name, RUMPUSER_PARAM_HOSTNAME) == 0) {
 		strncpy(buf, "rump", blen);
-		rv = 0;
-	} else if (*name == '_') {
-		rv = EINVAL;
-	} else {
-		char *value = getenv(name);
-
-		if (value != NULL && strlen(value) + 1 <= blen) {
-			strncpy(buf, value, blen);
-			rv = 0;
-		} else
-			rv = EINVAL;
+		return 0;
 	}
 
-	ET(rv);
+	value = getenv(name);
+
+	if (value != NULL && strlen(value) + 1 <= blen) {
+		strncpy(buf, value, blen);
+		return 0;
+	}
+
+	return EINVAL;
 }
 
 void
