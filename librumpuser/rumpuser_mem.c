@@ -52,7 +52,7 @@ rumpuser_malloc(size_t howmuch, int alignment, void **memp)
 
 	mem = mmap(0, howmuch, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(af), -1, 0);
 	if (__predict_false(mem == MAP_FAILED)) {
-		ET(EINVAL);
+		return EINVAL;
 	}
 #else
 	if (alignment == 0)
@@ -60,7 +60,7 @@ rumpuser_malloc(size_t howmuch, int alignment, void **memp)
 
 	mem = aligned_alloc((size_t)alignment, howmuch);
 	if (__predict_false(mem == NULL)) {
-		ET(EINVAL);
+		return EINVAL;
 	}
 #endif
 	*memp = mem;
@@ -89,7 +89,7 @@ rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
 	int exec, void **memp)
 {
 	void *mem;
-	int prot, rv;
+	int prot;
 
 #ifndef MAP_ALIGNED
 #define MAP_ALIGNED(a) 0
@@ -103,13 +103,12 @@ rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
 	mem = mmap(prefaddr, size, prot,
 	    MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(alignbit), -1, 0);
 	if (mem == MAP_FAILED) {
-		rv = errno;
-	} else {
-		*memp = mem;
-		rv = 0;
+		return errno;
 	}
 
-	ET(rv);
+	*memp = mem;
+
+	return 0;
 }
 
 void

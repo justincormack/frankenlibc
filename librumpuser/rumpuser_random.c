@@ -52,7 +52,7 @@ rumpuser_getrandom(void *buf, size_t buflen, int flags, size_t *retp)
 	buflen = buflen > random_maxread ? random_maxread : buflen;
 	rv = getrandom(buf, buflen, 0);
 	if (rv == -1) {
-		ET(errno);
+		return errno;
 	}
 	*retp = rv;
 
