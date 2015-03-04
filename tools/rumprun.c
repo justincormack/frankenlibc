@@ -27,7 +27,7 @@ main(int argc, char **argv)
 	int i, p = 0;
 	char *program = NULL;
 	char *pargs[argc];
-	int access = O_RDONLY;
+	int access = O_RDWR;
 
 	if (argc < 2)
 		usage(argv[0]);
