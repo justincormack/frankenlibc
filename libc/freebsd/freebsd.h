@@ -95,4 +95,3 @@ struct freebsd_stat {
   unsigned int :(8 / 2) * (16 - (int)sizeof(struct freebsd_timespec));
   unsigned int :(8 / 2) * (16 - (int)sizeof(struct freebsd_timespec));
 };
-
