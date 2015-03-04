@@ -101,7 +101,7 @@ ${MAKE} -C librumpuser
 ${MAKE} OS=${OS} -C tools
 
 # for now just build libc
-LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libpthread"
+LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
 
 RUMPMAKE=${PWD}/rumpobj/tooldir/rumpmake
 
