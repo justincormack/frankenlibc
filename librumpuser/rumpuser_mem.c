@@ -40,9 +40,7 @@
 int
 rumpuser_malloc(size_t howmuch, int alignment, void **memp)
 {
-	void *mem = NULL;
-/* use mmap if alignment possible */
-#ifdef MAP_ALIGNED
+	void *mem;
 	int af = 0;
 
 	while (alignment > 1) {
@@ -51,58 +49,31 @@ rumpuser_malloc(size_t howmuch, int alignment, void **memp)
 	}
 
 	mem = mmap(0, howmuch, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(af), -1, 0);
-	if (__predict_false(mem == MAP_FAILED)) {
+	if (mem == MAP_FAILED) {
 		return EINVAL;
 	}
-#else
-	if (alignment == 0)
-		alignment = sizeof(void *);
 
-	mem = aligned_alloc((size_t)alignment, howmuch);
-	if (__predict_false(mem == NULL)) {
-		return EINVAL;
-	}
-#endif
 	*memp = mem;
 
 	return 0;
 }
 
-#ifdef MAP_ALIGNED
 void
 rumpuser_free(void *ptr, size_t size)
 {
 
 	munmap(ptr, size);
 }
-#else
-/*ARGSUSED1*/
-void
-rumpuser_free(void *ptr, size_t size)
-{
-
-	free(ptr);
-}
-#endif
 
 int
-rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit,
-	int exec, void **memp)
+rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit, int exec, void **memp)
 {
 	void *mem;
-	int prot;
+	int prot = PROT_READ | PROT_WRITE | (exec ? PROT_EXEC : 0);
 
-#ifndef MAP_ALIGNED
-#define MAP_ALIGNED(a) 0
-	if (alignbit)
-		abort();
-#endif
-
-	prot = PROT_READ|PROT_WRITE;
-	if (exec)
-		prot |= PROT_EXEC;
 	mem = mmap(prefaddr, size, prot,
 	    MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(alignbit), -1, 0);
+
 	if (mem == MAP_FAILED) {
 		return errno;
 	}
