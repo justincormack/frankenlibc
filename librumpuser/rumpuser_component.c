@@ -98,5 +98,5 @@ int
 rumpuser_component_errtrans(int hosterr)
 {
 
-	return rumpuser__errtrans(hosterr);
+	return hosterr;
 }
