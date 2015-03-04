@@ -93,10 +93,3 @@ do {									\
 		abort();						\
 	}								\
 } while (/*CONSTCOND*/0)
-
-int  rumpuser__errtrans(int);
-#ifdef __NetBSD__
-#define ET(_v_) return (_v_);
-#else
-#define ET(_v_) return (_v_) ? rumpuser__errtrans(_v_) : 0;
-#endif

@@ -19,8 +19,6 @@ CFLAGS+=-fno-stack-protector
 OBJS=$(OBJDIR)/rumpfiber.o
 OBJS+=$(OBJDIR)/rumpuser_mem.o $(OBJDIR)/rumpuser_random.o
 OBJS+=$(OBJDIR)/rumpuser_component.o
-# not really required
-OBJS+=$(OBJDIR)/rumpuser_errtrans.o
 # dummy
 OBJS+=$(OBJDIR)/rumpfiber_sp.o $(OBJDIR)/rumpuser_file.o
 OBJS+=$(OBJDIR)/rumpuser_daemonize.o $(OBJDIR)/rumpuser_dl.o
@@ -44,9 +42,6 @@ $(OBJDIR)/rumpuser_random.o:	rumpuser_random.c $(DEPS)
 
 $(OBJDIR)/rumpuser_component.o:	rumpuser_component.c $(DEPS)
 				$(COMPILE.c) -o $@ rumpuser_component.c
-
-$(OBJDIR)/rumpuser_errtrans.o:	rumpuser_errtrans.c $(DEPS)
-				$(COMPILE.c) -o $@ rumpuser_errtrans.c
 
 $(OBJDIR)/rumpfiber_sp.o:	rumpfiber_sp.c $(DEPS)
 				$(COMPILE.c) -o $@ rumpfiber_sp.c
