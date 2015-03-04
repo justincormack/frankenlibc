@@ -98,6 +98,8 @@ ${MAKE} OS=${OS} -C libc
 
 ${MAKE} -C librumpuser
 
+${MAKE} OS=${OS} -C tools
+
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libpthread"
 
