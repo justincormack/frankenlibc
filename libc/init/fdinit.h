@@ -7,10 +7,9 @@
 
 struct __fdtable {
 	int valid;
-	off_t size;
-	mode_t mode;
 	char *mem;
 	int flags;
+	struct stat st;
 };
 
 extern struct __fdtable __franken_fd[MAXFD];

@@ -16,8 +16,37 @@
 int
 rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)
 {
+	int fd = atoi(path);
+	int ft;
 
-	return ENOENT;
+	if (fd < 0 || fd >= MAXFD || __franken_fd[fd].valid == 0)
+		return ENOENT;
+
+	if (sizep)
+		*sizep = __franken_fd[fd].st.st_size;
+
+	switch (__franken_fd[fd].st.st_mode & S_IFMT) {
+	case S_IFDIR:
+		ft = RUMPUSER_FT_DIR;
+		break;
+	case S_IFREG:
+		ft = RUMPUSER_FT_REG;
+		break;
+	case S_IFBLK:
+		ft = RUMPUSER_FT_BLK;
+		break;
+	case S_IFCHR:
+		ft = RUMPUSER_FT_CHR;
+		break;
+	default:
+		ft = RUMPUSER_FT_OTHER;
+		break;
+	}
+
+	if (ftp)
+		*ftp = ft;
+
+	return 0;
 }
 
 int

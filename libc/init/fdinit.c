@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -17,11 +18,12 @@ __franken_fdinit()
 	char *mem;
 
 	for (fd = 0; fd < MAXFD; fd++) {
-		if (fstat(fd, &st) == -1)
+		if (fstat(fd, &st) == -1) {
+			__franken_fd[fd].valid = 0;
 			continue;
+		}
 		__franken_fd[fd].valid = 1;
-		__franken_fd[fd].size = st.st_size;
-		__franken_fd[fd].mode = st.st_mode;
+		memcpy(&__franken_fd[fd].st, &st, sizeof(struct stat));
 		switch (st.st_mode & S_IFMT) {
 		case S_IFREG:
 			mem = mmap(0, st.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
