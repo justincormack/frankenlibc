@@ -101,5 +101,3 @@ int  rumpuser__errtrans(int);
 #else
 #define ET(_v_) return (_v_) ? rumpuser__errtrans(_v_) : 0;
 #endif
-
-int rumpuser__random_init(void);
