@@ -24,18 +24,14 @@ struct __fdtable __franken_fd[MAXFD];
 
 /* should have proper functions in libc */
 static char *
-mkkey(char *key, int fd)
+mkkey(char *key, const char *pre, int fd)
 {
 	char *k = key;
+	int i;
 
 	if (fd > 99) abort();
-	*k++ = '/';
-	*k++ = 'd';
-	*k++ = 'e';
-	*k++ = 'v';
-	*k++ = '/';
-	*k++ = 'f';
-	*k++ = 'd';
+	for (i = 0; i < strlen(pre); i++)
+		*k++ = pre[i];
 	if (fd > 9) {
 		*k++ = (fd / 10) + '0';
 		fd /= 10;
@@ -77,7 +73,7 @@ __franken_fdinit()
 				break;
 			}
 			__franken_fd[fd].mem = mem;
-			key = mkkey(__franken_fd[fd].key, fd);
+			key = mkkey(__franken_fd[fd].key, "/dev/fd", fd);
 			if (rump_pub_etfs_register(key, &key[7], RUMP_ETFS_BLK) == 0) {
 				break;
 			}
