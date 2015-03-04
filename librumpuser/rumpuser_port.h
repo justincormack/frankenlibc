@@ -1,8 +1,6 @@
 #ifndef _LIB_LIBRUMPUSER_RUMPUSER_PORT_H_
 #define _LIB_LIBRUMPUSER_RUMPUSER_PORT_H_
 
-#include <sys/cdefs.h>
-
 #ifndef MIN
 #define MIN(a,b)        ((/*CONSTCOND*/(a)<(b))?(a):(b))
 #endif
@@ -62,16 +60,6 @@
 #if !defined(HAVE_REGISTER_T) && !defined(RUMP_REGISTER_T)
 #define RUMP_REGISTER_T long
 typedef RUMP_REGISTER_T register_t;
-#endif
-
-#include <sys/time.h>
-
-#ifndef TIMEVAL_TO_TIMESPEC
-#define TIMEVAL_TO_TIMESPEC(tv, ts)		\
-do {						\
-	(ts)->tv_sec  = (tv)->tv_sec;		\
-	(ts)->tv_nsec = (tv)->tv_usec * 1000;	\
-} while (/*CONSTCOND*/0)
 #endif
 
 #endif /* _LIB_LIBRUMPUSER_RUMPUSER_PORT_H_ */
