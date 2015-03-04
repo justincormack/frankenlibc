@@ -64,7 +64,8 @@ rumpuser_malloc(size_t howmuch, int alignment, void **memp)
 	}
 #endif
 	*memp = mem;
-	ET(0);
+
+	return 0;
 }
 
 #ifdef MAP_ALIGNED
