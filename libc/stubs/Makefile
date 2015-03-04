@@ -7,9 +7,12 @@ OBJ+=$(OBJDIR)/stub___fork.o $(OBJDIR)/stub__getcontext.o
 OBJ+=$(OBJDIR)/stub_getpriority.o $(OBJDIR)/stub___getrusage50.o
 OBJ+=$(OBJDIR)/stub_kill.o $(OBJDIR)/stub___lfs_segwait50.o
 OBJ+=$(OBJDIR)/stub_madvise.o $(OBJDIR)/stub___minbrk.o
-OBJ+=$(OBJDIR)/stub_minherit.o $(OBJDIR)/stub__mmap.o
+OBJ+=$(OBJDIR)/stub_minherit.o
+OBJ+=$(OBJDIR)/stub_mlock.o $(OBJDIR)/stub_mlockall.o
+OBJ+=$(OBJDIR)/stub__mmap.o
 OBJ+=$(OBJDIR)/stub___msgctl50.o $(OBJDIR)/stub___msync13.o
 OBJ+=$(OBJDIR)/stub___mq_timedreceive50.o $(OBJDIR)/stub___mq_timedsend50.o
+OBJ+=$(OBJDIR)/stub_munlock.o $(OBJDIR)/stub_munlockall.o
 OBJ+=$(OBJDIR)/stub___ntp_gettime50.o $(OBJDIR)/stub_posix_spawn.o
 OBJ+=$(OBJDIR)/stub_profil.o $(OBJDIR)/stub__sbrk.o
 OBJ+=$(OBJDIR)/stub__sched_getaffinity.o $(OBJDIR)/stub__sched_getparam.o
@@ -67,6 +70,12 @@ $(OBJDIR)/stub___minbrk.o:		__minbrk.c
 $(OBJDIR)/stub_minherit.o:		minherit.c
 					$(COMPILE.c) -o $@ minherit.c
 
+$(OBJDIR)/stub_mlock.o:			mlock.c
+					$(COMPILE.c) -o $@ mlock.c
+
+$(OBJDIR)/stub_mlockall.o:		mlockall.c
+					$(COMPILE.c) -o $@ mlockall.c
+
 $(OBJDIR)/stub__mmap.o:			_mmap.c
 					$(COMPILE.c) -o $@ _mmap.c
 
@@ -81,6 +90,12 @@ $(OBJDIR)/stub___mq_timedreceive50.o:	__mq_timedreceive50.c
 
 $(OBJDIR)/stub___mq_timedsend50.o:	__mq_timedsend50.c
 					$(COMPILE.c) -o $@ __mq_timedsend50.c
+
+$(OBJDIR)/stub_munlock.o:		munlock.c
+					$(COMPILE.c) -o $@ munlock.c
+
+$(OBJDIR)/stub_munlockall.o:		munlockall.c
+					$(COMPILE.c) -o $@ munlockall.c
 
 $(OBJDIR)/stub___ntp_gettime50.o:	__ntp_gettime50.c
 					$(COMPILE.c) -o $@ __ntp_gettime50.c
