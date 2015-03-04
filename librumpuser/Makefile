@@ -23,7 +23,7 @@ OBJS+=$(OBJDIR)/rumpuser_component.o
 OBJS+=$(OBJDIR)/rumpuser_errtrans.o $(OBJDIR)/rumpuser_sigtrans.o
 # dummy
 OBJS+=$(OBJDIR)/rumpfiber_sp.o $(OBJDIR)/rumpuser_file.o
-OBJS+=$(OBJDIR)/rumpuser_daemonize_dummy.o $(OBJDIR)/rumpuser_dl.o
+OBJS+=$(OBJDIR)/rumpuser_daemonize.o $(OBJDIR)/rumpuser_dl.o
 
 default:			$(OBJDIR) $(LIB)
 
@@ -57,8 +57,8 @@ $(OBJDIR)/rumpfiber_sp.o:	rumpfiber_sp.c $(DEPS)
 $(OBJDIR)/rumpuser_file.o:	rumpuser_file.c $(DEPS)
 				$(COMPILE.c) -o $@ rumpuser_file.c
 
-$(OBJDIR)/rumpuser_daemonize_dummy.o:	rumpuser_daemonize_dummy.c $(DEPS)
-				$(COMPILE.c) -o $@ rumpuser_daemonize_dummy.c
+$(OBJDIR)/rumpuser_daemonize.o:	rumpuser_daemonize.c $(DEPS)
+				$(COMPILE.c) -o $@ rumpuser_daemonize.c
 
 $(OBJDIR)/rumpuser_dl.o:	rumpuser_dl.c $(DEPS)
 				$(COMPILE.c) -o $@ rumpuser_dl.c
