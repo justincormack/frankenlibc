@@ -1,23 +1,5 @@
-/*	$NetBSD: rumpuser_port.h,v 1.42 2014/11/10 22:43:46 pooka Exp $	*/
-
 #ifndef _LIB_LIBRUMPUSER_RUMPUSER_PORT_H_
 #define _LIB_LIBRUMPUSER_RUMPUSER_PORT_H_
-
-#define HAVE_ALIGNED_ALLOC 1
-#define HAVE_CLOCKID_T 1
-#define HAVE_CLOCK_GETTIME 1
-#define HAVE_CLOCK_NANOSLEEP 1
-#define HAVE_GETRANDOM 1
-#define HAVE_INTTYPES_H 1
-#define HAVE_POSIX_MEMALIGN 1
-#define HAVE_REGISTER_T 1
-#define HAVE_STDINT_H 1
-#define HAVE_STDLIB_H 1
-#define HAVE_STRING_H 1
-#define HAVE_SYS_CDEFS_H 1
-#define HAVE_SYS_TYPES_H 1
-#define HAVE_UNISTD_H 1
-#define STDC_HEADERS 1
 
 #include <sys/cdefs.h>
 
