@@ -52,15 +52,21 @@ rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)
 int
 rumpuser_open(const char *path, int ruflags, int *fdp)
 {
+	int fd = atoi(path);
 
-	return EBADF;
+	if (fd < 0 || fd >= MAXFD || __franken_fd[fd].valid == 0)
+		return ENOENT;
+
+	*fdp = fd;
+
+	return 0;
 }
 
 int
 rumpuser_close(int fd)
 {
 
-	return EBADF;
+	return 0;
 }
 
 int
