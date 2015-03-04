@@ -3,11 +3,15 @@
 #include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/mman.h>
 
 #include <rump/rumpuser.h>
 
 #include "rumpuser_int.h"
+
+#include "fdinit.h"
 
 int
 rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)

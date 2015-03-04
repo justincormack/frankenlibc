@@ -1,5 +1,5 @@
 OS?=linux
-GDIRS=generic crt lwp stubs thread
+GDIRS=generic crt lwp stubs thread init
 DIRS=$(OS) $(GDIRS)
 LIBDIR=../rump/lib
 LIB=$(LIBDIR)/libfranken.a

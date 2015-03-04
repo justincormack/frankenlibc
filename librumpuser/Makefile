@@ -12,8 +12,8 @@ INCS=		rumpuser_component.h rumpuser_port.h
 OBJDIR=../rumpobj/librumpuser
 
 DEPS=$(INCS) $(OBJDIR)
-# do not include libc include here?
-CPPFLAGS+=-nostdinc -I. -I../libc/include -I../rump/include -I../libc/thread
+INCLUDE=-I. -I../libc/include -I../libc/thread -I../libc/init -I../rump/include
+CPPFLAGS+=-nostdinc $(INCLUDE)
 CFLAGS+=-fno-stack-protector
 
 OBJS=$(OBJDIR)/rumpfiber.o
