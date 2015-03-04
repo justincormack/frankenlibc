@@ -197,13 +197,11 @@ rumpuser_dprintf(const char *format, ...)
 }
 
 int
-rumpuser_kill(int64_t pid, int rumpsig)
+rumpuser_kill(int64_t pid, int sig)
 {
-	int sig;
 
-	sig = rumpuser__sig_rump2host(rumpsig);
-	if (sig > 0)
-		raise(sig);
+	raise(sig);
+
 	return 0;
 }
 

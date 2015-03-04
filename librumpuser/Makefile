@@ -20,7 +20,7 @@ OBJS=$(OBJDIR)/rumpfiber.o
 OBJS+=$(OBJDIR)/rumpuser_mem.o $(OBJDIR)/rumpuser_random.o
 OBJS+=$(OBJDIR)/rumpuser_component.o
 # not really required
-OBJS+=$(OBJDIR)/rumpuser_errtrans.o $(OBJDIR)/rumpuser_sigtrans.o
+OBJS+=$(OBJDIR)/rumpuser_errtrans.o
 # dummy
 OBJS+=$(OBJDIR)/rumpfiber_sp.o $(OBJDIR)/rumpuser_file.o
 OBJS+=$(OBJDIR)/rumpuser_daemonize.o $(OBJDIR)/rumpuser_dl.o
@@ -47,9 +47,6 @@ $(OBJDIR)/rumpuser_component.o:	rumpuser_component.c $(DEPS)
 
 $(OBJDIR)/rumpuser_errtrans.o:	rumpuser_errtrans.c $(DEPS)
 				$(COMPILE.c) -o $@ rumpuser_errtrans.c
-
-$(OBJDIR)/rumpuser_sigtrans.o:	rumpuser_sigtrans.c $(DEPS)
-				$(COMPILE.c) -o $@ rumpuser_sigtrans.c
 
 $(OBJDIR)/rumpfiber_sp.o:	rumpfiber_sp.c $(DEPS)
 				$(COMPILE.c) -o $@ rumpfiber_sp.c
