@@ -18,6 +18,7 @@ __franken_fdinit()
 	char *mem;
 
 	for (fd = 0; fd < MAXFD; fd++) {
+		memset(&st, 0, sizeof(struct stat));
 		if (fstat(fd, &st) == -1) {
 			__franken_fd[fd].valid = 0;
 			continue;
