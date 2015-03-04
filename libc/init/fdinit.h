@@ -10,6 +10,7 @@ struct __fdtable {
 	char *mem;
 	int flags;
 	struct stat st;
+	char key[16];
 };
 
 extern struct __fdtable __franken_fd[MAXFD];

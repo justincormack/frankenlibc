@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/mman.h>
@@ -21,12 +22,37 @@ rump_pub_etfs_register(const char *key, const char *hostpath, enum rump_etfs_typ
 
 struct __fdtable __franken_fd[MAXFD];
 
+/* should have proper functions in libc */
+static char *
+mkkey(char *key, int fd)
+{
+	char *k = key;
+
+	if (fd > 99) abort();
+	*k++ = '/';
+	*k++ = 'd';
+	*k++ = 'e';
+	*k++ = 'v';
+	*k++ = '/';
+	*k++ = 'f';
+	*k++ = 'd';
+	if (fd > 9) {
+		*k++ = (fd / 10) + '0';
+		fd /= 10;
+	}
+	*k++ = fd + '0';
+	*k++ = 0;
+
+	return key;
+}
+
 void
 __franken_fdinit()
 {
 	int fd;
 	struct stat st;
 	char *mem;
+	char *key;
 
 	for (fd = 0; fd < MAXFD; fd++) {
 		memset(&st, 0, sizeof(struct stat));
@@ -51,8 +77,10 @@ __franken_fdinit()
 				break;
 			}
 			__franken_fd[fd].mem = mem;
-			if (rump_pub_etfs_register("/dev/fblk3", "3", RUMP_ETFS_BLK) != 0)
+			key = mkkey(__franken_fd[fd].key, fd);
+			if (rump_pub_etfs_register(key, &key[7], RUMP_ETFS_BLK) == 0) {
 				break;
+			}
 			break;
 		case S_IFBLK:
 			/* XXX handle block devices but not via mmap */
