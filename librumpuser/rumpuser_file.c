@@ -1,5 +1,6 @@
 #include "rumpuser_port.h"
 
+#include <assert.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -74,7 +75,7 @@ rumpuser_iovread(int fd, struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
 
-	return EBADF;
+	return EINVAL;
 }
 
 int
@@ -82,20 +83,35 @@ rumpuser_iovwrite(int fd, const struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
 
-	return EBADF;
+	return EINVAL;
 }
 
 int
 rumpuser_syncfd(int fd, int flags, uint64_t start, uint64_t len)
 {
 
-	return EBADF;
+	/* XXX need to add msync */
+	return 0;
 }
 
 void
 rumpuser_bio(int fd, int op, void *data, size_t dlen, int64_t doff,
         rump_biodone_fn biodone, void *bioarg)
 {
+	off_t size = __franken_fd[fd].st.st_size;
 
-	biodone(bioarg, (size_t)0, EBADF);
+	assert(biodone != NULL);
+
+	if (__franken_fd[fd].valid == 0 || ! S_ISREG(__franken_fd[fd].st.st_mode))
+		biodone(bioarg, 0, EBADF);
+
+	if (doff > size)
+		dlen = 0;
+
+	if (dlen > size - doff)
+		dlen = size - doff;
+
+	memcpy(data, __franken_fd[fd].mem + doff, dlen);
+
+	biodone(bioarg, (size_t)dlen, 0);
 }
