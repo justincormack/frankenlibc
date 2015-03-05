@@ -8,8 +8,11 @@ int __clock_nanosleep(clockid_t, int, const struct linux_timespec *, struct linu
 int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request, struct timespec *remain)
 {
 	clockid_t lid;
-	struct linux_timespec ltp = {request->tv_sec, request->tv_nsec};
+	struct linux_timespec ltp;
 	int ret;
+
+	ltp.tv_sec = request->tv_sec;
+	ltp.tv_nsec = request->tv_nsec;
 
 	/* we could support these but not needed */
 	if (flags != 0 || remain != NULL) {
