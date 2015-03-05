@@ -7,7 +7,8 @@ OBJ+=$(OBJDIR)/arch_prctl.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/__fstat.o
-OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
+OBJ+=$(OBJDIR)/getpagesize.o
+OBJ+=$(OBJDIR)/getrandom.o $(OBJDIR)/__getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
@@ -58,8 +59,11 @@ $(OBJDIR)/__fstat.o:		__fstat.S $(HEADERS)
 $(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
 				$(COMPILE.c) -o $@ getpagesize.c
 
-$(OBJDIR)/getrandom.o:		getrandom.S $(HEADERS)
-				$(COMPILE.S) -o $@ getrandom.S
+$(OBJDIR)/getrandom.o:		getrandom.c $(HEADERS)
+				$(COMPILE.c) -o $@ getrandom.c
+
+$(OBJDIR)/__getrandom.o:	__getrandom.S $(HEADERS)
+				$(COMPILE.S) -o $@ __getrandom.S
 
 $(OBJDIR)/ioctl.o:		ioctl.S $(HEADERS)
 				$(COMPILE.S) -o $@ ioctl.S
