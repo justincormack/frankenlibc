@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__sigprocmask14);
+NOTSUP(__sigprocmask14)

@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__sigaltstack14);
+NOTSUP(__sigaltstack14)

@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__sigaction_sigtramp);
+NOTSUP(__sigaction_sigtramp)

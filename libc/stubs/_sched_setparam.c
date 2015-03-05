@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(_sched_setparam);
+NOTSUP(_sched_setparam)

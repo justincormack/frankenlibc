@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(posix_spawn);
+NOTSUP(posix_spawn)

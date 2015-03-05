@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__fork);
+NOTSUP(__fork)

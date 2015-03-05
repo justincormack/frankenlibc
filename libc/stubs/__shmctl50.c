@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__shmctl50);
+NOTSUP(__shmctl50)

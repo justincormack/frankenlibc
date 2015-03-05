@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(____semctl50);
+NOTSUP(____semctl50)

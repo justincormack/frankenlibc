@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTHING(__msync13);
+NOTHING(__msync13)

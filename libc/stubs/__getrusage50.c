@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__getrusage50);
+NOTSUP(__getrusage50)

@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(swapctl);
+NOTSUP(swapctl)

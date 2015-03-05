@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__wait450);
+NOTSUP(__wait450)

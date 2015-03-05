@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTHING(profil);
+NOTHING(profil)

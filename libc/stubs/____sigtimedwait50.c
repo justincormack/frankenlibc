@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(____sigtimedwait50);
+NOTSUP(____sigtimedwait50)

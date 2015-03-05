@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__sigsuspend14);
+NOTSUP(__sigsuspend14)

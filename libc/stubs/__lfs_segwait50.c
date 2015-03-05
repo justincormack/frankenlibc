@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__lfs_segwait50);
+NOTSUP(__lfs_segwait50)

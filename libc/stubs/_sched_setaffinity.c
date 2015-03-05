@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(_sched_setaffinity);
+NOTSUP(_sched_setaffinity)

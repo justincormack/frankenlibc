@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__vfork14);
+NOTSUP(__vfork14)

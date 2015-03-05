@@ -1,3 +1,3 @@
 #include "stub.h"
 
-NOTSUP(__mq_timedreceive50);
+NOTSUP(__mq_timedreceive50)
