@@ -22,7 +22,7 @@ rump_pub_etfs_register(const char *key, const char *hostpath, enum rump_etfs_typ
 
 struct __fdtable __franken_fd[MAXFD];
 
-/* should have proper functions in libc */
+/* XXX should have proper functions in libc */
 static char *
 mkkey(char *key, const char *pre, int fd)
 {
@@ -50,11 +50,12 @@ __franken_fdinit()
 	char *mem;
 	char *key;
 
+	/* iterate over numbered descriptors, stopping when one does not exist */
 	for (fd = 0; fd < MAXFD; fd++) {
 		memset(&st, 0, sizeof(struct stat));
 		if (fstat(fd, &st) == -1) {
 			__franken_fd[fd].valid = 0;
-			continue;
+			break;
 		}
 		__franken_fd[fd].valid = 1;
 		memcpy(&__franken_fd[fd].st, &st, sizeof(struct stat));
