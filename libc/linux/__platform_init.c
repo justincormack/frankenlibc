@@ -1,4 +1,5 @@
 #include <elf.h>
+#include <stdint.h>
 
 typedef __SIZE_TYPE__ size_t;
 
@@ -12,7 +13,7 @@ size_t __platform_sysinfo;
 size_t __platform_pagesize;
 
 int __platform_set_thread_area(void *);
-static long long builtin_tls[4096/sizeof(long long)];
+static int64_t builtin_tls[4096/sizeof(int64_t)];
 
 int
 __platform_init(int (*main)(int,char **,char **), int argc, char **argv)
