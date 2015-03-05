@@ -11,6 +11,7 @@ int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
 size_t __platform_hwcap;
 size_t __platform_sysinfo;
 size_t __platform_pagesize;
+size_t __platform_random;
 
 int __platform_set_thread_area(void *);
 static int64_t builtin_tls[4096/sizeof(int64_t)];
@@ -29,6 +30,7 @@ __platform_init(int (*main)(int,char **,char **), int argc, char **argv)
         __platform_hwcap = aux[AT_HWCAP];
         __platform_sysinfo = aux[AT_SYSINFO];
         __platform_pagesize = aux[AT_PAGESZ];
+	__platform_random = aux[AT_RANDOM];
 
 	/* init tls; gcc needs this even for some non-tls using programs */
 	__platform_set_thread_area(builtin_tls);
