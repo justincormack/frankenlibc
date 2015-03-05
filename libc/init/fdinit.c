@@ -7,9 +7,15 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 
-#include <rump/rump.h>
-
 #include "fdinit.h"
+
+enum rump_etfs_type {
+	RUMP_ETFS_REG,
+	RUMP_ETFS_BLK,
+	RUMP_ETFS_CHR,
+	RUMP_ETFS_DIR,
+	RUMP_ETFS_DIR_SUBDIRS
+};
 
 int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type) __attribute__ ((weak));
 
