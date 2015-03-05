@@ -26,6 +26,12 @@
 #define LINUX_S_ISLNK(mode)  (((mode) & LINUX_S_IFMT) == LINUX_S_IFLNK)
 #define LINUX_S_ISSOCK(mode) (((mode) & LINUX_S_IFMT) == LINUX_S_IFSOCK)
 
+#define linux_makedev(x, y) ( \
+	(((x) & 0xfffff000ULL) << 32) | \
+	(((x) & 0x00000fffULL) <<  8) | \
+	(((y) & 0xffffff00ULL) << 12) | \
+	(((y) & 0x000000ffULL)) )
+
 /* note on 64 bit platforms, Linux timespec is the same as NetBSD,
    but this is not true on 32 bit platforms */
 
