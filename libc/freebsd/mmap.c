@@ -22,7 +22,7 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	if (nflags & MAP_STACK)
 		flags |= FREEBSD_MAP_STACK; 
 
-	if (nflags & MAP_ALIGNMENT_MASK == FREEBSD_MAP_ALIGNED_SUPER)
+	if ((nflags & MAP_ALIGNMENT_MASK) == FREEBSD_MAP_ALIGNED_SUPER)
 		flags &= ~MAP_ALIGNMENT_MASK;
 
 	return __mmap(addr, length, prot, flags, fd, offset);
