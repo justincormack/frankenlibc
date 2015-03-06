@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "filter.h"
+
 /* this will develop into full wrapper */
 
 /* currently just open files; will understand some special files too */
@@ -77,17 +79,8 @@ main(int argc, char **argv)
 	for (; p < argc; p++)
 		pargs[p] = 0;
 
-	/* only fexecve with a CLOEXEC fd really safe here */
-	ret = filter_execve(-1);
+	ret = filter_load_exec(program, pargs, environ);
 	if (ret < 0) abort();
-
-	ret = filter_load();
-	if (ret < 0) abort();
-
-	if (execve(program, pargs, environ) == -1) {
-		perror("execve");
-		exit(1);
-	}
 
 	return 0;	
 }
