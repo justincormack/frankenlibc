@@ -130,4 +130,6 @@ ${CC} ${CFLAGS} ${LDFLAGS} -static -nostdinc -Brump/lib -Irump/include -Lrump/li
 
 export RUMP_VERBOSE=1
 
-${TESTDIR}/test
+export BINDIR="rump/bin"
+
+${BINDIR}/rumprun ${TESTDIR}/test
