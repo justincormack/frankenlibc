@@ -39,6 +39,7 @@ NetBSD ABI:
 
 Common ABI:
 * \_exit(...) normal exit
+* fstat() test if files exist
 * write(1, ...) write to stdout.
 * read(...) future use, read from console, virtual drivers
 * isatty(1) is stdout a tty?
@@ -59,3 +60,8 @@ support a full application stack on the rump kernel.
 Currently there are three implementations included, NetBSD, Linux and FreeBSD, and two
 architectures, x86\_64 and i386. These have a few features missing but work ok.
 Additional implementations and architectures will be added soon.
+
+There is a wrapper called rumprun that can pass in files to use as block devices
+(network device support coming soon), and will also run the program in a seccomp
+sandbox on Linux or under Capsicum on FreeBSD. These are pretty aggressive, eg
+open cannot be called, but you may want to add further sandboxing in addition.
