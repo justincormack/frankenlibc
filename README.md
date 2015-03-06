@@ -31,6 +31,7 @@ There is very little to implement so this should not be onerous.
 
 NetBSD ABI:
 * clock\_gettime(CLOCK\_{REALTIME,MONOTONIC}, ...) clocks
+* clock\_getres(CLOCK\_{REALTIME,MONOTONIC}, ...) clock resolution
 * clock\_nanosleep(CLOCK\_MONOTONIC, 0, ...) sleep
 * mmap() map anonymous memory (page allocator)
 * munmap() unmap anonymous memory

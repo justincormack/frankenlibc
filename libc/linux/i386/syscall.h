@@ -32,6 +32,7 @@ name:; \
 #define SYS_ioctl			54
 #define SYS_kill			37
 #define SYS_clock_gettime		265
+#define SYS_clock_getres		266
 #define SYS_clock_nanosleep		267
 #define SYS_exit_group			252
 #define SYS_getrandom			355

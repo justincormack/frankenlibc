@@ -13,6 +13,7 @@ struct timespec { time_t tv_sec; long tv_nsec; };
 #define CLOCK_REALTIME 0
 #define CLOCK_MONOTONIC 3
 
+int clock_getres(clockid_t, struct timespec *);
 int clock_gettime(clockid_t, struct timespec *);
 int clock_nanosleep(clockid_t, int, const struct timespec *, struct timespec *);
 

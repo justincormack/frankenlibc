@@ -29,6 +29,7 @@
 #define strncpy(d, s, n) __franken_strncpy(d, s, n)
 
 /* time.h */
+#define clock_getres(c, t) __platform_clock_getres(c, t)
 #define clock_gettime(c, t) __platform_clock_gettime(c, t)
 #define clock_nanosleep(c, f, req, rem) __platform_clock_nanosleep(c, f, req, rem)
 

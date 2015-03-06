@@ -3,6 +3,7 @@ COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
 OBJ=$(CRTDIR)/crt1.o
+OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/__clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o 
@@ -28,6 +29,12 @@ $(CRTDIR):
 
 $(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c i386/crt1.c $(CRTOBJDIR) ../crt/__libc_start_main.c
 				$(COMPILE.c) -o $@ crt1.c
+
+$(OBJDIR)/__clock_getres.o:	__clock_getres.S $(HEADERS)
+				$(COMPILE.S) -o $@ __clock_getres.S
+
+$(OBJDIR)/clock_getres.o:	clock_getres.c $(HEADERS)
+				$(COMPILE.c) -o $@ clock_getres.c
 
 $(OBJDIR)/__clock_gettime.o:	__clock_gettime.S $(HEADERS)
 				$(COMPILE.S) -o $@ __clock_gettime.S

@@ -21,6 +21,7 @@ _syscall_return:; \
 #define SYS_ioctl			16
 #define SYS_kill			62
 #define SYS_clock_gettime		228
+#define SYS_clock_getres		229
 #define SYS_clock_nanosleep		230
 #define SYS_exit_group			231
 #define SYS_getrandom			318

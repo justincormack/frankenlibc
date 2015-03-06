@@ -22,6 +22,7 @@
 #define SYS_ioctl			54
 #define SYS_kill			37
 #define SYS___clock_gettime50		427
+#define SYS___clock_getres50		429
 #define SYS_clock_nanosleep		477
 #define SYS_exit			1
 #define SYS___sysctl			202

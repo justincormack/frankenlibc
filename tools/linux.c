@@ -39,6 +39,10 @@ filter_init(char *program)
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(clock_gettime), 0);
 	if (ret < 0) return ret;
 
+	/* clock_getres(x, y) */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(clock_getres), 0);
+	if (ret < 0) return ret;
+
 	/* clock_nanosleep(w, x, y, z) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(clock_nanosleep), 0);
 	if (ret < 0) return ret;
