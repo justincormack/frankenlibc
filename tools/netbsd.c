@@ -1,7 +1,7 @@
 #include "filter.h"
 
 int
-filter_init()
+filter_init(char *program)
 {
 
 	return 0;
