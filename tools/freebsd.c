@@ -1,4 +1,6 @@
 #include <sys/capability.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -33,6 +35,7 @@ filter_fd(int fd, int flags, mode_t mode)
 {
 	cap_rights_t rights;
 	int ret;
+	unsigned long ioctl[1] = {TIOCGETA};
 
 	/* XXX filter exact ioctl */
 	switch (flags) {
@@ -49,6 +52,9 @@ filter_fd(int fd, int flags, mode_t mode)
 		abort();
 	}
 	ret = cap_rights_limit(fd, &rights);
+	if (ret == -1) return ret;
+
+	ret = cap_ioctls_limit(fd, ioctl, 1);
 	if (ret == -1) return ret;
 
 	return 0;
