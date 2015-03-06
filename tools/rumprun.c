@@ -28,11 +28,16 @@ main(int argc, char **argv)
 	char *program = NULL;
 	char *pargs[argc];
 	int access = O_RDWR;
+	int ret;
 
 	if (argc < 2)
 		usage(argv[0]);
 
+	ret = filter_init();
+	if (ret < 0) abort();
+
 	for (i = 1; i < argc; i++) {
+		int fd;
 		char *arg = argv[i];
 
 		if (strcmp(arg, "-h") == 0)
@@ -54,10 +59,13 @@ main(int argc, char **argv)
 			i++;
 			break;			
 		}
-		if (open(arg, access) == -1) {
+		fd = open(arg, access);
+		if (fd == -1) {
 			perror("open");
 			exit(1);
 		}
+		ret = filter_fd(fd, access, 0); /* XXX add type from fstat */
+		if (ret < 0) abort();
 	}
 
 	for (; i < argc; i++)
@@ -67,6 +75,13 @@ main(int argc, char **argv)
 
 	for (; p < argc; p++)
 		pargs[p] = 0;
+
+	/* we need to allow this execve, means program could re-exec itself */
+	ret = filter_execve(program);
+	if (ret < 0) abort();
+
+	ret = filter_load();
+	if (ret < 0) abort();
 
 	if (execve(program, pargs, environ) == -1) {
 		perror("execve");
