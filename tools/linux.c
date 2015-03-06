@@ -93,14 +93,18 @@ filter_fd(int fd, int flags, mode_t mode)
 	int ret;
 
 	/* read(fd, x, y) */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
-		SCMP_A0(SCMP_CMP_EQ, fd));
-	if (ret < 0) return ret;
+	if (flags == O_RDONLY || flags == O_RDWR) {
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
+	}
 
 	/* write(fd, x, y) */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1,
-		SCMP_A0(SCMP_CMP_EQ, fd));
-	if (ret < 0) return ret;
+	if (flags == O_WRONLY || flags == O_RDWR) {
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
+	}
 
 	/* ioctl(fd, TCGETS, x) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
