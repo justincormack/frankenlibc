@@ -14,7 +14,7 @@ filter_init(char *program)
 	cap_rights_t rights;
 	int ret;
 
-	pfd = open(program, O_EXEC);
+	pfd = open(program, O_EXEC | O_CLOEXEC);
 	if (pfd == -1) {
 		perror("open");
 		exit(1);
