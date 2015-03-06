@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <time.h>
 
 /* this will develop into full wrapper */
 
@@ -84,12 +83,6 @@ main(int argc, char **argv)
 
 	ret = filter_load();
 	if (ret < 0) abort();
-
-	/* quick check that we are ok */
-	ts.tv_sec = 0;
-	ts.tv_nsec = 1000;
-	if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL) == -1)
-		write(1, "error\n", 6);
 
 	if (execve(program, pargs, environ) == -1) {
 		perror("execve");
