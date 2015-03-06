@@ -16,8 +16,8 @@ $(OBJDIR)/rumprun.o:	rumprun.c $(OBJDIR)
 $(OBJDIR)/linux.o:	linux.c $(OBJDIR)
 			$(COMPILE.c) -o $@ linux.c
 
-$(OBJDIR)/netbsd.o:	netbsd.c $(OBJDIR)
-			$(COMPILE.c) -o $@ netbsd.c
+$(OBJDIR)/dummy.o:	dummy.c $(OBJDIR)
+			$(COMPILE.c) -o $@ dummy.c
 
 $(OBJDIR)/freebsd.o:	freebsd.c $(OBJDIR)
 			$(COMPILE.c) -o $@ freebsd.c
@@ -25,12 +25,14 @@ $(OBJDIR)/freebsd.o:	freebsd.c $(OBJDIR)
 linux:			$(OBJ)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun -lseccomp 
 
-netbsd:			$(OBJ)
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun
+netbsd:			dummy
 
 freebsd:		$(OBJ)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun
 
-.PHONY:			clean linux netbsd freebsd
+dummy:			$(OBJDIR)/rumprun.o $(OBJDIR)/dummy.o
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJDIR)/rumprun.o $(OBJDIR)/dummy.o -o $(BINDIR)/rumprun
+
+.PHONY:			clean linux netbsd freebsd dummy
 clean:		
-			rm -f $(OUT) $(OBJ)
+			rm -f $(OUT) $(OBJDIR)/*.o

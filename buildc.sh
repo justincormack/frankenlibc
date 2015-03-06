@@ -6,7 +6,9 @@ CC=${CC-cc}
 OBJDIR=rumpobj
 RUMPSRC=rumpsrc
 
-OS=unknown
+OS="unknown"
+TOOLOS="unknown"
+
 TARGET="$(${CC} -v 2>&1 | grep 'Target:' )"
 if $(echo ${TARGET} | grep -q linux); then OS=linux
 elif $(echo ${TARGET} | grep -q netbsd); then OS=netbsd
@@ -21,6 +23,8 @@ helpme()
 	printf "Usage: $0 [-h] [options] [platform]\n"
 	printf "supported options:\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
+	printf "\tnoseccomp: disable Linux seccomp\n"
+	printf "\tnocapsicum: disable FreeBSD capsicum\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
 	printf "Supported platforms are currently: linux, netbsd\n"
@@ -62,6 +66,12 @@ for arg in "$@"; do
 	"clean")
 		${MAKE} clean
 		;;
+	"noseccomp")
+		TOOLOS="dummy"
+		;;
+	"nocapsicum")
+		TOOLOS="dummy"
+		;;
 	*)
 		OS=${arg}
 		;;
@@ -98,7 +108,11 @@ ${MAKE} OS=${OS} -C libc
 
 ${MAKE} -C librumpuser
 
-${MAKE} OS=${OS} -C tools
+if [ ${TOOLOS} = "unknown" ]; then
+	TOOLOS=${OS}
+fi
+
+${MAKE} OS=${TOOLOS} -C tools
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
