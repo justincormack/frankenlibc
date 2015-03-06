@@ -33,6 +33,7 @@ int
 main(int argc, char **argv)
 {
 	int i, p = 0;
+	int fd;
 	char *program = NULL;
 	char *pargs[argc];
 	int access = O_RDWR;
@@ -56,7 +57,6 @@ main(int argc, char **argv)
 	fds[2].mode = 0;
 
 	for (i = 1; i < argc; i++) {
-		int fd;
 		char *arg = argv[i];
 
 		if (strcmp(arg, "-h") == 0)
@@ -83,9 +83,10 @@ main(int argc, char **argv)
 			perror("open");
 			exit(1);
 		}
-		fds[nfds++].fd = fd;
-		fds[nfds++].flags = access;
-		fds[nfds++].mode = 0;
+		fds[nfds].fd = fd;
+		fds[nfds].flags = access;
+		fds[nfds].mode = 0;
+		nfds++;
 	}
 
 	for (; i < argc; i++)
