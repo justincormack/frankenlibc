@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <time.h>
 
 /* this will develop into full wrapper */
 
@@ -29,6 +30,7 @@ main(int argc, char **argv)
 	char *pargs[argc];
 	int access = O_RDWR;
 	int ret;
+	struct timespec ts;
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -76,12 +78,18 @@ main(int argc, char **argv)
 	for (; p < argc; p++)
 		pargs[p] = 0;
 
-	/* we need to allow this execve, means program could re-exec itself */
-	ret = filter_execve(program);
+	/* only fexecve with a CLOEXEC fd really safe here */
+	ret = filter_execve(-1);
 	if (ret < 0) abort();
 
 	ret = filter_load();
 	if (ret < 0) abort();
+
+	/* quick check that we are ok */
+	ts.tv_sec = 0;
+	ts.tv_nsec = 1000;
+	if (clock_nanosleep(CLOCK_MONOTONIC, 0, &ts, NULL) == -1)
+		write(1, "error\n", 6);
 
 	if (execve(program, pargs, environ) == -1) {
 		perror("execve");

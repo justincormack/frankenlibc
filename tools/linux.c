@@ -18,8 +18,7 @@ filter_init()
 {
 	int ret;
 
-	//ctx = seccomp_init(SCMP_ACT_KILL);
-	ctx = seccomp_init(SCMP_ACT_TRAP);
+	ctx = seccomp_init(SCMP_ACT_KILL);
 	if (ctx == NULL)
 		return -1;
 
@@ -32,6 +31,10 @@ filter_init()
 
 	/* exit(x) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(exit), 0);
+	if (ret < 0) return ret;
+
+	/* exit_group(x) */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(exit_group), 0);
 	if (ret < 0) return ret;
 
 	/* clock_gettime(x, y) */
@@ -62,6 +65,10 @@ filter_init()
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mprotect), 0);
 	if (ret < 0) return ret;
 
+	/* for now allow all mmap, as normal permissions will filter */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 0);
+	if (ret < 0) return ret;
+
 	/* munmap(a, b) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(munmap), 0);
 	if (ret < 0) return ret;
@@ -79,11 +86,6 @@ filter_fd(int fd, int flags, mode_t mode)
 		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TCGETS));
 	if (ret < 0) return ret;
 
-	/* mmap(a, b, c, d, fd, e) XXX only for blockdev, with perms */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 1,
-		SCMP_A4(SCMP_CMP_EQ, fd));
-	if (ret < 0) return ret;
-
 	/* read(fd, x, y) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
 		SCMP_A0(SCMP_CMP_EQ, fd));
@@ -98,12 +100,12 @@ filter_fd(int fd, int flags, mode_t mode)
 }
 
 int
-filter_execve(program)
+filter_execve(int fd)
 {
 	int ret;
 
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 1,
-		SCMP_A0(SCMP_CMP_EQ, program));
+	/* only fexecve really safe */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0);
 	if (ret < 0) return ret;
 
 	return 0;
@@ -113,6 +115,8 @@ int
 filter_load()
 {
 	int ret;
+
+	/* seccomp_export_pfc(ctx, 1); */
 
 	ret = seccomp_load(ctx);
 	if (ret < 0) return ret;
