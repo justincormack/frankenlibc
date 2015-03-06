@@ -14,7 +14,7 @@
 scmp_filter_ctx ctx;
 
 int
-filter_init()
+filter_init(char *program)
 {
 	int ret, i;
 

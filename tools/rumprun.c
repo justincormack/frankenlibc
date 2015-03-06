@@ -23,6 +23,12 @@ usage(char *name)
 	exit(1);
 }
 
+struct fdinfo {
+	int fd;
+	int flags;
+	mode_t mode;
+};
+
 int
 main(int argc, char **argv)
 {
@@ -32,12 +38,22 @@ main(int argc, char **argv)
 	int access = O_RDWR;
 	int ret;
 	struct timespec ts;
+	struct fdinfo *fds;
+	int nfds = 3;
 
 	if (argc < 2)
 		usage(argv[0]);
 
-	ret = filter_init();
-	if (ret < 0) abort();
+	fds = (struct fdinfo *) calloc(argc + 3, sizeof(struct fdinfo));
+	fds[0].fd = 0;
+	fds[0].flags = O_RDONLY;
+	fds[0].mode = 0;
+	fds[1].fd = 1;
+	fds[1].flags = O_WRONLY;
+	fds[1].mode = 0;
+	fds[2].fd = 2;
+	fds[2].flags = O_WRONLY;
+	fds[2].mode = 0;
 
 	for (i = 1; i < argc; i++) {
 		int fd;
@@ -67,8 +83,9 @@ main(int argc, char **argv)
 			perror("open");
 			exit(1);
 		}
-		ret = filter_fd(fd, access, 0); /* XXX add type from fstat */
-		if (ret < 0) abort();
+		fds[nfds++].fd = fd;
+		fds[nfds++].flags = access;
+		fds[nfds++].mode = 0;
 	}
 
 	for (; i < argc; i++)
@@ -78,6 +95,14 @@ main(int argc, char **argv)
 
 	for (; p < argc; p++)
 		pargs[p] = 0;
+
+	ret = filter_init(program);
+	if (ret < 0) abort();
+
+	for (i = 0; i < nfds; i++) {
+		ret = filter_fd(fds[i].fd, fds[i].flags, fds[i].mode);
+		if (ret < 0) abort();
+	}
 
 	ret = filter_load_exec(program, pargs, environ);
 	if (ret < 0) abort();
