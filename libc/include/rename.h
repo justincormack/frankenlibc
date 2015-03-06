@@ -40,6 +40,7 @@
 /* unistd.h */
 #define getpagesize __platform_getpagesize
 #define isatty(f) __platform_isatty(f)
+#define read(f, b, c) __platform_read(f, b, c)
 #define write(f, b, c) __platform_write(f, b, c)
 
 /* sys/stat.h */

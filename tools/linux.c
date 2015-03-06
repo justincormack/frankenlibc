@@ -16,13 +16,11 @@ scmp_filter_ctx ctx;
 int
 filter_init()
 {
-	int ret;
+	int ret, i;
 
 	ctx = seccomp_init(SCMP_ACT_KILL);
 	if (ctx == NULL)
 		return -1;
-
-	/* add base allowed calls */
 
 	/* arch_prctl(ARCH_SET_FS, x) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW,
@@ -49,6 +47,15 @@ filter_init()
 #ifdef __NR_getrandom 
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getrandom), 0);
 	if (ret < 0) return ret;
+#else
+	{
+		int fd = open("/dev/urandom", O_RDONLY);
+
+		if (fd == -1) return -1;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
+	}
 #endif
 
 	/* kill(0, SIGABRT) */
@@ -73,6 +80,25 @@ filter_init()
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(munmap), 0);
 	if (ret < 0) return ret;
 
+	/* fstat(a, b) as used to check for existence */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fstat), 0);
+	if (ret < 0) return ret;
+
+	/* stdin, stdout, stderr: read/write, ioctl TCGETS */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
+		SCMP_A0(SCMP_CMP_EQ, 0));
+	if (ret < 0) return ret;
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1,
+		SCMP_A0(SCMP_CMP_EQ, 1));
+	if (ret < 0) return ret;
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1,
+		SCMP_A0(SCMP_CMP_EQ, 2));
+	if (ret < 0) return ret;
+	for (i = 0; i < 3; i++) {
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
+			SCMP_A0(SCMP_CMP_EQ, i), SCMP_A1(SCMP_CMP_EQ, TCGETS));
+		if (ret < 0) return ret;
+	}
 	return 0;
 }
 
@@ -80,11 +106,6 @@ int
 filter_fd(int fd, int flags, mode_t mode)
 {
 	int ret;
-
-	/* ioctl(fd, TCGETS, y) */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
-		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TCGETS));
-	if (ret < 0) return ret;
 
 	/* read(fd, x, y) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,

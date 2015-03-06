@@ -3,6 +3,8 @@
 
 #include "linux.h"
 
+extern int __platform_random_fd;
+
 int __fstat(int, struct linux_stat *);
 
 int
@@ -25,6 +27,10 @@ fstat(int fd, struct stat *st)
 		      (LINUX_S_ISFIFO(lst.st_mode) ? S_IFIFO  : 0) |
 		      (LINUX_S_ISLNK (lst.st_mode) ? S_IFLNK  : 0) |
 		      (LINUX_S_ISSOCK(lst.st_mode) ? S_IFSOCK : 0);
+
+	/* if we are passed in /dev/urandom use as a random source */
+	if (LINUX_S_ISCHR(lst.st_mode) && lst.st_rdev == linux_makedev(1, 9))
+		__platform_random_fd = fd;
 
 	return 0;
 }
