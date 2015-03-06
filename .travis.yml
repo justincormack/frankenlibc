@@ -1,5 +1,8 @@
 language: c
 
+before_install:
+  - apt-get install libseccomp-dev
+
 compiler:
   - gcc
   - clang
