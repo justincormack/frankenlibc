@@ -37,7 +37,6 @@ filter_fd(int fd, int flags, mode_t mode)
 	int ret;
 	unsigned long ioctl[1] = {TIOCGETA};
 
-	/* XXX filter exact ioctl */
 	switch (flags) {
 	case O_RDONLY:
 		cap_rights_init(&rights, CAP_READ, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_R);
