@@ -3,7 +3,7 @@ COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rump/lib
 OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o
 OBJ+=$(OBJDIR)/crtbegin.o $(OBJDIR)/crtbeginT.o
-OBJ+=$(OBJDIR)/crtend.o
+OBJ+=$(OBJDIR)/crtend.o $(OBJDIR)/Scrt1.o
 CPPFLAGS+=-nostdinc
 CFLAGS+=-fno-stack-protector
 
@@ -14,6 +14,9 @@ $(OBJDIR):
 
 $(OBJDIR)/crti.o:	crti.c
 			$(COMPILE.c) -o $@ crti.c
+
+$(OBJDIR)/Scrt1.o:	Scrt1.c
+			$(COMPILE.c) -o $@ Scrt1.c
 
 $(OBJDIR)/crtn.o:	crtn.c
 			$(COMPILE.c) -o $@ crtn.c
