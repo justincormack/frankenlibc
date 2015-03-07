@@ -2,7 +2,7 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
-OBJ=$(CRTDIR)/crt1.o
+OBJ=$(CRTDIR)/crt1.o $(CRTDIR)/Scrt1.o
 OBJ+=$(OBJDIR)/arch_prctl.o
 OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/__clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
@@ -32,6 +32,9 @@ $(CRTDIR):
 
 $(CRTDIR)/crt1.o:		crt1.c i386/crt1.c x86_64/crt1.c ../crt/__libc_start_main.c
 				$(COMPILE.c) -o $@ crt1.c
+
+$(CRTDIR)/Scrt1.o:		$(CRTDIR)/crt1.o
+				ln $(CRTDIR)/crt1.o $@
 
 $(OBJDIR)/arch_prctl.o:		arch_prctl.S $(HEADERS)
 				$(COMPILE.S) -o $@ arch_prctl.S
@@ -113,4 +116,4 @@ $(OBJDIR)/write.o:		write.S $(HEADERS)
 
 .PHONY:				clean
 clean:		
-				rm -f $(OBJ)
+				rm -f $(OBJDIR)/*.o $(CRTDIR)/*.o

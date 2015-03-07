@@ -96,4 +96,4 @@ $(OBJDIR)/write.o:		write.S $(HEADERS)
 
 .PHONY:				clean
 clean:		
-				rm -f $(OBJ) $(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o
+				rm -f rm -f $(OBJDIR)/*.o $(CRTDIR)/*.o $(CRTOBJDIR)/*.o

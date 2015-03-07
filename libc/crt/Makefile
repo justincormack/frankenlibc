@@ -15,9 +15,6 @@ $(OBJDIR):
 $(OBJDIR)/crti.o:	crti.c
 			$(COMPILE.c) -o $@ crti.c
 
-$(OBJDIR)/Scrt1.o:	Scrt1.c
-			$(COMPILE.c) -o $@ Scrt1.c
-
 $(OBJDIR)/crtn.o:	crtn.c
 			$(COMPILE.c) -o $@ crtn.c
 
