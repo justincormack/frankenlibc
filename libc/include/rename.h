@@ -44,6 +44,9 @@
 #define read(f, b, c) __platform_read(f, b, c)
 #define write(f, b, c) __platform_write(f, b, c)
 
+/* sys.mman.h */
+#define mmap(a, b, c, d, e, f) __platform_mmap(a, b, c, d, e, f)
+
 /* sys/stat.h */
 #define fstat(f, s) __platform_fstat(f, s)
 

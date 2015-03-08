@@ -9,7 +9,7 @@ OBJ+=$(OBJDIR)/stub_kill.o $(OBJDIR)/stub___lfs_segwait50.o
 OBJ+=$(OBJDIR)/stub_madvise.o $(OBJDIR)/stub___minbrk.o
 OBJ+=$(OBJDIR)/stub_minherit.o
 OBJ+=$(OBJDIR)/stub_mlock.o $(OBJDIR)/stub_mlockall.o
-OBJ+=$(OBJDIR)/stub__mmap.o
+OBJ+=$(OBJDIR)/stub_mmap.o $(OBJDIR)/stub__mmap.o
 OBJ+=$(OBJDIR)/stub___msgctl50.o $(OBJDIR)/stub___msync13.o
 OBJ+=$(OBJDIR)/stub___mq_timedreceive50.o $(OBJDIR)/stub___mq_timedsend50.o
 OBJ+=$(OBJDIR)/stub_munlock.o $(OBJDIR)/stub_munlockall.o
@@ -75,6 +75,9 @@ $(OBJDIR)/stub_mlock.o:			mlock.c
 
 $(OBJDIR)/stub_mlockall.o:		mlockall.c
 					$(COMPILE.c) -o $@ mlockall.c
+
+$(OBJDIR)/stub_mmap.o:			mmap.c
+					$(COMPILE.c) -o $@ mmap.c
 
 $(OBJDIR)/stub__mmap.o:			_mmap.c
 					$(COMPILE.c) -o $@ _mmap.c

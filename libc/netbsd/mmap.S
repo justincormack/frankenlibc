@@ -1,7 +1,7 @@
 #include "syscall.h"
 
 #ifdef SYSCALL_MMAP
-SYSCALL_MMAP(mmap, mmap);
+SYSCALL_MMAP(mmap, __platform_mmap);
 #else
-SYSCALL(mmap, mmap);
+SYSCALL(mmap, __platform_mmap);
 #endif

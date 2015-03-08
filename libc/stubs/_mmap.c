@@ -10,5 +10,5 @@ _mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 		return MAP_FAILED;
 	}
 
-	return mmap(addr, length, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, fd, offset);
+	return mmap(addr, length, prot, flags, fd, offset);
 }
