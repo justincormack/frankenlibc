@@ -36,10 +36,10 @@ $(OUTDIR)/mmap:		mmap.c $(OUTDIR)/libc.a
 
 .PHONY:			test
 test:			$(OUTDIR) $(FILES)
-			$(OUTDIR)/args franken rump || exit 1
-			FRANKEN=RUMP $(OUTDIR)/env || exit 1
-			$(OUTDIR)/_exit || exit 1
-			$(OUTDIR)/mmap || exit 1
+			$(OUTDIR)/args franken rump
+			FRANKEN=RUMP $(OUTDIR)/env
+			$(OUTDIR)/_exit
+			$(OUTDIR)/mmap
 
 .PHONY:			clean
 clean:			
