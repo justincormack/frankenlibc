@@ -25,6 +25,7 @@ helpme()
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\tnoseccomp: disable Linux seccomp\n"
 	printf "\tnocapsicum: disable FreeBSD capsicum\n"
+	printf "\tdeterministic: make deterministic\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
 	printf "Supported platforms are currently: linux, netbsd\n"
@@ -72,6 +73,12 @@ for arg in "$@"; do
 	"nocapsicum")
 		TOOLOS="dummy"
 		;;
+	"deterministic")
+		DETERMINISTIC="deterministic"
+		;;
+	"det")
+		DETERMINISTIC="deterministic"
+		;;
 	*)
 		OS=${arg}
 		;;
@@ -112,7 +119,7 @@ if [ ${TOOLOS} = "unknown" ]; then
 	TOOLOS=${OS}
 fi
 
-${MAKE} OS=${TOOLOS} -C tools
+${MAKE} OS=${TOOLOS} DETERMINISTIC=${DETERMINISTIC} -C tools
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"

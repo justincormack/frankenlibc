@@ -60,7 +60,9 @@ support a full application stack on the rump kernel.
 
 Currently there are three implementations included, NetBSD, Linux and FreeBSD, and two
 architectures, x86\_64 and i386. These have a few features missing but work ok.
-Additional implementations and architectures will be added soon.
+Additional implementations and architectures will be added soon. There is also
+an option to build a deterministic version with no random numbers and a fake
+clock, so runs are completely repeatable.
 
 There is a wrapper called rumprun that can pass in files to use as block devices
 (network device support coming soon), and will also run the program in a seccomp

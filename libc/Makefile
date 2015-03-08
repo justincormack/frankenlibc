@@ -13,7 +13,11 @@ default:	$(DIRS) $(LIB)
 $(DIRS):	
 		$(MAKE) OS=$(OS) -C $@
 
-$(LIB):		$(DIRS)
+deterministic:	$(DIRS)
+		$(MAKE) -C $@ clean
+		$(MAKE) -C $@
+
+$(LIB):		$(DIRS) $(DETERMINISTIC)
 		mkdir -p $(OBJDIR)
 		$(AR) cr $@ $(OBJDIR)/*.o
 		$(RANLIB) $@
@@ -22,7 +26,7 @@ test:		default
 		$(MAKE) -C $@
 
 clean:		
-		for dir in freebsd linux netbsd $(GDIRS) test; \
+		for dir in freebsd linux netbsd $(GDIRS) test deterministic; \
 		do \
 			$(MAKE) -C $$dir OS= clean; \
 		done
