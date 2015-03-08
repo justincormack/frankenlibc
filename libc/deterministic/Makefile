@@ -5,6 +5,8 @@ OBJ=$(OBJDIR)/clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/getrandom.o
+CLEANOBJ=$(OBJ) $(OBJDIR)/__clock_getres.o $(OBJDIR)/__clock_gettime.o
+CLEANOBJ+=$(OBJDIR)/__clock_nanosleep.o $(OBJDIR)/__getrandom.o
 INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
@@ -28,4 +30,4 @@ $(OBJDIR)/getrandom.o:		getrandom.c $(HEADERS)
 
 .PHONY:				clean
 clean:		
-				rm -f $(OBJ)
+				rm -f $(CLEANOBJ)
