@@ -36,4 +36,3 @@ name:; \
 #define SYS_clock_nanosleep		267
 #define SYS_exit_group			252
 #define SYS_getrandom			355
-#define SYS_arch_prctl			158
