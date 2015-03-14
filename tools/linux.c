@@ -68,9 +68,15 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* mmap(a, b, c, d, -1, e) */
+#ifdef __NR_mmap2
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap2), 1,
+		SCMP_A5(SCMP_CMP_EQ, -1));
+	if (ret < 0) return ret;
+#else
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 1,
 		SCMP_A5(SCMP_CMP_EQ, -1));
 	if (ret < 0) return ret;
+#endif
 
 	/* mprotext(a, b, c) XXX allow disable exec */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mprotect), 0);
