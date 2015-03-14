@@ -12,6 +12,7 @@ name:; \
 	mov	0x1c(%esp), %edx; \
 	mov	0x20(%esp), %esi; \
 	mov	0x24(%esp), %edi; \
+	mov	0x28(%esp), %ebp; \
 	int	$0x80; \
 	pop	%ebp; \
 	pop	%edi; \
