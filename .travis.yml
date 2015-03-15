@@ -9,4 +9,4 @@ compiler:
   - clang
 
 script:
-  - ./buildc.sh
+  - ./buildc.sh noseccomp
