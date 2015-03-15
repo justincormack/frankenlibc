@@ -126,7 +126,7 @@ int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
-#ifdef NR_execveat
+#ifdef SYS_execveat
 	int fd = open(program, O_RDONLY | O_CLOEXEC);
 
 	if (fd == -1) {
@@ -137,14 +137,14 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	/* only working fexecve using execveat really safe
 	   but this is not widely available yet */
-#ifndef NR_execveat
+#ifndef SYS_execveat
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0);
-	if (ret < 0) return ret;
 #else
 	/* lock down execveat to just the one we need to exec program */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 2
 		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A5(SCMP_CMP_EQ, AT_EMPTY_PATH));
 #endif
+	if (ret < 0) return ret;
 
 	/* seccomp_export_pfc(ctx, 1); */
 
@@ -153,7 +153,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	seccomp_release(ctx);
 
-#ifndef NR_execveat
+#ifndef SYS_execveat
 	if (execve(program, argv, envp) == -1) {
 		perror("execve");
 		exit(1);
