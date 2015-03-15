@@ -23,9 +23,11 @@ filter_init(char *program)
 		return -1;
 
 	/* arch_prctl(ARCH_SET_FS, x) */
+#ifdef __NR_arch_prctl
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW,
 		SCMP_SYS(arch_prctl), 1, SCMP_A0(SCMP_CMP_EQ, ARCH_SET_FS));
 	if (ret < 0) return ret;
+#endif
 
 	/* exit(x) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(exit), 0);
@@ -69,21 +71,14 @@ filter_init(char *program)
 
 	/* mmap(a, b, c, d, -1, e) */
 #ifdef __NR_mmap2
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap2), 1,
-		SCMP_A5(SCMP_CMP_EQ, -1));
-	if (ret < 0) return ret;
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap2), 0);
 #else
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 1,
-		SCMP_A5(SCMP_CMP_EQ, -1));
-	if (ret < 0) return ret;
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 0);
 #endif
+	if (ret < 0) return ret;
 
 	/* mprotext(a, b, c) XXX allow disable exec */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mprotect), 0);
-	if (ret < 0) return ret;
-
-	/* for now allow all mmap, as normal permissions will filter */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 0);
 	if (ret < 0) return ret;
 
 	/* munmap(a, b) */
@@ -91,7 +86,11 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* fstat(a, b) as used to check for existence */
+#ifdef __NR_fstat64
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fstat64), 0);
+#else
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fstat), 0);
+#endif
 	if (ret < 0) return ret;
 
 	return 0;
