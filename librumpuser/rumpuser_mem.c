@@ -32,23 +32,32 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <rump/rumpuser.h>
 
 #include "rumpuser_int.h"
 
+static int pagesize = 0;
+
 int
-rumpuser_malloc(size_t howmuch, int alignment, void **memp)
+rumpuser_malloc(size_t size, int alignment, void **memp)
 {
 	void *mem;
 	int af = 0;
+
+	pagesize = (pagesize == 0) ? getpagesize() : pagesize;
+
+	if (size < pagesize) {
+		return posix_memalign(memp, alignment, size);
+	}
 
 	while (alignment > 1) {
 		alignment >>= 1;
 		af++;
 	}
 
-	mem = mmap(0, howmuch, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(af), -1, 0);
+	mem = mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(af), -1, 0);
 	if (mem == MAP_FAILED) {
 		return EINVAL;
 	}
@@ -62,7 +71,10 @@ void
 rumpuser_free(void *ptr, size_t size)
 {
 
-	munmap(ptr, size);
+	if (size < pagesize)
+		free(ptr);
+	else
+		munmap(ptr, size);
 }
 
 int
