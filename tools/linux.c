@@ -23,9 +23,9 @@ filter_init(char *program)
 		return -1;
 
 	/* arch_prctl(ARCH_SET_FS, x) */
-#ifdef __NR_arch_prctl
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW,
-		SCMP_SYS(arch_prctl), 1, SCMP_A0(SCMP_CMP_EQ, ARCH_SET_FS));
+#ifdef SYS_arch_prctl
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(arch_prctl), 1,
+		SCMP_A0(SCMP_CMP_EQ, ARCH_SET_FS));
 	if (ret < 0) return ret;
 #endif
 
@@ -50,7 +50,7 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* getrandom(x, y, z) */
-#ifdef __NR_getrandom 
+#ifdef SYS_getrandom
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getrandom), 0);
 	if (ret < 0) return ret;
 #else
@@ -70,7 +70,7 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* mmap(a, b, c, d, -1, e) */
-#ifdef __NR_mmap2
+#ifdef SYS_mmap2
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap2), 0);
 #else
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 0);
@@ -86,7 +86,7 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* fstat(a, b) as used to check for existence */
-#ifdef __NR_fstat64
+#ifdef SYS_fstat64
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fstat64), 0);
 #else
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fstat), 0);
@@ -135,8 +135,6 @@ filter_load_exec(char *program, char **argv, char **envp)
 	}
 #endif
 
-	/* seccomp_export_pfc(ctx, 1); */
-
 	/* only working fexecve using execveat really safe
 	   but this is not widely available yet */
 #ifndef NR_execveat
@@ -147,6 +145,8 @@ filter_load_exec(char *program, char **argv, char **envp)
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 2
 		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A5(SCMP_CMP_EQ, AT_EMPTY_PATH));
 #endif
+
+	/* seccomp_export_pfc(ctx, 1); */
 
 	ret = seccomp_load(ctx);
 	if (ret < 0) return ret;
