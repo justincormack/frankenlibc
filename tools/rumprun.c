@@ -98,15 +98,24 @@ main(int argc, char **argv)
 		pargs[p] = 0;
 
 	ret = filter_init(program);
-	if (ret < 0) abort();
+	if (ret < 0) {
+		fprintf(stderr, "filter_init failed\n");
+		abort();
+	}
 
 	for (i = 0; i < nfds; i++) {
 		ret = filter_fd(fds[i].fd, fds[i].flags, fds[i].mode);
-		if (ret < 0) abort();
+		if (ret < 0) {
+			fprintf(stderr, "filter_fd failed\n");
+			abort();
+		}
 	}
 
 	ret = filter_load_exec(program, pargs, environ);
-	if (ret < 0) abort();
+	if (ret < 0) {
+		fprintf(stderr, "filter_load_exec failed\n");
+		abort();
+	}
 
 	return 0;	
 }
