@@ -15,6 +15,8 @@ void *__mmap(void *, size_t, int, int, int, uint32_t);
 void *__mmap(void *, size_t, int, int, int, off_t);
 #endif
 
+extern size_t __platform_pagesize;
+
 void *
 mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 {
@@ -35,7 +37,7 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	}
 #endif
 
-	if (align == 0 || (1L << align) <= getpagesize()) {
+	if (align == 0 || (1L << align) <= __platform_pagesize) {
 		return __mmap(addr, length, prot, flags, fd, offset);
 	}
 
