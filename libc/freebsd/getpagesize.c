@@ -7,6 +7,14 @@
 
 int __platform_sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 
+#ifdef HUGEPAGESIZE
+int
+getpagesize(void)
+{
+
+	return HUGEPAGESIZE;
+}
+#else
 int
 getpagesize(void)
 {
@@ -24,3 +32,4 @@ getpagesize(void)
 
 	return pgsize;
 }
+#endif

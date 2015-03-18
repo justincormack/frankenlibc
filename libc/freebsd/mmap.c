@@ -30,7 +30,7 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 		flags &= ~MAP_ALIGNMENT_MASK;
 
 #ifdef HUGEPAGESIZE
-	if (usehuge && length >= HUGEPAGESIZE && align == 0) {
+	if (usehuge && length >= HUGEPAGESIZE && ((flags & MAP_ALIGNMENT_MASK) == 0)) {
 		void *mem = __mmap(addr, length, prot, flags | FREEBSD_MAP_ALIGNED_SUPER, fd, offset);
 		if (mem != MAP_FAILED)
 			return mem;
