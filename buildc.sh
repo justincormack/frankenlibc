@@ -22,6 +22,7 @@ helpme()
 {
 	printf "Usage: $0 [-h] [options] [platform]\n"
 	printf "supported options:\n"
+	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\tnoseccomp: disable Linux seccomp\n"
 	printf "\tnocapsicum: disable FreeBSD capsicum\n"
@@ -32,7 +33,30 @@ helpme()
 	exit 1
 }
 
-while getopts '?F:Hhj:qs:V:' opt; do
+bytes()
+{
+	value=$(echo "$1" | sed 's/[^0123456789].*$//g')
+	units=$(echo "$1" | sed 's/^[0123456789]*//g')
+
+	case "$units" in
+	"kb"|"k"|"KB"|"K")
+		value=$((${value} * 1024))
+		;;
+	"mb"|"m"|"MB"|"M")
+		value=$((${value} * 1048576))
+		;;
+	"gb"|"g"|"GB"|"G")
+		value=$((${value} * 1073741824))
+		;;
+	*)
+		die "Bad huge page size"
+		;;
+	esac
+
+	echo ${value}
+}
+
+while getopts '?F:Hhj:p:qs:V:' opt; do
 	case "$opt" in
 	"F")
 		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
@@ -45,6 +69,10 @@ while getopts '?F:Hhj:qs:V:' opt; do
 		;;
 	"j")
 		STDJ=${OPTARG}
+		;;
+	"p")
+		SIZE=$(bytes ${OPTARG})
+		HUGEPAGESIZE="-DHUGEPAGESIZE=${SIZE}"
 		;;
 	"q")
 		BUILD_QUIET=${BUILD_QUIET:=-}q
@@ -107,7 +135,7 @@ fi
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
-export CFLAGS="${CFLAGS} -g"
+export CFLAGS="${CFLAGS} -g ${HUGEPAGESIZE}"
 export ASFLAGS="${ASFLAGS} -g"
 export AFLAGS="${ASFLAGS}"
 
