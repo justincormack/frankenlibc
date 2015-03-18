@@ -50,7 +50,7 @@ $(OBJDIR)/getenv.o:		getenv.c
 $(OBJDIR)/isspace.o:		isspace.c
 				$(COMPILE.c) -o $@ isspace.c
 
-$(OBJDIR)/makecontext.o:	makecontext.c i386/makecontext.c x86_64/makecontext.c
+$(OBJDIR)/makecontext.o:	makecontext.c arm/makecontext.c i386/makecontext.c x86_64/makecontext.c
 				$(COMPILE.c) -o $@ makecontext.c
 
 $(OBJDIR)/malloc.o:		malloc.c
@@ -92,7 +92,7 @@ $(OBJDIR)/strncmp.o:		strncmp.c
 $(OBJDIR)/strncpy.o:		strncpy.c
 				$(COMPILE.c) -o $@ strncpy.c
 
-$(OBJDIR)/swapcontext.o:	swapcontext.S i386/swapcontext.S x86_64/swapcontext.S
+$(OBJDIR)/swapcontext.o:	swapcontext.S arm/swapcontext.S i386/swapcontext.S x86_64/swapcontext.S
 				$(COMPILE.S) -o $@ swapcontext.S
 
 .PHONY:				clean

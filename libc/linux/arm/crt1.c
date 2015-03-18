@@ -9,6 +9,5 @@ __asm__ (".text\n\t"
 	 "add	%r2, %r2, %r2\n\t"
 	 "add	%r2, %r2, %r2\n\t"
 	 "add	%r2, %r1, %r2\n\t"
-	 "and	%sp, %sp, #-16\n\t"
 	 "bl	__platform_init\n\t"
 	 "mov	%pc, %lr\n\t");
