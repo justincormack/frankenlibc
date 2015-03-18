@@ -16,7 +16,7 @@
 #define PLATFORM_RND_FD 2
 
 extern size_t __platform_random;
-extern int __platform_random_fd = -1;
+extern int __platform_random_fd;
 
 int __linux_randsrc = PLATFORM_RND_AT;
 

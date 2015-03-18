@@ -3,7 +3,7 @@
 
 #include "linux.h"
 
-int __platform_random_fd;
+int __platform_random_fd = -1;
 
 int __fstat(int, struct linux_stat *);
 
