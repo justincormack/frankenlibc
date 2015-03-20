@@ -81,12 +81,11 @@ __franken_fdinit()
 			}
 			__franken_fd[fd].mem = mem;
 			key = mkkey(__franken_fd[fd].key, "/dev/fd", fd);
-			if (rump_pub_etfs_register(key, &key[7], RUMP_ETFS_REG) == 0) {
-				break;
-			}
+			rump_pub_etfs_register(key, &key[7], RUMP_ETFS_REG);
 			break;
 		case S_IFBLK:
-			/* XXX handle block devices but not via mmap */
+			key = mkkey(__franken_fd[fd].key, "/dev/fd", fd);
+			rump_pub_etfs_register(key, &key[7], RUMP_ETFS_BLK);
 			break;
 		case S_IFSOCK:
 			/* XXX probably a tap device for network */
