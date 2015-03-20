@@ -141,7 +141,7 @@ int
 rumpuser_syncfd(int fd, int flags, uint64_t start, uint64_t len)
 {
 
-	/* XXX need to add msync */
+	/* XXX would need msync, but not used anywhere in tree */
 	return 0;
 }
 
@@ -167,6 +167,8 @@ rumpuser_bio(int fd, int op, void *data, size_t dlen, int64_t doff,
 		memcpy(data, __franken_fd[fd].mem + doff, dlen);
 	else
 		memcpy(__franken_fd[fd].mem + doff, data, dlen);
+
+	/* XXX support sync */
 
 	biodone(bioarg, (size_t)dlen, 0);
 }
