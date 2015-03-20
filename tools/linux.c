@@ -1,6 +1,7 @@
 #include <seccomp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -10,6 +11,8 @@
 #include <sys/prctl.h>
 #include <sys/ioctl.h>
 #include <sys/syscall.h>
+#include <net/if.h>
+#include <linux/if_tun.h>
 
 scmp_filter_ctx ctx;
 
@@ -166,4 +169,23 @@ filter_load_exec(char *program, char **argv, char **envp)
 #endif
 
 	return 0;
+}
+
+int
+tapopen(char *name)
+{
+	struct ifreq ifr;
+	int fd;
+
+	/* strip /dev/ from ifname */
+	strncpy(ifr.ifr_name, &name[5], IFNAMSIZ);
+
+	fd = open("/dev/net/tun", O_RDWR);
+	if (fd == -1)
+		return -1;
+
+	if (ioctl(fd, TUNSETIFF, &ifr) == -1)
+		return -1;
+
+	return fd;
 }

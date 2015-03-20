@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "filter.h"
+#include "rumprun.h"
 
 /* this will develop into full wrapper */
 
@@ -78,10 +78,18 @@ main(int argc, char **argv)
 			i++;
 			break;			
 		}
-		fd = open(arg, access);
-		if (fd == -1) {
-			perror("open");
-			exit(1);
+		if (strncmp(arg, "/dev/tap", 8) == 0) {
+			fd = tapopen(arg);
+			if (fd == -1) {
+				perror("tapopen");
+				exit(1);
+			}
+		} else {
+			fd = open(arg, access);
+			if (fd == -1) {
+				perror("open");
+				exit(1);
+			}
 		}
 		fds[nfds].fd = fd;
 		fds[nfds].flags = access;

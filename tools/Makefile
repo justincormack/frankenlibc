@@ -4,22 +4,24 @@ OBJDIR=../rumpobj/tools
 BINDIR=../rump/bin
 OUT=$(BINDIR)/rumprun
 OBJ=$(OBJDIR)/rumprun.o $(OBJDIR)/${OS}.o
+INC=rumprun.h
+DEPS=$(INC) $(OBJDIR)
 
 default:		$(OS)
 
 $(OBJDIR):		
 			mkdir -p $(OBJDIR)
 
-$(OBJDIR)/rumprun.o:	rumprun.c $(OBJDIR)
+$(OBJDIR)/rumprun.o:	rumprun.c $(DEPS)
 			$(COMPILE.c) -o $@ rumprun.c
 
-$(OBJDIR)/linux.o:	linux.c $(OBJDIR)
+$(OBJDIR)/linux.o:	linux.c $(DEPS)
 			$(COMPILE.c) -o $@ linux.c
 
-$(OBJDIR)/dummy.o:	dummy.c $(OBJDIR)
+$(OBJDIR)/dummy.o:	dummy.c $(DEPS)
 			$(COMPILE.c) -o $@ dummy.c
 
-$(OBJDIR)/freebsd.o:	freebsd.c $(OBJDIR)
+$(OBJDIR)/freebsd.o:	freebsd.c $(DEPS)
 			$(COMPILE.c) -o $@ freebsd.c
 
 linux:			$(OBJ)

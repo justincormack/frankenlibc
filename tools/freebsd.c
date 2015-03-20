@@ -1,12 +1,15 @@
 #include <sys/capability.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 
-#include "filter.h"
+#include "rumprun.h"
 
 int pfd = -1;
 
@@ -69,4 +72,11 @@ filter_load_exec(char *program, char **argv, char **envp)
 	}
 
 	return 0;
+}
+
+int
+tapopen(char *name)
+{
+
+	return open(name, O_RDWR);
 }

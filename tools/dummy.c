@@ -1,8 +1,11 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-#include "filter.h"
+#include "rumprun.h"
 
 int
 filter_init(char *program)
@@ -29,4 +32,11 @@ filter_load_exec(char *program, char **argv, char **envp)
 	}
 
 	return 0;
+}
+
+int
+tapopen(char *name)
+{
+
+	return open(name, O_RDWR);
 }
