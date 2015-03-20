@@ -8,13 +8,16 @@ OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/__clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/__fstat.o
-OBJ+=$(OBJDIR)/getpagesize.o
+OBJ+=$(OBJDIR)/fsync.o $(OBJDIR)/getpagesize.o
 OBJ+=$(OBJDIR)/getrandom.o $(OBJDIR)/__getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
 OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o
-OBJ+=$(OBJDIR)/__platform_init.o $(OBJDIR)/read.o
+OBJ+=$(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/__pread.o
+OBJ+=$(OBJDIR)/pwrite.o $(OBJDIR)/__pwrite.o
+OBJ+=$(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
 HEADERS=syscall.h arm/syscall.h i386/syscall.h x86_64/syscall.h
 HEADERS+=linux.h i386/linux.h x86_64/linux.h
@@ -66,6 +69,9 @@ $(OBJDIR)/fstat.o:		fstat.c $(HEADERS)
 $(OBJDIR)/__fstat.o:		__fstat.S $(HEADERS)
 				$(COMPILE.S) -o $@ __fstat.S
 
+$(OBJDIR)/fsync.o:		fsync.S $(HEADERS)
+				$(COMPILE.S) -o $@ fsync.S
+
 $(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
 				$(COMPILE.c) -o $@ getpagesize.c
 
@@ -104,6 +110,18 @@ $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
 
 $(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
 				$(COMPILE.c) -o $@ __platform_init.c
+
+$(OBJDIR)/pread.o:		pread.c $(HEADERS)
+				$(COMPILE.c) -o $@ pread.c
+
+$(OBJDIR)/__pread.o:		__pread.S $(HEADERS)
+				$(COMPILE.S) -o $@ __pread.S
+
+$(OBJDIR)/pwrite.o:		pwrite.c $(HEADERS)
+				$(COMPILE.c) -o $@ pwrite.c
+
+$(OBJDIR)/__pwrite.o:		__pwrite.S $(HEADERS)
+				$(COMPILE.S) -o $@ __pwrite.S
 
 $(OBJDIR)/read.o:		read.S $(HEADERS)
 				$(COMPILE.S) -o $@ read.S
