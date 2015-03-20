@@ -81,7 +81,7 @@ __franken_fdinit()
 			}
 			__franken_fd[fd].mem = mem;
 			key = mkkey(__franken_fd[fd].key, "/dev/fd", fd);
-			if (rump_pub_etfs_register(key, &key[7], RUMP_ETFS_BLK) == 0) {
+			if (rump_pub_etfs_register(key, &key[7], RUMP_ETFS_REG) == 0) {
 				break;
 			}
 			break;
