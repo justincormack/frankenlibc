@@ -39,8 +39,11 @@
 #define swapcontext(c1, c2) __franken_swapcontext(c1, c2)
 
 /* unistd.h */
+#define fsync(f) __platform_fsync(f)
 #define getpagesize __platform_getpagesize
 #define isatty(f) __platform_isatty(f)
+#define pread(a, b, c, d) __platform_pread(a, b, c, d)
+#define pwrite(a, b, c, d) __platform_pwrite(a, b, c, d)
 #define read(f, b, c) __platform_read(f, b, c)
 #define write(f, b, c) __platform_write(f, b, c)
 

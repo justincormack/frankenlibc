@@ -6,11 +6,12 @@ CRTOBJDIR=../../rumpobj/crt
 OBJ=$(CRTDIR)/crt0.o
 OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
-OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o
+OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/fsync.o
 OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
-OBJ+=$(OBJDIR)/__platform_init.o $(OBJDIR)/read.o
+OBJ+=$(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h i386/syscall.h x86_64/syscall.h netbsd.h
 INCLUDES=-I../include
@@ -55,6 +56,9 @@ $(OBJDIR)/_exit.o:		_exit.S $(HEADERS)
 $(OBJDIR)/fstat.o:		fstat.S $(HEADERS)
 				$(COMPILE.S) -o $@ fstat.S
 
+$(OBJDIR)/fsync.o:		fsync.S $(HEADERS)
+				$(COMPILE.S) -o $@ fsync.S
+
 $(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
 				$(COMPILE.c) -o $@ getpagesize.c
 
@@ -82,10 +86,16 @@ $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 $(OBJDIR)/nanosleep.o:		nanosleep.S $(HEADERS)
 				$(COMPILE.S) -o $@ nanosleep.S
 
-$(OBJDIR)/__platform_init.o:	__platform_init.c
+$(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
 				$(COMPILE.c) -o $@ __platform_init.c
 
-$(OBJDIR)/read.o:		read.S
+$(OBJDIR)/pread.o:		pread.S $(HEADERS)
+				$(COMPILE.S) -o $@ pread.S
+
+$(OBJDIR)/pwrite.o:		pwrite.S $(HEADERS)
+				$(COMPILE.S) -o $@ pwrite.S
+
+$(OBJDIR)/read.o:		read.S $(HEADERS)
 				$(COMPILE.S) -o $@ read.S
 
 $(OBJDIR)/sysctl.o:		sysctl.S $(HEADERS)
