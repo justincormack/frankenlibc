@@ -145,30 +145,37 @@ rumpuser_syncfd(int fd, int flags, uint64_t start, uint64_t len)
 	return 0;
 }
 
-/* XXX probably do not want to mmap block devices, use pread, pwrite */
 void
 rumpuser_bio(int fd, int op, void *data, size_t dlen, int64_t doff,
         rump_biodone_fn biodone, void *bioarg)
 {
-	off_t size = __franken_fd[fd].st.st_size;
+	int err = 0;
+	ssize_t n = 0;
 
 	assert(biodone != NULL);
 
-	if (__franken_fd[fd].valid == 0 || ! S_ISREG(__franken_fd[fd].st.st_mode))
+	if (__franken_fd[fd].valid == 0 || ! S_ISBLK(__franken_fd[fd].st.st_mode))
 		biodone(bioarg, 0, EBADF);
 
-	if (doff > size)
-		dlen = 0;
+	if (op & RUMPUSER_BIO_READ) {
+		n = pread(fd, data, dlen, doff);
+		if (n == -1) {
+			n = 0;
+			err = errno;
+		}
+	} else {
+		n = pwrite(fd, data, dlen, doff);
+		if (n == -1) {
+			n = 0;
+			err = errno;
+		}
+	}
+	if (errno == 0 && op & RUMPUSER_BIO_SYNC) {
+		if (fsync(fd) == -1) {
+			n = 0;
+			err = errno;
+		}
+	}	
 
-	if (dlen > size - doff)
-		dlen = size - doff;
-
-	if (op & RUMPUSER_BIO_READ)
-		memcpy(data, __franken_fd[fd].mem + doff, dlen);
-	else
-		memcpy(__franken_fd[fd].mem + doff, data, dlen);
-
-	/* XXX support sync */
-
-	biodone(bioarg, (size_t)dlen, 0);
+	biodone(bioarg, n, err);
 }
