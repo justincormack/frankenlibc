@@ -21,8 +21,11 @@
 #define SYS_munmap			73
 #define SYS_ioctl			54
 #define SYS_kill			37
+#define	SYS_fsync			95
 #define SYS_clock_gettime		232
 #define SYS_clock_getres		234
 #define SYS_exit			1
 #define SYS___sysctl			202
-#define SYS_nanosleep			240	
+#define SYS_nanosleep			240
+#define SYS_pread			475
+#define SYS_pwrite			476

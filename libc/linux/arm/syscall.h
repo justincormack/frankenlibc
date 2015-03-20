@@ -25,6 +25,9 @@ name:; \
 #define SYS_munmap			91
 #define SYS_ioctl			54
 #define SYS_kill			37
+#define SYS_fsync			118
+#define SYS_pread64			180
+#define SYS_pwrite64			181
 #define SYS_clock_gettime		263
 #define SYS_clock_getres		264
 #define SYS_clock_nanosleep		265

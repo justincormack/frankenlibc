@@ -19,10 +19,13 @@ _syscall_return:; \
 #define SYS_mmap			9
 #define SYS_munmap			11
 #define SYS_ioctl			16
+#define SYS_pread64			17
+#define SYS_pwrite64			18
 #define SYS_kill			62
+#define SYS_fsync			74
+#define SYS_arch_prctl			158
 #define SYS_clock_gettime		228
 #define SYS_clock_getres		229
 #define SYS_clock_nanosleep		230
 #define SYS_exit_group			231
 #define SYS_getrandom			318
-#define SYS_arch_prctl			158
