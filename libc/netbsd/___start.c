@@ -16,7 +16,7 @@ extern int main(int, char **, char **);
    this contains TLS information; we will need to include the headers */
 
 int
-__platform_init(void (*cleanup)(void), const void *obj, struct ps_strings *ps_strings)
+___start(void (*cleanup)(void), const void *obj, struct ps_strings *ps_strings)
 {
 
 	return __franken_start_main(main, ps_strings->ps_nargvstr, ps_strings->ps_argvstr, ps_strings->ps_envstr);

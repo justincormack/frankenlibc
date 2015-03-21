@@ -10,8 +10,8 @@ OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/fsync.o
 OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
-OBJ+=$(OBJDIR)/__platform_init.o
 OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
+OBJ+=$(OBJDIR)/___start.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h i386/syscall.h x86_64/syscall.h netbsd.h
 INCLUDES=-I../include
@@ -86,9 +86,6 @@ $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 $(OBJDIR)/nanosleep.o:		nanosleep.S $(HEADERS)
 				$(COMPILE.S) -o $@ nanosleep.S
 
-$(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
-				$(COMPILE.c) -o $@ __platform_init.c
-
 $(OBJDIR)/pread.o:		pread.S $(HEADERS)
 				$(COMPILE.S) -o $@ pread.S
 
@@ -97,6 +94,9 @@ $(OBJDIR)/pwrite.o:		pwrite.S $(HEADERS)
 
 $(OBJDIR)/read.o:		read.S $(HEADERS)
 				$(COMPILE.S) -o $@ read.S
+
+$(OBJDIR)/___start.o:		___start.c $(HEADERS)
+				$(COMPILE.c) -o $@ ___start.c
 
 $(OBJDIR)/sysctl.o:		sysctl.S $(HEADERS)
 				$(COMPILE.S) -o $@ sysctl.S
