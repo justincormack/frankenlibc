@@ -1,3 +1,4 @@
 /rump/
 /rumpobj/
 *.core
+ktrace.out
