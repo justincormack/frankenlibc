@@ -13,5 +13,3 @@
 #else
 #error "Unknown architecture"
 #endif
-
-#include "../crt/__libc_start_main.c"

@@ -28,7 +28,7 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c i386/crt1.c $(CRTOBJDIR) ../crt/__libc_start_main.c
+$(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c i386/crt1.c $(CRTOBJDIR)
 				$(COMPILE.c) -o $@ crt1.c
 
 $(OBJDIR)/__clock_getres.o:	__clock_getres.S $(HEADERS)

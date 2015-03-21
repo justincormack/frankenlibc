@@ -33,7 +33,7 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt1.o:		crt1.c arm/crt1.c i386/crt1.c x86_64/crt1.c ../crt/__libc_start_main.c
+$(CRTDIR)/crt1.o:		crt1.c arm/crt1.c i386/crt1.c x86_64/crt1.c
 				$(COMPILE.c) -o $@ crt1.c
 
 $(CRTDIR)/Scrt1.o:		$(CRTDIR)/crt1.o
