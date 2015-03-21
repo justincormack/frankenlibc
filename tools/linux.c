@@ -179,6 +179,7 @@ tapopen(char *name)
 
 	/* strip /dev/ from ifname */
 	strncpy(ifr.ifr_name, &name[5], IFNAMSIZ);
+	ifr.ifr_flags = IFF_TAP;
 
 	fd = open("/dev/net/tun", O_RDWR);
 	if (fd == -1)
