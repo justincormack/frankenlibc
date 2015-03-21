@@ -65,7 +65,7 @@ Additional implementations and architectures will be added soon. There is also
 an option to build a deterministic version with no random numbers and a fake
 clock, so runs are completely repeatable.
 
-There is a wrapper called rumprun that can pass in files to use as block devices
+There is a wrapper called rumprun that can pass in files and block devices
 (network device support coming soon), and will also run the program in a seccomp
 sandbox on Linux or under Capsicum on FreeBSD. These are pretty aggressive, eg
 open cannot be called, but you may want to add further sandboxing in addition.
