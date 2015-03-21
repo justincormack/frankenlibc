@@ -33,8 +33,8 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt1.o:		crt1.c arm/crt1.c i386/crt1.c x86_64/crt1.c
-				$(COMPILE.c) -o $@ crt1.c
+$(CRTDIR)/crt1.o:		crt1.S arm/crt1.s i386/crt1.s x86_64/crt1.s
+				$(COMPILE.S) -o $@ crt1.S
 
 $(CRTDIR)/Scrt1.o:		$(CRTDIR)/crt1.o
 				ln $(CRTDIR)/crt1.o $@
