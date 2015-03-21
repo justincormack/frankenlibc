@@ -1,7 +1,7 @@
 /* platform specific initialization before we hand over to generic code */
 
 /* move to a header somewhere */
-int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
+int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 struct ps_strings {
 	char	**ps_argvstr;	/* first of 0 or more argument strings */
@@ -16,5 +16,5 @@ int
 __platform_init(int argc, char **argv, char **envp)
 {
 
-	return __libc_start_main(main, argc, argv, envp);
+	return __franken_start_main(main, argc, argv, envp);
 }

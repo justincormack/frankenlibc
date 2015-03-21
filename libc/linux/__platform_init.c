@@ -4,7 +4,7 @@
 typedef __SIZE_TYPE__ size_t;
 
 /* move to a header somewhere */
-int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
+int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 #define AUX_CNT 38
 
@@ -35,5 +35,5 @@ __platform_init(int (*main)(int,char **,char **), int argc, char **argv)
 	/* init tls; gcc needs this even for some non-tls using programs */
 	__platform_set_thread_area(builtin_tls);
 
-	return __libc_start_main(main, argc, argv, envp);
+	return __franken_start_main(main, argc, argv, envp);
 }

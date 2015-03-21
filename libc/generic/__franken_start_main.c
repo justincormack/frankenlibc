@@ -22,7 +22,7 @@ void _libc_init() {}
 
 void __franken_fdinit(void);
 
-int __libc_start_main(int (*)(int,char **,char **), int, char **, char **);
+int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 void _init(void) __attribute__ ((weak));
 void _init() {}
@@ -52,7 +52,7 @@ exit(int v)
 }
 
 int
-__libc_start_main(int(*main)(int,char **,char **), int argc, char **argv, char **envp)
+__franken_start_main(int(*main)(int,char **,char **), int argc, char **argv, char **envp)
 {
 	uintptr_t a;
 
