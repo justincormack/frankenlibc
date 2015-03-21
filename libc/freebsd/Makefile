@@ -12,8 +12,8 @@ OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/mmap.o $(OBJDIR)/__mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
-OBJ+=$(OBJDIR)/__platform_init.o
 OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
+OBJ+=$(OBJDIR)/_start1.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h i386/syscall.h x86_64/syscall.h freebsd.h
 INCLUDES=-I../include
@@ -28,8 +28,8 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt1.o:		crt1.c x86_64/crt1.c i386/crt1.c $(CRTOBJDIR)
-				$(COMPILE.c) -o $@ crt1.c
+$(CRTDIR)/crt1.o:		crt1.S x86_64/crt1.S i386/crt1.S $(CRTOBJDIR)
+				$(COMPILE.S) -o $@ crt1.S
 
 $(OBJDIR)/__clock_getres.o:	__clock_getres.S $(HEADERS)
 				$(COMPILE.S) -o $@ __clock_getres.S
@@ -88,9 +88,6 @@ $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 $(OBJDIR)/nanosleep.o:		nanosleep.S $(HEADERS)
 				$(COMPILE.S) -o $@ nanosleep.S
 
-$(OBJDIR)/__platform_init.o:	__platform_init.c
-				$(COMPILE.c) -o $@ __platform_init.c
-
 $(OBJDIR)/pread.o:		pread.S $(HEADERS)
 				$(COMPILE.S) -o $@ pread.S
 
@@ -99,6 +96,9 @@ $(OBJDIR)/pwrite.o:		pwrite.S $(HEADERS)
 
 $(OBJDIR)/read.o:		read.S $(HEADERS)
 				$(COMPILE.S) -o $@ read.S
+
+$(OBJDIR)/_start1.o:		_start1.c $(HEADERS)
+				$(COMPILE.c) -o $@ _start1.c
 
 $(OBJDIR)/sysctl.o:		sysctl.S $(HEADERS)
 				$(COMPILE.S) -o $@ sysctl.S
