@@ -1,22 +1,23 @@
+/* XXX ugly use in a macro, fix */
 #define hash #
 
 #define SYSCALL(sc, name) \
 .global name; \
 .type name,%function; \
 name:; \
-	mov     %ip, %r7; \
-	ldr     %r7, =SYS_ ## sc; \
-	svc     0x00000000; \
-	mov     %r7, %ip; \
-	cmp     %r0, hash 0; \
-	bge     .errnoret; \
-	mov     %r1, hash 0; \
-	sub     %r0, %r1, %r0; \
-	ldr     %r1, =errno; \
-	str     %r0, [%r1]; \
-	mov     %r0, hash -1; \
+	mov	%ip, %r7; \
+	ldr	%r7, =SYS_ ## sc; \
+	svc	0x00000000; \
+	mov	%r7, %ip; \
+	cmp	%r0, hash -4096; \
+	bls	.errnoret; \
+	mov	%r1, hash 0; \
+	sub	%r0, %r1, %r0; \
+	ldr	%r1, =errno; \
+	str	%r0, [%r1]; \
+	mov	%r0, hash -1; \
 .errnoret:; \
-	mov     %pc, %lr;
+	mov	%pc, %lr;
 
 #define SYSCALL_ZEROPAD
 
