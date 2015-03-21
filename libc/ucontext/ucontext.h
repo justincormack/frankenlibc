@@ -1,3 +1,6 @@
+#ifndef _UCONTEXT_H
+#define _UCONTEXT_H
+
 #include <stdlib.h>
 
 #include <rename.h>
@@ -16,4 +19,14 @@
 #include <ppc/ucontext.h>
 #else
 #error "Unknown architecture"
+#endif
+
+/* Note the type of makecontext is not the standard, as this is
+   not valid C. We only allow a single void* argument but define
+   as if it takes no arguments as that is normal.
+*/
+int  getcontext(ucontext_t *);
+void makecontext(ucontext_t *, void (*)(void), int, void *);
+int  swapcontext(ucontext_t *, ucontext_t *);
+
 #endif

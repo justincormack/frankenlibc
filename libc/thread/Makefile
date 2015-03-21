@@ -3,7 +3,7 @@ COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 OBJ=$(OBJDIR)/thread.o
 HEADERS=thread.h rename.h
-INCLUDES=-I../include
+INCLUDES=-I../include -I../ucontext
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
