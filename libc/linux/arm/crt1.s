@@ -13,5 +13,5 @@ _start:
 	str a4,[sp,#-4]!
 	ldr a4,=_init
 	ldr a1,=main
-	bl __platform_init
+	bl __libc_start_main
 1:	b 1b

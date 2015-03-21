@@ -17,7 +17,7 @@ int __platform_set_thread_area(void *);
 static int64_t builtin_tls[4096/sizeof(int64_t)];
 
 int
-__platform_init(int (*main)(int,char **,char **), int argc, char **argv)
+__libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 {
 	char **envp = argv + argc + 1;
 

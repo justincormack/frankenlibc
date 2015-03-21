@@ -14,7 +14,7 @@ OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/__mmap.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/__mprotect.o $(OBJDIR)/mprotect.o
 OBJ+=$(OBJDIR)/__munmap.o $(OBJDIR)/munmap.o
-OBJ+=$(OBJDIR)/__platform_init.o
+OBJ+=$(OBJDIR)/__libc_start_main.o
 OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/__pread.o
 OBJ+=$(OBJDIR)/pwrite.o $(OBJDIR)/__pwrite.o
 OBJ+=$(OBJDIR)/read.o
@@ -90,6 +90,9 @@ $(OBJDIR)/isatty.o:		isatty.c $(HEADERS)
 $(OBJDIR)/kill.o:		kill.S $(HEADERS)
 				$(COMPILE.S) -o $@ kill.S
 
+$(OBJDIR)/__libc_start_main.o:	__libc_start_main.c $(HEADERS)
+				$(COMPILE.c) -o $@ __libc_start_main.c
+
 $(OBJDIR)/__mmap.o:		__mmap.S $(HEADERS)
 				$(COMPILE.S) -o $@ __mmap.S
 
@@ -107,9 +110,6 @@ $(OBJDIR)/__munmap.o:		__munmap.S $(HEADERS)
 
 $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
 				$(COMPILE.c) -o $@ munmap.c
-
-$(OBJDIR)/__platform_init.o:	__platform_init.c $(HEADERS)
-				$(COMPILE.c) -o $@ __platform_init.c
 
 $(OBJDIR)/pread.o:		pread.c $(HEADERS)
 				$(COMPILE.c) -o $@ pread.c

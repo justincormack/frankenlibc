@@ -15,5 +15,5 @@ _start:
 	push %eax
 	push %ecx
 	push $main
-	call __platform_init
+	call __libc_start_main
 1:	jmp 1b

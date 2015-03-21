@@ -12,5 +12,5 @@ _start:
 	mov $_fini,%r8  /* 5th arg: fini/dtors function */
 	mov $_init,%rcx /* 4th arg: init/ctors function */
 	mov $main,%rdi  /* 1st arg: application entry ip */
-	call __platform_init /* this will run the program */
+	call __libc_start_main /* musl init will run the program */
 1:	jmp 1b
