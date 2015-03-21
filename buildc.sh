@@ -121,6 +121,9 @@ fi
 
 set -e
 
+# for some reason clang with -g breaks buildrump.sh
+CFLAGS=$(echo ${CFLAGS} | sed 's/-g//g')
+
 . ./buildrump.sh/subr.sh
 
 if [ "${OS}" = "unknown" ]; then
