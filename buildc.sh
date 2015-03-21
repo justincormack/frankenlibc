@@ -131,7 +131,7 @@ fi
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
-	-k -N -s ${RUMPSRC} -o ${OBJDIR} \
+	-k -s ${RUMPSRC} -o ${OBJDIR} \
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
