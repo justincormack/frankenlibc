@@ -35,8 +35,8 @@ $(CRTDIR)/crt0.o:		$(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o $(CRTDIR)
 $(CRTOBJDIR)/start.o:		start.S $(CRTOBJDIR)
 				$(COMPILE.S) -o $@ start.S
 
-$(CRTOBJDIR)/crt0.o:		crt0.c x86_64/crt0.c i386/crt0.c $(CRTOBJDIR)
-				$(COMPILE.c) -o $@ crt0.c
+$(CRTOBJDIR)/crt0.o:		crt0.S x86_64/crt0.S i386/crt0.S $(CRTOBJDIR)
+				$(COMPILE.S) -o $@ crt0.S
 
 $(OBJDIR)/clock_getres.o:	clock_getres.S $(HEADERS)
 				$(COMPILE.S) -o $@ clock_getres.S
