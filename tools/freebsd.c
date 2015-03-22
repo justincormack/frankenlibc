@@ -40,15 +40,21 @@ filter_fd(int fd, int flags, mode_t mode)
 	int ret;
 	unsigned long ioctl[1] = {TIOCGETA};
 
+	/* XXX we could cut capabilities down a little further eg seek only
+	   used on block devices for example */
+
 	switch (flags) {
 	case O_RDONLY:
-		cap_rights_init(&rights, CAP_READ, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_R);
+		cap_rights_init(&rights, CAP_READ, \
+			CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_R);
 		break;
 	case O_WRONLY:
-		cap_rights_init(&rights, CAP_WRITE, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_W);
+		cap_rights_init(&rights, CAP_WRITE, \
+			CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_W);
 		break;
 	case O_RDWR:
-		cap_rights_init(&rights, CAP_READ, CAP_WRITE, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_RW);
+		cap_rights_init(&rights, CAP_READ, CAP_WRITE, \
+			CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_RW);
 		break;
 	default:
 		abort();
