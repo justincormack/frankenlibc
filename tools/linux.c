@@ -8,12 +8,15 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <asm/prctl.h>
-#include <sys/prctl.h>
 #include <sys/ioctl.h>
 #include <sys/syscall.h>
 #include <net/if.h>
 #include <linux/if_tun.h>
+
+#ifdef SYS_arch_prctl
+#include <asm/prctl.h>
+#include <sys/prctl.h>
+#endif
 
 scmp_filter_ctx ctx;
 
