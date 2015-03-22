@@ -28,7 +28,9 @@ __franken_swapcontext:
 	stcl p1, cr15, [ip], #8
 
 3:	mov ip,r3 /* saved second arg, buffer to restore */
-	ldr r0, [ip, #128] /* initial arg */
+	ldr r0,[ip, #128] /* initial arg */
+	mov r2,#0
+	str r2,[ip, #128] /* zero initial arg */
 
 	ldmia ip!, {v1,v2,v3,v4,v5,v6,sl,fp,sp,lr}
 
