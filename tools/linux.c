@@ -81,7 +81,7 @@ filter_init(char *program)
 #endif
 	if (ret < 0) return ret;
 
-	/* mprotext(a, b, c) XXX allow disable exec */
+	/* mprotect(a, b, c) XXX allow disable exec */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mprotect), 0);
 	if (ret < 0) return ret;
 
@@ -105,23 +105,35 @@ filter_fd(int fd, int flags, mode_t mode)
 {
 	int ret;
 
-	/* read(fd, x, y) */
+	/* read(fd, ...), pread(fd, ...) */
 	if (flags == O_RDONLY || flags == O_RDWR) {
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
-	}
-
-	/* write(fd, x, y) */
-	if (flags == O_WRONLY || flags == O_RDWR) {
-		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1,
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(pread64), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
 	}
 
-	/* ioctl(fd, TCGETS, x) */
+	/* write(fd, ...), pwrite(fd, ...) */
+	if (flags == O_WRONLY || flags == O_RDWR) {
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(pwrite64), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
+	}
+
+	/* ioctl(fd, TCGETS, ...) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TCGETS));
+	if (ret < 0) return ret;
+
+	/* fsync(fd) */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fsync), 1,
+		SCMP_A0(SCMP_CMP_EQ, fd));
+	if (ret < 0) return ret;
 
 	return 0;
 }
