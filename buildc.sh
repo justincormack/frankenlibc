@@ -56,10 +56,65 @@ bytes()
 	echo ${value}
 }
 
+appendvar_fs ()
+{
+	vname="${1}"
+	fs="${2}"
+	shift 2
+	if [ -z "$(eval echo \${$vname})" ]; then
+		eval ${vname}="\${*}"
+	else
+		eval ${vname}="\"\${${vname}}"\${fs}"\${*}\""
+	fi
+}
+
+appendvar ()
+{
+
+	vname="$1"
+	shift
+	appendvar_fs "${vname}" ' ' $*
+}
+
+. ./buildrump.sh/subr.sh
+
 while getopts '?F:Hhj:p:qs:V:' opt; do
 	case "$opt" in
 	"F")
 		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
+		ARG=${OPTARG#*=}
+		case ${OPTARG} in
+			CFLAGS\=*)
+				appendvar EXTRA_CFLAGS "${ARG}"
+				;;
+			AFLAGS\=*)
+				appendvar EXTRA_AFLAGS "${ARG}"
+				;;
+			LDFLAGS\=*)
+				appendvar EXTRA_LDFLAGS "${ARG}"
+				;;
+			ACFLAGS\=*)
+				appendvar EXTRA_CFLAGS "${ARG}"
+				appendvar EXTRA_AFLAGS "${ARG}"
+				;;
+			ACLFLAGS\=*)
+				appendvar EXTRA_CFLAGS "${ARG}"
+				appendvar EXTRA_AFLAGS "${ARG}"
+				appendvar EXTRA_LDFLAGS "${ARG}"
+				;;
+			CPPFLAGS\=*)
+				appendvar EXTRA_CPPFLAGS "${ARG}"
+				;;
+			DBG\=*)
+				appendvar F_DBG "${ARG}"
+				;;
+			CWARNFLAGS\=*)
+				appendvar EXTRA_CWARNFLAGS "${ARG}"
+				;;
+			*)
+				die Unknown flag: ${OPTARG}
+				;;
+		esac
 		;;
 	"H")
 		EXTRAFLAGS="${EXTRAFLAGS} -H"
@@ -121,11 +176,6 @@ fi
 
 set -e
 
-# for some reason clang with -g breaks buildrump.sh
-CFLAGS=$(echo ${CFLAGS} | sed 's/-g//g')
-
-. ./buildrump.sh/subr.sh
-
 if [ "${OS}" = "unknown" ]; then
 	die "Unknown or unsupported platform"
 fi
@@ -138,9 +188,11 @@ fi
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
-export CFLAGS="${CFLAGS} -g ${HUGEPAGESIZE}"
-export ASFLAGS="${ASFLAGS} -g"
+export CFLAGS="${EXTRA_CFLAGS} -g ${HUGEPAGESIZE}"
+export ASFLAGS="${EXTRA_ASFLAGS} -g"
 export AFLAGS="${ASFLAGS}"
+export LDFLAGS="${EXTRA_LDFLAGS}"
+export CPPFLAGS="${EXTRA_CPPFLAGS}"
 
 ${MAKE} OS=${OS} -C libc
 
