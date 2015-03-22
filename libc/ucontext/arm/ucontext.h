@@ -4,7 +4,7 @@ struct __ucontext_stack_t {
     size_t ss_size;
 };
 typedef struct ucontext_t {
-    unsigned long uc_regs[11];
+    unsigned long uc_regs[32];
     unsigned long uc_flags;
     void *uc_link;
     struct __ucontext_stack_t uc_stack;
