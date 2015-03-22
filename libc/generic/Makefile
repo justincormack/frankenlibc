@@ -2,91 +2,81 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 OBJ+=$(OBJDIR)/__franken_start_main.o
-OBJ+=$(OBJDIR)/abort.o $(OBJDIR)/aligned_alloc.o
+OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
-OBJ+=$(OBJDIR)/calloc.o $(OBJDIR)/errno.o $(OBJDIR)/_Exit.o
+OBJ+=$(OBJDIR)/errno.o $(OBJDIR)/_Exit.o
 OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/isspace.o
-OBJ+=$(OBJDIR)/malloc.o $(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
-OBJ+=$(OBJDIR)/posix_memalign.o $(OBJDIR)/putchar.o $(OBJDIR)/raise.o
-OBJ+=$(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o $(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o
-OBJ+=$(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o $(OBJDIR)/strncpy.o
+OBJ+=$(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
+OBJ+=$(OBJDIR)/putchar.o $(OBJDIR)/raise.o
+OBJ+=$(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o
+OBJ+=$(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o
+OBJ+=$(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o
+OBJ+=$(OBJDIR)/strncpy.o
 INCLUDES=-I../include
-RUMPINC=-I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
+DEPS=$(OBJDIR)
 
-default:			$(OBJDIR) $(OBJ)
+default:			$(OBJ)
 
 $(OBJDIR):			
 				mkdir -p $(OBJDIR)
 
-$(OBJDIR)/__franken_start_main.o:	__franken_start_main.c
+$(OBJDIR)/__franken_start_main.o:	__franken_start_main.c $(DEPS)
 				$(COMPILE.c) -o $@ __franken_start_main.c
 
-$(OBJDIR)/abort.o:		abort.c
+$(OBJDIR)/abort.o:		abort.c $(DEPS)
 				$(COMPILE.c) -o $@ abort.c
 
-$(OBJDIR)/aligned_alloc.o:	aligned_alloc.c
-				$(COMPILE.c) -o $@ aligned_alloc.c
-
-$(OBJDIR)/assert.o:		assert.c
+$(OBJDIR)/assert.o:		assert.c $(DEPS)
 				$(COMPILE.c) -o $@ assert.c
 
-$(OBJDIR)/atoi.o:		atoi.c
+$(OBJDIR)/atoi.o:		atoi.c $(DEPS)
 				$(COMPILE.c) -o $@ atoi.c
 
-$(OBJDIR)/calloc.o:		calloc.c
-				$(COMPILE.c) -o $@ calloc.c
-
-$(OBJDIR)/errno.o:		errno.c
+$(OBJDIR)/errno.o:		errno.c $(DEPS)
 				$(COMPILE.c) -o $@ errno.c
 
-$(OBJDIR)/_Exit.o:		_Exit.c
+$(OBJDIR)/_Exit.o:		_Exit.c $(DEPS)
 				$(COMPILE.c) -o $@ _Exit.c
 
-$(OBJDIR)/getenv.o:		getenv.c
+$(OBJDIR)/getenv.o:		getenv.c $(DEPS)
 				$(COMPILE.c) -o $@ getenv.c
 
-$(OBJDIR)/isspace.o:		isspace.c
+$(OBJDIR)/isspace.o:		isspace.c $(DEPS)
 				$(COMPILE.c) -o $@ isspace.c
 
-$(OBJDIR)/malloc.o:		malloc.c
-				$(COMPILE.c) -o $@ malloc.c
-
-$(OBJDIR)/memcpy.o:		memcpy.c
+$(OBJDIR)/memcpy.o:		memcpy.c $(DEPS)
 				$(COMPILE.c) -o $@ memcpy.c
 
-$(OBJDIR)/memset.o:		memset.c
+$(OBJDIR)/memset.o:		memset.c $(DEPS)
 				$(COMPILE.c) -o $@ memset.c
 
-$(OBJDIR)/posix_memalign.o:	posix_memalign.c
-				$(COMPILE.c) -o $@ posix_memalign.c
-
-$(OBJDIR)/putchar.o:		putchar.c
+$(OBJDIR)/putchar.o:		putchar.c $(DEPS)
 				$(COMPILE.c) -o $@ putchar.c
 
-$(OBJDIR)/raise.o:		raise.c
+$(OBJDIR)/raise.o:		raise.c $(DEPS)
 				$(COMPILE.c) -o $@ raise.c
 
-$(OBJDIR)/strchr.o:		strchr.c
+$(OBJDIR)/strchr.o:		strchr.c $(DEPS)
 				$(COMPILE.c) -o $@ strchr.c
 
-$(OBJDIR)/strcmp.o:		strcmp.c
+$(OBJDIR)/strcmp.o:		strcmp.c $(DEPS)
 				$(COMPILE.c) -o $@ strcmp.c
 
-$(OBJDIR)/strcpy.o:		strcpy.c
+$(OBJDIR)/strcpy.o:		strcpy.c $(DEPS)
 				$(COMPILE.c) -o $@ strcpy.c
 
-$(OBJDIR)/strdup.o:		strdup.c
+$(OBJDIR)/strdup.o:		strdup.c $(DEPS)
 				$(COMPILE.c) -o $@ strdup.c
 
-$(OBJDIR)/strlen.o:		strlen.c
+$(OBJDIR)/strlen.o:		strlen.c $(DEPS)
 				$(COMPILE.c) -o $@ strlen.c
 
-$(OBJDIR)/strncmp.o:		strncmp.c
+$(OBJDIR)/strncmp.o:		strncmp.c $(DEPS)
 				$(COMPILE.c) -o $@ strncmp.c
 
-$(OBJDIR)/strncpy.o:		strncpy.c
+$(OBJDIR)/strncpy.o:		strncpy.c $(DEPS)
 				$(COMPILE.c) -o $@ strncpy.c
 
 .PHONY:				clean
