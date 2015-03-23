@@ -7,7 +7,6 @@ OBJDIR=rumpobj
 RUMPSRC=rumpsrc
 
 OS="unknown"
-TOOLOS="unknown"
 RUNTESTS="test"
 
 TARGET="$(${CC} -v 2>&1 | grep 'Target:' )"
@@ -214,12 +213,8 @@ ${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
 
 ${MAKE} -C librumpuser
 
-if [ ${TOOLOS} = "unknown" ]; then
-	TOOLOS=${OS}
-fi
-
-if [ ${FILTER} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
-CPPFLAGS="${CPPFLAGS} ${FILTER}" LDLIBS=${LDLIBS} ${MAKE} OS=${TOOLOS} -C tools
+if [ ${FILTER+x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
+CPPFLAGS="${CPPFLAGS} ${FILTER}" LDLIBS=${LDLIBS} ${MAKE} OS=${OS} -C tools
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
