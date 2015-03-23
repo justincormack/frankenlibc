@@ -30,7 +30,7 @@ helpme()
 	printf "\tdeterministic: make deterministic\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
-	printf "Supported platforms are currently: linux, netbsd\n"
+	printf "Supported platforms are currently: linux, netbsd, freebsd\n"
 	exit 1
 }
 
