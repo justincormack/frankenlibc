@@ -1,4 +1,5 @@
 #include <sys/types.h>
+#include <time.h>
 
 #define TCGETS 0x540d
 

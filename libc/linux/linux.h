@@ -61,6 +61,8 @@ struct linux_timespec {
 #include "ppc64/linux.h"
 #elif defined(__PPC__)
 #include "ppc/linux.h"
+#elif defined(__MIPSEL__) || defined(__MIPSEB__)
+#include "mips/linux.h"
 #else
 #error "Unknown architecture"
 #endif
