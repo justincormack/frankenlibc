@@ -18,7 +18,7 @@ OBJ+=$(OBJDIR)/pread.o
 OBJ+=$(OBJDIR)/pwrite.o
 OBJ+=$(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
-OBJ+=$(OBJDIR)/syscall_ret.o
+OBJ+=$(OBJDIR)/syscall.o $(OBJDIR)/syscall_ret.o
 HEADERS=syscall.h linux.h
 INCLUDES=-I../include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -36,7 +36,7 @@ $(CRTDIR)/crt1.o:		crt1.S
 				$(COMPILE.S) -o $@ crt1.S
 
 $(CRTDIR)/Scrt1.o:		$(CRTDIR)/crt1.o
-				ln $(CRTDIR)/crt1.o $@
+				ln -f $(CRTDIR)/crt1.o $@
 
 $(OBJDIR)/clock_getres.o:	clock_getres.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_getres.c
@@ -91,6 +91,9 @@ $(OBJDIR)/read.o:		read.c $(HEADERS)
 
 $(OBJDIR)/set_thread_area.o:	set_thread_area.c $(HEADERS)
 				$(COMPILE.c) -o $@ set_thread_area.c
+
+$(OBJDIR)/syscall.o:		syscall.S $(HEADERS)
+				$(COMPILE.S) -o $@ syscall.S
 
 $(OBJDIR)/syscall_ret.o:	syscall_ret.c $(HEADERS)
 				$(COMPILE.c) -o $@ syscall_ret.c
