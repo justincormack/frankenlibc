@@ -10,6 +10,8 @@
 #include "ppc64/crt1.s"
 #elif defined(__PPC__)
 #include "ppc/crt1.s"
+#elif defined(__MIPSEL__) || defined(__MIPSEB__)
+#include "mips/crt1.s"
 #else
 #error "Unknown architecture"
 #endif
