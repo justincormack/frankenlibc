@@ -1,5 +1,3 @@
-#define TP_ADJ(p) (p)
-
 #define TCGETS 0x5401
 
 struct linux_stat {
