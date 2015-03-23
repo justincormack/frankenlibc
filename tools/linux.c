@@ -1,4 +1,3 @@
-#include <seccomp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +11,39 @@
 #include <sys/syscall.h>
 #include <net/if.h>
 #include <linux/if_tun.h>
+
+#include "rumprun.h"
+
+#ifndef SECCOMP
+int
+filter_init(char *program)
+{
+
+	return 0;
+}
+
+int
+filter_fd(int fd, int flags, mode_t mode)
+{
+
+	return 0;
+}
+
+int
+filter_load_exec(char *program, char **argv, char **envp)
+{
+	int ret;
+
+	if (execve(program, argv, envp) == -1) {
+		perror("execve");
+		exit(1);
+	}
+
+	return 0;
+}
+#else
+
+#include <seccomp.h>
 
 #ifdef SYS_arch_prctl
 #include <asm/prctl.h>
@@ -186,6 +218,8 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	return 0;
 }
+
+#endif /* SECCOMP */
 
 int
 tapopen(char *name)

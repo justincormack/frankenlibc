@@ -1,4 +1,3 @@
-#include <sys/capability.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -10,6 +9,37 @@
 #include <errno.h>
 
 #include "rumprun.h"
+
+#ifdef NOCAPSICUM
+int
+filter_init(char *program)
+{
+
+	return 0;
+}
+
+int
+filter_fd(int fd, int flags, mode_t mode)
+{
+
+	return 0;
+}
+
+int
+filter_load_exec(char *program, char **argv, char **envp)
+{
+	int ret;
+
+	if (execve(program, argv, envp) == -1) {
+		perror("execve");
+		exit(1);
+	}
+
+	return 0;
+}
+#else
+
+#include <sys/capability.h>
 
 int pfd = -1;
 
@@ -79,6 +109,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	return 0;
 }
+#endif /* CAPSICUM */
 
 int
 tapopen(char *name)

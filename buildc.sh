@@ -11,9 +11,13 @@ TOOLOS="unknown"
 RUNTESTS="test"
 
 TARGET="$(${CC} -v 2>&1 | grep 'Target:' )"
-if $(echo ${TARGET} | grep -q linux); then OS=linux
+if $(echo ${TARGET} | grep -q linux); then
+	OS=linux
+	FILTER="-DNOSECCOMP"
 elif $(echo ${TARGET} | grep -q netbsd); then OS=netbsd
-elif $(echo ${TARGET} | grep -q freebsd); then OS=freebsd
+elif $(echo ${TARGET} | grep -q freebsd); then
+	OS=freebsd
+	FILTER="-DCAPSICUM"
 fi
 
 STDJ="-j 8"
@@ -26,8 +30,8 @@ helpme()
 	printf "supported options:\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
-	printf "\tnoseccomp: disable Linux seccomp\n"
-	printf "\tnocapsicum: disable FreeBSD capsicum\n"
+	printf "\tseccomp|noseccomp: select Linux seccomp (default off)\n"
+	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
 	printf "\tnotests: do not run tests\n"
 	printf "Other options are passed to buildrump.sh\n"
@@ -154,10 +158,16 @@ for arg in "$@"; do
 		${MAKE} clean
 		;;
 	"noseccomp")
-		TOOLOS="dummy"
+		FILTER="-DNOSECCOMP"
+		;;
+	"seccomp")
+		FILTER="-DSECCOMP"
 		;;
 	"nocapsicum")
-		TOOLOS="dummy"
+		FILTER="-DNOCAPSICUM"
+		;;
+	"capsicum")
+		FILTER="-DCAPSICUM"
 		;;
 	"deterministic"|"det")
 		DETERMINISTIC="deterministic"
@@ -200,7 +210,7 @@ export AFLAGS="${ASFLAGS}"
 export LDFLAGS="${EXTRA_LDFLAGS}"
 export CPPFLAGS="${EXTRA_CPPFLAGS}"
 
-${MAKE} OS=${OS} -C libc
+${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
 
 ${MAKE} -C librumpuser
 
@@ -208,7 +218,7 @@ if [ ${TOOLOS} = "unknown" ]; then
 	TOOLOS=${OS}
 fi
 
-${MAKE} OS=${TOOLOS} DETERMINISTIC=${DETERMINISTIC} -C tools
+CPPFLAGS="${CPPFLAGS} ${FILTER}" ${MAKE} OS=${TOOLOS} -C tools
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
