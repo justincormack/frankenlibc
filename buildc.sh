@@ -217,24 +217,4 @@ for lib in ${LIBS}; do
 	makeuserlib ${lib}
 done
 
-# tests
-
-${MAKE} OS=${OS} -C libc test
-
-RUMP_LIBS_FS="-lrumpfs_ffs -lrumpfs_cd9660 -lrumpdev_disk -lrumpdev -lrumpvfs"
-RUMP_LIBS_NET="-lrumpnet_config -lrumpdev_bpf -lrumpnet_netinet -lrumpnet_netinet6 -lrumpnet_net -lrumpnet"
-
-RUMP_LDLIBS="-Wl,--whole-archive ${RUMP_LIBS_NET} ${RUMP_LIBS_FS} -lrump -lrumpuser -Wl,--no-whole-archive"
-
-LIBDIR="${PWD}/rump/lib"
-
-TESTDIR="rumpobj/test"
-mkdir -p ${TESTDIR}
-
-${CC} ${CFLAGS} ${LDFLAGS} -static -nostdinc -Brump/lib -Irump/include -Lrump/lib test/hello.c -lc ${RUMP_LDLIBS} -lfranken -o ${TESTDIR}/test
-
-export RUMP_VERBOSE=1
-
-export BINDIR="rump/bin"
-
-${BINDIR}/rumprun ${TESTDIR}/test
+${MAKE} test
