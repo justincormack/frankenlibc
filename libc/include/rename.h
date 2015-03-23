@@ -3,6 +3,9 @@
 
 /* namespace everything private into our namespace */
 
+/* ctype.h */
+#define isspace(a) __franken_isspace(a)
+
 /* linux/random.h */
 #define getrandom(b, s, f) __platform_getrandom(b, s, f)
 
@@ -16,6 +19,7 @@
 /* stdlib.h */
 #define abort __franken_abort
 #define aligned_alloc(a, s) __franken_aligned_alloc(a, s)
+#define atoi(a) __franken_atoi(a)
 #define getenv(n) __franken_getenv(n)
 
 /* string.h */
