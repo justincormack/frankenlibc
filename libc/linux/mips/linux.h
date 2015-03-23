@@ -3,6 +3,14 @@
 
 #define TCGETS 0x540d
 
+#define LINUX_MAP_SHARED        0x01
+#define LINUX_MAP_PRIVATE       0x02
+#define LINUX_MAP_FIXED         0x10
+#define LINUX_MAP_ANON          0x0800
+#define LINUX_MAP_STACK         0x40000
+#define LINUX_MAP_HUGETLB       0x80000
+#define LINUX_MAP_HUGE(sz)      LINUX_MAP_HUGETLB
+
 struct linux_stat {
 	unsigned long	st_dev;
 	unsigned long	__st_pad0[3];

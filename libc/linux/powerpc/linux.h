@@ -1,5 +1,16 @@
 #define TCGETS 0x5401
 
+#define LINUX_MAP_SHARED        0x01
+#define LINUX_MAP_PRIVATE       0x02
+#define LINUX_MAP_FIXED         0x10
+#define LINUX_MAP_ANON          0x20
+#define LINUX_MAP_STACK         0x20000
+#define LINUX_MAP_HUGETLB       0x40000
+#define LINUX_MAP_HUGE_SHIFT    26
+#define LINUX_MAP_HUGE_64KB	(16 << LINUX_MAP_HUGE_SHIFT)
+#define LINUX_MAP_HUGE(sz)      LINUX_MAP_HUGETLB | \
+	( sz == 65536 ? LINUX_MAP_HUGE_64KB : 0 )
+
 struct linux_stat {
 	unsigned long long	st_dev;
 	unsigned long long	st_ino;
