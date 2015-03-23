@@ -12,7 +12,7 @@
 
 #define UNIT SYSCALL_MMAP2_UNIT
 
-extern size_t __platform_pagesize;
+extern size_t __pagesize;
 
 #ifdef HUGEPAGESIZE
 static int usehuge = 1;
@@ -51,7 +51,7 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	}
 #endif
 
-	if (align == 0 || (1L << align) <= __platform_pagesize) {
+	if (align == 0 || (1L << align) <= __pagesize) {
 		return __mmap(addr, length, prot, flags, fd, offset);
 	}
 

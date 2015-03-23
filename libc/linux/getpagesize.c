@@ -3,7 +3,7 @@
 
 #include "linux.h"
 
-extern size_t __platform_pagesize;
+extern size_t __pagesize;
 
 int
 getpagesize(void)
@@ -12,6 +12,6 @@ getpagesize(void)
 #ifdef HUGEPAGESIZE
 	return HUGEPAGESIZE;
 #else
-	return (int)__platform_pagesize;
+	return (int)__pagesize;
 #endif
 }

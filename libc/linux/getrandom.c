@@ -17,7 +17,7 @@
 #define PLATFORM_RND_GR 1
 #define PLATFORM_RND_FD 2
 
-extern size_t __platform_random;
+extern size_t __random;
 extern int __platform_random_fd;
 
 int __linux_randsrc = PLATFORM_RND_AT;
@@ -29,7 +29,7 @@ getrandom(void *buf, size_t size, unsigned int flags)
 	switch (__linux_randsrc) {
 	case PLATFORM_RND_AT:
 		size = (size > sizeof(size_t)) ? sizeof(size_t) : size;
-		memcpy(buf, &__platform_random, size);
+		memcpy(buf, &__random, size);
 		__linux_randsrc = PLATFORM_RND_FD;
 		return size;
 	case PLATFORM_RND_FD:

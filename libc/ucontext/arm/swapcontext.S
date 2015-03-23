@@ -58,5 +58,5 @@ __franken_swapcontext:
 	moveq pc,lr
 	bx lr
 
-.hidden __platform_hwcap
-1:	.word __platform_hwcap-1b
+.hidden __hwcap
+1:	.word __hwcap-1b
