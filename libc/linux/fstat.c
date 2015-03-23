@@ -1,11 +1,11 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+#include "syscall.h"
+
 #include "linux.h"
 
 int __platform_random_fd = -1;
-
-int __fstat(int, struct linux_stat *);
 
 int
 fstat(int fd, struct stat *st)
@@ -13,7 +13,7 @@ fstat(int fd, struct stat *st)
 	int ret;
 	struct linux_stat lst;
 
-	ret = __fstat(fd, &lst);
+	ret = syscall(SYS_fstat, fd, &lst);
 	if (ret == -1) {
 		errno = EBADF;
 		return -1;

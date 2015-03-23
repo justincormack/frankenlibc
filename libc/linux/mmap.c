@@ -7,19 +7,27 @@
 #include <sys/mman.h>
 
 #include "syscall.h"
+
 #include "linux.h"
 
-#ifdef SYS_mmap2
-void *__mmap(void *, size_t, int, int, int, uint32_t);
-#else
-void *__mmap(void *, size_t, int, int, int, off_t);
-#endif
+#define UNIT SYSCALL_MMAP2_UNIT
 
 extern size_t __platform_pagesize;
 
 #ifdef HUGEPAGESIZE
 static int usehuge = 1;
 #endif
+
+static void *
+__mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
+{
+
+#ifdef SYS_MMAP2
+	return (void *)syscall(SYS_mmap2, addr, length, prot, nflags, fd, offset / UNIT);
+#else
+	return (void *)syscall(SYS_mmap, addr, length, prot, nflags, fd, offset);
+#endif
+}
 
 void *
 mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
@@ -33,14 +41,6 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 		    (nflags & MAP_FIXED ? LINUX_MAP_FIXED : 0) |
 		    (nflags & MAP_ANON ? LINUX_MAP_ANON : 0) |
 		    (nflags & MAP_STACK ? LINUX_MAP_STACK : 0);
-
-	/* XXX fix this up to work with mmap2 */
-#ifdef SYS_mmap2
-	if (offset != 0) {
-		errno = EINVAL;
-		return MAP_FAILED;
-	}
-#endif
 
 #ifdef HUGEPAGESIZE
 	if (usehuge && length >= HUGEPAGESIZE && (align == 0 || (1L << align) <= HUGEPAGESIZE)) {

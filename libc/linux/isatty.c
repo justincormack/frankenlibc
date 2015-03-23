@@ -1,5 +1,7 @@
 #include <unistd.h>
 
+#include "syscall.h"
+
 #include "linux.h"
 
 typedef unsigned int tcflag_t;
@@ -14,12 +16,10 @@ struct termios {
 	cc_t c_cc[19];
 };
 
-int __ioctl(int, unsigned long, void *);
-
 int
 isatty(int fd)
 {
 	struct termios term;
 
-	return __ioctl(fd, TCGETS, &term) != -1;
+	return syscall(SYS_ioctl, fd, TCGETS, &term) != -1;
 }

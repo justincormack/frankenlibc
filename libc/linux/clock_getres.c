@@ -1,9 +1,9 @@
 #include <time.h>
 #include <errno.h>
 
-#include "linux.h"
+#include "syscall.h"
 
-int __clock_getres(clockid_t, struct linux_timespec *);
+#include "linux.h"
 
 int
 clock_getres(clockid_t clk_id, struct timespec *tp)
@@ -23,7 +23,7 @@ clock_getres(clockid_t clk_id, struct timespec *tp)
 			errno = EINVAL;
 			return -1;
 	}
-	ret = __clock_getres(lid, &ltp);
+	ret = syscall(SYS_clock_getres, lid, &ltp);
 
 	if (ret != 0) {
 		errno = EINVAL;

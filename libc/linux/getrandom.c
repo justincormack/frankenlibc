@@ -3,6 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "syscall.h"
+
 /* We use the random number that Linux passes in to all programs first,
    then we will use getrandom(), however if we have been passed in a
    descriptor to /dev/urandom we use that instead. There is a small
@@ -19,8 +21,6 @@ extern size_t __platform_random;
 extern int __platform_random_fd;
 
 int __linux_randsrc = PLATFORM_RND_AT;
-
-int __getrandom(void *, size_t, unsigned int);
 
 int
 getrandom(void *buf, size_t size, unsigned int flags)
@@ -39,7 +39,7 @@ getrandom(void *buf, size_t size, unsigned int flags)
 		__linux_randsrc = PLATFORM_RND_GR;
 		// fallthrough
 	case PLATFORM_RND_GR:
-		return __getrandom(buf, size, flags);
+		return syscall(SYS_getrandom, buf, size, flags);
 	default:
 		break;
 	}

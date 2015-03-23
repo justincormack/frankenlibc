@@ -1,11 +1,9 @@
 #include <time.h>
 #include <errno.h>
 
+#include "syscall.h"
+
 #include "linux.h"
-
-/* XXX do a VDSO version for performance */
-
-int __clock_gettime(clockid_t, struct linux_timespec *);
 
 int
 clock_gettime(clockid_t clk_id, struct timespec *tp)
@@ -25,7 +23,7 @@ clock_gettime(clockid_t clk_id, struct timespec *tp)
 			errno = EINVAL;
 			return -1;
 	}
-	ret = __clock_gettime(lid, &ltp);
+	ret = syscall(SYS_clock_gettime, lid, &ltp);
 
 	if (ret != 0) {
 		errno = EINVAL;

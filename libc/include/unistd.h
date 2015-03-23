@@ -12,7 +12,7 @@ int getpagesize(void);
 int isatty(int);
 ssize_t pread(int, void *, size_t, off_t);
 ssize_t pwrite(int, const void *, size_t, off_t);
-ssize_t read(int, const void *, size_t);
+ssize_t read(int, void *, size_t);
 ssize_t write(int, const void *, size_t);
 
 #endif

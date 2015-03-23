@@ -1,9 +1,9 @@
 #include <time.h>
 #include <errno.h>
 
-#include "linux.h"
+#include "syscall.h"
 
-int __clock_nanosleep(clockid_t, int, const struct linux_timespec *, struct linux_timespec *);
+#include "linux.h"
 
 int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request, struct timespec *remain)
 {
@@ -32,7 +32,7 @@ int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request,
 			return -1;
 	}
 
-	ret = __clock_nanosleep(lid, 0, &ltp, NULL);
+	ret = syscall(SYS_clock_nanosleep, lid, 0, &ltp, NULL);
 
 	if (ret != 0) {
 		errno = EINVAL;
