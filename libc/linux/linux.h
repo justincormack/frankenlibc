@@ -58,9 +58,9 @@ struct linux_timespec {
 #elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
 #include "aarch64/linux.h"
 #elif defined(__PPC64__)
-#include "ppc64/linux.h"
+#include "powerpc64/linux.h"
 #elif defined(__PPC__)
-#include "ppc/linux.h"
+#include "powerpc/linux.h"
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include "mips/linux.h"
 #else

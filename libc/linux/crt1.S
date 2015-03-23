@@ -7,9 +7,9 @@
 #elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
 #include "aarch64/crt1.s"
 #elif defined(__PPC64__)
-#include "ppc64/crt1.s"
+#include "powerpc64/crt1.s"
 #elif defined(__PPC__)
-#include "ppc/crt1.s"
+#include "powerpc/crt1.s"
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include "mips/crt1.s"
 #else

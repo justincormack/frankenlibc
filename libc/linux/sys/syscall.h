@@ -10,9 +10,9 @@
 #elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
 #include "../aarch64/bits/syscall.h"
 #elif defined(__PPC64__)
-#include "../ppc64/bits/syscall.h"
+#include "../powerpc64/bits/syscall.h"
 #elif defined(__PPC__)
-#include "../ppc/bits/syscall.h"
+#include "../powerpc/bits/syscall.h"
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include "../mips/bits/syscall.h"
 #else

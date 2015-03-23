@@ -7,9 +7,9 @@
 #elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
 #include "aarch64/syscall_arch.h"
 #elif defined(__PPC64__)
-#include "ppc64/syscall_arch.h"
+#include "powerpc64/syscall_arch.h"
 #elif defined(__PPC__)
-#include "ppc/syscall_arch.h"
+#include "powerpc/syscall_arch.h"
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include "mips/syscall_arch.h"
 #else

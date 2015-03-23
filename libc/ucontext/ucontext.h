@@ -14,9 +14,9 @@
 #elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
 #include <aarch64/ucontext.h>
 #elif defined(__PPC64__)
-#include <ppc64/ucontext.h>
+#include <powerpc64/ucontext.h>
 #elif defined(__PPC__)
-#include <ppc/ucontext.h>
+#include <powerpc/ucontext.h>
 #else
 #error "Unknown architecture"
 #endif
