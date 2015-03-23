@@ -25,7 +25,7 @@ $(OBJDIR)/freebsd.o:	freebsd.c $(DEPS)
 			$(COMPILE.c) -o $@ freebsd.c
 
 linux:			$(OBJ)
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun -lseccomp 
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun $(LDLIBS) 
 
 freebsd:		$(OBJ)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun

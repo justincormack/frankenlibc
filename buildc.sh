@@ -218,7 +218,8 @@ if [ ${TOOLOS} = "unknown" ]; then
 	TOOLOS=${OS}
 fi
 
-CPPFLAGS="${CPPFLAGS} ${FILTER}" ${MAKE} OS=${TOOLOS} -C tools
+if [ ${FILTER} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
+CPPFLAGS="${CPPFLAGS} ${FILTER}" LDLIBS=${LDLIBS} ${MAKE} OS=${TOOLOS} -C tools
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
