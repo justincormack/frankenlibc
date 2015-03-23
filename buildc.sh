@@ -17,6 +17,7 @@ fi
 
 STDJ="-j 8"
 BUILD_QUIET="-qq"
+DBG_F='-O2 -g'
 
 helpme()
 {
@@ -188,8 +189,8 @@ fi
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
-export CFLAGS="${EXTRA_CFLAGS} -g ${HUGEPAGESIZE}"
-export ASFLAGS="${EXTRA_ASFLAGS} -g"
+export CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}"
+export ASFLAGS="${EXTRA_ASFLAGS} ${DBG_F}"
 export AFLAGS="${ASFLAGS}"
 export LDFLAGS="${EXTRA_LDFLAGS}"
 export CPPFLAGS="${EXTRA_CPPFLAGS}"
