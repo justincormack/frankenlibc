@@ -129,7 +129,7 @@ while getopts '?F:Hhj:p:qs:V:' opt; do
 		helpme
 		;;
 	"j")
-		STDJ=${OPTARG}
+		STDJ="-j ${OPTARG}"
 		;;
 	"p")
 		SIZE=$(bytes ${OPTARG})
