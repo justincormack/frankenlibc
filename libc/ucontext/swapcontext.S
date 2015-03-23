@@ -7,9 +7,11 @@
 #elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
 #include "aarch64/swapcontext.S"
 #elif defined(__PPC64__)
-#include "ppc64/swapcontext.S"
+#include "powerpc64/swapcontext.S"
 #elif defined(__PPC__)
-#include "ppc/swapcontext.S"
+#include "poewrpc/swapcontext.S"
+#elif defined(__MIPSEL__) || defined(__MIPSEB__)
+#include "mips/swapcontext.S"
 #else
 #error "Unknown architecture"
 #endif

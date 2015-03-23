@@ -7,9 +7,11 @@
 #elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
 #include "aarch64/makecontext.c"
 #elif defined(__PPC64__)
-#include "ppc64/makecontext.c"
+#include "powerpc64/makecontext.c"
 #elif defined(__PPC__)
-#include "ppc/makecontext.c"
+#include "powerpc/makecontext.c"
+#elif defined(__MIPSEL__) || defined(__MIPSEB__)
+#include "mips/makecontext.c"
 #else
 #error "Unknown architecture"
 #endif
