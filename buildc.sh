@@ -8,6 +8,7 @@ RUMPSRC=rumpsrc
 
 OS="unknown"
 TOOLOS="unknown"
+RUNTESTS="test"
 
 TARGET="$(${CC} -v 2>&1 | grep 'Target:' )"
 if $(echo ${TARGET} | grep -q linux); then OS=linux
@@ -28,6 +29,7 @@ helpme()
 	printf "\tnoseccomp: disable Linux seccomp\n"
 	printf "\tnocapsicum: disable FreeBSD capsicum\n"
 	printf "\tdeterministic: make deterministic\n"
+	printf "\tnotests: do not run tests\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
 	printf "Supported platforms are currently: linux, netbsd, freebsd\n"
@@ -157,11 +159,14 @@ for arg in "$@"; do
 	"nocapsicum")
 		TOOLOS="dummy"
 		;;
-	"deterministic")
+	"deterministic"|"det")
 		DETERMINISTIC="deterministic"
 		;;
-	"det")
-		DETERMINISTIC="deterministic"
+	"test"|"tests")
+		RUNTESTS="test"
+		;;
+	"notest"|"notests")
+		RUNTESTS="notest"
 		;;
 	*)
 		OS=${arg}
@@ -217,4 +222,6 @@ for lib in ${LIBS}; do
 	makeuserlib ${lib}
 done
 
-${MAKE} test
+if [ ${RUNTESTS} = "test" ]; then
+	${MAKE} test
+fi
