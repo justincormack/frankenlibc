@@ -22,7 +22,7 @@ static void *
 __mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 {
 
-#ifdef SYS_MMAP2
+#ifdef SYS_mmap2
 	return (void *)syscall(SYS_mmap2, addr, length, prot, nflags, fd, offset / UNIT);
 #else
 	return (void *)syscall(SYS_mmap, addr, length, prot, nflags, fd, offset);
