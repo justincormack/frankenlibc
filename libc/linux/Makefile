@@ -19,6 +19,7 @@ OBJ+=$(OBJDIR)/pwrite.o
 OBJ+=$(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
 OBJ+=$(OBJDIR)/syscall.o $(OBJDIR)/syscall_ret.o
+OBJ+=$(OBJDIR)/vdso.o
 HEADERS=syscall.h linux.h
 INCLUDES=-I../include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -97,6 +98,9 @@ $(OBJDIR)/syscall.o:		syscall.S $(HEADERS)
 
 $(OBJDIR)/syscall_ret.o:	syscall_ret.c $(HEADERS)
 				$(COMPILE.c) -o $@ syscall_ret.c
+
+$(OBJDIR)/vdso.o:		vdso.c $(HEADERS)
+				$(COMPILE.c) -o $@ vdso.c
 
 $(OBJDIR)/write.o:		write.c $(HEADERS)
 				$(COMPILE.c) -o $@ write.c

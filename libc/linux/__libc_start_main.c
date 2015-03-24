@@ -8,6 +8,7 @@ int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 #define AUX_CNT 38
 
+size_t *__auxv;
 size_t __hwcap;
 size_t __sysinfo;
 size_t __pagesize;
@@ -27,9 +28,10 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
         for (i = 0; auxv[i]; i += 2)
 		if (auxv[i] < AUX_CNT)
 			aux[auxv[i]] = auxv[i + 1];
-        __hwcap = aux[AT_HWCAP];
-        __sysinfo = aux[AT_SYSINFO];
-        __pagesize = aux[AT_PAGESZ];
+	__auxv = auxv;
+	__hwcap = aux[AT_HWCAP];
+	__sysinfo = aux[AT_SYSINFO];
+	__pagesize = aux[AT_PAGESZ];
 	__random = aux[AT_RANDOM];
 
 	/* init tls; gcc needs this even for some non-tls using programs */
