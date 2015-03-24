@@ -28,7 +28,7 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
         for (i = 0; auxv[i]; i += 2)
 		if (auxv[i] < AUX_CNT)
 			aux[auxv[i]] = auxv[i + 1];
-	__auxv = aux;
+	__auxv = auxv;
 	__hwcap = aux[AT_HWCAP];
 	__sysinfo = aux[AT_SYSINFO];
 	__pagesize = aux[AT_PAGESZ];
