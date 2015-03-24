@@ -5,6 +5,17 @@
 
 #include "linux.h"
 
+#ifdef VDSO_CGT_SYM
+static int (*cgt)(clockid_t, struct linux_timespec *);
+#endif
+
+static int
+sc_clock_gettime(clockid_t lid, struct linux_timespec *ltp)
+{
+
+	return syscall(SYS_clock_gettime, lid, &ltp);
+}
+
 int
 clock_gettime(clockid_t clk_id, struct timespec *tp)
 {
@@ -23,7 +34,16 @@ clock_gettime(clockid_t clk_id, struct timespec *tp)
 			errno = EINVAL;
 			return -1;
 	}
-	ret = syscall(SYS_clock_gettime, lid, &ltp);
+
+#ifdef VDSO_CGT_SYM
+	if (! cgt) {
+		cgt = __vdsosym(VDSO_CGT_VER, VDSO_CGT_SYM);
+		if (! cgt) cgt = sc_clock_gettime;
+	}
+	ret = cgt(lid, &ltp);
+#else
+	ret = sc_clock_gettime(lid, &ltp);
+#endif
 
 	if (ret != 0) {
 		errno = EINVAL;
