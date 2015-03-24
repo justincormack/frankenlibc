@@ -7,7 +7,7 @@ OBJDIR=../rumpobj/test
 BINDIR=../rump/bin
 INCDIR=../rump/include
 
-DEPS=$(OBJDIR)
+DEPS=$(OBJDIR) $(LIBDIR)/libfranken.a $(LIBDIR)/libc.a $(LIBDIR)/librump.a $(LIBDIR)/librumpuser.a
 CPPFLAGS+=-nostdinc -I$(INCDIR)
 LDFLAGS+=-static -L$(LIBDIR) -B$(LIBDIR)
 
