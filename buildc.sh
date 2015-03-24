@@ -19,7 +19,7 @@ elif $(echo ${TARGET} | grep -q freebsd); then
 	FILTER="-DCAPSICUM"
 fi
 
-STDJ="-j 8"
+STDJ="-j 4"
 BUILD_QUIET="-qq"
 DBG_F='-O2 -g'
 
@@ -209,9 +209,9 @@ export AFLAGS="${ASFLAGS}"
 export LDFLAGS="${EXTRA_LDFLAGS}"
 export CPPFLAGS="${EXTRA_CPPFLAGS}"
 
-${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
+${MAKE} ${STDJ} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
 
-${MAKE} -C librumpuser
+${MAKE} ${STDJ} -C librumpuser
 
 if [ ${FILTER+x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
 CPPFLAGS="${CPPFLAGS} ${FILTER}" LDLIBS=${LDLIBS} ${MAKE} OS=${OS} -C tools
@@ -229,5 +229,5 @@ for lib in ${LIBS}; do
 done
 
 if [ ${RUNTESTS} = "test" ]; then
-	${MAKE} test
+	${MAKE} OS=${OS} test
 fi
