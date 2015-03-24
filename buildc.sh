@@ -203,18 +203,24 @@ fi
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
-export CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}"
-export AFLAGS="${EXTRA_AFLAGS} ${DBG_F}"
-export ASFLAGS="${AFLAGS}"
-export LDFLAGS="${EXTRA_LDFLAGS}"
-export CPPFLAGS="${EXTRA_CPPFLAGS}"
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
+	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
+	ASFLAGS="${AFLAGS}" \
+	LDFLAGS="${EXTRA_LDFLAGS}" \
+	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
 
-${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
-
-${MAKE} -C librumpuser
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+	LDFLAGS="${EXTRA_LDFLAGS}" \
+	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	${MAKE} -C librumpuser
 
 if [ ${FILTER+x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
-CPPFLAGS="${CPPFLAGS} ${FILTER}" LDLIBS=${LDLIBS} ${MAKE} OS=${OS} -C tools
+CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
+	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+	LDFLAGS="${EXTRA_LDFLAGS}" \
+	LDLIBS=${LDLIBS} \
+	${MAKE} OS=${OS} -C tools
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
@@ -229,5 +235,8 @@ for lib in ${LIBS}; do
 done
 
 if [ ${RUNTESTS} = "test" ]; then
-	${MAKE} OS=${OS} test
+	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+		LDFLAGS="${EXTRA_LDFLAGS}" \
+		CPPFLAGS="${EXTRA_CPPFLAGS}" \
+		${MAKE} OS=${OS} test
 fi
