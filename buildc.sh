@@ -204,14 +204,14 @@ fi
 	tools build kernelheaders install
 
 export CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}"
-export ASFLAGS="${EXTRA_ASFLAGS} ${DBG_F}"
-export AFLAGS="${ASFLAGS}"
+export AFLAGS="${EXTRA_AFLAGS} ${DBG_F}"
+export ASFLAGS="${AFLAGS}"
 export LDFLAGS="${EXTRA_LDFLAGS}"
 export CPPFLAGS="${EXTRA_CPPFLAGS}"
 
-${MAKE} ${STDJ} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
+${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
 
-${MAKE} ${STDJ} -C librumpuser
+${MAKE} -C librumpuser
 
 if [ ${FILTER+x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
 CPPFLAGS="${CPPFLAGS} ${FILTER}" LDLIBS=${LDLIBS} ${MAKE} OS=${OS} -C tools

@@ -9,7 +9,7 @@
 #elif defined(__PPC64__)
 #include "powerpc64/swapcontext.S"
 #elif defined(__PPC__)
-#include "poewrpc/swapcontext.S"
+#include "powerpc/swapcontext.S"
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include "mips/swapcontext.S"
 #else
