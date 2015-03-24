@@ -51,7 +51,7 @@ __franken_swapcontext:
 	lw      $30, 40($5)
 
 	lw      $4, 104($5)
-	lw      $2, $0
+	li      $2, 0
 
 	jr      $ra
 	lw      $28, 44($5)
