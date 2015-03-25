@@ -33,6 +33,8 @@ freebsd:		$(OBJ)
 netbsd:			$(OBJ)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun
 
+qemu-arm:		
+
 .PHONY:			clean linux netbsd freebsd
 clean:		
 			rm -f $(OUT) $(OBJDIR)/*.o

@@ -26,7 +26,7 @@ test:		default
 		$(MAKE) -C $@
 
 clean:		
-		for dir in freebsd linux netbsd $(GDIRS) test deterministic; \
+		for dir in freebsd linux netbsd qemu-arm $(GDIRS) test deterministic; \
 		do \
 			$(MAKE) -C $$dir OS= clean; \
 		done
