@@ -80,6 +80,17 @@
 
 #include "thread.h"
 
+struct thread {
+	char *name;
+	void *lwp;
+	void *cookie;
+	int64_t wakeup_time;
+	TAILQ_ENTRY(thread) thread_list;
+	ucontext_t ctx;
+	int flags;
+	int threrrno;
+};
+
 static void switch_threads(struct thread *, struct thread *);
 static int64_t now(void);
 
