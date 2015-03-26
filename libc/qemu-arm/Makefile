@@ -2,7 +2,7 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 OBJDIR=../../rumpobj/libc
 CRTDIR=../../rump/lib
-CRTFILES=$(CRTDIR)/startup.o
+CRTFILES=$(CRTDIR)/startup.o $(CRTDIR)/crt0.o
 OBJ=$(CRTFILES)
 OBJ+=$(OBJDIR)/clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o
@@ -34,6 +34,9 @@ $(CRTDIR):
 
 $(CRTDIR)/startup.o:		startup.s $(HEADERS)
 				$(COMPILE.S) -o $@ startup.s
+
+$(CRTDIR)/crt0.o:		crt0.c $(HEADERS)
+				$(COMPILE.c) -o $@ crt0.c
 
 $(OBJDIR)/clock_getres.o:	clock_getres.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_getres.c
