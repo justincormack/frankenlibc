@@ -14,7 +14,7 @@ OBJ+=$(OBJDIR)/stub___msgctl50.o $(OBJDIR)/stub___msync13.o
 OBJ+=$(OBJDIR)/stub___mq_timedreceive50.o $(OBJDIR)/stub___mq_timedsend50.o
 OBJ+=$(OBJDIR)/stub_munlock.o $(OBJDIR)/stub_munlockall.o
 OBJ+=$(OBJDIR)/stub___ntp_gettime50.o $(OBJDIR)/stub_posix_spawn.o
-OBJ+=$(OBJDIR)/stub_profil.o $(OBJDIR)/stub__sbrk.o
+OBJ+=$(OBJDIR)/stub_profil.o $(OBJDIR)/stub_rasctl.o $(OBJDIR)/stub__sbrk.o
 OBJ+=$(OBJDIR)/stub__sched_getaffinity.o $(OBJDIR)/stub__sched_getparam.o
 OBJ+=$(OBJDIR)/stub__sched_setaffinity.o $(OBJDIR)/stub__sched_setparam.o
 OBJ+=$(OBJDIR)/stub___shmctl50.o $(OBJDIR)/stub_____semctl50.o
@@ -108,6 +108,9 @@ $(OBJDIR)/stub_posix_spawn.o:		posix_spawn.c
 
 $(OBJDIR)/stub_profil.o:		profil.c
 					$(COMPILE.c) -o $@ profil.c
+
+$(OBJDIR)/stub_rasctl.o:		rasctl.c
+					$(COMPILE.c) -o $@ rasctl.c
 
 $(OBJDIR)/stub__sbrk.o:			_sbrk.c
 					$(COMPILE.c) -o $@ _sbrk.c
