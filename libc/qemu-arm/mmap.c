@@ -16,7 +16,8 @@ static uintptr_t core_top = (uintptr_t) &__core[CORESIZE];
 void *
 mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 {
-        unsigned int align;
+        unsigned int shift;
+	uintptr_t align;
         uintptr_t amask;
 	int pagesize = getpagesize();
 
@@ -25,12 +26,16 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 		return MAP_FAILED;
 	}
 
-	align = (nflags & MAP_ALIGNMENT_MASK) >> MAP_ALIGNMENT_SHIFT;
-	if (align == 0) align = pagesize;
-	amask = (1UL << align) - 1UL;
+	shift = (nflags & MAP_ALIGNMENT_MASK) >> MAP_ALIGNMENT_SHIFT;
+	if (shift == 0) {
+		align = pagesize;
+	} else {
+		align = 1UL << shift;
+	}
+	amask = align - 1UL;
 
-	if (core_base & amask != 0)
-		core_base = (core_base & amask) + align;
+	if ((core_base & amask) != 0)
+		core_base = (core_base & ~amask) + align;
 
 	if (core_base + length > core_top) {
 		errno = ENOMEM;
