@@ -14,4 +14,4 @@ __franken_memcpy(void *dest, const void *src, size_t n)
 }
 
 /* compiler may generate memcpy, so if libc not linked may need it */
-void *memcpy(void *, const void *, size_t) __attribute__ ((weak, alias ("__franken_memcpy")));
+void *memcpy(void *, const void *, unsigned long) __attribute__ ((weak, alias ("__franken_memcpy")));
