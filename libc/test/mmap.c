@@ -41,9 +41,6 @@ main()
 	mem = mmap(0, (size_t)__LONG_MAX__, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, 9999, 0);
 	assert(mem == MAP_FAILED);
 	assert(errno > 0);
-	ret = munmap(MAP_FAILED, 4096);
-	assert(ret == -1);
-	assert(errno > 0);
 
 	return 0;
 }
