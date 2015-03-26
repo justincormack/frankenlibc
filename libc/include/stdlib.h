@@ -4,11 +4,9 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <sys/cdefs.h>
+#include <sys/types.h>
 
 #include <rename.h>
-
-typedef __UINTPTR_TYPE__ size_t;
-typedef __INTPTR_TYPE__ ssize_t;
 
 void abort(void) __attribute__ ((noreturn));
 void *aligned_alloc(size_t, size_t);

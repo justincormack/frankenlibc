@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+typedef uintptr_t size_t;
+typedef intptr_t ssize_t;
+
 typedef int pid_t;
 typedef unsigned int uid_t;
 typedef unsigned int gid_t;

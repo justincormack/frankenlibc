@@ -1,4 +1,6 @@
-typedef __UINTPTR_TYPE__ size_t;
+#include <sys/types.h>
+
+/* do not include headers with rename due to alias */
 
 void *__franken_memcpy(void *, const void *, size_t);
 
