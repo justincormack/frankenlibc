@@ -33,7 +33,16 @@
 
 #include "rename.h"
 
-struct thread;
+struct thread {
+    char *name;
+    void *lwp;
+    void *cookie;
+    int64_t wakeup_time;
+    TAILQ_ENTRY(thread) thread_list;
+    ucontext_t ctx;
+    int flags;
+    int threrrno;
+};
 
 #define RUNNABLE_FLAG   0x00000001
 #define THREAD_MUSTJOIN 0x00000002
