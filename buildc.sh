@@ -215,7 +215,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
 	${MAKE} -C librumpuser
 
-if [ ${FILTER+x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
+if [ ${FILTER-x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
 CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
