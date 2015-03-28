@@ -6,11 +6,12 @@ void *
 calloc(size_t nmemb, size_t size)
 {
 	size_t n = nmemb * size; /* XXX check for overflow */
-	void *m = aligned_alloc(0, n);
+	void *mem = aligned_alloc(sizeof(void *), n);
 
-	if (!m)
+	if (! mem)
 		return NULL;
 
-	memset(m, 0, n);
-	return m;
+	memset(mem, 0, n);
+
+	return mem;
 }

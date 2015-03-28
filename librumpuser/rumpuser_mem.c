@@ -49,6 +49,8 @@ rumpuser_malloc(size_t size, int alignment, void **memp)
 	pagesize = (pagesize == 0) ? getpagesize() : pagesize;
 
 	if (size < pagesize) {
+		if (alignment < sizeof(void *))
+			alignment = sizeof(void *);
 		return posix_memalign(memp, alignment, size);
 	}
 
