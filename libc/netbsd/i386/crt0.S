@@ -33,9 +33,12 @@
  * <<Id: LICENSE,v 1.2 2000/06/14 15:57:33 cgd Exp>>
  */
 
-.text
-.global _start
-_start:
+#include <i386/asm.h>
+
+	.hidden ___start
+
+STRONG_ALIAS(_start,__start)
+_ENTRY(__start)
 	pushl	%ebx
 	pushl	%ecx
 	pushl	%edx
