@@ -61,7 +61,7 @@ support a full application stack on the rump kernel.
 
 Currently there are three userspace implementations included, NetBSD, Linux and FreeBSD,
 and one very basic baremetal implementation, qemu-arm. The supported architectures
-are x86\_64 and i386, with work in progress support for arm, powerpc and mips.
+are x86\_64, i386 and arm, with work in progress support for powerpc and mips.
 Additional implementations and architectures will be added soon.
 
 There is also an option to build a deterministic version with no random numbers and a fake
