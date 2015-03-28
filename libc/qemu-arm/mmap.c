@@ -42,6 +42,8 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 		return MAP_FAILED;
 	}
 
+	memset(core_base, 0, length);
+
 	core_base += length;
 
 	return (void *)core_base;
