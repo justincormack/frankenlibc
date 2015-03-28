@@ -1,7 +1,6 @@
 #!/bin/sh
 
 MAKE=${MAKE-make}
-CC=${CC-cc}
 
 OBJDIR=rumpobj
 RUMPSRC=rumpsrc
@@ -9,7 +8,7 @@ RUMPSRC=rumpsrc
 OS="unknown"
 RUNTESTS="test"
 
-TARGET="$(${CC} -v 2>&1 | grep 'Target:' )"
+TARGET="$(${CC-cc} -v 2>&1 | grep 'Target:' )"
 if $(echo ${TARGET} | grep -q linux); then
 	OS=linux
 	FILTER="-DNOSECCOMP"
@@ -87,7 +86,7 @@ appendvar ()
 while getopts '?F:Hhj:p:qs:V:' opt; do
 	case "$opt" in
 	"F")
-		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
+		EXTRAFLAGS="${EXTRAFLAGS} -F \"${OPTARG}\""
 		ARG=${OPTARG#*=}
 		case ${OPTARG} in
 			CFLAGS\=*)
@@ -195,6 +194,8 @@ if [ "${OS}" = "unknown" ]; then
 	die "Unknown or unsupported platform"
 fi
 
+[ -f libc/${OS}/platform.sh ] && . libc/${OS}/platform.sh
+
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
@@ -219,7 +220,7 @@ if [ ${FILTER-x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
 CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
-	LDLIBS=${LDLIBS} \
+	LDLIBS="${LDLIBS}" \
 	${MAKE} OS=${OS} -C tools
 
 # for now just build libc
