@@ -81,6 +81,12 @@ appendvar ()
 	appendvar_fs "${vname}" ' ' $*
 }
 
+[ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
+
+if [ ${RUMPSRC} = "rumpsrc" ]; then
+	[ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
+fi
+
 . ./buildrump.sh/subr.sh
 
 while getopts '?F:Hhj:p:qs:V:' opt; do
@@ -181,12 +187,6 @@ for arg in "$@"; do
 		;;
 	esac
 done
-
-[ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
-
-if [ ${RUMPSRC} = "rumpsrc" ]; then
-	[ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
-fi
 
 set -e
 
