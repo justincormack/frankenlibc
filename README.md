@@ -59,10 +59,12 @@ to implement these calls on any platform with only a few lines of code, even
 less than building a hypercall interface from scratch, at which point you can
 support a full application stack on the rump kernel.
 
-Currently there are three implementations included, NetBSD, Linux and FreeBSD, and two
-architectures, x86\_64 and i386. These have a few features missing but work ok.
-Additional implementations and architectures will be added soon. There is also
-an option to build a deterministic version with no random numbers and a fake
+Currently there are three userspace implementations included, NetBSD, Linux and FreeBSD,
+and one very basic baremetal implementation, qemu-arm. The supported architectures
+are x86\_64 and i386, with work in progress support for arm, powerpc and mips.
+Additional implementations and architectures will be added soon.
+
+There is also an option to build a deterministic version with no random numbers and a fake
 clock, so runs are completely repeatable.
 
 There is a wrapper called rumprun that can pass in files and block devices
