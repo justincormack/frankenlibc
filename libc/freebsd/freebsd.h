@@ -47,6 +47,7 @@ struct termios {
 #define _IOR(g,n,t)	_IOC(IOC_OUT, (g), (n), sizeof(t))
 
 #define TIOCGETA _IOR('t', 19, struct termios)
+#define	DIOCGMEDIASIZE	_IOR('d', 129, off_t)
 
 #define FREEBSD_S_IFMT   0170000
 

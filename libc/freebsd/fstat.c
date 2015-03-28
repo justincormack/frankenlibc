@@ -18,6 +18,11 @@ fstat(int fd, struct stat *st)
 	}
 
 	st->st_size = fst.st_size;
+
+	if (FREEBSD_S_ISBLK(fst.st_mode)) {
+		__ioctl(fd, DIOCGMEDIASIZE, &fst.st_size);
+	}
+
 	st->st_mode = (FREEBSD_S_ISDIR (fst.st_mode) ? S_IFDIR  : 0) |
 		      (FREEBSD_S_ISCHR (fst.st_mode) ? S_IFCHR  : 0) |
 		      (FREEBSD_S_ISBLK (fst.st_mode) ? S_IFBLK  : 0) |

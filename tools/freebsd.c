@@ -1,6 +1,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/disk.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <stdio.h>
@@ -68,7 +69,7 @@ filter_fd(int fd, int flags, mode_t mode)
 {
 	cap_rights_t rights;
 	int ret;
-	unsigned long ioctl[1] = {TIOCGETA};
+	unsigned long ioctl[2] = {TIOCGETA, DIOCGMEDIASIZE};
 
 	/* XXX we could cut capabilities down a little further eg seek only
 	   used on block devices for example */
@@ -92,7 +93,7 @@ filter_fd(int fd, int flags, mode_t mode)
 	ret = cap_rights_limit(fd, &rights);
 	if (ret == -1) return ret;
 
-	ret = cap_ioctls_limit(fd, ioctl, 1);
+	ret = cap_ioctls_limit(fd, ioctl, 2);
 	if (ret == -1) return ret;
 
 	return 0;
