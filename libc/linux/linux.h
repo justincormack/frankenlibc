@@ -1,3 +1,5 @@
+#include <sys/types.h>
+
 #define LINUX_CLOCK_REALTIME 0
 #define LINUX_CLOCK_MONOTONIC 1
 
@@ -52,3 +54,5 @@ struct linux_timespec {
 #else
 #error "Unknown architecture"
 #endif
+
+#define BLKGETSIZE64 _IOR(0x12,114,size_t)

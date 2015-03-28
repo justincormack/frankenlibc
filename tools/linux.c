@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/syscall.h>
+#include <linux/fs.h>
 #include <net/if.h>
 #include <linux/if_tun.h>
 
@@ -170,6 +171,11 @@ filter_fd(int fd, int flags, mode_t mode)
 		SCMP_A0(SCMP_CMP_EQ, fd));
 	if (ret < 0) return ret;
 
+	if (S_ISBLK(mode)) {
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
+			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, BLKGETSIZE64));
+		if (ret < 0) return ret;
+	}
 	return 0;
 }
 

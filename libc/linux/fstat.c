@@ -20,6 +20,11 @@ fstat(int fd, struct stat *st)
 	}
 
 	st->st_size = lst.st_size;
+
+	if (LINUX_S_ISBLK(lst.st_mode)) {
+		syscall(SYS_ioctl, fd, BLKGETSIZE64, &st->st_size);
+	}
+
 	st->st_mode = (LINUX_S_ISDIR (lst.st_mode) ? S_IFDIR  : 0) |
 		      (LINUX_S_ISCHR (lst.st_mode) ? S_IFCHR  : 0) |
 		      (LINUX_S_ISBLK (lst.st_mode) ? S_IFBLK  : 0) |
