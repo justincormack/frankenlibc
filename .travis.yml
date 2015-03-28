@@ -5,4 +5,4 @@ compiler:
   - clang
 
 script:
-  - ./buildc.sh noseccomp
+  - make
