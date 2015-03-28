@@ -20,6 +20,7 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	uintptr_t align;
         uintptr_t amask;
 	int pagesize = getpagesize();
+	void *mem;
 
 	if (fd != -1 || offset != 0 || addr) {
 		errno = EINVAL;
@@ -42,9 +43,10 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 		return MAP_FAILED;
 	}
 
-	memset(core_base, 0, length);
+	mem = (void *)core_base;
+	memset(mem, 0, length);
 
 	core_base += length;
 
-	return (void *)core_base;
+	return mem;
 }
