@@ -30,7 +30,8 @@ main()
 			continue;
 		mem = mmap(0, align, PROT_READ | PROT_WRITE,
 			MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(i), -1, 0);
-		assert(mem != MAP_FAILED);
+		if (mem == MAP_FAILED)
+			break;
 		testalign = (long)mem & mask;
 		assert(testalign == 0);
 		ret = munmap(mem, align);
