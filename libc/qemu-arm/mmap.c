@@ -50,3 +50,11 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 
 	return mem;
 }
+
+int
+munmap(void *addr, size_t length)
+{
+
+	/* XXX at least at end of mapping could reclaim */
+	return 0;
+}

@@ -13,7 +13,6 @@ OBJ+=$(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/isatty.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/mprotect.o
-OBJ+=$(OBJDIR)/munmap.o
 OBJ+=$(OBJDIR)/__libc_start_main.o
 OBJ+=$(OBJDIR)/pread.o
 OBJ+=$(OBJDIR)/pwrite.o
@@ -76,9 +75,6 @@ $(OBJDIR)/mmap.o:		mmap.c $(HEADERS)
 
 $(OBJDIR)/mprotect.o:		mprotect.c
 				$(COMPILE.c) -o $@ mprotect.c
-
-$(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
-				$(COMPILE.c) -o $@ munmap.c
 
 $(OBJDIR)/pread.o:		pread.c $(HEADERS)
 				$(COMPILE.c) -o $@ pread.c
