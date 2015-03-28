@@ -86,7 +86,7 @@ appendvar ()
 while getopts '?F:Hhj:p:qs:V:' opt; do
 	case "$opt" in
 	"F")
-		EXTRAFLAGS="${EXTRAFLAGS} -F \"${OPTARG}\""
+		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
 		ARG=${OPTARG#*=}
 		case ${OPTARG} in
 			CFLAGS\=*)
