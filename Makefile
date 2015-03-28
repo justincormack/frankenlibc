@@ -4,6 +4,13 @@ default:
 test:
 		${MAKE} -C tests
 
-PHONY:		clean test
+seccomp:
+		./buildc.sh seccomp
+
+qemu-arm:
+		./buildc.sh qemu-arm
+
+PHONY:		clean test qemu-arm seccomp
+
 clean:		
 		rm -rf rumpobj rump
