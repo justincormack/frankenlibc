@@ -11,7 +11,7 @@ DEPS=$(OBJDIR) $(LIBDIR)/libfranken.a $(LIBDIR)/libc.a $(LIBDIR)/librump.a $(LIB
 CPPFLAGS+=-nostdinc -I$(INCDIR)
 LDFLAGS+=-static -L$(LIBDIR) -B$(LIBDIR)
 
-LIBS=-lc ${RUMP_LIBS} -lfranken
+LIBS=-Wl,--start-group -lc ${RUMP_LIBS} -lfranken -Wl,--end-group
 
 OBJ=$(OBJDIR)/hello
 
