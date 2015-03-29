@@ -19,6 +19,7 @@
 int
 filter_init(char *program)
 {
+	int fd = open("/dev/urandom", O_RDONLY);
 
 	return 0;
 }
