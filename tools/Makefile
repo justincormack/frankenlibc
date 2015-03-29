@@ -25,13 +25,13 @@ $(OBJDIR)/freebsd.o:	freebsd.c $(DEPS)
 			$(COMPILE.c) -o $@ freebsd.c
 
 linux:			$(OBJ)
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun $(LDLIBS) 
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDSTATIC) $(OBJ) -o $(BINDIR)/rumprun $(LDLIBS) 
 
 freebsd:		$(OBJ)
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDSTATIC) $(OBJ) -o $(BINDIR)/rumprun
 
 netbsd:			$(OBJ)
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJ) -o $(BINDIR)/rumprun
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDSTATIC) $(OBJ) -o $(BINDIR)/rumprun
 
 qemu-arm:		qemu-arm.sh
 			cp qemu-arm.sh $(OUT)
