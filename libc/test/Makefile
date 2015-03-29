@@ -23,16 +23,16 @@ $(OUTDIR)/libc.a:	$(OUTDIR)/linkstub.o
 			$(RANLIB) $@
 
 $(OUTDIR)/args:		args.c $(OUTDIR)/libc.a
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ args.c $(LDLIBS)
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ args.c $(LDLIBS)
 
 $(OUTDIR)/env:		env.c $(OUTDIR)/libc.a
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ env.c $(LDLIBS)
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ env.c $(LDLIBS)
 
 $(OUTDIR)/_exit:	_exit.c $(OUTDIR)/libc.a
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ _exit.c $(LDLIBS)
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ _exit.c $(LDLIBS)
 
 $(OUTDIR)/mmap:		mmap.c $(OUTDIR)/libc.a
-			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ mmap.c $(LDLIBS)
+			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ mmap.c $(LDLIBS)
 
 .PHONY:			test
 test:			$(OUTDIR) $(FILES)
