@@ -3,6 +3,7 @@
 MAKE=${MAKE-make}
 
 RUMPOBJ=${PWD}/rumpobj
+RUMP=${RUMPOBJ}/rump
 RUMPSRC=rumpsrc
 
 RUNTESTS="test"
