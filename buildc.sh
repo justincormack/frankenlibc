@@ -5,18 +5,25 @@ MAKE=${MAKE-make}
 OBJDIR=rumpobj
 RUMPSRC=rumpsrc
 
-OS="unknown"
 RUNTESTS="test"
 
-TARGET="$(${CC-cc} -v 2>&1 | grep 'Target:' )"
-if $(echo ${TARGET} | grep -q linux); then
+TARGET=$(LC_ALL=C ${CC-cc} -v 2>&1 | sed -n 's/^Target: //p' )
+
+case ${TARGET} in
+*-linux*)
 	OS=linux
 	FILTER="-DNOSECCOMP"
-elif $(echo ${TARGET} | grep -q netbsd); then OS=netbsd
-elif $(echo ${TARGET} | grep -q freebsd); then
+	;;
+*-netbsd*)
+	OS=netbsd
+	;;
+*-freebsd*)
 	OS=freebsd
 	FILTER="-DCAPSICUM"
-fi
+	;;
+*)
+	OS=unknown
+esac
 
 STDJ="-j 4"
 BUILD_QUIET="-qq"
