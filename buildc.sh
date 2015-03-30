@@ -211,6 +211,21 @@ fi
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
+# remove libraries that are not/will not work
+rm -f rump/lib/librumpdev_ugenhc.a
+rm -f rump/lib/librumpfs_syspuffs.a
+rm -f rump/lib/librumpkern_sysproxy.a
+rm -f rump/lib/librumpnet_shmif.a
+rm -f rump/lib/librumpnet_sockin.a
+rm -f rump/lib/librumpvfs_fifofs.a
+rm -f rump/lib/librumpdev_netsmb.a
+rm -f rump/lib/librumpfs_smbfs.a
+rm -f rump/lib/librumpdev_usb.a
+rm -f rump/lib/librumpdev_ucom.a
+rm -f rump/lib/librumpdev_ulpt.a
+rm -f rump/lib/librumpdev_ubt.a
+rm -rf rump/lib/pkgconfig
+
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	ASFLAGS="${AFLAGS}" \
