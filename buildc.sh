@@ -3,6 +3,7 @@
 MAKE=${MAKE-make}
 
 RUMPOBJ=${PWD}/rumpobj
+RUMP=${PWD}/rump
 RUMPSRC=rumpsrc
 
 RUNTESTS="test"
@@ -33,6 +34,7 @@ helpme()
 {
 	printf "Usage: $0 [-h] [options] [platform]\n"
 	printf "supported options:\n"
+	printf "\t-d: location of output files. default: PWD/rump\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
@@ -102,8 +104,12 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?F:Hhj:o:p:qs:V:' opt; do
+while getopts '?d:F:Hhj:o:p:qs:V:' opt; do
 	case "$opt" in
+	"d")
+		mkdir -p ${OPTARG}
+		RUMP=$(abspath ${OPTARG})
+		;;
 	"F")
 		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
 		ARG=${OPTARG#*=}
@@ -217,24 +223,24 @@ fi
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
-	-k -s ${RUMPSRC} -o ${RUMPOBJ} \
+	-k -s ${RUMPSRC} -o ${RUMPOBJ} -d ${RUMP} \
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
 # remove libraries that are not/will not work
-rm -f rump/lib/librumpdev_ugenhc.a
-rm -f rump/lib/librumpfs_syspuffs.a
-rm -f rump/lib/librumpkern_sysproxy.a
-rm -f rump/lib/librumpnet_shmif.a
-rm -f rump/lib/librumpnet_sockin.a
-rm -f rump/lib/librumpvfs_fifofs.a
-rm -f rump/lib/librumpdev_netsmb.a
-rm -f rump/lib/librumpfs_smbfs.a
-rm -f rump/lib/librumpdev_usb.a
-rm -f rump/lib/librumpdev_ucom.a
-rm -f rump/lib/librumpdev_ulpt.a
-rm -f rump/lib/librumpdev_ubt.a
-rm -rf rump/lib/pkgconfig
+rm -f ${RUMP}/lib/librumpdev_ugenhc.a
+rm -f ${RUMP}/lib/librumpfs_syspuffs.a
+rm -f ${RUMP}/lib/librumpkern_sysproxy.a
+rm -f ${RUMP}/lib/librumpnet_shmif.a
+rm -f ${RUMP}/lib/librumpnet_sockin.a
+rm -f ${RUMP}/lib/librumpvfs_fifofs.a
+rm -f ${RUMP}/lib/librumpdev_netsmb.a
+rm -f ${RUMP}/lib/librumpfs_smbfs.a
+rm -f ${RUMP}/lib/librumpdev_usb.a
+rm -f ${RUMP}/lib/librumpdev_ucom.a
+rm -f ${RUMP}/lib/librumpdev_ulpt.a
+rm -f ${RUMP}/lib/librumpdev_ubt.a
+rm -rf ${RUMP}/lib/pkgconfig
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
@@ -242,12 +248,14 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
+	RUMP="${RUMP}" \
 	${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
+	RUMP="${RUMP}" \
 	${MAKE} -C librumpuser
 
 if [ ${FILTER-x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
@@ -256,6 +264,7 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	LDLIBS="${LDLIBS}" \
 	RUMPOBJ="${RUMPOBJ}" \
+	RUMP="${RUMP}" \
 	${MAKE} OS=${OS} -C tools
 
 # for now just build libc
@@ -263,7 +272,7 @@ LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
 
 RUMPMAKE=${RUMPOBJ}/tooldir/rumpmake
 
-usermtree rump
+usermtree ${RUMP}
 userincludes ${RUMPSRC} ${LIBS}
 
 for lib in ${LIBS}; do
@@ -275,5 +284,6 @@ if [ ${RUNTESTS} = "test" ]; then
 		LDFLAGS="${EXTRA_LDFLAGS}" \
 		CPPFLAGS="${EXTRA_CPPFLAGS}" \
 		RUMPOBJ="${RUMPOBJ}" \
+		RUMP="${RUMP}" \
 		${MAKE} OS=${OS} test
 fi

@@ -4,9 +4,10 @@ RUMP_LIBS?=-Wl,--whole-archive ${RUMP_LIBS_NET} ${RUMP_LIBS_FS} -lrump -Wl,--no-
 
 RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/test
-LIBDIR=../rump/lib
-BINDIR=../rump/bin
-INCDIR=../rump/include
+RUMP?=../rump
+LIBDIR=$(RUMP)/lib
+BINDIR=$(RUMP)/bin
+INCDIR=$(RUMP)/include
 
 DEPS=$(OBJDIR) $(LIBDIR)/libfranken.a $(LIBDIR)/libc.a $(LIBDIR)/librump.a $(LIBDIR)/librumpuser.a
 CPPFLAGS+=-nostdinc -I$(INCDIR)

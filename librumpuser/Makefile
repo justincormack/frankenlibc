@@ -1,13 +1,11 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 
-# rumpuser.h is in sys/rump for inclusion by kernel components
-#.PATH:		${.CURDIR}/../../sys/rump/include/rump
+RUMP?=../rump
+LIB=$(RUMP)/lib/librumpuser.a
 
-LIB=		../rump/lib/librumpuser.a
+CPPFLAGS+=-DLIBRUMPUSER
 
-CPPFLAGS+=	-DLIBRUMPUSER
-
-INCS=		rumpuser_component.h rumpuser_port.h
+INCS=rumpuser_component.h rumpuser_port.h
 
 RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/librumpuser

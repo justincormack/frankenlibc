@@ -1,7 +1,8 @@
 OS?=linux
 GDIRS=generic crt lwp stubs thread init ucontext malloc
 DIRS=$(OS) $(GDIRS)
-LIBDIR=../rump/lib
+RUMP?=../rump
+LIBDIR=$(RUMP)/lib
 LIB=$(LIBDIR)/libfranken.a
 RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/libc
