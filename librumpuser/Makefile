@@ -1,13 +1,13 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 
-RUMP?=../rump
+RUMPOBJ?=../rumpobj
+RUMP?=$(RUMPOBJ)/rump
 LIB=$(RUMP)/lib/librumpuser.a
 
 CPPFLAGS+=-DLIBRUMPUSER
 
 INCS=rumpuser_component.h rumpuser_port.h
 
-RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/librumpuser
 
 DEPS=$(INCS) $(OBJDIR)

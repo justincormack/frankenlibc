@@ -3,7 +3,6 @@
 MAKE=${MAKE-make}
 
 RUMPOBJ=${PWD}/rumpobj
-RUMP=${PWD}/rump
 RUMPSRC=rumpsrc
 
 RUNTESTS="test"
@@ -34,7 +33,6 @@ helpme()
 {
 	printf "Usage: $0 [-h] [options] [platform]\n"
 	printf "supported options:\n"
-	printf "\t-d: location of output files. default: PWD/rump\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
@@ -104,12 +102,8 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?d:F:Hhj:o:p:qs:V:' opt; do
+while getopts '?F:Hhj:o:p:qs:V:' opt; do
 	case "$opt" in
-	"d")
-		mkdir -p ${OPTARG}
-		RUMP=$(abspath ${OPTARG})
-		;;
 	"F")
 		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
 		ARG=${OPTARG#*=}
@@ -158,6 +152,7 @@ while getopts '?d:F:Hhj:o:p:qs:V:' opt; do
 	"o")
 		mkdir -p ${OPTARG}
 		RUMPOBJ=$(abspath ${OPTARG})
+		RUMP=${RUMPOBJ}/rump
 		;;
 	"p")
 		SIZE=$(bytes ${OPTARG})
