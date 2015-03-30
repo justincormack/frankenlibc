@@ -240,6 +240,7 @@ rm -f ${RUMP}/lib/librumpdev_usb.a
 rm -f ${RUMP}/lib/librumpdev_ucom.a
 rm -f ${RUMP}/lib/librumpdev_ulpt.a
 rm -f ${RUMP}/lib/librumpdev_ubt.a
+rm -f ${RUMP}/lib/librumpkern_sys_linux.a
 rm -rf ${RUMP}/lib/pkgconfig
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
