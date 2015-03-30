@@ -1,6 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 OS?=linux
-OBJDIR=../rumpobj/tools
+RUMPOBJ?=../rumpobj
+OBJDIR=$(RUMPOBJ)/tools
 BINDIR=../rump/bin
 OUT=$(BINDIR)/rumprun
 OBJ=$(OBJDIR)/rumprun.o $(OBJDIR)/${OS}.o

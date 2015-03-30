@@ -2,8 +2,9 @@ RUMP_LIBS_FS?=-lrumpfs_ffs -lrumpfs_cd9660 -lrumpdev_disk -lrumpdev -lrumpvfs
 RUMP_LIBS_NET?=-lrumpnet_config -lrumpdev_bpf -lrumpnet_netinet -lrumpnet_netinet6 -lrumpnet_net -lrumpnet
 RUMP_LIBS?=-Wl,--whole-archive ${RUMP_LIBS_NET} ${RUMP_LIBS_FS} -lrump -Wl,--no-whole-archive -lrumpuser
 
+RUMPOBJ?=../rumpobj
+OBJDIR=$(RUMPOBJ)/test
 LIBDIR=../rump/lib
-OBJDIR=../rumpobj/test
 BINDIR=../rump/bin
 INCDIR=../rump/include
 

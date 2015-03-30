@@ -1,8 +1,9 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
-OBJDIR=../../rumpobj/libc
+RUMPOBJ?=../../rumpobj
+OBJDIR=$(RUMPOBJ)/libc
+CRTOBJDIR=$(RUMPOBJ)/crt
 CRTDIR=../../rump/lib
-CRTOBJDIR=../../rumpobj/crt
 OBJ=$(CRTDIR)/crt0.o
 OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o

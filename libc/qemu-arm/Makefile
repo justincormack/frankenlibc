@@ -1,6 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
-OBJDIR=../../rumpobj/libc
+RUMPOBJ?=../../rumpobj
+OBJDIR=$(RUMPOBJ)/libc
 CRTDIR=../../rump/lib
 CRTFILES=$(CRTDIR)/startup.o $(CRTDIR)/crt0.o
 OBJ=$(CRTFILES)

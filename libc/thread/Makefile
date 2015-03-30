@@ -1,6 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
-OBJDIR=../../rumpobj/libc
+RUMPOBJ?=../../rumpobj
+OBJDIR=$(RUMPOBJ)/libc
 OBJ=$(OBJDIR)/thread.o
 HEADERS=thread.h rename.h
 INCLUDES=-I../include -I../ucontext

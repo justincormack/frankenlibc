@@ -1,6 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
-OBJDIR=../../rumpobj/libc
+RUMPOBJ?=../../rumpobj
+OBJDIR=$(RUMPOBJ)/libc
 OBJ=$(OBJDIR)/fdinit.o
 INCLUDES=-I../include -I. -I../../rump/include
 CPPFLAGS+=-nostdinc $(INCLUDES)

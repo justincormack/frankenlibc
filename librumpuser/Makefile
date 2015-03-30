@@ -9,7 +9,8 @@ CPPFLAGS+=	-DLIBRUMPUSER
 
 INCS=		rumpuser_component.h rumpuser_port.h
 
-OBJDIR=../rumpobj/librumpuser
+RUMPOBJ?=../rumpobj
+OBJDIR=$(RUMPOBJ)/librumpuser
 
 DEPS=$(INCS) $(OBJDIR)
 INCLUDE=-I. -I../libc/include -I../libc/ucontext -I../libc/thread -I../libc/init

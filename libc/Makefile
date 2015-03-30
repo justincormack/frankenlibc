@@ -3,7 +3,8 @@ GDIRS=generic crt lwp stubs thread init ucontext malloc
 DIRS=$(OS) $(GDIRS)
 LIBDIR=../rump/lib
 LIB=$(LIBDIR)/libfranken.a
-OBJDIR=../rumpobj/libc
+RUMPOBJ?=../rumpobj
+OBJDIR=$(RUMPOBJ)/libc
 RANLIB?=ranlib
 
 .PHONY:		$(DIRS) clean test

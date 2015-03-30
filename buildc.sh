@@ -2,7 +2,7 @@
 
 MAKE=${MAKE-make}
 
-OBJDIR=rumpobj
+RUMPOBJ=${PWD}/rumpobj
 RUMPSRC=rumpsrc
 
 RUNTESTS="test"
@@ -35,6 +35,7 @@ helpme()
 	printf "supported options:\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
+	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
 	printf "\tseccomp|noseccomp: select Linux seccomp (default off)\n"
 	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
@@ -68,6 +69,11 @@ bytes()
 	echo ${value}
 }
 
+abspath() {
+    cd "$1"
+    printf "$(pwd)"
+}
+
 appendvar_fs ()
 {
 	vname="${1}"
@@ -96,7 +102,7 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?F:Hhj:p:qs:V:' opt; do
+while getopts '?F:Hhj:o:p:qs:V:' opt; do
 	case "$opt" in
 	"F")
 		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
@@ -142,6 +148,10 @@ while getopts '?F:Hhj:p:qs:V:' opt; do
 		;;
 	"j")
 		STDJ="-j ${OPTARG}"
+		;;
+	"o")
+		mkdir -p ${OPTARG}
+		RUMPOBJ=$(abspath ${OPTARG})
 		;;
 	"p")
 		SIZE=$(bytes ${OPTARG})
@@ -207,7 +217,7 @@ fi
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
-	-k -s ${RUMPSRC} -o ${OBJDIR} \
+	-k -s ${RUMPSRC} -o ${RUMPOBJ} \
 	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
 	tools build kernelheaders install
 
@@ -231,11 +241,13 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	ASFLAGS="${AFLAGS}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	RUMPOBJ="${RUMPOBJ}" \
 	${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	RUMPOBJ="${RUMPOBJ}" \
 	${MAKE} -C librumpuser
 
 if [ ${FILTER-x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
@@ -243,12 +255,13 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	LDLIBS="${LDLIBS}" \
+	RUMPOBJ="${RUMPOBJ}" \
 	${MAKE} OS=${OS} -C tools
 
 # for now just build libc
 LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
 
-RUMPMAKE=${PWD}/rumpobj/tooldir/rumpmake
+RUMPMAKE=${RUMPOBJ}/tooldir/rumpmake
 
 usermtree rump
 userincludes ${RUMPSRC} ${LIBS}
@@ -261,5 +274,6 @@ if [ ${RUNTESTS} = "test" ]; then
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 		LDFLAGS="${EXTRA_LDFLAGS}" \
 		CPPFLAGS="${EXTRA_CPPFLAGS}" \
+		RUMPOBJ="${RUMPOBJ}" \
 		${MAKE} OS=${OS} test
 fi
