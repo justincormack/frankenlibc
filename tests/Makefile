@@ -26,4 +26,4 @@ $(OBJDIR)/hello:	hello.c $(DEPS)
 
 .PHONY:			test clean
 clean:		
-			rm $(OBJ)
+			rm -f $(OBJ)
