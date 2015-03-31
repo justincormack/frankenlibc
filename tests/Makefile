@@ -1,19 +1,13 @@
-RUMP_LIBS_FS?=-lrumpfs_ffs -lrumpfs_cd9660 -lrumpdev_disk -lrumpdev -lrumpvfs
-RUMP_LIBS_NET?=-lrumpnet_config -lrumpdev_bpf -lrumpnet_netinet -lrumpnet_netinet6 -lrumpnet_net -lrumpnet
-RUMP_LIBS?=-Wl,--whole-archive ${RUMP_LIBS_NET} ${RUMP_LIBS_FS} -lrump -Wl,--no-whole-archive -lrumpuser
-
 RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/test
-RUMP?=$(RUMPOBJ)/rump
-LIBDIR=$(RUMP)/lib
-BINDIR=$(RUMP)/bin
-INCDIR=$(RUMP)/include
+OUTDIR?=../rump
+LIBDIR=$(OUTDIR)/lib
+BINDIR=$(OUTDIR)/bin
+INCDIR=$(OUTDIR)/include
 
-DEPS=$(OBJDIR) $(LIBDIR)/libfranken.a $(LIBDIR)/libc.a $(LIBDIR)/librump.a $(LIBDIR)/librumpuser.a
+DEPS=$(OBJDIR) $(LIBDIR)/libc.a
 CPPFLAGS+=-nostdinc -I$(INCDIR)
 LDFLAGS+=-static -L$(LIBDIR) -B$(LIBDIR)
-
-LIBS=-Wl,--start-group -lc ${RUMP_LIBS} -lfranken -Wl,--end-group
 
 OBJ=$(OBJDIR)/hello
 
@@ -28,7 +22,7 @@ $(OBJDIR):
 			mkdir -p $(OBJDIR)
 
 $(OBJDIR)/hello:	hello.c $(DEPS)
-			${CC} -o $@ $(CPPFLAGS) ${CFLAGS} ${LDFLAGS} hello.c $(LIBS)
+			${CC} -o $@ $(CPPFLAGS) ${CFLAGS} ${LDFLAGS} hello.c
 
 .PHONY:			test clean
 clean:		

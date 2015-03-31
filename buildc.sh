@@ -5,6 +5,7 @@ MAKE=${MAKE-make}
 RUMPOBJ=${PWD}/rumpobj
 RUMP=${RUMPOBJ}/rump
 RUMPSRC=rumpsrc
+OUTDIR=${PWD}/rump
 
 RUNTESTS="test"
 
@@ -37,6 +38,7 @@ helpme()
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
+	printf "\t-d: location of installed files. defaule PWD/rump\n"
 	printf "\tseccomp|noseccomp: select Linux seccomp (default off)\n"
 	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
@@ -103,8 +105,12 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?F:Hhj:o:p:qs:V:' opt; do
+while getopts '?d:F:Hhj:o:p:qs:V:' opt; do
 	case "$opt" in
+	"d")
+		mkdir -p ${OPTARG}
+		OUTDIR=$(abspath ${OPTARG})
+		;;
 	"F")
 		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
 		ARG=${OPTARG#*=}
@@ -276,11 +282,59 @@ for lib in ${LIBS}; do
 	makeuserlib ${lib}
 done
 
+# explode and implode
+rm -rf ${RUMPOBJ}/explode
+mkdir -p ${RUMPOBJ}/explode/libc
+mkdir -p ${RUMPOBJ}/explode/rumpkernel
+mkdir -p ${RUMPOBJ}/explode/rumpuser
+mkdir -p ${RUMPOBJ}/explode/franken
+(
+	cd ${RUMPOBJ}/explode/libc
+	${AR-ar} x ${RUMP}/lib/libc.a
+
+	# some franken .o file names conflict with libc
+	cd ${RUMPOBJ}/explode/franken
+	${AR-ar} x ${RUMP}/lib/libfranken.a;
+	for f in *.o
+	do
+		[ -f ../libc/$f ] && mv $f franken_$f
+	done
+
+	cd ${RUMPOBJ}/explode/rumpkernel
+	for f in ${RUMP}/lib/librump.a \
+		${RUMP}/lib/librumpdev*.a \
+		${RUMP}/lib/librumpnet*.a \
+		${RUMP}/lib/librumpfs*.a \
+		${RUMP}/lib/librumpvfs*.a \
+		${RUMP}/lib/librumpkern*.a
+	do
+		${AR-ar} x $f
+	done
+	${CC-cc} -nostdlib -Wl,-r *.o -o rumpkernel.o
+
+	cd ${RUMPOBJ}/explode/rumpuser
+	${AR-ar} x ${RUMP}/lib/librump.a
+	${AR-ar} x ${RUMP}/lib/librumpuser.a
+
+	cd ${RUMPOBJ}/explode
+	${AR-ar} cr libc.a rumpkernel/rumpkernel.o rumpuser/*.o libc/*.o franken/*.o
+)
+
+# install to OUTDIR
+${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
+${INSTALL-install} ${RUMP}/bin/rumprun ${OUTDIR}/bin
+${INSTALL-install} ${RUMP}/lib/libm.a ${RUMP}/lib/libpthread.a ${OUTDIR}/lib
+${INSTALL-install} ${RUMP}/lib/*.o ${OUTDIR}/lib
+${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
+# permissions set wrong
+chmod -R ug+rw ${RUMP}/include/*
+cp -a ${RUMP}/include/* ${OUTDIR}/include
+
 if [ ${RUNTESTS} = "test" ]; then
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 		LDFLAGS="${EXTRA_LDFLAGS}" \
 		CPPFLAGS="${EXTRA_CPPFLAGS}" \
 		RUMPOBJ="${RUMPOBJ}" \
-		RUMP="${RUMP}" \
+		OUTDIR="${OUTDIR}" \
 		${MAKE} OS=${OS} test
 fi
