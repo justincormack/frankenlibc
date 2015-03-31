@@ -352,6 +352,7 @@ mkdir -p ${RUMPOBJ}/explode/franken
 
 # install to OUTDIR
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
+rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
 ${INSTALL-install} ${RUMP}/bin/rumprun ${OUTDIR}/bin
 ${INSTALL-install} ${RUMP}/lib/libm.a ${RUMP}/lib/libpthread.a ${OUTDIR}/lib
 ${INSTALL-install} ${RUMP}/lib/*.o ${OUTDIR}/lib
