@@ -9,19 +9,11 @@ There are known and unknown bugs!
 
 build with "make", or with "./buildc.sh" for additional options.
 
-It is a small C library that serves several functions, that should perhaps
-be isolated better.
-
-1. It provides enough of a libc to compile a fiber-based librumpuser
-implementation. This means it runs in a single thread, using
-cooperative multitasking.
-2. It provides some stubs that the built for rump NetBSD libc is missing,
-some of which overlap with 1, like malloc, free, others of which do nothing.
-3. It will provide the pthread backend implementation that is working on
-rumprun-posix, xen etc, not transferred over yet.
-
-The libc functions are namespaced to make sure they do not conflict with
-functions in a NetBSD libc linked to the application.
+Frankenlibc provides a small libc that is enough to let the fiber-based librumpuser
+library run natively on your platform without any system libraries. It
+combines this library, the rump kernel, and NetBSD's libc into a single
+libc that you can just use to link against applications to make them run
+against a rump kernel rather than the host.
 
 The libc converts to a very limited set of backend "system calls" that can
 be implemented on any platform in order to run applications. These are as
@@ -71,3 +63,17 @@ There is a wrapper called rumprun that can pass in files and block devices
 (network device support coming soon), and will also run the program in a seccomp
 sandbox on Linux or under Capsicum on FreeBSD. These are pretty aggressive, eg
 open cannot be called, but you may want to add further sandboxing in addition.
+
+To compile your own programs there are a couple of options - making this easier is a work
+in progress.
+
+For sane compilers that obey sysroot (eg clang) you can compile very easily eg try
+clang --sysroot=rump -o rumpobj/test/hello -static tests/hello.c
+
+For most system gcc compilers, eg on NetBSD, Linux
+gcc -nostdinc -Irump/include -Lrump/lib -Brump/lib -o rumpobj/test/hello -static tests/hello.c
+
+For non system compilers on multilib Linux you may need to add -nostdlib and add the crt files manually.
+gcc -nostdinc -nostdlib -Irump/include -Lrump/lib -o rumpobj/test/hello rump/lib/crt1.o -static tests/hello.c -lc
+
+The plan is to add cc wrappers to make this easier.
