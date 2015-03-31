@@ -44,6 +44,7 @@ helpme()
 	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
 	printf "\tnotests: do not run tests\n"
+	printf "\tclean: clean object directory first\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
 	printf "Supported platforms are currently: linux, netbsd, freebsd, qemu-arm\n"
