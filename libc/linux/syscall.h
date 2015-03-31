@@ -4,6 +4,9 @@
 #include <sys/syscall.h>
 #include "syscall_arch.h"
 
+long __syscall_ret(unsigned long);
+void *__vdsosym(const char *, const char *);
+
 #ifndef SYSCALL_RLIM_INFINITY
 #define SYSCALL_RLIM_INFINITY (~0ULL)
 #endif

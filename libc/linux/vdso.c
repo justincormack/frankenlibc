@@ -41,7 +41,8 @@ static int checkver(Verdef *def, int vsym, const char *vername, char *strings)
 #define OK_TYPES (1<<STT_NOTYPE | 1<<STT_OBJECT | 1<<STT_FUNC | 1<<STT_COMMON)
 #define OK_BINDS (1<<STB_GLOBAL | 1<<STB_WEAK | 1<<STB_GNU_UNIQUE)
 
-void *__vdsosym(const char *vername, const char *name)
+void *
+__vdsosym(const char *vername, const char *name)
 {
 	size_t i;
 	for (i=0; __auxv[i] != AT_SYSINFO_EHDR; i+=2)

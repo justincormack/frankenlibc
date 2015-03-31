@@ -1,6 +1,9 @@
 #include <errno.h>
 
-long __syscall_ret(unsigned long r)
+#include "syscall.h"
+
+long
+__syscall_ret(unsigned long r)
 {
 	if (r > -4096UL) {
 		errno = -r;

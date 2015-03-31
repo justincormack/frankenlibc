@@ -2,6 +2,8 @@
 
 #include "linux.h"
 
+int __platform_set_thread_area(void *);
+
 #ifdef SYS_arch_prctl
 int __arch_prctl(int, void *);
 
