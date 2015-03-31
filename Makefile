@@ -10,7 +10,10 @@ seccomp:
 qemu-arm:
 		./buildc.sh qemu-arm
 
-PHONY:		clean test qemu-arm seccomp
+PHONY:		clean distclean test qemu-arm seccomp
 
 clean:		
-		rm -rf rumpobj rump
+		rm -rf rumpobj
+
+distclean:	clean
+		rm -rf rump
