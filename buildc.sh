@@ -248,7 +248,7 @@ rm -f ${RUMP}/lib/librumpdev_ucom.a
 rm -f ${RUMP}/lib/librumpdev_ulpt.a
 rm -f ${RUMP}/lib/librumpdev_ubt.a
 rm -f ${RUMP}/lib/librumpkern_sys_linux.a
-rm -rf ${RUMP}/lib/pkgconfig
+rm -f ${RUMP}/lib/librumpdev_umass.a
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
@@ -341,7 +341,7 @@ mkdir -p ${RUMPOBJ}/explode/franken
 	do
 		${AR-ar} x $f
 	done
-	${CC-cc} -nostdlib -Wl,-r *.o -o rumpkernel.o
+	${CC-cc} ${EXTRA_LDFLAGS} -nostdlib -Wl,-r *.o -o rumpkernel.o
 
 	cd ${RUMPOBJ}/explode/rumpuser
 	${AR-ar} x ${RUMP}/lib/librump.a
@@ -361,6 +361,8 @@ ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 # permissions set wrong
 chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
+# for use as sysroot
+( cd ${OUTDIR} && ln -s . usr )
 
 if [ ${RUNTESTS} = "test" ]; then
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
