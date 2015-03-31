@@ -35,6 +35,7 @@ helpme()
 {
 	printf "Usage: $0 [-h] [options] [platform]\n"
 	printf "supported options:\n"
+	printf "\t-L: libraries to link eg net_netinet,net_netinet6. default all\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
@@ -45,7 +46,7 @@ helpme()
 	printf "\tnotests: do not run tests\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
-	printf "Supported platforms are currently: linux, netbsd, freebsd\n"
+	printf "Supported platforms are currently: linux, netbsd, freebsd, qemu-arm\n"
 	exit 1
 }
 
@@ -105,7 +106,7 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?d:F:Hhj:o:p:qs:V:' opt; do
+while getopts '?d:F:Hhj:L:o:p:qs:V:' opt; do
 	case "$opt" in
 	"d")
 		mkdir -p ${OPTARG}
@@ -155,6 +156,9 @@ while getopts '?d:F:Hhj:o:p:qs:V:' opt; do
 		;;
 	"j")
 		STDJ="-j ${OPTARG}"
+		;;
+	"L")
+		LIBS="${OPTARG}"
 		;;
 	"o")
 		mkdir -p ${OPTARG}
@@ -271,16 +275,47 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	${MAKE} OS=${OS} -C tools
 
 # for now just build libc
-LIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
+NETBSDLIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
 
 RUMPMAKE=${RUMPOBJ}/tooldir/rumpmake
 
 usermtree ${RUMP}
-userincludes ${RUMPSRC} ${LIBS}
+userincludes ${RUMPSRC} ${NETBSDLIBS}
 
-for lib in ${LIBS}; do
+for lib in ${NETBSDLIBS}; do
 	makeuserlib ${lib}
 done
+
+# find which libs we should link
+ALL_LIBS="${RUMP}/lib/librump.a
+	${RUMP}/lib/librumpdev*.a
+	${RUMP}/lib/librumpnet*.a
+	${RUMP}/lib/librumpfs*.a
+	${RUMP}/lib/librumpvfs*.a
+	${RUMP}/lib/librumpkern*.a"
+
+if [ ! -z ${LIBS+x} ]
+then
+	ALL_LIBS="${RUMP}/lib/librump.a"
+	for l in $(echo ${LIBS} | tr "," " ")
+	do
+		case ${l} in
+		dev_*)
+			appendvar ALL_LIBS "${RUMP}/lib/librumpdev.a"
+			;;
+		net_*)
+			appendvar ALL_LIBS "${RUMP}/lib/librumpnet.a ${RUMP}/lib/librumpnet_net.a"
+			;;
+		vfs_*)
+			appendvar ALL_LIBS "${RUMP}/lib/librumpvfs.a"
+			;;
+		fs_*)
+			appendvar ALL_LIBS "${RUMP}/lib/librumpvfs.a"
+			;;
+		esac
+		appendvar ALL_LIBS "${RUMP}/lib/librump${l}.a"
+	done
+fi
 
 # explode and implode
 rm -rf ${RUMPOBJ}/explode
@@ -301,12 +336,7 @@ mkdir -p ${RUMPOBJ}/explode/franken
 	done
 
 	cd ${RUMPOBJ}/explode/rumpkernel
-	for f in ${RUMP}/lib/librump.a \
-		${RUMP}/lib/librumpdev*.a \
-		${RUMP}/lib/librumpnet*.a \
-		${RUMP}/lib/librumpfs*.a \
-		${RUMP}/lib/librumpvfs*.a \
-		${RUMP}/lib/librumpkern*.a
+	for f in ${ALL_LIBS}
 	do
 		${AR-ar} x $f
 	done
