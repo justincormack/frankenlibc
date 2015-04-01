@@ -365,14 +365,14 @@ cp -a ${RUMP}/include/* ${OUTDIR}/include
 
 # create toolchain wrappers
 # make proper prefix
-TOOL_PREFIX=rumprun-
+TOOL_PREFIX=$(echo ${TARGET} | sed s/-.*//)-rumprun-netbsd-
 if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
 	# can use sysroot with clang
 	( cd ${OUTDIR} && ln -s . usr )
 	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
-	( cd ${OUTDIR}/bin ln -s ${TOOL_PREFIX}cc ${TOOL_PREFIX}clang )
+	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
 	# spec file
 	echo "spec file NYI"
