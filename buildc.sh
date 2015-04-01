@@ -363,12 +363,16 @@ ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
 
+# create toolchain wrappers
+# make proper prefix
+TOOL_PREFIX=rumprun-
 if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
 	# can use sysroot with clang
 	( cd ${OUTDIR} && ln -s . usr )
-	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} \"\$@\"" > ${OUTDIR}/bin/rumprun-cc
-	chmod +x ${OUTDIR}/bin/rumprun-cc
+	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
+	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
+	( cd ${OUTDIR}/bin ln -s ${TOOL_PREFIX}cc ${TOOL_PREFIX}clang )
 else
 	# spec file
 	echo "spec file NYI"
