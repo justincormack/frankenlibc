@@ -15,12 +15,14 @@
 
 #include "rumprun.h"
 
+int needrandom = 0;
+
 #ifndef SECCOMP
 int
 filter_init(char *program)
 {
-	int fd = open("/dev/urandom", O_RDONLY);
 
+	needrandom = 1;
 	return 0;
 }
 
@@ -35,6 +37,10 @@ int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
+	int rfd;
+
+	if (needrandom)
+		rfd = open("/dev/urandom", O_RDONLY);
 
 	if (execve(program, argv, envp) == -1) {
 		perror("execve");
@@ -95,14 +101,7 @@ filter_init(char *program)
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getrandom), 0);
 	if (ret < 0) return ret;
 #else
-	{
-		int fd = open("/dev/urandom", O_RDONLY);
-
-		if (fd == -1) return -1;
-		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
-			SCMP_A0(SCMP_CMP_EQ, fd));
-		if (ret < 0) return ret;
-	}
+	needrandom = 1;
 #endif
 
 	/* kill(0, SIGABRT) */
@@ -184,6 +183,16 @@ int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
+	int rfd;
+
+	if (needrandom) {
+		rfd = open("/dev/urandom", O_RDONLY);
+		if (rfd == -1) return -1;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
+	}
+
 #ifdef SYS_execveat
 	int fd = open(program, O_RDONLY | O_CLOEXEC);
 
