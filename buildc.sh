@@ -352,6 +352,7 @@ mkdir -p ${RUMPOBJ}/explode/franken
 )
 
 # install to OUTDIR
+rm -rf ${OUTDIR}
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
 rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
 ${INSTALL-install} ${RUMP}/bin/rumprun ${OUTDIR}/bin
@@ -362,7 +363,7 @@ ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
 # for use as sysroot
-( cd ${OUTDIR} && rm -f usr && ln -s . usr )
+( cd ${OUTDIR} && ln -s . usr )
 
 if [ ${RUNTESTS} = "test" ]; then
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
