@@ -362,7 +362,7 @@ ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
 # for use as sysroot
-( cd ${OUTDIR} && ln -s . usr )
+( cd ${OUTDIR} && rm -f usr && ln -s . usr )
 
 if [ ${RUNTESTS} = "test" ]; then
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
