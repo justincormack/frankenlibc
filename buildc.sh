@@ -362,10 +362,20 @@ ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 # permissions set wrong
 chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
-# for use as sysroot
-( cd ${OUTDIR} && ln -s . usr )
 
-if [ ${RUNTESTS} = "test" ]; then
+if $(${CC-cc} -v 2>&1 | grep -q clang)
+then
+	# can use sysroot with clang
+	( cd ${OUTDIR} && ln -s . usr )
+	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} \"\$@\"" > ${OUTDIR}/bin/rumprun-cc
+	chmod +x ${OUTDIR}/bin/rumprun-cc
+else
+	# spec file
+	echo "spec file NYI"
+fi
+
+if [ ${RUNTESTS} = "test" ]
+then
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 		LDFLAGS="${EXTRA_LDFLAGS}" \
 		CPPFLAGS="${EXTRA_CPPFLAGS}" \
