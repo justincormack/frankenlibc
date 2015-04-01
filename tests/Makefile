@@ -1,5 +1,5 @@
 RUMPOBJ?=../rumpobj
-OBJDIR=$(RUMPOBJ)/test
+OBJDIR=$(RUMPOBJ)/tests
 OUTDIR?=../rump
 LIBDIR=$(OUTDIR)/lib
 BINDIR=$(OUTDIR)/bin

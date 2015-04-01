@@ -68,12 +68,12 @@ To compile your own programs there are a couple of options - making this easier 
 in progress.
 
 For sane compilers that obey sysroot (eg clang) you can compile very easily eg try
-clang --sysroot=rump -o rumpobj/test/hello -static tests/hello.c
+clang --sysroot=rump -o rumpobj/tests/hello -static tests/hello.c
 
 For most system gcc compilers, eg on NetBSD, Linux
-gcc -nostdinc -Irump/include -Lrump/lib -Brump/lib -o rumpobj/test/hello -static tests/hello.c
+gcc -nostdinc -Irump/include -Lrump/lib -Brump/lib -o rumpobj/tests/hello -static tests/hello.c
 
 For non system compilers on multilib Linux you may need to add -nostdlib and add the crt files manually.
-gcc -nostdinc -nostdlib -Irump/include -Lrump/lib -o rumpobj/test/hello rump/lib/crt1.o -static tests/hello.c -lc
+gcc -nostdinc -nostdlib -Irump/include -Lrump/lib -o rumpobj/tests/hello rump/lib/crt1.o -static tests/hello.c -lc
 
 The plan is to add cc wrappers to make this easier.
