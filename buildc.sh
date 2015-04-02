@@ -373,7 +373,7 @@ then
 	( cd ${OUTDIR} && ln -s . usr )
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
 	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
-	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} ${COMPILER_FLAGS} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
+	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} ${COMPILER_FLAGS} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
@@ -392,7 +392,7 @@ else
 		-e "s#@STARTFILE@#${STARTFILE}#g" \
 		-e "s#@ENDFILE@#${ENDFILE}#g" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
-	echo "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -isystem ${OUTDIR}/include \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
+	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -isystem ${OUTDIR}/include \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}gcc ${TOOL_PREFIX}cc )
 fi
