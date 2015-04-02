@@ -373,7 +373,9 @@ then
 	( cd ${OUTDIR} && ln -s . usr )
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
 	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
-	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} ${COMPILER_FLAGS} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
+	LIBGCC="$(${CC-cc} -print-libgcc-file-name)"
+	LIBGCCDIR="-L $(dirname ${LIBGCC})
+	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} ${LIBGCCDIR} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
