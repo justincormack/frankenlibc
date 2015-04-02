@@ -370,7 +370,9 @@ if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
 	# can use sysroot with clang
 	( cd ${OUTDIR} && ln -s . usr )
-	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
+	# possibly some will need to be filtered if compiler complains. Also de-dupe.
+	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} ${EXTRA_LDFLAGS}"
+	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} ${COMPILER_FLAGS} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
