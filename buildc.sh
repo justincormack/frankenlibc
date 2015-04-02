@@ -364,12 +364,11 @@ chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
 
 # create toolchain wrappers
-TARGET=$(LC_ALL=C ${CC-cc} ${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} -v 2>&1 | sed -n 's/^Target: //p' )
-TOOL_PREFIX=$(echo ${TARGET} | sed s/-.*//)-rumprun-netbsd-
 # select these based on compiler defs
 UNDEF="-D__NetBSD__ -D__RUMPRUN__ -Ulinux -U__linux -U__linux__ -U__gnu_linux__ -U__FreeBSD__"
 if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
+	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-clang) | sed -e 's/-clang//' -e 's/--/-rumprun-/')
 	# can use sysroot with clang
 	( cd ${OUTDIR} && ln -s . usr )
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
@@ -379,10 +378,11 @@ then
 	ln -s ${LIBGCC} ${OUTDIR}/lib/
 	ln -s ${LIBGCCDIR}/libgcc_eh.a ${OUTDIR}/lib/
 	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
-	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
-	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
+	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-clang
+	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}-clang ${TOOL_PREFIX}-cc )
 else
 	# spec file for gcc
+	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-gcc) | sed -e 's/-gcc//' -e 's/--/-rumprun-/')
 	COMPILER_FLAGS="${EXTRA_CFLAGS}"
 	[ -f ${OUTDIR}/lib/crt0.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt0.o"
 	[ -f ${OUTDIR}/lib/crt1.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt1.o"
@@ -398,14 +398,14 @@ else
 		-e "s#@STARTFILE@#${STARTFILE}#g" \
 		-e "s#@ENDFILE@#${ENDFILE}#g" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
-	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec ${COMPILER_FLAGS} -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
-	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}gcc
-	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}gcc ${TOOL_PREFIX}cc )
+	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec ${COMPILER_FLAGS} -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-gcc
+	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-gcc
+	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}-gcc ${TOOL_PREFIX}-cc )
 fi
 
 if [ ${RUNTESTS} = "test" ]
 then
-	CC="${OUTDIR}/bin/${TOOL_PREFIX}cc" \
+	CC="${OUTDIR}/bin/${TOOL_PREFIX}-cc" \
 		RUMPOBJ="${RUMPOBJ}" \
 		OUTDIR="${OUTDIR}" \
 		${MAKE} OS=${OS} test
