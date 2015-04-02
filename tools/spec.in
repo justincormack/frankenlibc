@@ -14,6 +14,11 @@
 *endfile:
 @ENDFILE@
 
+%rename link_libgcc old_link_libgcc
+
+*link_libgcc:
+-L@SYSROOT@/lib %(old_link_libgcc)
+
 %rename lib old_lib
 
 *lib:

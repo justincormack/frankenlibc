@@ -392,14 +392,14 @@ else
 		-e "s#@STARTFILE@#${STARTFILE}#g" \
 		-e "s#@ENDFILE@#${ENDFILE}#g" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
-	echo "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -isystem ${OUTDIR}/include -L${OUTDIR}/lib \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
+	echo "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -isystem ${OUTDIR}/include \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}gcc ${TOOL_PREFIX}cc )
 fi
 
 if [ ${RUNTESTS} = "test" ]
 then
-	CC=${OUTDIR}/bin/${TOOL_PREFIX}cc
+	CC=${OUTDIR}/bin/${TOOL_PREFIX}cc \
 		RUMPOBJ="${RUMPOBJ}" \
 		OUTDIR="${OUTDIR}" \
 		${MAKE} OS=${OS} test
