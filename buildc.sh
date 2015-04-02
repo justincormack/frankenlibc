@@ -374,8 +374,10 @@ then
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
 	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
 	LIBGCC="$(${CC-cc} ${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} -print-libgcc-file-name)"
-	LIBGCCDIR="-L $(dirname ${LIBGCC})"
-	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} ${LIBGCCDIR} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
+	LIBGCCDIR="$(dirname ${LIBGCC})"
+	ln -s ${LIBGCC} ${OUTDIR}/lib/
+	ln -s ${LIBGCCDIR}/libgcc_eh.a ${OUTDIR}/lib/
+	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
