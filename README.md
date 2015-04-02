@@ -64,16 +64,11 @@ There is a wrapper called rumprun that can pass in files and block devices
 sandbox on Linux or under Capsicum on FreeBSD. These are pretty aggressive, eg
 open cannot be called, but you may want to add further sandboxing in addition.
 
-To compile your own programs there are a couple of options - making this easier is a work
-in progress.
+A compiler wrapper is generated in rump/bin to compile your own programs, which works out
+the best method to wrap the compiler. Essentially you just need to use the include files,
+libc and other libraries and crt files in the rump/ output directory. For gcc a spec file
+is used, while many clang installations can use a sysroot, although eg NetBSD's linker
+does not support sysroot. For most systems a line like the following will work if you
+do not use the wrapper:
 
-For sane compilers that obey sysroot (eg clang) you can compile very easily eg try
-clang --sysroot=rump -o rumpobj/tests/hello -static tests/hello.c
-
-For most system gcc compilers, eg on NetBSD, Linux
 gcc -nostdinc -Irump/include -Lrump/lib -Brump/lib -o rumpobj/tests/hello -static tests/hello.c
-
-For non system compilers on multilib Linux you may need to add -nostdlib and add the crt files manually.
-gcc -nostdinc -nostdlib -Irump/include -Lrump/lib -o rumpobj/tests/hello rump/lib/crt1.o -static tests/hello.c -lc
-
-The plan is to add cc wrappers to make this easier.
