@@ -394,7 +394,7 @@ else
 		-e "s#@STARTFILE@#${STARTFILE}#g" \
 		-e "s#@ENDFILE@#${ENDFILE}#g" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
-	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -isystem ${OUTDIR}/include \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
+	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}gcc ${TOOL_PREFIX}cc )
 fi
