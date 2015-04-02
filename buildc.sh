@@ -374,14 +374,14 @@ then
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
 	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
 	LIBGCC="$(${CC-cc} -print-libgcc-file-name)"
-	LIBGCCDIR="-L $(dirname ${LIBGCC})
+	LIBGCCDIR="-L $(dirname ${LIBGCC})"
 	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} ${LIBGCCDIR} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
 	# spec file
-	[ -f ${OUTDIR}/lib/crt0.o ] && appendvar STARTFILE ${OUTDIR}/lib/crt0.o
-	[ -f ${OUTDIR}/lib/crt1.o ] && appendvar STARTFILE ${OUTDIR}/lib/crt1.o
+	[ -f ${OUTDIR}/lib/crt0.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt0.o"
+	[ -f ${OUTDIR}/lib/crt1.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt1.o"
 	ENDFILE="${OUTDIR}/lib/crtend.o"
 	cat tools/spec.in | sed \
 		-e "s#@SYSROOT@#${OUTDIR}#g" \
@@ -401,7 +401,7 @@ fi
 
 if [ ${RUNTESTS} = "test" ]
 then
-	CC=${OUTDIR}/bin/${TOOL_PREFIX}cc \
+	CC="${OUTDIR}/bin/${TOOL_PREFIX}cc" \
 		RUMPOBJ="${RUMPOBJ}" \
 		OUTDIR="${OUTDIR}" \
 		${MAKE} OS=${OS} test
