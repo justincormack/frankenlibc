@@ -372,18 +372,18 @@ then
 	# can use sysroot with clang
 	( cd ${OUTDIR} && ln -s . usr )
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
-	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
+	COMPILER_FLAGS="-fno-stack-protector ${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
 	LIBGCC="$(${CC-cc} ${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} -print-libgcc-file-name)"
 	LIBGCCDIR="$(dirname ${LIBGCC})"
 	ln -s ${LIBGCC} ${OUTDIR}/lib/
 	ln -s ${LIBGCCDIR}/libgcc_eh.a ${OUTDIR}/lib/
-	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
+	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}-clang ${TOOL_PREFIX}-cc )
 else
 	# spec file for gcc
 	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-gcc) | sed -e 's/-gcc//' -e 's/--/-rumprun-/')
-	COMPILER_FLAGS="${EXTRA_CFLAGS}"
+	COMPILER_FLAGS="-fno-stack-protector ${EXTRA_CFLAGS}"
 	[ -f ${OUTDIR}/lib/crt0.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt0.o"
 	[ -f ${OUTDIR}/lib/crt1.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt1.o"
 	ENDFILE="${OUTDIR}/lib/crtend.o"
