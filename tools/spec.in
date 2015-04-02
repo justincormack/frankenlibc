@@ -27,4 +27,4 @@
 %rename link old_link
 
 *link:
-%(old_link) @LDFLAGS@ @LDSCRIPT@ %:replace-outfile(-lstdc++ -lc++)
+@LDFLAGS@ %(old_link) @LDSCRIPT@ %:replace-outfile(-lstdc++ -lc++)

@@ -364,6 +364,7 @@ chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
 
 # create toolchain wrappers
+TARGET=$(LC_ALL=C ${CC-cc} ${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} -v 2>&1 | sed -n 's/^Target: //p' )
 TOOL_PREFIX=$(echo ${TARGET} | sed s/-.*//)-rumprun-netbsd-
 # select these based on compiler defs
 UNDEF="-D__NetBSD__ -D__RUMPRUN__ -Ulinux -U__linux -U__linux__ -U__gnu_linux__ -U__FreeBSD__"
@@ -381,7 +382,8 @@ then
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
-	# spec file
+	# spec file for gcc
+	COMPILER_FLAGS="${EXTRA_CFLAGS}"
 	[ -f ${OUTDIR}/lib/crt0.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt0.o"
 	[ -f ${OUTDIR}/lib/crt1.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt1.o"
 	ENDFILE="${OUTDIR}/lib/crtend.o"
@@ -396,7 +398,7 @@ else
 		-e "s#@STARTFILE@#${STARTFILE}#g" \
 		-e "s#@ENDFILE@#${ENDFILE}#g" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
-	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
+	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec ${COMPILER_FLAGS} -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}gcc
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}gcc ${TOOL_PREFIX}cc )
 fi
