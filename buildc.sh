@@ -369,15 +369,22 @@ UNDEF="-D__NetBSD__ -D__RUMPRUN__ -Ulinux -U__linux -U__linux__ -U__gnu_linux__ 
 if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
 	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-clang) | sed -e 's/-clang//' -e 's/--/-rumprun-/')
-	# can use sysroot with clang
-	( cd ${OUTDIR} && ln -s . usr )
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
 	COMPILER_FLAGS="-fno-stack-protector ${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
-	LIBGCC="$(${CC-cc} ${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} -print-libgcc-file-name)"
-	LIBGCCDIR="$(dirname ${LIBGCC})"
-	ln -s ${LIBGCC} ${OUTDIR}/lib/
-	ln -s ${LIBGCCDIR}/libgcc_eh.a ${OUTDIR}/lib/
-	printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
+	if ${CC-cc} -Irump/lib --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} tests/hello.c -o /dev/null 2>/dev/null
+	then
+		# can use sysroot with clang
+		( cd ${OUTDIR} && ln -s . usr )
+		LIBGCC="$(${CC-cc} ${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} -print-libgcc-file-name)"
+		LIBGCCDIR="$(dirname ${LIBGCC})"
+		ln -s ${LIBGCC} ${OUTDIR}/lib/
+		ln -s ${LIBGCCDIR}/libgcc_eh.a ${OUTDIR}/lib/
+		printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
+	else
+		# sysroot does not work with linker eg NetBSD
+		appendvar COMPILER_FLAGS "-I${OUTDIR}/include -L${OUTDIR}/lib -B${OUTDIR}/lib"
+		printf "#!/bin/sh\n\nexec ${CC-cc} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
+	fi
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}-clang ${TOOL_PREFIX}-cc )
 else
