@@ -189,7 +189,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 		rfd = open("/dev/urandom", O_RDONLY);
 		if (rfd == -1) return -1;
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
-			SCMP_A0(SCMP_CMP_EQ, fd));
+			SCMP_A0(SCMP_CMP_EQ, rfd));
 		if (ret < 0) return ret;
 	}
 
