@@ -371,7 +371,7 @@ then
 	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-clang) | sed -e 's/-clang//' -e 's/--/-rumprun-/')
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
 	COMPILER_FLAGS="-fno-stack-protector ${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
-	if ${CC-cc} -Irump/lib --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} tests/hello.c -o /dev/null 2>/dev/null
+	if ${CC-cc} -I${OUTDIR}/include --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} tests/hello.c -o /dev/null 2>/dev/null
 	then
 		# can use sysroot with clang
 		( cd ${OUTDIR} && ln -s . usr )
