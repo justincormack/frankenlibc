@@ -1,0 +1,25 @@
+%rename cpp_options old_cpp_options
+ 
+*cpp_options:
+-nostdinc -isystem @SYSROOT@/include -isystem @SYSROOT@/include/c++ %(old_cpp_options) @CPPFLAGS@ @UNDEF@
+
+%rename cc1_options old_cc1_options
+
+*cc1_options:
+-fno-stack-protector %(old_cc1_options) @CFLAGS@
+
+*startfile:
+@STARTFILE@
+
+*endfile:
+@ENDFILE@
+
+%rename lib old_lib
+
+*lib:
+%(old_lib) -L@SYSROOT@/lib
+
+%rename link old_link
+
+*link:
+%(old_link) @LDFLAGS@ @LDSCRIPT@ %:replace-outfile(-lstdc++ -lc++)

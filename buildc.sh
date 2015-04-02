@@ -364,27 +364,42 @@ chmod -R ug+rw ${RUMP}/include/*
 cp -a ${RUMP}/include/* ${OUTDIR}/include
 
 # create toolchain wrappers
-# make proper prefix
 TOOL_PREFIX=$(echo ${TARGET} | sed s/-.*//)-rumprun-netbsd-
+# select these based on compiler defs
+UNDEF="-D__NetBSD__ -D__RUMPRUN__ -Ulinux -U__linux -U__linux__ -U__gnu_linux__ -U__FreeBSD__"
 if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
 	# can use sysroot with clang
 	( cd ${OUTDIR} && ln -s . usr )
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
-	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${EXTRA_CFLAGS} ${EXTRA_LDFLAGS}"
+	COMPILER_FLAGS="${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
 	echo "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} ${COMPILER_FLAGS} \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}clang
 	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}clang ${TOOL_PREFIX}cc )
 else
 	# spec file
-	echo "spec file NYI"
+	[ -f ${OUTDIR}/lib/crt0.o ] && appendvar STARTFILE ${OUTDIR}/lib/crt0.o
+	[ -f ${OUTDIR}/lib/crt1.o ] && appendvar STARTFILE ${OUTDIR}/lib/crt1.o
+	ENDFILE="${OUTDIR}/lib/crtend.o"
+	cat tools/spec.in | sed \
+		-e "s#@SYSROOT@#${OUTDIR}#g" \
+		-e "s#@CPPFLAGS@#${EXTRA_CPPFLAGS}#g" \
+		-e "s#@AFLAGS@#${EXTRA_AFLAGS}#g" \
+		-e "s#@CFLAGS@#${EXTRA_CFLAGS}#g" \
+		-e "s#@LDFLAGS@#${EXTRA_LDFLAGS}#g" \
+		-e "s#@LDSCRIPT@#${EXTRA_LDSCRIPT}#g" \
+		-e "s#@UNDEF@#${UNDEF}#g" \
+		-e "s#@STARTFILE@#${STARTFILE}#g" \
+		-e "s#@ENDFILE@#${ENDFILE}#g" \
+		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
+	echo "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec -isystem ${OUTDIR}/include -L${OUTDIR}/lib \"\$@\"" > ${OUTDIR}/bin/${TOOL_PREFIX}gcc
+	chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}gcc
+	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}gcc ${TOOL_PREFIX}cc )
 fi
 
 if [ ${RUNTESTS} = "test" ]
 then
-	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
-		LDFLAGS="${EXTRA_LDFLAGS}" \
-		CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	CC=${OUTDIR}/bin/${TOOL_PREFIX}cc
 		RUMPOBJ="${RUMPOBJ}" \
 		OUTDIR="${OUTDIR}" \
 		${MAKE} OS=${OS} test
