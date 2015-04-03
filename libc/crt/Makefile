@@ -1,6 +1,6 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
-RUMPOBJ?=../rumpobj
+RUMPOBJ?=../../rumpobj
 RUMP?=$(RUMPOBJ)/rump
 OBJDIR=$(RUMP)/lib
 OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o
