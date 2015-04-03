@@ -1,6 +1,8 @@
-#define init_sched __sched_init_sched
+#define init_sched(h) __sched_init_sched(h)
 #define schedule __sched_schedule
 #define get_current __sched_get_current
+#define curlwp __sched_curlwp
+#define set_curlwp(l) __sched_set_curlwp(l)
 #define wake(t) __sched_wake(t)
 #define block(t) __sched_block(t)
 #define init_mainthread __sched_init_mainthread

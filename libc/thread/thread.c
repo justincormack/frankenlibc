@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2007-2013 Antti Kantee.  All Rights Reserved.
- * Copyright (c) 2014 Justin Cormack.  All Rights Reserved.
+ * Copyright (c) 2014-2015 Justin Cormack.  All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -80,6 +80,22 @@
 
 #include "thread.h"
 
+struct rumpuser_hyperup rumpuser__hyp;
+
+static inline void
+rumpkern_unsched(int *nlocks, void *interlock)
+{
+
+        rumpuser__hyp.hyp_backend_unschedule(0, nlocks, interlock);
+}
+
+static inline void
+rumpkern_sched(int nlocks, void *interlock)
+{
+
+        rumpuser__hyp.hyp_backend_schedule(nlocks, interlock);
+}
+
 static void switch_threads(struct thread *, struct thread *);
 static int64_t now(void);
 
@@ -106,6 +122,20 @@ get_current(void)
 {
 
 	return current_thread;
+}
+
+void *
+curlwp()
+{
+
+	return current_thread->lwp;
+}
+
+void
+set_curlwp(void *lwp)
+{
+
+	current_thread->lwp = lwp;
 }
 
 static int64_t
@@ -341,6 +371,29 @@ int abssleep_real(uint64_t millisecs)
 	return rv;
 }
 
+/* XXX convert to clock_nanosleep */
+int
+clock_sleep(clockid_t clk, int64_t sec, long nsec)
+{
+	uint64_t msec;
+	int nlocks;
+
+	rumpkern_unsched(&nlocks, NULL);
+	switch (clk) {
+	case CLOCK_REALTIME:
+		msec = sec * 1000 + nsec / (1000*1000UL);
+		msleep(msec);
+		break;
+	case CLOCK_MONOTONIC:
+		msec = sec * 1000 + nsec / (1000*1000UL);
+		abssleep(msec);
+		break;
+	}
+	rumpkern_sched(nlocks, NULL);
+
+	return 0;
+}
+
 void wake(struct thread *thread)
 {
 
@@ -374,12 +427,14 @@ void clear_runnable(struct thread *thread)
 }
 
 void
-init_sched(void)
+init_sched(const struct rumpuser_hyperup *hyp)
 {
 	struct thread *thread = calloc(1, sizeof(struct thread));
 
 	if (! thread)
 		abort();
+
+	rumpuser__hyp = *hyp;
 
 	thread->name = strdup("init");
 	thread->flags = 0;
@@ -447,4 +502,329 @@ wakeup_all(struct waithead *wh)
 		w->onlist = 0;
 		wake(w->who);
 	}
+}
+
+/* mtx */
+
+struct rumpuser_mtx {
+	struct waithead waiters;
+	int v;
+	int flags;
+	struct lwp *o;
+};
+
+void
+mutex_init(struct rumpuser_mtx **mtxp, int flags)
+{
+	struct rumpuser_mtx *mtx;
+
+	mtx = calloc(1, sizeof(*mtx));
+	if (! mtx) abort();
+	mtx->flags = flags;
+	TAILQ_INIT(&mtx->waiters);
+	*mtxp = mtx;
+}
+
+void
+mutex_enter(struct rumpuser_mtx *mtx)
+{
+	int nlocks;
+
+	if (mutex_tryenter(mtx) != 0) {
+		rumpkern_unsched(&nlocks, NULL);
+		while (mutex_tryenter(mtx) != 0)
+			wait(&mtx->waiters, 0);
+		rumpkern_sched(nlocks, NULL);
+	}
+}
+
+void
+mutex_enter_nowrap(struct rumpuser_mtx *mtx)
+{
+	int rv;
+
+	rv = mutex_tryenter(mtx);
+	/* one VCPU supported, no preemption => must succeed */
+	if (rv != 0) {
+		abort();
+	}
+}
+
+int
+mutex_tryenter(struct rumpuser_mtx *mtx)
+{
+	struct lwp *l = get_current()->lwp;
+
+	if (mtx->v && mtx->o != l)
+		return EBUSY;
+
+	mtx->v++;
+	mtx->o = l;
+
+	return 0;
+}
+
+void
+mutex_exit(struct rumpuser_mtx *mtx)
+{
+
+	assert(mtx->v > 0);
+	if (--mtx->v == 0) {
+		mtx->o = NULL;
+		wakeup_one(&mtx->waiters);
+	}
+}
+
+void
+mutex_destroy(struct rumpuser_mtx *mtx)
+{
+
+	assert(TAILQ_EMPTY(&mtx->waiters) && mtx->o == NULL);
+	free(mtx);
+}
+
+void
+mutex_owner(struct rumpuser_mtx *mtx, void **lp)
+{
+
+	*lp = mtx->o;
+}
+
+struct rumpuser_rw {
+	struct waithead rwait;
+	struct waithead wwait;
+	int v;
+	struct lwp *o;
+};
+
+void
+rw_init(struct rumpuser_rw **rwp)
+{
+	struct rumpuser_rw *rw;
+
+	rw = calloc(1, sizeof(*rw));
+	if (!rw) abort();
+	TAILQ_INIT(&rw->rwait);
+	TAILQ_INIT(&rw->wwait);
+
+	*rwp = rw;
+}
+
+void
+rw_enter(int lk, struct rumpuser_rw *rw)
+{
+	struct waithead *w = NULL;
+	int nlocks;
+
+	switch (lk) {
+	case RW_WRITER:
+		w = &rw->wwait;
+		break;
+	case RW_READER:
+		w = &rw->rwait;
+		break;
+	}
+
+	if (rw_tryenter(lk, rw) != 0) {
+		rumpkern_unsched(&nlocks, NULL);
+		while (rw_tryenter(lk, rw) != 0)
+			wait(w, 0);
+		rumpkern_sched(nlocks, NULL);
+	}
+}
+
+int
+rw_tryenter(int lk, struct rumpuser_rw *rw)
+{
+	int rv;
+
+	switch (lk) {
+	case RW_WRITER:
+		if (rw->o == NULL) {
+			rw->o = curlwp();
+			rv = 0;
+		} else {
+			rv = EBUSY;
+		}
+		break;
+	case RW_READER:
+		if (rw->o == NULL && TAILQ_EMPTY(&rw->wwait)) {
+			rw->v++;
+			rv = 0;
+		} else {
+			rv = EBUSY;
+		}
+		break;
+	default:
+		rv = EINVAL;
+	}
+
+	return rv;
+}
+
+void
+rw_exit(struct rumpuser_rw *rw)
+{
+
+	if (rw->o) {
+		rw->o = NULL;
+	} else {
+		rw->v--;
+	}
+
+	/* standard procedure, don't let readers starve out writers */
+	if (!TAILQ_EMPTY(&rw->wwait)) {
+		if (rw->o == NULL)
+			wakeup_one(&rw->wwait);
+	} else if (!TAILQ_EMPTY(&rw->rwait) && rw->o == NULL) {
+		wakeup_all(&rw->rwait);
+	}
+}
+
+void
+rw_destroy(struct rumpuser_rw *rw)
+{
+
+	free(rw);
+}
+
+void
+rw_held(int lk, struct rumpuser_rw *rw, int *rvp)
+{
+
+	switch (lk) {
+	case RW_WRITER:
+		*rvp = rw->o == curlwp();
+		break;
+	case RW_READER:
+		*rvp = rw->v > 0;
+		break;
+	}
+}
+
+void
+rw_downgrade(struct rumpuser_rw *rw)
+{
+
+	assert(rw->o == curlwp());
+	rw->v = -1;
+}
+
+int
+rw_tryupgrade(struct rumpuser_rw *rw)
+{
+
+	if (rw->v == -1) {
+		rw->v = 1;
+		rw->o = curlwp();
+		return 0;
+	}
+
+	return EBUSY;
+}
+
+struct rumpuser_cv {
+	struct waithead waiters;
+	int nwaiters;
+};
+
+void
+cv_init(struct rumpuser_cv **cvp)
+{
+	struct rumpuser_cv *cv;
+
+	cv = calloc(1, sizeof(*cv));
+	if (!cv) abort();
+	TAILQ_INIT(&cv->waiters);
+	*cvp = cv;
+}
+
+void
+cv_destroy(struct rumpuser_cv *cv)
+{
+
+	assert(cv->nwaiters == 0);
+	free(cv);
+}
+
+static void
+cv_unsched(struct rumpuser_mtx *mtx, int *nlocks)
+{
+
+	rumpkern_unsched(nlocks, mtx);
+	mutex_exit(mtx);
+}
+
+static void
+cv_resched(struct rumpuser_mtx *mtx, int nlocks)
+{
+
+	/* see rumpuser(3) */
+	if ((mtx->flags & (MTX_KMUTEX | MTX_SPIN)) ==
+	    (MTX_KMUTEX | MTX_SPIN)) {
+		rumpkern_sched(nlocks, mtx);
+		mutex_enter_nowrap(mtx);
+	} else {
+		mutex_enter_nowrap(mtx);
+		rumpkern_sched(nlocks, mtx);
+	}
+}
+
+void
+cv_wait(struct rumpuser_cv *cv, struct rumpuser_mtx *mtx)
+{
+	int nlocks;
+
+	cv->nwaiters++;
+	cv_unsched(mtx, &nlocks);
+	wait(&cv->waiters, 0);
+	cv_resched(mtx, nlocks);
+	cv->nwaiters--;
+}
+
+void
+cv_wait_nowrap(struct rumpuser_cv *cv, struct rumpuser_mtx *mtx)
+{
+
+	cv->nwaiters++;
+	mutex_exit(mtx);
+	wait(&cv->waiters, 0);
+	mutex_enter_nowrap(mtx);
+	cv->nwaiters--;
+}
+
+int
+cv_timedwait(struct rumpuser_cv *cv, struct rumpuser_mtx *mtx, int64_t sec, int64_t nsec)
+{
+	int nlocks;
+	int rv;
+
+	cv->nwaiters++;
+	cv_unsched(mtx, &nlocks);
+	rv = wait(&cv->waiters, sec * 1000 + nsec / (1000*1000));
+	cv_resched(mtx, nlocks);
+	cv->nwaiters--;
+
+	return rv;
+}
+
+void
+cv_signal(struct rumpuser_cv *cv)
+{
+
+	wakeup_one(&cv->waiters);
+}
+
+void
+cv_broadcast(struct rumpuser_cv *cv)
+{
+
+	wakeup_all(&cv->waiters);
+}
+
+void
+cv_has_waiters(struct rumpuser_cv *cv, int *rvp)
+{
+
+	*rvp = cv->nwaiters != 0;
 }

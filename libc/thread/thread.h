@@ -23,6 +23,11 @@
  * SUCH DAMAGE.
  */
 
+#ifndef LIBRUMPUSER
+#define LIBRUMPUSER
+#endif
+#include "rumpuser_port.h"
+
 #include <sys/queue.h>
 
 #include <stdint.h>
@@ -30,6 +35,8 @@
 #include <time.h>
 #include <ucontext.h>
 #include <unistd.h>
+
+#include <rump/rumpuser.h>
 
 #include "rename.h"
 
@@ -52,9 +59,11 @@ struct thread {
 
 #define STACKSIZE 65536
 
-void init_sched(void);
+void init_sched(const struct rumpuser_hyperup *);
 void schedule(void);
 struct thread *get_current(void);
+void *curlwp(void);
+void set_curlwp(void *lwp);
 void wake(struct thread *);
 void block(struct thread *);
 struct thread *init_mainthread(void *);
@@ -70,6 +79,7 @@ void clear_runnable(struct thread *);
 void join_thread(struct thread *);
 void msleep(uint64_t);
 void abssleep(uint64_t);
+int clock_sleep(clockid_t, int64_t, long);
 
 /* mtx */
 TAILQ_HEAD(waithead, waiter);
@@ -81,3 +91,36 @@ struct waiter {
 int wait(struct waithead *, uint64_t);
 void wakeup_one(struct waithead *);
 void wakeup_all(struct waithead *);
+
+struct rumpuser_mtx;
+#define MTX_SPIN       0x01
+#define MTX_KMUTEX     0x02
+void mutex_init(struct rumpuser_mtx **, int);
+void mutex_enter(struct rumpuser_mtx *);
+void mutex_enter_nowrap(struct rumpuser_mtx *);
+int  mutex_tryenter(struct rumpuser_mtx *);
+void mutex_exit(struct rumpuser_mtx *);
+void mutex_destroy(struct rumpuser_mtx *);
+void mutex_owner(struct rumpuser_mtx *, void **);
+
+struct rumpuser_rw;
+#define RW_READER 0
+#define RW_WRITER 1
+void rw_init(struct rumpuser_rw **);
+void rw_enter(int, struct rumpuser_rw *);
+int  rw_tryenter(int, struct rumpuser_rw *);
+int  rw_tryupgrade(struct rumpuser_rw *);
+void rw_downgrade(struct rumpuser_rw *);
+void rw_exit(struct rumpuser_rw *);
+void rw_destroy(struct rumpuser_rw *);
+void rw_held(int, struct rumpuser_rw *, int *);
+
+struct rumpuser_cv;
+void cv_init(struct rumpuser_cv **);
+void cv_destroy(struct rumpuser_cv *);
+void cv_wait(struct rumpuser_cv *, struct rumpuser_mtx *);
+void cv_wait_nowrap(struct rumpuser_cv *, struct rumpuser_mtx *);
+int  cv_timedwait(struct rumpuser_cv *, struct rumpuser_mtx *, int64_t, int64_t);
+void cv_signal(struct rumpuser_cv *);
+void cv_broadcast(struct rumpuser_cv *);
+void cv_has_waiters(struct rumpuser_cv *, int *);

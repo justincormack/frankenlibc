@@ -4,7 +4,7 @@ RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/libc
 OBJ=$(OBJDIR)/thread.o
 HEADERS=thread.h rename.h
-INCLUDES=-I../include -I../ucontext
+INCLUDES=-I../include -I../ucontext -I../../librumpuser
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
