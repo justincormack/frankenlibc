@@ -40,24 +40,7 @@
 
 #include "rename.h"
 
-struct thread {
-    char *name;
-    void *lwp;
-    void *cookie;
-    int64_t wakeup_time;
-    TAILQ_ENTRY(thread) thread_list;
-    ucontext_t ctx;
-    int flags;
-    int threrrno;
-};
-
-#define RUNNABLE_FLAG   0x00000001
-#define THREAD_MUSTJOIN 0x00000002
-#define THREAD_JOINED   0x00000004
-#define THREAD_EXTSTACK 0x00000008
-#define THREAD_TIMEDOUT 0x00000010
-
-#define STACKSIZE 65536
+struct thread;
 
 void init_sched(const struct rumpuser_hyperup *);
 void schedule(void);
@@ -69,7 +52,6 @@ void block(struct thread *);
 struct thread *init_mainthread(void *);
 void exit_thread(void) __attribute__((noreturn));
 void set_sched_hook(void (*)(void *, void *));
-int abssleep_real(uint64_t);
 struct thread *create_thread(const char *, void *,
 	void (*)(void *), void *, void *, size_t, int);
 int is_runnable(struct thread *);
@@ -77,8 +59,6 @@ void set_runnable(struct thread *);
 void clear_runnable(struct thread *);
 
 void join_thread(struct thread *);
-void msleep(uint64_t);
-void abssleep(uint64_t);
 int clock_sleep(clockid_t, int64_t, long);
 
 /* mtx */

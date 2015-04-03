@@ -96,6 +96,25 @@ rumpkern_sched(int nlocks, void *interlock)
         rumpuser__hyp.hyp_backend_schedule(nlocks, interlock);
 }
 
+struct thread {
+	char *name;
+	void *lwp;
+	void *cookie;
+	int64_t wakeup_time;
+	TAILQ_ENTRY(thread) thread_list;
+	ucontext_t ctx;
+	int flags;
+	int threrrno;
+};
+
+#define RUNNABLE_FLAG   0x00000001
+#define THREAD_MUSTJOIN 0x00000002
+#define THREAD_JOINED   0x00000004
+#define THREAD_EXTSTACK 0x00000008
+#define THREAD_TIMEDOUT 0x00000010
+
+#define STACKSIZE 65536
+
 static void switch_threads(struct thread *, struct thread *);
 static int64_t now(void);
 
@@ -333,7 +352,7 @@ join_thread(struct thread *joinable)
 	wake(joinable);
 }
 
-void msleep(uint64_t millisecs)
+static void msleep(uint64_t millisecs)
 {
 	struct thread *thread = get_current();
 
@@ -342,7 +361,7 @@ void msleep(uint64_t millisecs)
 	schedule();
 }
 
-void abssleep(uint64_t millisecs)
+static void abssleep(uint64_t millisecs)
 {
 	struct thread *thread = get_current();
 
@@ -351,8 +370,9 @@ void abssleep(uint64_t millisecs)
 	schedule();
 }
 
+/* XXX unused */
 /* like abssleep, except against realtime clock instead of monotonic clock */
-int abssleep_real(uint64_t millisecs)
+static int abssleep_real(uint64_t millisecs)
 {
 	struct thread *thread = get_current();
 	struct timespec ts;
