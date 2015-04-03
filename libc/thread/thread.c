@@ -126,6 +126,24 @@ static struct thread *current_thread = NULL;
 
 static void (*scheduler_hook)(void *, void *);
 
+TAILQ_HEAD(waithead, waiter);
+struct waiter {
+	struct thread *who;
+	TAILQ_ENTRY(waiter) entries;
+	int onlist;
+};
+
+static void wake(struct thread *);
+static void block(struct thread *);
+static int is_runnable(struct thread *);
+static void set_runnable(struct thread *);
+static void clear_runnable(struct thread *);
+static void set_sched_hook(void (*)(void *, void *));
+static int wait(struct waithead *, uint64_t);
+static void wakeup_one(struct waithead *);
+static void wakeup_all(struct waithead *);
+static struct thread *get_current(void);
+
 static void printk(const char *);
 
 static void
@@ -136,7 +154,7 @@ printk(const char *msg)
 	ret = write(2, msg, strlen(msg));
 }
 
-struct thread *
+static struct thread *
 get_current(void)
 {
 
@@ -414,33 +432,38 @@ clock_sleep(clockid_t clk, int64_t sec, long nsec)
 	return 0;
 }
 
-void wake(struct thread *thread)
+static void
+wake(struct thread *thread)
 {
 
 	thread->wakeup_time = -1;
 	set_runnable(thread);
 }
 
-void block(struct thread *thread)
+static void
+block(struct thread *thread)
 {
 
 	thread->wakeup_time = -1;
 	clear_runnable(thread);
 }
 
-int is_runnable(struct thread *thread)
+static int
+is_runnable(struct thread *thread)
 {
 
 	return thread->flags & RUNNABLE_FLAG;
 }
 
-void set_runnable(struct thread *thread)
+static void
+set_runnable(struct thread *thread)
 {
 
 	thread->flags |= RUNNABLE_FLAG;
 }
 
-void clear_runnable(struct thread *thread)
+static void
+clear_runnable(struct thread *thread)
 {
 
 	thread->flags &= ~RUNNABLE_FLAG;
@@ -465,14 +488,15 @@ init_sched(const struct rumpuser_hyperup *hyp)
 	current_thread = thread;
 }
 
-void
+static void
 set_sched_hook(void (*f)(void *, void *))
 {
 
 	scheduler_hook = f;
 }
 
-struct thread *
+/* XXX unused, see if thread code needs it */
+static struct thread *
 init_mainthread(void *cookie)
 {
 
@@ -480,7 +504,7 @@ init_mainthread(void *cookie)
 	return current_thread;
 }
 
-int
+static int
 wait(struct waithead *wh, uint64_t msec)
 {
 	struct waiter w;
@@ -500,7 +524,7 @@ wait(struct waithead *wh, uint64_t msec)
 	return w.onlist ? ETIMEDOUT : 0;
 }
 
-void
+static void
 wakeup_one(struct waithead *wh)
 {
 	struct waiter *w;
@@ -512,7 +536,7 @@ wakeup_one(struct waithead *wh)
 	}
 }
 
-void
+static void
 wakeup_all(struct waithead *wh)
 {
 	struct waiter *w;

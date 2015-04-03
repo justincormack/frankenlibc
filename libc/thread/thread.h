@@ -44,33 +44,13 @@ struct thread;
 
 void init_sched(const struct rumpuser_hyperup *);
 void schedule(void);
-struct thread *get_current(void);
 void *curlwp(void);
 void set_curlwp(void *lwp);
-void wake(struct thread *);
-void block(struct thread *);
-struct thread *init_mainthread(void *);
 void exit_thread(void) __attribute__((noreturn));
-void set_sched_hook(void (*)(void *, void *));
 struct thread *create_thread(const char *, void *,
 	void (*)(void *), void *, void *, size_t, int);
-int is_runnable(struct thread *);
-void set_runnable(struct thread *);
-void clear_runnable(struct thread *);
-
 void join_thread(struct thread *);
 int clock_sleep(clockid_t, int64_t, long);
-
-/* mtx */
-TAILQ_HEAD(waithead, waiter);
-struct waiter {
-	struct thread *who;
-	TAILQ_ENTRY(waiter) entries;
-	int onlist;
-};
-int wait(struct waithead *, uint64_t);
-void wakeup_one(struct waithead *);
-void wakeup_all(struct waithead *);
 
 struct rumpuser_mtx;
 #define MTX_SPIN       0x01
