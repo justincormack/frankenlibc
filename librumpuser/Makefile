@@ -15,7 +15,7 @@ INCLUDE=-I. -I../libc/include -I../libc/ucontext -I../libc/thread -I../libc/init
 CPPFLAGS+=-nostdinc $(INCLUDE)
 CFLAGS+=-fno-stack-protector
 
-OBJS=$(OBJDIR)/rumpfiber.o
+OBJS=$(OBJDIR)/rumpuser.o
 OBJS+=$(OBJDIR)/rumpuser_mem.o $(OBJDIR)/rumpuser_random.o
 OBJS+=$(OBJDIR)/rumpuser_component.o
 
@@ -30,8 +30,8 @@ $(OBJDIR):
 $(LIB):				$(OBJS)
 				$(AR) cr $@ $(OBJS)
 
-$(OBJDIR)/rumpfiber.o:		rumpfiber.c $(DEPS)
-				$(COMPILE.c) -o $@ rumpfiber.c
+$(OBJDIR)/rumpuser.o:		rumpuser.c $(DEPS)
+				$(COMPILE.c) -o $@ rumpuser.c
 
 $(OBJDIR)/rumpuser_mem.o:	rumpuser_mem.c $(DEPS)
 				$(COMPILE.c) -o $@ rumpuser_mem.c
