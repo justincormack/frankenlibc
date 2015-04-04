@@ -15,14 +15,6 @@
 /* stdlib.h */
 #define aligned_alloc(a, s) __franken_aligned_alloc(a, s)
 
-/* string.h */
-#define strcmp(s1, s2) __franken_strcmp(s1, s2)
-#define strcpy(d, s) __franken_strcpy(d, s)
-#define strdup(s) __franken_strdup(s)
-#define strlen(s) __franken_strlen(s)
-#define strncmp(s1, s2, n) __franken_strncmp(s1, s2, n)
-#define strncpy(d, s, n) __franken_strncpy(d, s, n)
-
 /* time.h */
 #define clock_getres(c, t) __platform_clock_getres(c, t)
 #define clock_gettime(c, t) __platform_clock_gettime(c, t)

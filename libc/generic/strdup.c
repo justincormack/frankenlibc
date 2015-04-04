@@ -1,5 +1,7 @@
 #include <string.h>
 
+char *strdup(const char *) __attribute__ ((weak));
+
 char *
 strdup(const char *s)
 {
