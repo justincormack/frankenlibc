@@ -1,6 +1,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+int atoi(const char *) __attribute__ ((weak));
+
 int
 atoi(const char *str)
 {

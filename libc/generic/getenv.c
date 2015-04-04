@@ -4,6 +4,8 @@
 
 extern char **environ;
 
+char *getenv(const char *) __attribute__ ((weak));
+
 char *
 getenv(const char *name)
 {

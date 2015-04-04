@@ -1,8 +1,11 @@
 #include <signal.h>
-#include <sys/types.h>
+#include <lwp.h>
+
+int raise(int) __attribute__ ((weak));
 
 int
-raise(int signal)
+raise(int s)
 {
-	return kill(0, signal);
+
+	return _lwp_kill(_lwp_self(), s);
 }

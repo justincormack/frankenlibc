@@ -3,28 +3,19 @@
 
 /* namespace everything private into our namespace */
 
-/* ctype.h */
-#define isspace(a) __franken_isspace(a)
-
 /* linux/random.h */
 #define getrandom(b, s, f) __platform_getrandom(b, s, f)
 
 /* signal.h */
 #define kill(p, s) __platform_kill(p, s)
-#define raise(s) __franken_raise(s)
 
 /* stdio.h */
 #define putchar(c) __franken_putchar(c)
 
 /* stdlib.h */
-#define abort __franken_abort
 #define aligned_alloc(a, s) __franken_aligned_alloc(a, s)
-#define atoi(a) __franken_atoi(a)
-#define getenv(n) __franken_getenv(n)
 
 /* string.h */
-#define memcpy(d, s, n) __franken_memcpy(d, s, n)
-#define strchr(s, c) __franken_strchr(s, c)
 #define strcmp(s1, s2) __franken_strcmp(s1, s2)
 #define strcpy(d, s) __franken_strcpy(d, s)
 #define strdup(s) __franken_strdup(s)
