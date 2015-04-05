@@ -2,12 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void __assert13(const char *, int, const char *, const char *) __attribute__ ((weak));
+
 void
-__assert_fail(const char *expr, const char *file, int line, const char *func)
+__assert13(const char *file, int line, const char *function, const char *failedexpr)
 {
 
-	/* XXX TODO */
-	/* fprintf(stderr, "Assertion failed: %s (%s: %s: %d)\n", expr, file, func, line);
-	fflush(NULL); */
 	abort();
 }

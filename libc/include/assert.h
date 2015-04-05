@@ -1,9 +1,20 @@
 #undef assert
 
 #ifdef NDEBUG
-#define	assert(x) (void)0
+#define	assert(e) (void)0
 #else
-#define assert(x) ((void)((x) || (__assert_fail(#x, __FILE__, __LINE__, __func__),0)))
+#define assert(e) ((void)((e) || (__assert13(__FILE__, __LINE__, __assert_function__, #e),0)))
 #endif
 
-void __assert_fail (const char *, const char *, int, const char *);
+#if defined(__lint__)
+#define __assert_function__	(__static_cast(const void *,0))
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#define __assert_function__	__func__
+#else
+#define __assert_function__	__PRETTY_FUNCTION__
+#endif
+
+#ifndef __ASSERT_DECLARED
+#define __ASSERT_DECLARED
+void __assert13(const char *, int, const char *, const char *);
+#endif
