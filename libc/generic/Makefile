@@ -5,7 +5,7 @@ OBJDIR=$(RUMPOBJ)/libc
 OBJ+=$(OBJDIR)/__franken_start_main.o
 OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
-OBJ+=$(OBJDIR)/errno.o $(OBJDIR)/_Exit.o
+OBJ+=$(OBJDIR)/errno.o
 OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/isspace.o
 OBJ+=$(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
 OBJ+=$(OBJDIR)/putchar.o $(OBJDIR)/raise.o
@@ -37,9 +37,6 @@ $(OBJDIR)/atoi.o:		atoi.c $(DEPS)
 
 $(OBJDIR)/errno.o:		errno.c $(DEPS)
 				$(COMPILE.c) -o $@ errno.c
-
-$(OBJDIR)/_Exit.o:		_Exit.c $(DEPS)
-				$(COMPILE.c) -o $@ _Exit.c
 
 $(OBJDIR)/getenv.o:		getenv.c $(DEPS)
 				$(COMPILE.c) -o $@ getenv.c
