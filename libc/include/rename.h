@@ -12,9 +12,6 @@
 /* stdio.h */
 #define putchar(c) __franken_putchar(c)
 
-/* stdlib.h */
-#define aligned_alloc(a, s) __franken_aligned_alloc(a, s)
-
 /* time.h */
 #define clock_getres(c, t) __platform_clock_getres(c, t)
 #define clock_gettime(c, t) __platform_clock_gettime(c, t)
