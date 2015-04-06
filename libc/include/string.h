@@ -3,8 +3,6 @@
 
 #include <stdlib.h>
 
-#include <rename.h>
-
 void *memcpy(void *, const void *, size_t);
 void *memset(void *, int, size_t);
 char *strchr(const char *, int);

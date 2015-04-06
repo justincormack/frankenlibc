@@ -8,7 +8,7 @@ OBJ+=$(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/getrandom.o
 CLEANOBJ=$(OBJ) $(OBJDIR)/__clock_getres.o $(OBJDIR)/__clock_gettime.o
 CLEANOBJ+=$(OBJDIR)/__clock_nanosleep.o $(OBJDIR)/__getrandom.o
-INCLUDES=-I../../libc/include
+INCLUDES=-I../include -I../../libc/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 

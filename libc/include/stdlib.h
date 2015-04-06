@@ -6,8 +6,6 @@
 #include <sys/cdefs.h>
 #include <sys/types.h>
 
-#include <rename.h>
-
 void abort(void) __attribute__ ((noreturn));
 void *aligned_alloc(size_t, size_t);
 int atoi(const char *);

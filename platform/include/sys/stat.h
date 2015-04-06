@@ -43,6 +43,8 @@ struct stat {
 #define S_ISLNK(m)	(((m) & S_IFMT) == S_IFLNK)
 #define S_ISSOCK(m)	(((m) & S_IFMT) == S_IFSOCK)
 
+#define fstat(f, s) __platform_fstat(f, s)
+
 int fstat(int, struct stat *);
 
 #endif

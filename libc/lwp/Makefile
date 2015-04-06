@@ -3,7 +3,7 @@ COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/franken
 OBJ=$(OBJDIR)/_lwp_exit.o $(OBJDIR)/_lwp_kill.o $(OBJDIR)/___lwp_park60.o $(OBJDIR)/_lwp_self.o $(OBJDIR)/__libc_static_tls_setup.o
-INCLUDES=-I../include -I.
+INCLUDES=-I../include -I../../platform/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 

@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <rename.h>
+#define getrandom(b, s, f) __platform_getrandom(b, s, f)
 
 int getrandom(void *, size_t, unsigned int);
 

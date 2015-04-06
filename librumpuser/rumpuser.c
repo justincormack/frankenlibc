@@ -192,7 +192,7 @@ int
 rumpuser_kill(int64_t pid, int sig)
 {
 
-	raise(sig);
+	kill(0, sig);
 
 	return 0;
 }

@@ -3,8 +3,6 @@
 
 #include <stdlib.h>
 
-#include <rename.h>
-
 #if defined(__x86_64__)
 #include <x86_64/ucontext.h>
 #elif defined(__i386__)
@@ -22,6 +20,10 @@
 #else
 #error "Unknown architecture"
 #endif
+
+#define getcontext(c) __franken_getcontext(c)
+#define makecontext(c, f, i, a) __franken_makecontext(c, f, i, a)
+#define swapcontext(c1, c2) __franken_swapcontext(c1, c2)
 
 /* Note the type of makecontext is not the standard, as this is
    not valid C. We only allow a single void* argument but define

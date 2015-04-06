@@ -260,7 +260,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	${MAKE} ${OS} -C platform
 
 # should clean up how deterministic build is done
-if [ -z ${DETERMINSTIC+x} ]
+if [ -n ${DETERMINSTIC} ]
 then
 	CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \

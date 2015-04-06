@@ -4,7 +4,12 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-#include <rename.h>
+#define fsync(f) __platform_fsync(f)
+#define getpagesize __platform_getpagesize
+#define pread(a, b, c, d) __platform_pread(a, b, c, d)
+#define pwrite(a, b, c, d) __platform_pwrite(a, b, c, d)
+#define read(f, b, c) __platform_read(f, b, c)
+#define write(f, b, c) __platform_write(f, b, c)
 
 void _exit(int) __attribute__ ((noreturn));
 int fsync(int);

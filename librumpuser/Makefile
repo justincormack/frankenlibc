@@ -11,7 +11,7 @@ INCS=rumpuser_component.h rumpuser_port.h
 OBJDIR=$(RUMPOBJ)/librumpuser
 
 DEPS=$(INCS) $(OBJDIR)
-INCLUDE=-I. -I../libc/include -I../libc/ucontext -I../libc/thread -I../libc/init
+INCLUDE=-I. -I../libc/include -I../libc/ucontext -I../libc/thread -I../libc/init -I../platform/include
 CPPFLAGS+=-nostdinc $(INCLUDE)
 CFLAGS+=-fno-stack-protector
 

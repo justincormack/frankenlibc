@@ -3,10 +3,9 @@
 
 #include <sys/types.h>
 
-#include <rename.h>
+#define kill(p, s) __platform_kill(p, s)
 
 int kill(pid_t, int);
-int raise(int);
 
 #define SIGABRT 6
 

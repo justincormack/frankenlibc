@@ -27,6 +27,8 @@
 
 #define MAP_FAILED ((void *) -1)
 
+#define mmap(a, b, c, d, e, f) __platform_mmap(a, b, c, d, e, f)
+
 void *mmap(void *, size_t, int, int, int, off_t);
 int munmap(void *, size_t);
 int mprotect(void *, size_t, int);
