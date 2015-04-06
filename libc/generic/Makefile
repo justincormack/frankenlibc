@@ -2,7 +2,6 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/libc
-OBJ+=$(OBJDIR)/__franken_start_main.o
 OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
 OBJ+=$(OBJDIR)/errno.o
@@ -22,9 +21,6 @@ default:			$(OBJ)
 
 $(OBJDIR):			
 				mkdir -p $(OBJDIR)
-
-$(OBJDIR)/__franken_start_main.o:	__franken_start_main.c $(DEPS)
-				$(COMPILE.c) -o $@ __franken_start_main.c
 
 $(OBJDIR)/abort.o:		abort.c $(DEPS)
 				$(COMPILE.c) -o $@ abort.c
