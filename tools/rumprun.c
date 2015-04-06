@@ -78,6 +78,36 @@ main(int argc, char **argv)
 			i++;
 			break;			
 		}
+		if (strncmp(arg, "console:", 8) == 0) {
+			fd = open(&arg[8], O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+			if (fd == -1) {
+				perror("console open");
+				exit(1);
+			}
+			ret = dup2(fd, 1);
+			if (ret == -1) {
+				perror("dup2");
+				exit(1);
+			}
+			ret = dup2(fd, 2);
+			if (ret == -1) {
+				perror("dup2");
+				exit(1);
+			}
+			close(fd);
+			fd = open("/dev/null", O_RDONLY);
+			if (ret == -1) {
+				perror("open /dev/null");
+				exit(1);
+			}
+			ret = dup2(fd, 0);
+			if (ret == -1) {
+				perror("dup2");
+				exit(1);
+			}
+			close(fd);
+			continue;
+		}
 		if (strncmp(arg, "/dev/tap", 8) == 0) {
 			fd = tapopen(arg);
 			if (fd == -1) {
