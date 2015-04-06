@@ -257,7 +257,20 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
-	${MAKE} ${OS} ${DETERMINISTIC} -C platform
+	${MAKE} ${OS} -C platform
+
+# should clean up how deterministic build is done
+if [ -z ${DETERMINSTIC+x} ]
+then
+	CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
+	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
+	ASFLAGS="${AFLAGS}" \
+	LDFLAGS="${EXTRA_LDFLAGS}" \
+	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	RUMPOBJ="${RUMPOBJ}" \
+	RUMP="${RUMP}" \
+	${MAKE} deterministic -C platform
+fi 
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
