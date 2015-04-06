@@ -14,7 +14,7 @@ EXTRA_AFLAGS="-mcpu=arm926ej-s"
 # this compiler is very fussy, planning to fix these issues at some point
 EXTRA_CWARNFLAGS="-Wno-error"
 
-LINKSCRIPT="${PWD}/libc/qemu-arm/link.ld"
+LINKSCRIPT="${PWD}/platform/qemu-arm/link.ld"
 EXTRA_LDSCRIPT="-T ${LINKSCRIPT}"
 EXTRA_LDSCRIPT_CC="-Wl,-T,${LINKSCRIPT}"
 

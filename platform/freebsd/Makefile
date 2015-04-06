@@ -18,7 +18,7 @@ OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/_start1.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h i386/syscall.h x86_64/syscall.h freebsd.h
-INCLUDES=-I../include -I../../libc/include
+INCLUDES=-I../include -I../../franken/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 

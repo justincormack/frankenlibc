@@ -21,7 +21,7 @@ OBJ+=$(OBJDIR)/pwrite.o
 OBJ+=$(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/write.o
 HEADERS=$(CRTDIR) $(OBJDIR)
-INCLUDES=-I../include -I../../libc/include -I.
+INCLUDES=-I../include -I../../franken/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
