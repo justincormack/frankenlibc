@@ -4,7 +4,6 @@ RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/libc
 OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
-OBJ+=$(OBJDIR)/errno.o
 OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/isspace.o
 OBJ+=$(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
 OBJ+=$(OBJDIR)/putchar.o $(OBJDIR)/raise.o
@@ -30,9 +29,6 @@ $(OBJDIR)/assert.o:		assert.c $(DEPS)
 
 $(OBJDIR)/atoi.o:		atoi.c $(DEPS)
 				$(COMPILE.c) -o $@ atoi.c
-
-$(OBJDIR)/errno.o:		errno.c $(DEPS)
-				$(COMPILE.c) -o $@ errno.c
 
 $(OBJDIR)/getenv.o:		getenv.c $(DEPS)
 				$(COMPILE.c) -o $@ getenv.c
