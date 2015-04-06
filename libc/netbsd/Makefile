@@ -10,7 +10,7 @@ OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/fsync.o
 OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
-OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/isatty.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
+OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
 OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/___start.o
@@ -69,9 +69,6 @@ $(OBJDIR)/getrandom.o:		getrandom.c $(HEADERS)
 
 $(OBJDIR)/ioctl.o:		ioctl.S $(HEADERS)
 				$(COMPILE.S) -o $@ ioctl.S
-
-$(OBJDIR)/isatty.o:		isatty.c $(HEADERS)
-				$(COMPILE.c) -o $@ isatty.c
 
 $(OBJDIR)/kill.o:		kill.S $(HEADERS)
 				$(COMPILE.S) -o $@ kill.S

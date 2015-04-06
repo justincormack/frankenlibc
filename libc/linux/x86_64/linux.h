@@ -11,7 +11,6 @@
 #define _IOWR(a,b,c) _IOC(_IOC_READ|_IOC_WRITE,(a),(b),sizeof(c))
 
 #define ARCH_SET_FS 0x1002
-#define TCGETS 0x5401
 
 #define LINUX_MAP_SHARED        0x01
 #define LINUX_MAP_PRIVATE       0x02

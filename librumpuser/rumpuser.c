@@ -37,7 +37,6 @@
 #include <signal.h>
 #include <stdarg.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -149,10 +148,12 @@ rumpuser_getparam(const char *name, void *buf, size_t blen)
 }
 
 void
-rumpuser_putchar(int c)
+rumpuser_putchar(int ch)
 {
+	char c = ch;
+	int ret __attribute__ ((unused));
 
-	putchar(c);
+	ret = write(1, &c, 1);
 }
 
 __attribute__((__noreturn__)) void

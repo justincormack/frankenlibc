@@ -69,7 +69,7 @@ filter_fd(int fd, int flags, mode_t mode)
 {
 	cap_rights_t rights;
 	int ret;
-	unsigned long ioctl[2] = {TIOCGETA, DIOCGMEDIASIZE};
+	unsigned long ioctl[1] = {DIOCGMEDIASIZE};
 
 	/* XXX we could cut capabilities down a little further eg seek only
 	   used on block devices for example */
@@ -93,7 +93,7 @@ filter_fd(int fd, int flags, mode_t mode)
 	ret = cap_rights_limit(fd, &rights);
 	if (ret == -1) return ret;
 
-	ret = cap_ioctls_limit(fd, ioctl, 2);
+	ret = cap_ioctls_limit(fd, ioctl, 1);
 	if (ret == -1) return ret;
 
 	return 0;

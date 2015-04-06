@@ -9,7 +9,6 @@
 void _exit(int) __attribute__ ((noreturn));
 int fsync(int);
 int getpagesize(void);
-int isatty(int);
 ssize_t pread(int, void *, size_t, off_t);
 ssize_t pwrite(int, const void *, size_t, off_t);
 ssize_t read(int, void *, size_t);

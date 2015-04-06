@@ -12,7 +12,7 @@ OBJ+=$(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o
 OBJ+=$(OBJDIR)/fsync.o $(OBJDIR)/getpagesize.o
 OBJ+=$(OBJDIR)/getrandom.o
-OBJ+=$(OBJDIR)/isatty.o $(OBJDIR)/kill.o
+OBJ+=$(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/mprotect.o
 OBJ+=$(OBJDIR)/__libc_start_main.o
@@ -62,9 +62,6 @@ $(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
 
 $(OBJDIR)/getrandom.o:		getrandom.c $(HEADERS)
 				$(COMPILE.c) -o $@ getrandom.c
-
-$(OBJDIR)/isatty.o:		isatty.c $(HEADERS)
-				$(COMPILE.c) -o $@ isatty.c
 
 $(OBJDIR)/kill.o:		kill.c $(HEADERS)
 				$(COMPILE.c) -o $@ kill.c

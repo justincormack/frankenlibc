@@ -9,9 +9,6 @@
 /* signal.h */
 #define kill(p, s) __platform_kill(p, s)
 
-/* stdio.h */
-#define putchar(c) __franken_putchar(c)
-
 /* time.h */
 #define clock_getres(c, t) __platform_clock_getres(c, t)
 #define clock_gettime(c, t) __platform_clock_gettime(c, t)
@@ -25,7 +22,6 @@
 /* unistd.h */
 #define fsync(f) __platform_fsync(f)
 #define getpagesize __platform_getpagesize
-#define isatty(f) __platform_isatty(f)
 #define pread(a, b, c, d) __platform_pread(a, b, c, d)
 #define pwrite(a, b, c, d) __platform_pwrite(a, b, c, d)
 #define read(f, b, c) __platform_read(f, b, c)

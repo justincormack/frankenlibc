@@ -6,7 +6,7 @@ OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
 OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/isspace.o
 OBJ+=$(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
-OBJ+=$(OBJDIR)/putchar.o $(OBJDIR)/raise.o
+OBJ+=$(OBJDIR)/raise.o
 OBJ+=$(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o
 OBJ+=$(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o
 OBJ+=$(OBJDIR)/strlen.o $(OBJDIR)/strncmp.o
@@ -41,9 +41,6 @@ $(OBJDIR)/memcpy.o:		memcpy.c $(DEPS)
 
 $(OBJDIR)/memset.o:		memset.c $(DEPS)
 				$(COMPILE.c) -o $@ memset.c
-
-$(OBJDIR)/putchar.o:		putchar.c $(DEPS)
-				$(COMPILE.c) -o $@ putchar.c
 
 $(OBJDIR)/raise.o:		raise.c $(DEPS)
 				$(COMPILE.c) -o $@ raise.c

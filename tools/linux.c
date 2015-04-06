@@ -161,11 +161,6 @@ filter_fd(int fd, int flags, mode_t mode)
 		if (ret < 0) return ret;
 	}
 
-	/* ioctl(fd, TCGETS, ...) */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
-		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TCGETS));
-	if (ret < 0) return ret;
-
 	/* fsync(fd) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fsync), 1,
 		SCMP_A0(SCMP_CMP_EQ, fd));

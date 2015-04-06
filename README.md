@@ -36,7 +36,6 @@ Common ABI:
 * write(1, ...) write to stdout.
 * read(...) future use, read from console, virtual drivers
 * pread, pwrite, fsync write to virtual block devices
-* isatty(1) is stdout a tty?
 * getpagesize() return the page size.
 
 Linux ABI:

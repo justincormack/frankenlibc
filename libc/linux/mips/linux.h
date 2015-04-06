@@ -11,8 +11,6 @@
 #define _IOR(a,b,c) _IOC(_IOC_READ,(a),(b),sizeof(c))
 #define _IOWR(a,b,c) _IOC(_IOC_READ|_IOC_WRITE,(a),(b),sizeof(c))
 
-#define TCGETS 0x540d
-
 #define LINUX_MAP_SHARED        0x01
 #define LINUX_MAP_PRIVATE       0x02
 #define LINUX_MAP_FIXED         0x10
