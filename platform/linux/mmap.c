@@ -1,9 +1,5 @@
 #include <errno.h>
-#include <signal.h>
-#include <stdio.h>
 #include <stdint.h>
-#include <string.h>
-#include <unistd.h>
 #include <sys/mman.h>
 
 #include "syscall.h"
@@ -71,13 +67,17 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 
 	/* XXX we could just top and tail the allocations always */
 	if (off == 0) { /* we were lucky, just unmap the excess at end */
-		if (munmap((char *)mem + length, length) == -1)
-			kill(0, SIGABRT);
+		if (munmap((char *)mem + length, length) == -1) {
+			errno = ENOMEM;
+			return MAP_FAILED;
+		}
 		return mem;
 	}
 
-	if (munmap(mem, length * 2) == -1)
-		kill(0, SIGABRT);
+	if (munmap(mem, length * 2) == -1) {
+		errno = ENOMEM;
+		return MAP_FAILED;
+	}
 
 	return __mmap((char *)mem + length - off, length, prot, flags | MAP_FIXED, -1, 0);
 }
