@@ -7,6 +7,6 @@ void
 abort()
 {
 
-	raise(SIGABRT);
+	kill(0, SIGABRT);
 	_exit(1);
 }
