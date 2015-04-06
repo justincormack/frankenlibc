@@ -9,7 +9,7 @@ INCLUDES=-I../include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-g -fno-stack-protector
 LDFLAGS+=-static -B$(LIBDIR)
-LDLIBS=-L$(OUTDIR) -lc -L$(LIBDIR) -lfranken -lplatform
+LDLIBS=-Wl,--start-group -L$(OUTDIR) -lc -L$(LIBDIR) -lfranken -lplatform -Wl,--end-group
 RANLIB?=ranlib
 
 default:		test
