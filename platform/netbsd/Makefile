@@ -1,7 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
-OBJDIR=$(RUMPOBJ)/libc
+OBJDIR=$(RUMPOBJ)/platform
 CRTOBJDIR=$(RUMPOBJ)/crt
 RUMP?=$(RUMPOBJ)/rump
 CRTDIR=$(RUMP)/lib
@@ -16,7 +16,7 @@ OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/___start.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 HEADERS=syscall.h i386/syscall.h x86_64/syscall.h netbsd.h
-INCLUDES=-I../include -I.
+INCLUDES=-I../../libc/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 

@@ -1,7 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
-OBJDIR=$(RUMPOBJ)/libc
+OBJDIR=$(RUMPOBJ)/franken
 OBJ=$(OBJDIR)/_lwp_exit.o $(OBJDIR)/_lwp_kill.o $(OBJDIR)/___lwp_park60.o $(OBJDIR)/_lwp_self.o $(OBJDIR)/__libc_static_tls_setup.o
 INCLUDES=-I../include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)

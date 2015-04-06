@@ -1,7 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
-OBJDIR=$(RUMPOBJ)/libc
+OBJDIR=$(RUMPOBJ)/franken
 OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
 OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/isspace.o

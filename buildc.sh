@@ -224,7 +224,7 @@ if [ "${OS}" = "unknown" ]; then
 	die "Unknown or unsupported platform"
 fi
 
-[ -f libc/${OS}/platform.sh ] && . libc/${OS}/platform.sh
+[ -f platform/${OS}/platform.sh ] && . platform/${OS}/platform.sh
 
 ./buildrump.sh/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
@@ -257,7 +257,16 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
-	${MAKE} OS=${OS} DETERMINISTIC=${DETERMINISTIC} -C libc
+	${MAKE} ${OS} ${DETERMINISTIC} -C platform
+
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
+	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
+	ASFLAGS="${AFLAGS}" \
+	LDFLAGS="${EXTRA_LDFLAGS}" \
+	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	RUMPOBJ="${RUMPOBJ}" \
+	RUMP="${RUMP}" \
+	${MAKE} -C libc
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
@@ -324,16 +333,25 @@ mkdir -p ${RUMPOBJ}/explode/libc
 mkdir -p ${RUMPOBJ}/explode/rumpkernel
 mkdir -p ${RUMPOBJ}/explode/rumpuser
 mkdir -p ${RUMPOBJ}/explode/franken
+mkdir -p ${RUMPOBJ}/explode/platform
 (
 	cd ${RUMPOBJ}/explode/libc
 	${AR-ar} x ${RUMP}/lib/libc.a
 
 	# some franken .o file names conflict with libc
 	cd ${RUMPOBJ}/explode/franken
-	${AR-ar} x ${RUMP}/lib/libfranken.a;
+	${AR-ar} x ${RUMP}/lib/libfranken.a
 	for f in *.o
 	do
 		[ -f ../libc/$f ] && mv $f franken_$f
+	done
+
+	# some platform .o file names conflict with libc
+	cd ${RUMPOBJ}/explode/platform
+	${AR-ar} x ${RUMP}/lib/libplatform.a
+	for f in *.o
+	do
+		[ -f ../libc/$f ] && mv $f platform_$f
 	done
 
 	cd ${RUMPOBJ}/explode/rumpkernel
@@ -348,7 +366,7 @@ mkdir -p ${RUMPOBJ}/explode/franken
 	${AR-ar} x ${RUMP}/lib/librumpuser.a
 
 	cd ${RUMPOBJ}/explode
-	${AR-ar} cr libc.a rumpkernel/rumpkernel.o rumpuser/*.o libc/*.o franken/*.o
+	${AR-ar} cr libc.a rumpkernel/rumpkernel.o rumpuser/*.o libc/*.o franken/*.o platform/*.o
 )
 
 # install to OUTDIR

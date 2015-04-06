@@ -1,14 +1,14 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
-OBJDIR=$(RUMPOBJ)/libc
+OBJDIR=$(RUMPOBJ)/platform
 OBJ=$(OBJDIR)/clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o
 OBJ+=$(OBJDIR)/getrandom.o
 CLEANOBJ=$(OBJ) $(OBJDIR)/__clock_getres.o $(OBJDIR)/__clock_gettime.o
 CLEANOBJ+=$(OBJDIR)/__clock_nanosleep.o $(OBJDIR)/__getrandom.o
-INCLUDES=-I../include
+INCLUDES=-I../../libc/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 

@@ -1,11 +1,9 @@
-OS?=linux
-GDIRS=generic crt lwp stubs thread init ucontext malloc
-DIRS=$(OS) $(GDIRS)
+DIRS=generic crt lwp stubs thread init ucontext malloc
 RUMPOBJ?=../rumpobj
 RUMP?=$(RUMPOBJ)/rump
 LIBDIR=$(RUMP)/lib
 LIB=$(LIBDIR)/libfranken.a
-OBJDIR=$(RUMPOBJ)/libc
+OBJDIR=$(RUMPOBJ)/franken
 RANLIB?=ranlib
 
 .PHONY:		$(DIRS) clean test
@@ -13,14 +11,10 @@ RANLIB?=ranlib
 default:	$(DIRS) $(LIB)
 
 $(DIRS):	
-		$(MAKE) OS=$(OS) -C $@
-
-deterministic:	$(DIRS)
-		$(MAKE) -C $@ clean
 		$(MAKE) -C $@
 
-$(LIB):		$(DIRS) $(DETERMINISTIC)
-		mkdir -p $(OBJDIR)
+$(LIB):		$(DIRS)
+		mkdir -p $(LIBDIR)
 		$(AR) cr $@ $(OBJDIR)/*.o
 		$(RANLIB) $@
 
@@ -28,8 +22,8 @@ test:		default
 		$(MAKE) -C $@
 
 clean:		
-		for dir in freebsd linux netbsd qemu-arm $(GDIRS) test deterministic; \
+		for dir in $(GDIRS); \
 		do \
-			$(MAKE) -C $$dir OS= clean; \
+			$(MAKE) -C $$dir clean; \
 		done
 		rm -f $(LIB)
