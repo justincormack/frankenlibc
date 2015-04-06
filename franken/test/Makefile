@@ -1,7 +1,7 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
-OUTDIR=$(RUMPOBJ)/libc-test
+OUTDIR=$(RUMPOBJ)/franken-test
 RUMP?=$(RUMPOBJ)/rump
 LIBDIR=$(RUMP)/lib
 FILES=$(OUTDIR)/args $(OUTDIR)/env $(OUTDIR)/_exit $(OUTDIR)/mmap
