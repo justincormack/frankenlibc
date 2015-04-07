@@ -137,6 +137,17 @@ rumpuser_getparam(const char *name, void *buf, size_t blen)
 		return 0;
 	}
 
+#ifdef RUMP_MEMLIMIT
+#define STRING(s) #s
+#define STRINGIFY(x) STRING(x)
+	if (strcmp(name, "RUMP_MEMLIMIT") == 0) {
+		strncpy(buf, STRINGIFY(RUMP_MEMLIMIT), blen);
+		return 0;
+	}
+#undef STRING
+#undef STRINGIFY
+#endif
+
 	value = getenv(name);
 
 	if (value != NULL && strlen(value) + 1 <= blen) {

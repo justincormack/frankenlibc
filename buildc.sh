@@ -36,6 +36,7 @@ helpme()
 	printf "Usage: $0 [-h] [options] [platform]\n"
 	printf "supported options:\n"
 	printf "\t-L: libraries to link eg net_netinet,net_netinet6. default all\n"
+	printf "\t-m: hardcode rump memory limit. default from env or unlimited\n"
 	printf "\t-M: thread stack size. default: 64k\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
@@ -108,7 +109,7 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?d:F:Hhj:L:M:o:p:qs:V:' opt; do
+while getopts '?d:F:Hhj:L:M:m:o:p:qs:V:' opt; do
 	case "$opt" in
 	"d")
 		mkdir -p ${OPTARG}
@@ -165,6 +166,10 @@ while getopts '?d:F:Hhj:L:M:o:p:qs:V:' opt; do
 	"M")
 		size=$(bytes ${OPTARG})
 		appendvar FRANKEN_FLAGS "-DSTACKSIZE=${size}"
+		;;
+	"m")
+		size=$(bytes ${OPTARG})
+		appendvar RUMPUSER_FLAGS "-DRUMP_MEMLIMIT=${size}"
 		;;
 	"o")
 		mkdir -p ${OPTARG}
@@ -288,7 +293,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
-	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	CPPFLAGS="${EXTRA_CPPFLAGS} ${RUMPUSER_FLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
 	${MAKE} -C librumpuser
