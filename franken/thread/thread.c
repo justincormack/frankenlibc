@@ -113,7 +113,9 @@ struct thread {
 #define THREAD_EXTSTACK 0x00000008
 #define THREAD_TIMEDOUT 0x00000010
 
+#ifndef STACKSIZE
 #define STACKSIZE 65536
+#endif
 
 static void switch_threads(struct thread *, struct thread *);
 static int64_t now(void);

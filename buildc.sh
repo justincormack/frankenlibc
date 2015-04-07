@@ -36,6 +36,7 @@ helpme()
 	printf "Usage: $0 [-h] [options] [platform]\n"
 	printf "supported options:\n"
 	printf "\t-L: libraries to link eg net_netinet,net_netinet6. default all\n"
+	printf "\t-M: thread stack size. default: 64k\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
@@ -67,7 +68,7 @@ bytes()
 		value=$((${value} * 1073741824))
 		;;
 	*)
-		die "Bad huge page size"
+		die "Cannot understand value"
 		;;
 	esac
 
@@ -107,7 +108,7 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?d:F:Hhj:L:o:p:qs:V:' opt; do
+while getopts '?d:F:Hhj:L:M:o:p:qs:V:' opt; do
 	case "$opt" in
 	"d")
 		mkdir -p ${OPTARG}
@@ -160,6 +161,10 @@ while getopts '?d:F:Hhj:L:o:p:qs:V:' opt; do
 		;;
 	"L")
 		LIBS="${OPTARG}"
+		;;
+	"M")
+		size=$(bytes ${OPTARG})
+		appendvar FRANKEN_FLAGS "-DSTACKSIZE=${size}"
 		;;
 	"o")
 		mkdir -p ${OPTARG}
@@ -276,7 +281,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	ASFLAGS="${AFLAGS}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
-	CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	CPPFLAGS="${EXTRA_CPPFLAGS} ${FRANKEN_FLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
 	${MAKE} -C franken
