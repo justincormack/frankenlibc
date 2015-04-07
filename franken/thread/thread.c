@@ -267,7 +267,7 @@ create_thread(const char *name, void *cookie, void (*f)(void *), void *data,
 	if (!stack) {
 		assert(stack_size == 0);
 		stack = mmap(NULL, STACKSIZE, PROT_READ | PROT_WRITE,
-		    MAP_SHARED | MAP_ANON, -1, 0);
+		    MAP_SHARED | MAP_ANON | MAP_STACK, -1, 0);
 		if (stack == MAP_FAILED) {
 			free(thread);
 			return NULL;
