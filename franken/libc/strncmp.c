@@ -1,7 +1,5 @@
 #include <string.h>
 
-int strncmp(const char *, const char *, size_t) __attribute__ ((weak));
-
 int
 strncmp(const char *s1, const char *s2, size_t n)
 {
