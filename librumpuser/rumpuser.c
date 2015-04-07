@@ -190,13 +190,16 @@ rumpuser_seterrno(int error)
 void
 rumpuser_dprintf(const char *format, ...)
 {
-	//va_list ap;
+	va_list ap;
+	char buffer[80];
+	int ret;
 
-	/* XXX implement support for this in libc */
-	printk("something\n");
-	//va_start(ap, format);
-	//vfprintf(stderr, format, ap);
-	//va_end(ap);
+	va_start(ap, format);
+	ret = vsnprintf(buffer, sizeof(buffer), format, ap);
+	va_end(ap);
+	if (ret >= sizeof(buffer))
+		buffer[sizeof(buffer) - 1] = '\0';
+	write(2, buffer, strlen(buffer));
 }
 
 int

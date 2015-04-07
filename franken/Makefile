@@ -1,4 +1,4 @@
-DIRS=crt lwp stubs thread init ucontext malloc
+DIRS=libc crt lwp stubs thread init ucontext malloc
 RUMPOBJ?=../rumpobj
 RUMP?=$(RUMPOBJ)/rump
 LIBDIR=$(RUMP)/lib
@@ -22,7 +22,7 @@ test:		default
 		$(MAKE) -C $@
 
 clean:		
-		for dir in $(GDIRS); \
+		for dir in $(DIRS) libc test; \
 		do \
 			$(MAKE) -C $$dir clean; \
 		done
