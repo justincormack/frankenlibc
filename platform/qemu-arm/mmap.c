@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <stdint.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/mman.h>
 
 #define CORESIZE 16777216
