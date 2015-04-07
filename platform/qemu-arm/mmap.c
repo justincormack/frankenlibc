@@ -1,12 +1,11 @@
 #include <errno.h>
 #include <stdint.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/mman.h>
 
 #define CORESIZE 16777216
 
-char __core[CORESIZE];
+static char __core[CORESIZE];
 
 static uintptr_t core_base = (uintptr_t) &__core;
 static uintptr_t core_top = (uintptr_t) &__core[CORESIZE];
@@ -42,7 +41,6 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	}
 
 	mem = (void *)core_base;
-	memset(mem, 0, length);
 
 	core_base += length;
 
