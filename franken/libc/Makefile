@@ -4,7 +4,7 @@ RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/franken
 OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
-OBJ+=$(OBJDIR)/getenv.o $(OBJDIR)/isspace.o
+OBJ+=$(OBJDIR)/getenv.o
 OBJ+=$(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
 OBJ+=$(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o
 OBJ+=$(OBJDIR)/strcpy.o $(OBJDIR)/strdup.o
@@ -31,9 +31,6 @@ $(OBJDIR)/atoi.o:		atoi.c $(DEPS)
 
 $(OBJDIR)/getenv.o:		getenv.c $(DEPS)
 				$(COMPILE.c) -o $@ getenv.c
-
-$(OBJDIR)/isspace.o:		isspace.c $(DEPS)
-				$(COMPILE.c) -o $@ isspace.c
 
 $(OBJDIR)/memcpy.o:		memcpy.c $(DEPS)
 				$(COMPILE.c) -o $@ memcpy.c

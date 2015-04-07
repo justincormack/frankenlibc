@@ -1,7 +1,12 @@
-#include <ctype.h>
 #include <stdlib.h>
 
 int atoi(const char *) __attribute__ ((weak));
+
+static int
+isspace(int c)
+{
+	return c == ' ' || (c >= '\t' && c <= '\r');
+}
 
 int
 atoi(const char *str)
