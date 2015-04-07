@@ -7,7 +7,6 @@
 #include <sys/types.h>
 
 void abort(void) __attribute__ ((noreturn));
-void *aligned_alloc(size_t, size_t);
 int atoi(const char *);
 void *calloc(size_t, size_t);
 void exit(int) __attribute__ ((noreturn));
