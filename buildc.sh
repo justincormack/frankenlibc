@@ -308,7 +308,7 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	${MAKE} OS=${OS} -C tools
 
 # for now just build libc
-NETBSDLIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread"
+NETBSDLIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread ${RUMPSRC}/lib/libz"
 
 RUMPMAKE=${RUMPOBJ}/tooldir/rumpmake
 
@@ -397,7 +397,7 @@ rm -rf ${OUTDIR}
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
 rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
 ${INSTALL-install} ${RUMP}/bin/rumprun ${OUTDIR}/bin
-${INSTALL-install} ${RUMP}/lib/libm.a ${RUMP}/lib/libpthread.a ${OUTDIR}/lib
+${INSTALL-install} ${RUMP}/lib/libm.a ${RUMP}/lib/libpthread.a ${RUMP}/lib/libz.a ${OUTDIR}/lib
 ${INSTALL-install} ${RUMP}/lib/*.o ${OUTDIR}/lib
 ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 # permissions set wrong
