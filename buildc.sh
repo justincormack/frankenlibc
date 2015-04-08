@@ -308,7 +308,7 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	${MAKE} OS=${OS} -C tools
 
 # userspace libraries to build frm NetBSD base
-USER_LIBS="m pthread z"
+USER_LIBS="m pthread z crypt util"
 NETBSDLIBS="${RUMPSRC}/lib/libc"
 for f in ${USER_LIBS}
 do
