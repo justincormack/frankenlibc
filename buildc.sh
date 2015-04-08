@@ -307,8 +307,13 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	RUMP="${RUMP}" \
 	${MAKE} OS=${OS} -C tools
 
-# for now just build libc
-NETBSDLIBS="${RUMPSRC}/lib/libc ${RUMPSRC}/lib/libm ${RUMPSRC}/lib/libpthread ${RUMPSRC}/lib/libz"
+# userspace libraries to build frm NetBSD base
+USER_LIBS="m pthread z"
+NETBSDLIBS="${RUMPSRC}/lib/libc"
+for f in ${USER_LIBS}
+do
+	appendvar NETBSDLIBS "${RUMPSRC}/lib/lib${f}"
+done
 
 RUMPMAKE=${RUMPOBJ}/tooldir/rumpmake
 
@@ -397,7 +402,13 @@ rm -rf ${OUTDIR}
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
 rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
 ${INSTALL-install} ${RUMP}/bin/rumprun ${OUTDIR}/bin
-${INSTALL-install} ${RUMP}/lib/libm.a ${RUMP}/lib/libpthread.a ${RUMP}/lib/libz.a ${OUTDIR}/lib
+(
+	cd ${RUMP}/lib
+	for f in ${USER_LIBS}
+	do
+		${INSTALL-install} ${RUMP}/lib/lib${f}.a ${OUTDIR}/lib
+	done
+)
 ${INSTALL-install} ${RUMP}/lib/*.o ${OUTDIR}/lib
 ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 # permissions set wrong
