@@ -54,4 +54,5 @@ __franken_swapcontext:
 	lw      $4, 104($5)
 	li      $2, 0
 
-	jr      $ra
+	move	$t9, $ra
+	jr	$ra
