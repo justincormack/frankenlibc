@@ -13,6 +13,7 @@ __franken_swapcontext:
 	sw      $23, 36($4)
 	sw      $30, 40($4)
 	sw      $28, 44($4)
+#ifdef __mips_hard_float
 	swc1    $20, 56($4)
 	swc1    $21, 60($4)
 	swc1    $22, 64($4)
@@ -38,6 +39,7 @@ __franken_swapcontext:
 	lwc1    $29, 92($5)
 	lwc1    $30, 96($5)
 	lwc1    $31, 100($5)
+#endif
 	lw      $ra,  0($5)
 	lw      $sp,  4($5)
 	lw      $16,  8($5)
