@@ -6,7 +6,7 @@ makecontext(ucontext_t *ucp, void (*fn)(void), int argc, void *arg)
 {
 	unsigned long stack = (unsigned long) ucp->uc_stack.ss_sp;
 	unsigned long stack_size = ucp->uc_stack.ss_size;
-	register int gs __asm__ ("$28");
+	register long gs __asm__ ("$28");
 
 	if (argc != 1) abort();
 
