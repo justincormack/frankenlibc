@@ -35,8 +35,8 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt1.o:		crt1.S
-				$(COMPILE.S) -o $@ crt1.S
+$(CRTDIR)/crt1.o:		crt1.c
+				$(COMPILE.c) -o $@ crt1.c
 
 $(CRTDIR)/Scrt1.o:		$(CRTDIR)/crt1.o
 				ln -f $(CRTDIR)/crt1.o $@
