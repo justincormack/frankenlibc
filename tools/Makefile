@@ -1,15 +1,15 @@
 COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
-OS?=linux
 RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/tools
 RUMP?=$(RUMPOBJ)/rump
 BINDIR=$(RUMP)/bin
 OUT=$(BINDIR)/rumprun
-OBJ=$(OBJDIR)/rumprun.o $(OBJDIR)/${OS}.o
+OBJ=$(OBJDIR)/rumprun.o
 INC=rumprun.h
 DEPS=$(INC) $(OBJDIR) $(BINDIR)
+PLATFORMS=freebsd linux netbsd qemu-arm
 
-default:		$(OS)
+default:		linux
 
 $(OBJDIR):		
 			mkdir -p $(OBJDIR)
@@ -29,18 +29,18 @@ $(OBJDIR)/netbsd.o:	netbsd.c $(DEPS)
 $(OBJDIR)/freebsd.o:	freebsd.c $(DEPS)
 			$(COMPILE.c) -o $@ freebsd.c
 
-linux:			$(OBJ)
-			$(CC) $(LDFLAGS) $(LDSTATIC) $(OBJ) -o $(BINDIR)/rumprun $(LDLIBS)
+linux:			$(OBJ) $(OBJDIR)/linux.o
+			$(CC) $(LDFLAGS) $(LDSTATIC) $(OBJ) $(OBJDIR)/linux.o -o $(BINDIR)/rumprun $(LDLIBS)
 
-freebsd:		$(OBJ)
-			$(CC) $(LDFLAGS) $(LDSTATIC) $(OBJ) -o $(BINDIR)/rumprun
+freebsd:		$(OBJ) $(OBJDIR)/freebsd.o
+			$(CC) $(LDFLAGS) $(LDSTATIC) $(OBJ) $(OBJDIR)/freebsd.o -o $(BINDIR)/rumprun
 
-netbsd:			$(OBJ)
-			$(CC) $(LDFLAGS) $(LDSTATIC) $(OBJ) -o $(BINDIR)/rumprun
+netbsd:			$(OBJ) $(OBJDIR)/netbsd.o
+			$(CC) $(LDFLAGS) $(LDSTATIC) $(OBJ) $(OBJDIR)/netbsd.o -o $(BINDIR)/rumprun
 
 qemu-arm:		qemu-arm.sh
 			cp qemu-arm.sh $(OUT)
 
-.PHONY:			clean linux netbsd freebsd
+.PHONY:			clean $(PLATFORMS)
 clean:		
 			rm -f $(OUT) $(OBJDIR)/*.o

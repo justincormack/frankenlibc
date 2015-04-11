@@ -305,7 +305,7 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	LDLIBS="${LDLIBS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
-	${MAKE} OS=${OS} -C tools
+	${MAKE} ${OS} -C tools
 
 # userspace libraries to build frm NetBSD base
 USER_LIBS="m pthread z crypt util"
