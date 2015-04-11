@@ -7,12 +7,15 @@ BINDIR=$(RUMP)/bin
 OUT=$(BINDIR)/rumprun
 OBJ=$(OBJDIR)/rumprun.o $(OBJDIR)/${OS}.o
 INC=rumprun.h
-DEPS=$(INC) $(OBJDIR)
+DEPS=$(INC) $(OBJDIR) $(BINDIR)
 
 default:		$(OS)
 
 $(OBJDIR):		
 			mkdir -p $(OBJDIR)
+
+$(BINDIR):
+			mkdir -p $(BINDIR)
 
 $(OBJDIR)/rumprun.o:	rumprun.c $(DEPS)
 			$(COMPILE.c) -o $@ rumprun.c

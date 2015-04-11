@@ -9,10 +9,6 @@
 
 #include "rumprun.h"
 
-/* this will develop into full wrapper */
-
-/* currently just open files; will understand some special files too */
-
 extern char **environ;
 
 static void
@@ -56,6 +52,8 @@ main(int argc, char **argv)
 	fds[2].flags = O_WRONLY;
 	fds[2].mode = 0;
 
+	/* accept more existing fds */
+
 	for (i = 1; i < argc; i++) {
 		char *arg = argv[i];
 
@@ -78,35 +76,15 @@ main(int argc, char **argv)
 			i++;
 			break;			
 		}
-		if (strncmp(arg, "console:", 8) == 0) {
-			fd = open(&arg[8], O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
-			if (fd == -1) {
-				perror("console open");
-				exit(1);
-			}
-			ret = dup2(fd, 1);
-			if (ret == -1) {
-				perror("dup2");
-				exit(1);
-			}
-			ret = dup2(fd, 2);
-			if (ret == -1) {
-				perror("dup2");
-				exit(1);
-			}
-			close(fd);
-			fd = open("/dev/null", O_RDONLY);
-			if (ret == -1) {
-				perror("open /dev/null");
-				exit(1);
-			}
-			ret = dup2(fd, 0);
-			if (ret == -1) {
-				perror("dup2");
-				exit(1);
-			}
-			close(fd);
-			continue;
+		if (strchr(arg, ':')) {
+			char *colon = strchr(arg, ':');
+			char *pre;
+
+			pre = strndup(arg, colon - arg);
+			fd = colonopen(pre, &colon[1]);
+			free(pre);
+			if (fd == -1)
+				continue;
 		}
 		if (strncmp(arg, "/dev/tap", 8) == 0) {
 			fd = tapopen(arg);
@@ -158,4 +136,46 @@ main(int argc, char **argv)
 	}
 
 	return 0;	
+}
+
+int
+colonopen(char *pre, char *post)
+{
+	int fd, ret;
+
+	/* open file as console for writing, use /dev/null as input */
+	if (strcmp(pre, "console") == 0) {
+		fd = open(post, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+		if (fd == -1) {
+			perror("console open");
+			exit(1);
+		}
+		ret = dup2(fd, 1);
+		if (ret == -1) {
+			perror("dup2");
+			exit(1);
+		}
+		ret = dup2(fd, 2);
+		if (ret == -1) {
+			perror("dup2");
+			exit(1);
+		}
+		close(fd);
+		fd = open("/dev/null", O_RDONLY);
+		if (ret == -1) {
+			perror("open /dev/null");
+			exit(1);
+		}
+		ret = dup2(fd, 0);
+		if (ret == -1) {
+			perror("dup2");
+			exit(1);
+		}
+		close(fd);
+		return -1;
+	}
+
+	/* call OS specific handler */
+
+	return -1;
 }
