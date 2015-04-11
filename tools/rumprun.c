@@ -81,17 +81,10 @@ main(int argc, char **argv)
 			char *pre;
 
 			pre = strndup(arg, colon - arg);
-			fd = colonopen(pre, &colon[1]);
+			fd = colon_open(pre, &colon[1]);
 			free(pre);
 			if (fd == -1)
 				continue;
-		}
-		if (strncmp(arg, "/dev/tap", 8) == 0) {
-			fd = tapopen(arg);
-			if (fd == -1) {
-				perror("tapopen");
-				exit(1);
-			}
 		} else {
 			fd = open(arg, access);
 			if (fd == -1) {
@@ -139,7 +132,7 @@ main(int argc, char **argv)
 }
 
 int
-colonopen(char *pre, char *post)
+colon_open(char *pre, char *post)
 {
 	int fd, ret;
 

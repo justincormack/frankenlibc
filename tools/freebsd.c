@@ -113,8 +113,9 @@ filter_load_exec(char *program, char **argv, char **envp)
 #endif /* CAPSICUM */
 
 int
-tapopen(char *name)
+os_open(char *pre, char *post)
 {
 
-	return open(name, O_RDWR);
+	fprintf(stderr, "platform does not support %s:%s\n", pre, post);
+	exit(1);
 }

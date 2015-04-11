@@ -233,21 +233,27 @@ filter_load_exec(char *program, char **argv, char **envp)
 #endif /* SECCOMP */
 
 int
-tapopen(char *name)
+os_open(char *pre, char *post)
 {
-	struct ifreq ifr;
-	int fd;
 
-	/* strip /dev/ from ifname */
-	strncpy(ifr.ifr_name, &name[5], IFNAMSIZ);
-	ifr.ifr_flags = IFF_TAP;
+	/* eg /dev/net/tun:tap0 for tap0 */
+	if (strcmp(pre, "/dev/net/tun") == 0) {
+		struct ifreq ifr;
+		int fd;
 
-	fd = open("/dev/net/tun", O_RDWR);
-	if (fd == -1)
-		return -1;
+		strncpy(ifr.ifr_name, post, IFNAMSIZ);
+		ifr.ifr_flags = IFF_TAP;
 
-	if (ioctl(fd, TUNSETIFF, &ifr) == -1)
-		return -1;
+		fd = open("/dev/net/tun", O_RDWR);
+		if (fd == -1)
+			return -1;
 
-	return fd;
+		if (ioctl(fd, TUNSETIFF, &ifr) == -1)
+			return -1;
+
+		return fd;
+	}
+
+	fprintf(stderr, "platform does not support %s:%s\n", pre, post);
+	exit(1);
 }
