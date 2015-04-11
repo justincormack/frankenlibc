@@ -417,7 +417,9 @@ cp -a ${RUMP}/include/* ${OUTDIR}/include
 
 # create toolchain wrappers
 # select these based on compiler defs
-UNDEF="-D__NetBSD__ -D__RUMPRUN__ -Ulinux -U__linux -U__linux__ -U__gnu_linux__ -U__FreeBSD__"
+UNDEF="-D__NetBSD__ -D__RUMPRUN__"
+[ ${OS} == "linux" ] && appendvar UNDEF "-Ulinux -U__linux -U__linux__ -U__gnu_linux__"
+[ ${OS} == "freebsd" ] && appendvar UNDEF "-U__FreeBSD__"
 if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
 	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-clang) | sed -e 's/-clang//' -e 's/--/-rumprun-/')
