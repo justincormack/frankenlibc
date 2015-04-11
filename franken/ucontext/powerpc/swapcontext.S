@@ -95,9 +95,9 @@ __franken_swapcontext:
 	lfd 31,224(4)
 
 	# load return value
-	lfd 3,232(4)
+	lwz 3,232(4)
 	# next time return will be zero
 	li 5, 0
-	stfd 5,232(4)
+	stw 5,232(4)
 	# 5) return
 	blr
