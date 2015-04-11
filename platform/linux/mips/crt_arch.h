@@ -7,14 +7,13 @@ __asm__("\n\
 .type   _start, @function\n\
 __start:\n\
 _start:\n\
-	bal 1f \n\
-	move $fp, $0 \n\
-2:	.gpword 2b \n\
-1:	lw $gp, 0($ra) \n\
-	subu $gp, $ra, $gp \n\
+	subu    $fp, $fp, $fp \n\
+	lui     $gp, %hi(_gp) \n\
+	addi    $gp, %lo(_gp) \n\
 	move $4, $sp \n\
 	subu $sp, $sp, 16 \n\
 	and $sp, $sp, -8 \n\
+	addi $sp, $sp, -4*6 \n\
 	lw $25, %call16(__cstart)($gp) \n\
 	jalr $25 \n\
 	nop \n\
