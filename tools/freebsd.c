@@ -29,10 +29,18 @@ filter_fd(int fd, int flags, mode_t mode)
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {
-	int ret;
+	int ret, pfd;
 
-	if (execve(program, argv, envp) == -1) {
-		perror("execve");
+	pfd = open(program, O_EXEC | O_CLOEXEC);
+	if (pfd == -1) {
+		perror("open");
+		exit(1);
+	}
+
+	chdir("/");
+
+	if (fexecve(pfd, argv, envp) == -1) {
+		perror("fexecve");
 		exit(1);
 	}
 
@@ -102,6 +110,8 @@ filter_fd(int fd, int flags, mode_t mode)
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {
+
+	chdir("/");
 
 	if (fexecve(pfd, argv, envp) == -1) {
 		perror("fexecve");

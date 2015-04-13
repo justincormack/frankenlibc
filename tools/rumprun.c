@@ -129,8 +129,6 @@ main(int argc, char **argv)
 		}
 	}
 
-	ret = chdir("/");
-
 	ret = filter_load_exec(program, pargs, environ);
 	if (ret < 0) {
 		fprintf(stderr, "filter_load_exec failed\n");

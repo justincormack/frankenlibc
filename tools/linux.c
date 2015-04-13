@@ -205,6 +205,8 @@ filter_load_exec(char *program, char **argv, char **envp)
 	/* lock down execveat to just the one we need to exec program */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 2
 		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A5(SCMP_CMP_EQ, AT_EMPTY_PATH));
+	/* cd / */
+	chdir("/");
 #endif
 	if (ret < 0) return ret;
 
