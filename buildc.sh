@@ -307,7 +307,14 @@ CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
 	RUMP="${RUMP}" \
 	${MAKE} ${OS} -C tools
 
-# userspace libraries to build frm NetBSD base
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+	LDFLAGS="${EXTRA_LDFLAGS}" \
+	CPPFLAGS="${EXTRA_CPPFLAGS} ${RUMPUSER_FLAGS}" \
+	RUMPOBJ="${RUMPOBJ}" \
+	RUMP="${RUMP}" \
+	${MAKE} -C libvirtif
+
+# userspace libraries to build from NetBSD base
 USER_LIBS="m pthread z crypt util"
 NETBSDLIBS="${RUMPSRC}/lib/libc"
 for f in ${USER_LIBS}
@@ -390,7 +397,6 @@ mkdir -p ${RUMPOBJ}/explode/platform
 	${CC-cc} ${EXTRA_LDFLAGS} -nostdlib -Wl,-r *.o -o rumpkernel.o
 
 	cd ${RUMPOBJ}/explode/rumpuser
-	${AR-ar} x ${RUMP}/lib/librump.a
 	${AR-ar} x ${RUMP}/lib/librumpuser.a
 
 	cd ${RUMPOBJ}/explode
