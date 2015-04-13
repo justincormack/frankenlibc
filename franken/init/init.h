@@ -16,3 +16,4 @@ struct __fdtable {
 extern struct __fdtable __franken_fd[MAXFD];
 
 void __franken_fdinit(void);
+void __franken_autoconf(void);

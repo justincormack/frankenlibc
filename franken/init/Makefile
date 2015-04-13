@@ -8,7 +8,7 @@ RUMP?=$(RUMPOBJ)/rump
 INCLUDES=-I../include -I../../platform/include -I. -I$(RUMP)/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
-DEPS=$(OBJDIR)
+DEPS=$(OBJDIR) init.h
 
 default:			$(OBJ)
 

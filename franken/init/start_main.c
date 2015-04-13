@@ -20,6 +20,7 @@ void _libc_init(void) __attribute__((weak));
 void _libc_init() {}
 
 void __franken_fdinit(void);
+void __franken_autoconf(void);
 
 int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
@@ -82,6 +83,8 @@ __franken_start_main(int(*main)(int,char **,char **), int argc, char **argv, cha
 
 	/* see if we have any devices to init */
 	__franken_fdinit();
+	/* autoconfigure what we can */
+	__franken_autoconf();
 
 	exit(main(argc, argv, envp));
 	return 0;

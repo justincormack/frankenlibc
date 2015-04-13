@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 
-#include "fdinit.h"
+#include "init.h"
 
 enum rump_etfs_type {
 	RUMP_ETFS_REG,
@@ -18,9 +18,25 @@ enum rump_etfs_type {
 };
 
 int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type) __attribute__ ((weak));
+int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
+int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
 
 int
 rump_pub_etfs_register(const char *key, const char *hostpath, enum rump_etfs_type ftype)
+{
+
+	return 0;
+}
+
+int
+rump_pub_netconfig_ifcreate(const char *key)
+{
+
+	return 0;
+}
+
+int
+rump_pub_netconfig_dhcp_ipv4_oneshot(const char *key)
 {
 
 	return 0;
@@ -88,10 +104,28 @@ __franken_fdinit()
 			rump_pub_etfs_register(key, &key[7], RUMP_ETFS_BLK);
 			break;
 		case S_IFSOCK:
-			/* XXX probably a tap device for network */
+			key = mkkey(__franken_fd[fd].key, "virtif", fd);
+			rump_pub_netconfig_ifcreate(key);
+			rump_pub_netconfig_dhcp_ipv4_oneshot(key);
 			break;
 		default:
 			break;
 		}
 	}
+}
+
+int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
+#define CTL_NET         4
+#define CTL_NET_INET6   24
+#define IPV6CTL_ACCEPT_RTADV    12
+
+void
+__franken_autoconf()
+{
+	const int sc[4] = {CTL_NET, CTL_NET_INET6, 41, IPV6CTL_ACCEPT_RTADV};
+	int set = 1;
+	size_t setlen = sizeof(int);
+
+	/* enable ipv6 autoconf */
+	rump___sysimpl___sysctl(sc, 4, NULL, NULL, &set, setlen);
 }

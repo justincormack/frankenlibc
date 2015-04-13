@@ -14,7 +14,7 @@
 
 #include "rumpuser_int.h"
 
-#include "fdinit.h"
+#include "init.h"
 
 int
 rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)
