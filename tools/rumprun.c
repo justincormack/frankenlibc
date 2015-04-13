@@ -113,6 +113,15 @@ main(int argc, char **argv)
 	}
 
 	for (i = 0; i < nfds; i++) {
+		int fl;
+
+		fl = fcntl(fd, F_GETFL);
+		if (fl == -1) {
+			perror("fcntl");
+			abort();
+		}
+		ret = fcntl(fd, F_SETFL, fl | O_NONBLOCK);
+
 		ret = filter_fd(fds[i].fd, fds[i].flags, fds[i].mode);
 		if (ret < 0) {
 			fprintf(stderr, "filter_fd failed\n");
