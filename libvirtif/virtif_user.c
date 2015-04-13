@@ -71,7 +71,7 @@ rcvthread(void *arg)
 		nn = read(viu->viu_fd,
 			viu->viu_rcvbuf, sizeof(viu->viu_rcvbuf));
 		if (nn == -1 && errno == EAGAIN) {
-			yield(); /* XXX pass fd? */
+			schedule(); /* XXX pass fd? */
 			continue;
 		}
 		if (nn == -1) {
