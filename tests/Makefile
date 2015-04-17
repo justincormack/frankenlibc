@@ -15,7 +15,6 @@ test:			run
 
 run:			$(OBJ)
 			RUMP_VERBOSE=1 ${BINDIR}/rumprun $(OBJDIR)/hello
-			${BINDIR}/rumprun $(OBJDIR)/ctor
 
 $(OBJDIR):		
 			mkdir -p $(OBJDIR)
