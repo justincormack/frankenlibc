@@ -1,3 +1,14 @@
+	.section ".note.ABI-tag", "a"
+	.p2align 2
+	.long 1f - 0f
+	.long 3f - 2f
+	.long  1
+0:	.asciz "FreeBSD"
+1:	.p2align 2
+2:	.long 900000
+3:	.p2align 2
+	.text
+
 #if defined(__x86_64__)
 #include "x86_64/crt1.S"
 #elif defined(__i386__)
