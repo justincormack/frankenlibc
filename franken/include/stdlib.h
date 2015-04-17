@@ -8,6 +8,7 @@
 
 void abort(void) __attribute__ ((noreturn));
 int atoi(const char *);
+int atexit(void (*)(void));
 void *calloc(size_t, size_t);
 void exit(int) __attribute__ ((noreturn));
 void _Exit(int) __attribute__ ((noreturn));

@@ -29,21 +29,18 @@ extern void (*const __init_array_end)() __attribute__((weak));
 extern void (*const __fini_array_start)() __attribute__((weak));
 extern void (*const __fini_array_end)() __attribute__((weak));
 
-void _exit(int) __attribute__ ((noreturn));
+int atexit(void (*)(void));
+void exit(int) __attribute__ ((noreturn));
+static void finifn(void);
 
-/* XXX if running NetBSD libc, finalizers should be set via atexit */
-void exit(int) __attribute__ ((noreturn)) __attribute__((weak));
-
-void
-exit(int v)
+static void
+finifn()
 {
 	uintptr_t a = (uintptr_t)&__fini_array_end;
 
 	for (; a>(uintptr_t)&__fini_array_start; a -= sizeof(void(*)()))
 		(*(void (**)())(a - sizeof(void(*)())))();
 	_fini();
-
-	_exit(v);
 }
 
 int
@@ -80,6 +77,8 @@ __franken_start_main(int(*main)(int,char **,char **), int argc, char **argv, cha
 	__franken_fdinit();
 	/* autoconfigure what we can */
 	__franken_autoconf();
+
+	atexit(finifn);
 
 	exit(main(argc, argv, envp));
 	return 0;

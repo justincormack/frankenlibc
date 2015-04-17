@@ -5,6 +5,7 @@ OBJDIR=$(RUMPOBJ)/stublibc
 LIB=$(OBJDIR)/libc.a
 OBJ+=$(OBJDIR)/abort.o
 OBJ+=$(OBJDIR)/assert.o $(OBJDIR)/atoi.o
+OBJ+=$(OBJDIR)/exit.o
 OBJ+=$(OBJDIR)/getenv.o
 OBJ+=$(OBJDIR)/memcpy.o $(OBJDIR)/memset.o
 OBJ+=$(OBJDIR)/strchr.o $(OBJDIR)/strcmp.o
@@ -37,6 +38,9 @@ $(OBJDIR)/assert.o:		assert.c $(DEPS)
 
 $(OBJDIR)/atoi.o:		atoi.c $(DEPS)
 				$(COMPILE.c) -o $@ atoi.c
+
+$(OBJDIR)/exit.o:		exit.c $(DEPS)
+				$(COMPILE.c) -o $@ exit.c
 
 $(OBJDIR)/getenv.o:		getenv.c $(DEPS)
 				$(COMPILE.c) -o $@ getenv.c
