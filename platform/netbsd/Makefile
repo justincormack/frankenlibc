@@ -2,7 +2,6 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/platform
-CRTOBJDIR=$(RUMPOBJ)/crt
 RUMP?=$(RUMPOBJ)/rump
 CRTDIR=$(RUMP)/lib
 OBJ=$(CRTDIR)/crt0.o
@@ -28,16 +27,7 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTOBJDIR):			
-				mkdir -p $(CRTOBJDIR)
-
-$(CRTDIR)/crt0.o:		$(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o $(CRTDIR)
-				$(CC) $(CFLAGS) -nostdlib -Wl,-r $(CRTOBJDIR)/start.o $(CRTOBJDIR)/crt0.o -o $@
-
-$(CRTOBJDIR)/start.o:		start.S $(CRTOBJDIR)
-				$(COMPILE.S) -o $@ start.S
-
-$(CRTOBJDIR)/crt0.o:		crt0.S x86_64/crt0.S i386/crt0.S $(CRTOBJDIR)
+$(CRTDIR)/crt0.o:		crt0.S x86_64/crt0.S i386/crt0.S $(CRTOBJDIR)
 				$(COMPILE.S) -o $@ crt0.S
 
 $(OBJDIR)/clock_getres.o:	clock_getres.S $(HEADERS)
@@ -105,4 +95,4 @@ $(OBJDIR)/write.o:		write.S $(HEADERS)
 
 .PHONY:				clean
 clean:		
-				rm -f rm -f $(OBJDIR)/*.o $(CRTDIR)/*.o $(CRTOBJDIR)/*.o
+				rm -f rm -f $(OBJDIR)/*.o $(CRTDIR)/*.o
