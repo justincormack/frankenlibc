@@ -1,13 +1,9 @@
 #include <stdint.h>
 
-void rump_boot_setsigmodel(int) __attribute__((weak));
-void rump_boot_setsigmodel(int m) {}
-int rump_init(void) __attribute__((weak));
-int rump_init() {return 0;}
-int rump_pub_lwproc_rfork(int) __attribute__((weak));
-int rump_pub_lwproc_rfork(int f) {return 0;}
-void rump_pub_lwproc_releaselwp(void) __attribute__((weak));
-void rump_pub_lwproc_releaselwp() {}
+void rump_boot_setsigmodel(int);
+int rump_init(void);
+int rump_pub_lwproc_rfork(int);
+void rump_pub_lwproc_releaselwp(void);
 
 #define RUMP_SIGMODEL_IGNORE 1
 
@@ -21,7 +17,6 @@ void _libc_init() {}
 
 void __franken_fdinit(void);
 void __franken_autoconf(void);
-
 int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 void _init(void) __attribute__ ((weak));
