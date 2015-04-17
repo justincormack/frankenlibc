@@ -13,6 +13,7 @@ __asm__ ("\
 	.long 0 \n\
 	.long 0 \n\
 3:	.p2align 2 \n\
+	.text \n\
 ");
 
 #include "crt_arch.h"
