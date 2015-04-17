@@ -8,6 +8,7 @@
 	.long   600000000       /* requires NetBSD 6.0 */
 	.previous
 	.p2align 2
+	.text
 
 #if defined(__x86_64__)
 #include "x86_64/crt0.S"
