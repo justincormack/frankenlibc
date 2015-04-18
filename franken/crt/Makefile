@@ -3,7 +3,6 @@ COMPILE.S?=$(CC) -c $(CPPFLAGS) $(ASFLAGS)
 RUMPOBJ?=../../rumpobj
 RUMP?=$(RUMPOBJ)/rump
 OBJDIR=$(RUMP)/lib
-OBJ=$(OBJDIR)/crti.o $(OBJDIR)/crtn.o
 OBJ+=$(OBJDIR)/crtbegin.o $(OBJDIR)/crtbeginT.o
 OBJ+=$(OBJDIR)/crtend.o
 CPPFLAGS+=-nostdinc
@@ -13,12 +12,6 @@ default:		$(OBJDIR) $(OBJ)
 
 $(OBJDIR):		
 			mkdir -p $(OBJDIR)
-
-$(OBJDIR)/crti.o:	crti.c
-			$(COMPILE.c) -o $@ crti.c
-
-$(OBJDIR)/crtn.o:	crtn.c
-			$(COMPILE.c) -o $@ crtn.c
 
 $(OBJDIR)/crtbegin.o:	crtbegin.c
 			$(COMPILE.c) -o $@ crtbegin.c

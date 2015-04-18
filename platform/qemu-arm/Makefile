@@ -5,6 +5,7 @@ OBJDIR=$(RUMPOBJ)/platform
 RUMP?=$(RUMPOBJ)/rump
 CRTDIR=$(RUMP)/lib
 CRTFILES=$(CRTDIR)/startup.o $(CRTDIR)/crt0.o
+CRTFILES+=$(CRTDIR)/crti.o $(CRTDIR)/crtn.o
 OBJ=$(CRTFILES)
 OBJ+=$(OBJDIR)/clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o
@@ -38,6 +39,12 @@ $(CRTDIR)/startup.o:		startup.s $(HEADERS)
 
 $(CRTDIR)/crt0.o:		crt0.c $(HEADERS)
 				$(COMPILE.c) -o $@ crt0.c
+
+$(CRTDIR)/crti.o:		crti.c
+				$(COMPILE.c) -o $@ crti.c
+
+$(CRTDIR)/crtn.o:		crtn.c
+				$(COMPILE.c) -o $@ crtn.c
 
 $(OBJDIR)/clock_getres.o:	clock_getres.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_getres.c
