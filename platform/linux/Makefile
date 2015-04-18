@@ -38,26 +38,26 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt1.o:		crt1.c
+$(CRTDIR)/crt1.o:		crt1.c $(CRTDIR)
 				$(COMPILE.c) -o $@ crt1.c
 
 $(CRTDIR)/Scrt1.o:		$(CRTDIR)/crt1.o
 				ln -f $(CRTDIR)/crt1.o $@
 
-$(CRTDIR)/crti.o:		crti.c
-				$(COMPILE.c) -o $@ crti.c
+$(CRTDIR)/crti.o:		$(CRTDIR)
+				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtn.o:		crtn.c
-				$(COMPILE.c) -o $@ crtn.c
+$(CRTDIR)/crtn.o:		$(CRTDIR)
+				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtbegin.o:		crtbegin.c
-				$(COMPILE.c) -o $@ crtbegin.c
+$(CRTDIR)/crtbegin.o:		$(CRTDIR)
+				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtbeginT.o:		crtbeginT.c
-				$(COMPILE.c) -o $@ crtbeginT.c
+$(CRTDIR)/crtbeginT.o:		$(CRTDIR)
+				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtend.o:		crtend.c
-				$(COMPILE.c) -o $@ crtend.c
+$(CRTDIR)/crtend.o:		$(CRTDIR)
+				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
 $(OBJDIR)/clock_getres.o:	clock_getres.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_getres.c
