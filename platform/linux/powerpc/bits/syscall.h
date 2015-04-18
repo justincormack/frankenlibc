@@ -194,7 +194,7 @@
 #define __NR_vfork                  189
 #define __NR_ugetrlimit             190
 #define __NR_readahead              191
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define __NR_mmap2                  192
 #define __NR_truncate64             193
 #define __NR_ftruncate64            194
@@ -208,7 +208,7 @@
 #define __NR_multiplexer            201
 #define __NR_getdents64             202
 #define __NR_pivot_root             203
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define __NR_fcntl64                204
 #endif
 #define __NR_madvise                205
@@ -231,7 +231,7 @@
 #define __NR_sched_setaffinity      222
 #define __NR_sched_getaffinity      223
 #define __NR_tuxcall                225
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define __NR_sendfile64             226
 #endif
 #define __NR_io_setup               227
@@ -261,7 +261,7 @@
 #define __NR_utimes                 251
 #define __NR_statfs64               252
 #define __NR_fstatfs64              253
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define __NR_fadvise64_64           254
 #endif
 #define __NR_rtas		255
@@ -299,7 +299,7 @@
 #define __NR_mknodat		288
 #define __NR_fchownat		289
 #define __NR_futimesat		290
-#if defined(__PPC64) && !defined(__ABI32)
+#if defined(__PPC64__) && !defined(__ABI32)
 #define __NR_newfstatat		291
 #else
 #define __NR_fstatat64		291
@@ -576,7 +576,7 @@
 #define SYS_vfork                  189
 #define SYS_ugetrlimit             190
 #define SYS_readahead              191
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define SYS_mmap2                  192
 #define SYS_truncate64             193
 #define SYS_ftruncate64            194
@@ -590,7 +590,7 @@
 #define SYS_multiplexer            201
 #define SYS_getdents64             202
 #define SYS_pivot_root             203
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define SYS_fcntl64                204
 #endif
 #define SYS_madvise                205
@@ -613,7 +613,7 @@
 #define SYS_sched_setaffinity      222
 #define SYS_sched_getaffinity      223
 #define SYS_tuxcall                225
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define SYS_sendfile64             226
 #endif
 #define SYS_io_setup               227
@@ -643,7 +643,7 @@
 #define SYS_utimes                 251
 #define SYS_statfs64               252
 #define SYS_fstatfs64              253
-#if !defined(__PPC64) || defined(__ABI32)
+#if !defined(__PPC64__) || defined(__ABI32)
 #define SYS_fadvise64_64           254
 #endif
 #define SYS_rtas		255
@@ -681,7 +681,7 @@
 #define SYS_mknodat		288
 #define SYS_fchownat		289
 #define SYS_futimesat		290
-#if defined(__PPC64) && !defined(__ABI32)
+#if defined(__PPC64__) && !defined(__ABI32)
 #define SYS_newfstatat		291
 #else
 #define SYS_fstatat64		291
