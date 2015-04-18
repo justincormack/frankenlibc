@@ -7,5 +7,5 @@ int
 _lwp_kill(lwpid_t lwp, int sig)
 {
 
-	__platform_kill(0, sig);
+	return __platform_kill(0, sig);
 }
