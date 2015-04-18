@@ -1,4 +1,4 @@
-DIRS=libc crt lwp stubs thread init ucontext malloc
+DIRS=libc lwp stubs thread init ucontext malloc
 RUMPOBJ?=../rumpobj
 RUMP?=$(RUMPOBJ)/rump
 LIBDIR=$(RUMP)/lib

@@ -3,6 +3,7 @@
 
 #include "freebsd.h"
 
+int __ioctl(int, unsigned long, ...);
 int __fstat(int, struct freebsd_stat *);
 
 int

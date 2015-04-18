@@ -5,7 +5,7 @@ OBJDIR=$(RUMPOBJ)/platform
 RUMP?=$(RUMPOBJ)/rump
 CRTDIR=$(RUMP)/lib
 OBJ=$(CRTDIR)/crt1.o
-OBJ+=$(CRTDIR)/crti.o $(CRTDIR)/crtn.o
+OBJ+=$(CRTDIR)/crti.o
 OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/__clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o $(OBJDIR)/__clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o
@@ -34,11 +34,8 @@ $(CRTDIR):
 $(CRTDIR)/crt1.o:		crt1.S x86_64/crt1.S i386/crt1.S $(CRTOBJDIR)
 				$(COMPILE.S) -o $@ crt1.S
 
-$(CRTDIR)/crti.o:		crti.S
-				$(COMPILE.S) -o $@ crti.S
-
-$(CRTDIR)/crtn.o:		crtn.S
-				$(COMPILE.S) -o $@ crtn.S
+$(CRTDIR)/crti.o:
+				./mkcrt.sh $(CRTDIR)
 
 $(OBJDIR)/__clock_getres.o:	__clock_getres.S $(HEADERS)
 				$(COMPILE.S) -o $@ __clock_getres.S
