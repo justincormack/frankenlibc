@@ -34,7 +34,7 @@ $(CRTDIR):
 $(CRTDIR)/crt1.o:		crt1.S x86_64/crt1.S i386/crt1.S $(CRTOBJDIR)
 				$(COMPILE.S) -o $@ crt1.S
 
-$(CRTDIR)/crti.o:
+$(CRTDIR)/crti.o:		$(CRTDIR)
 				./mkcrt.sh $(CRTDIR)
 
 $(OBJDIR)/__clock_getres.o:	__clock_getres.S $(HEADERS)
