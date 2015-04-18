@@ -4,6 +4,8 @@ OUTDIR?=../rump
 LIBDIR=$(OUTDIR)/lib
 BINDIR=$(OUTDIR)/bin
 INCDIR=$(OUTDIR)/include
+LDFLAGS+=-static
+CFLAGS+=-g
 
 DEPS=$(OBJDIR) $(LIBDIR)/libc.a
 
@@ -21,10 +23,10 @@ $(OBJDIR):
 			mkdir -p $(OBJDIR)
 
 $(OBJDIR)/ctor:		ctor.c $(DEPS)
-			${CC} -o $@ ctor.c
+			${CC} ${CFLAGS} ${LDFLAGS} -o $@ ctor.c
 
 $(OBJDIR)/hello:	hello.c $(DEPS)
-			${CC} -o $@ hello.c
+			${CC} ${CFLAGS} ${LDFLAGS} -o $@ hello.c
 
 .PHONY:			test clean
 clean:		

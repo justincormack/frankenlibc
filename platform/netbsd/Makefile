@@ -5,7 +5,9 @@ OBJDIR=$(RUMPOBJ)/platform
 RUMP?=$(RUMPOBJ)/rump
 CRTDIR=$(RUMP)/lib
 OBJ=$(CRTDIR)/crt0.o
-OBJ+=$(CRTDIR)/crti.o
+OBJ+=$(CRTDIR)/crti.o $(CRTDIR)/crtn.o
+OBJ+=$(CRTDIR)/crtbegin.o $(CRTDIR)/crtbeginT.o
+OBJ+=$(CRTDIR)/crtend.o
 OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
 OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/fsync.o
@@ -31,8 +33,30 @@ $(CRTDIR):
 $(CRTDIR)/crt0.o:		crt0.S x86_64/crt0.S i386/crt0.S $(CRTOBJDIR)
 				$(COMPILE.S) -o $@ crt0.S
 
+CRT=printf "" | ${CC} ${CFLAGS} -v -x c - -static -o /dev/null 2>&1| grep crti.o | tr ' ' '\n'
+CRTI!=$(CRT) | grep crti.o
+CRTN!=$(CRT) | grep crtn.o
+CRTBEGIN!=$(CRT) | grep crtbegin.o || true
+CRTBEGINT!=$(CRT) | grep crtbeginT.o || true
+CRTEND!=$(CRT) | grep crtend.o
+
 $(CRTDIR)/crti.o:		$(CRTDIR)
-				./mkcrt.sh $(CRTDIR)
+				cp $(CRTI) $@
+				chmod u+w $@
+
+$(CRTDIR)/crtn.o:		$(CRTDIR)
+				cp $(CRTN) $@
+				chmod u+w $@
+
+$(CRTDIR)/crtbegin.o:		$(CRTDIR)
+				$(CRT) | grep crtbegin.o && cp $(CRTBEGIN) $@ && chmod u+w $@ || true
+
+$(CRTDIR)/crtbeginT.o:		$(CRTDIR)
+				$(CRT) | grep crtbeginT.o && cp $(CRTBEGINT) $@ && chmod u+w $@ || true
+
+$(CRTDIR)/crtend.o:		$(CRTDIR)
+				cp $(CRTEND) $@
+				chmod u+w $@
 
 $(OBJDIR)/clock_getres.o:	clock_getres.S $(HEADERS)
 				$(COMPILE.S) -o $@ clock_getres.S

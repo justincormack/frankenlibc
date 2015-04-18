@@ -456,7 +456,9 @@ else
 	COMPILER_FLAGS="$(echo ${COMPILER_FLAGS} | sed 's/--sysroot=[^ ]*//g')"
 	[ -f ${OUTDIR}/lib/crt0.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt0.o"
 	[ -f ${OUTDIR}/lib/crt1.o ] && appendvar STARTFILE "${OUTDIR}/lib/crt1.o"
-	appendvar STARTFILE "${OUTDIR}/lib/crti.o ${OUTDIR}/lib/crtbegin.o"
+	appendvar STARTFILE "${OUTDIR}/lib/crti.o"
+	[ -f ${OUTDIR}/lib/crtbegin.o ] && appendvar STARTFILE "${OUTDIR}/lib/crtbegin.o"
+	[ -f ${OUTDIR}/lib/crtbeginT.o ] && appendvar STARTFILE "${OUTDIR}/lib/crtbeginT.o"
 	ENDFILE="${OUTDIR}/lib/crtend.o ${OUTDIR}/lib/crtn.o"
 	cat tools/spec.in | sed \
 		-e "s#@SYSROOT@#${OUTDIR}#g" \

@@ -39,8 +39,8 @@ $(CRTDIR)/crt1.o:		crt1.S x86_64/crt1.S i386/crt1.S
 CRT=printf "" | ${CC} ${CFLAGS} -v -x c - -static -o /dev/null 2>&1| grep crti.o | tr ' ' '\n'
 CRTI!=$(CRT) | grep crti.o
 CRTN!=$(CRT) | grep crtn.o
-CRTBEGIN!=$(CRT) | grep crtbegin.o
-CRTBEGINT!=$(CRT) | grep crtbeginT.o
+CRTBEGIN!=$(CRT) | grep crtbegin.o || true
+CRTBEGINT!=$(CRT) | grep crtbeginT.o || true
 CRTEND!=$(CRT) | grep crtend.o
 
 $(CRTDIR)/crti.o:		$(CRTDIR)
