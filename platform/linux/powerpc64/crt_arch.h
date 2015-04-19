@@ -1,3 +1,7 @@
+#if _CALL_ELF == 2
+#error "powerpc64le elf ABI v2 not supported yet"
+#endif
+
 __asm__("\
 .text \n\
 	.global _start \n\
