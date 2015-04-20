@@ -1,9 +1,9 @@
 RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/tests
-OUTDIR?=../rump
-LIBDIR=$(OUTDIR)/lib
-BINDIR=$(OUTDIR)/bin
-INCDIR=$(OUTDIR)/include
+RUMPDIR?=../rump
+LIBDIR=$(RUMPDIR)/lib
+BINDIR=$(RUMPDIR)/bin
+INCDIR=$(RUMPDIR)/include
 LDFLAGS+=-static
 CFLAGS+=-g
 
