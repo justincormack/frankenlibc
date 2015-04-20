@@ -485,5 +485,5 @@ then
 	CC="${OUTDIR}/bin/${TOOL_PREFIX}-cc" \
 		RUMPOBJ="${RUMPOBJ}" \
 		OUTDIR="${OUTDIR}" \
-		${MAKE} OS=${OS} test
+		${MAKE} -C tests
 fi
