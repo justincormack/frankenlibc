@@ -141,7 +141,7 @@ static int is_runnable(struct thread *);
 static void set_runnable(struct thread *);
 static void clear_runnable(struct thread *);
 static void set_sched_hook(void (*)(void *, void *));
-static int wait(struct waithead *, uint64_t);
+static int wait(struct waithead *, int64_t);
 static void wakeup_one(struct waithead *);
 static void wakeup_all(struct waithead *);
 static struct thread *get_current(void);
@@ -372,7 +372,7 @@ join_thread(struct thread *joinable)
 	wake(joinable);
 }
 
-static void msleep(uint64_t millisecs)
+static void msleep(int64_t millisecs)
 {
 	struct thread *thread = get_current();
 
@@ -381,7 +381,7 @@ static void msleep(uint64_t millisecs)
 	schedule();
 }
 
-static void abssleep(uint64_t millisecs)
+static void abssleep(int64_t millisecs)
 {
 	struct thread *thread = get_current();
 
@@ -392,11 +392,11 @@ static void abssleep(uint64_t millisecs)
 
 /* XXX unused */
 /* like abssleep, except against realtime clock instead of monotonic clock */
-static int abssleep_real(uint64_t millisecs)
+static int abssleep_real(int64_t millisecs)
 {
 	struct thread *thread = get_current();
 	struct timespec ts;
-	uint64_t real_now;
+	int64_t real_now;
 	int rv;
 
 	clock_gettime(CLOCK_REALTIME, &ts);
@@ -415,7 +415,7 @@ static int abssleep_real(uint64_t millisecs)
 int
 clock_sleep(clockid_t clk, int64_t sec, long nsec)
 {
-	uint64_t msec;
+	int64_t msec;
 	int nlocks;
 
 	rumpkern_unsched(&nlocks, NULL);
@@ -506,17 +506,23 @@ init_mainthread(void *cookie)
 	return current_thread;
 }
 
+#define WAIT_NOTIMEOUT -1
+
 static int
-wait(struct waithead *wh, uint64_t msec)
+wait(struct waithead *wh, time_t msec)
 {
 	struct waiter w;
+	time_t wakeup;
 
 	w.who = get_current();
 	TAILQ_INSERT_TAIL(wh, &w, entries);
 	w.onlist = 1;
 	block(w.who);
-	if (msec)
+	if (msec == WAIT_NOTIMEOUT)
+		w.who->wakeup_time = -1;
+	else
 		w.who->wakeup_time = now() + msec;
+	clear_runnable(w.who);
 	schedule();
 
 	/* woken up by timeout? */
@@ -579,7 +585,7 @@ mutex_enter(struct rumpuser_mtx *mtx)
 	if (mutex_tryenter(mtx) != 0) {
 		rumpkern_unsched(&nlocks, NULL);
 		while (mutex_tryenter(mtx) != 0)
-			wait(&mtx->waiters, 0);
+			wait(&mtx->waiters, WAIT_NOTIMEOUT);
 		rumpkern_sched(nlocks, NULL);
 	}
 }
@@ -674,7 +680,7 @@ rw_enter(int lk, struct rumpuser_rw *rw)
 	if (rw_tryenter(lk, rw) != 0) {
 		rumpkern_unsched(&nlocks, NULL);
 		while (rw_tryenter(lk, rw) != 0)
-			wait(w, 0);
+			wait(w, WAIT_NOTIMEOUT);
 		rumpkern_sched(nlocks, NULL);
 	}
 }
@@ -823,7 +829,7 @@ cv_wait(struct rumpuser_cv *cv, struct rumpuser_mtx *mtx)
 
 	cv->nwaiters++;
 	cv_unsched(mtx, &nlocks);
-	wait(&cv->waiters, 0);
+	wait(&cv->waiters, WAIT_NOTIMEOUT);
 	cv_resched(mtx, nlocks);
 	cv->nwaiters--;
 }
@@ -834,7 +840,7 @@ cv_wait_nowrap(struct rumpuser_cv *cv, struct rumpuser_mtx *mtx)
 
 	cv->nwaiters++;
 	mutex_exit(mtx);
-	wait(&cv->waiters, 0);
+	wait(&cv->waiters, WAIT_NOTIMEOUT);
 	mutex_enter_nowrap(mtx);
 	cv->nwaiters--;
 }
