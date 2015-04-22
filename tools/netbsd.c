@@ -15,7 +15,7 @@ filter_init(char *program)
 }
 
 int
-filter_fd(int fd, int flags, mode_t mode)
+filter_fd(int fd, int flags, struct stat *st)
 {
 
 	return 0;
@@ -30,6 +30,13 @@ filter_load_exec(char *program, char **argv, char **envp)
 		perror("execve");
 		exit(1);
 	}
+
+	return 0;
+}
+
+int
+os_pre()
+{
 
 	return 0;
 }

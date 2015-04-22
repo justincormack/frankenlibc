@@ -23,6 +23,7 @@ OBJ+=$(OBJDIR)/pread.o
 OBJ+=$(OBJDIR)/pwrite.o
 OBJ+=$(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
+OBJ+=$(OBJDIR)/writev.o
 OBJ+=$(OBJDIR)/syscall.o $(OBJDIR)/syscall_ret.o
 OBJ+=$(OBJDIR)/vdso.o
 HEADERS=syscall.h linux.h
@@ -121,6 +122,9 @@ $(OBJDIR)/vdso.o:		vdso.c $(HEADERS)
 
 $(OBJDIR)/write.o:		write.c $(HEADERS)
 				$(COMPILE.c) -o $@ write.c
+
+$(OBJDIR)/writev.o:		writev.c $(HEADERS)
+				$(COMPILE.c) -o $@ writev.c
 
 .PHONY:				clean
 clean:		

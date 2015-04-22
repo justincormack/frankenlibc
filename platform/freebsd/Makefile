@@ -20,6 +20,7 @@ OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
 OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/_start1.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
+OBJ+=$(OBJDIR)/writev.o
 HEADERS=syscall.h i386/syscall.h x86_64/syscall.h freebsd.h
 INCLUDES=-I../include -I../../franken/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -132,6 +133,9 @@ $(OBJDIR)/sysctl.o:		sysctl.S $(HEADERS)
 
 $(OBJDIR)/write.o:		write.S $(HEADERS)
 				$(COMPILE.S) -o $@ write.S
+
+$(OBJDIR)/writev.o:		writev.S $(HEADERS)
+				$(COMPILE.S) -o $@ writev.S
 
 .PHONY:				clean
 clean:		

@@ -15,19 +15,17 @@
 
 #include "rumprun.h"
 
-int needrandom = 0;
-
 #ifndef SECCOMP
 int
 filter_init(char *program)
 {
+	int ret;
 
-	needrandom = 1;
 	return 0;
 }
 
 int
-filter_fd(int fd, int flags, mode_t mode)
+filter_fd(int fd, int flags, struct stat *st)
 {
 
 	return 0;
@@ -37,10 +35,6 @@ int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
-	int rfd;
-
-	if (needrandom)
-		rfd = open("/dev/urandom", O_RDONLY);
 
 	if (execve(program, argv, envp) == -1) {
 		perror("execve");
@@ -100,8 +94,6 @@ filter_init(char *program)
 #ifdef SYS_getrandom
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getrandom), 0);
 	if (ret < 0) return ret;
-#else
-	needrandom = 1;
 #endif
 
 	/* kill(0, SIGABRT) */
@@ -137,9 +129,10 @@ filter_init(char *program)
 }
 
 int
-filter_fd(int fd, int flags, mode_t mode)
+filter_fd(int fd, int flags, struct stat *st)
 {
 	int ret;
+	mode_t mode = st.st_mode & O_ACCMODE;
 
 	/* read(fd, ...), pread(fd, ...) */
 	if (flags == O_RDONLY || flags == O_RDWR) {
@@ -176,6 +169,15 @@ filter_fd(int fd, int flags, mode_t mode)
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TUNGETIFF));
 		if (ret < 0) return ret;
+		/* need to disable offload if unsupported */
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
+			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TUNSETIFF));
+	}
+	/* XXX be more specific only for our dummy socket */
+	if (S_ISSOCK(mode)) {
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
+			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, SIOCGIFHWADDR));
+		if (ret < 0) return ret;
 	}
 
 	return 0;
@@ -185,15 +187,6 @@ int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
-	int rfd;
-
-	if (needrandom) {
-		rfd = open("/dev/urandom", O_RDONLY);
-		if (rfd == -1) return -1;
-		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
-			SCMP_A0(SCMP_CMP_EQ, rfd));
-		if (ret < 0) return ret;
-	}
 
 #ifdef SYS_execveat
 	int fd = open(program, O_RDONLY | O_CLOEXEC);
@@ -240,6 +233,23 @@ filter_load_exec(char *program, char **argv, char **envp)
 }
 
 #endif /* SECCOMP */
+
+int
+os_pre()
+{
+	int sock[2];
+	int ret, fd;
+
+	/* need not open if getrandom() syscall works; test it */
+	fd = open("/dev/urandom", O_RDONLY);
+
+	/* Linux needs a socket to do ioctls on to get mac addresses */
+	/* XXX Add a tap ioctl to get hwaddr */
+	ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
+	close(sock[1]);
+
+	return ret;
+}
 
 int
 os_open(char *pre, char *post)

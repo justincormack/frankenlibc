@@ -5,11 +5,8 @@
 
 #include "linux.h"
 
-/* XX tmp */
-#include <unistd.h>
-#include <string.h>
-
 int __platform_random_fd = -1;
+int __platform_socket_fd = -1;
 
 int
 fstat(int fd, struct stat *st)
@@ -25,6 +22,12 @@ fstat(int fd, struct stat *st)
 
 	st->st_size = lst.st_size;
 
+	if (LINUX_S_ISSOCK(lst.st_mode)) {
+		__platform_socket_fd = fd;
+		/* currently no support for raw socket networking */
+		lst.st_mode = 0;
+	}
+
 	if (LINUX_S_ISBLK(lst.st_mode)) {
 		syscall(SYS_ioctl, fd, BLKGETSIZE64, &st->st_size);
 	}
@@ -35,10 +38,18 @@ fstat(int fd, struct stat *st)
 
 		ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
 		if (ret == 0) {
+			/* we do not yet support macvtap offload facilities */
+			if (ifr.ifr_flags & IFF_VNET_HDR) {
+				ifr.ifr_flags &= ~IFF_VNET_HDR;
+				syscall(SYS_ioctl, fd, TUNSETIFF, &ifr);
+			}
 			/* use sock type to tell config we are network */
 			lst.st_mode = S_IFSOCK;
-			write(1, ifr.ifr_name, strlen(ifr.ifr_name));
-			write(1, "\n", 1);
+			/* find mac address */
+			ret = syscall(SYS_ioctl, __platform_socket_fd, SIOCGIFHWADDR, &ifr);
+			if (ret == 0) {
+				memcpy(st->st_hwaddr, ifr.ifr_addr.sa_data, 6);
+			}
 		}
 	}
 

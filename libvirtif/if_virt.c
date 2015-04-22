@@ -31,7 +31,6 @@ __KERNEL_RCSID(0, "$NetBSD: if_virt.c,v 1.49 2014/11/06 23:25:16 pooka Exp $");
 #include <sys/param.h>
 #include <sys/kernel.h>
 #include <sys/kmem.h>
-#include <sys/cprng.h>
 #include <sys/module.h>
 
 #include <net/bpf.h>
@@ -70,10 +69,12 @@ static int  virtif_unclone(struct ifnet *);
 struct if_clone VIF_CLONER =
     IF_CLONE_INITIALIZER(VIF_NAME, virtif_clone, virtif_unclone);
 
+int virt_hwaddr(char *, uint8_t[6]);
+
 static int
 virtif_create(struct ifnet *ifp)
 {
-	uint8_t enaddr[ETHER_ADDR_LEN] = { 0xb2, 0x0a, 0x00, 0x0b, 0x0e, 0x01 };
+	uint8_t enaddr[ETHER_ADDR_LEN];
 	char enaddrstr[3*ETHER_ADDR_LEN];
 	struct virtif_sc *sc = ifp->if_softc;
 	int error;
@@ -81,8 +82,8 @@ virtif_create(struct ifnet *ifp)
 	if (sc->sc_viu)
 		panic("%s: already created", ifp->if_xname);
 
-	enaddr[2] = cprng_fast32() & 0xff;
-	enaddr[5] = sc->sc_num & 0xff;
+	/* XXX generalize */
+	virt_hwaddr(ifp->if_xname, enaddr);
 
 	if ((error = VIFHYPER_CREATE(sc->sc_linkstr,
 	    sc, enaddr, &sc->sc_viu)) != 0) {

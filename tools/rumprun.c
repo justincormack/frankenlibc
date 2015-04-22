@@ -37,22 +37,12 @@ main(int argc, char **argv)
 	struct timespec ts;
 	struct fdinfo *fds;
 	int nfds = 3;
+	struct stat st;
 
 	if (argc < 2)
 		usage(argv[0]);
 
-	fds = (struct fdinfo *) calloc(argc + 3, sizeof(struct fdinfo));
-	fds[0].fd = 0;
-	fds[0].flags = O_RDONLY;
-	fds[0].mode = 0;
-	fds[1].fd = 1;
-	fds[1].flags = O_WRONLY;
-	fds[1].mode = 0;
-	fds[2].fd = 2;
-	fds[2].flags = O_WRONLY;
-	fds[2].mode = 0;
-
-	/* accept more existing fds */
+	os_pre();
 
 	for (i = 1; i < argc; i++) {
 		char *arg = argv[i];
@@ -92,10 +82,6 @@ main(int argc, char **argv)
 				exit(1);
 			}
 		}
-		fds[nfds].fd = fd;
-		fds[nfds].flags = access;
-		fds[nfds].mode = 0;
-		nfds++;
 	}
 
 	for (; i < argc; i++)
@@ -112,17 +98,26 @@ main(int argc, char **argv)
 		abort();
 	}
 
-	for (i = 0; i < nfds; i++) {
-		int fl;
+	nfds = open("/dev/null", O_RDONLY);
+	close(nfds);
 
-		fl = fcntl(fds[i].fd, F_GETFL);
+	for (fd = 0; fd < nfds; fd++) {
+		int fl;
+		struct stat st;
+
+		fl = fcntl(fd, F_GETFL);
 		if (fl == -1) {
 			perror("fcntl");
 			abort();
 		}
-		ret = fcntl(fds[i].fd, F_SETFL, fl | O_NONBLOCK);
+		ret = fcntl(fd, F_SETFL, fl | O_NONBLOCK);
+		ret = fstat(fd, &st);
+		if (ret == -1) {
+			perror("fstat");
+			abort();
+		}
 
-		ret = filter_fd(fds[i].fd, fds[i].flags, fds[i].mode);
+		ret = filter_fd(fd, fl, &st);
 		if (ret < 0) {
 			fprintf(stderr, "filter_fd failed\n");
 			abort();
@@ -175,7 +170,5 @@ colon_open(char *pre, char *post)
 		return -1;
 	}
 
-	/* call OS specific handler */
-
-	return -1;
+	return os_open(pre, post);
 }

@@ -20,7 +20,7 @@ filter_init(char *program)
 }
 
 int
-filter_fd(int fd, int flags, mode_t mode)
+filter_fd(int fd, int flags, struct stat *st)
 {
 
 	return 0;
@@ -73,10 +73,11 @@ filter_init(char *program)
 }
 
 int
-filter_fd(int fd, int flags, mode_t mode)
+filter_fd(int fd, int flags, struct stat *st)
 {
 	cap_rights_t rights;
 	int ret;
+	mode_t mode = st.st_mode & O_ACCMODE;
 	unsigned long ioctl[1] = {DIOCGMEDIASIZE};
 
 	/* XXX we could cut capabilities down a little further eg seek only
@@ -121,6 +122,13 @@ filter_load_exec(char *program, char **argv, char **envp)
 	return 0;
 }
 #endif /* CAPSICUM */
+
+int
+os_pre()
+{
+
+	return 0;
+}
 
 int
 os_open(char *pre, char *post)

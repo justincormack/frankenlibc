@@ -99,6 +99,8 @@ struct ifreq {
 #define ifr_qlen	ifr_ifru.ifru_ivalue	/* Queue length 	*/
 #define ifr_newname	ifr_ifru.ifru_newname	/* New name		*/
 
+#define IFF_VNET_HDR	0x4000
+
 #if defined(__x86_64__)
 #include "x86_64/linux.h"
 #elif defined(__i386__)
@@ -119,3 +121,5 @@ struct ifreq {
 
 #define BLKGETSIZE64	_IOR(0x12, 114, size_t)
 #define TUNGETIFF	_IOR('T', 210, unsigned int)
+#define TUNSETIFF	_IOW('T', 202, int)
+#define SIOCGIFHWADDR	0x8927

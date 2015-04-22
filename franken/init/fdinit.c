@@ -95,8 +95,6 @@ __franken_fdinit()
 				rump_pub_netconfig_dhcp_ipv4_oneshot(key);
 			}
 			break;
-		default:
-			break;
 		}
 	}
 }

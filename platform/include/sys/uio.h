@@ -3,6 +3,9 @@
 
 #include <sys/types.h>
 
+#define readv(f, i, n) __platform_readv(f, i, n)
+#define writev(f, i, n) __platform_writev(f, i, n)
+
 struct iovec {
 	void	*iov_base;
 	size_t	 iov_len;

@@ -27,6 +27,7 @@
  */
 
 #ifndef _KERNEL
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/uio.h>
 
@@ -40,6 +41,7 @@
 
 #include "rumpuser_component.h"
 #include "thread.h"
+#include "init.h"
 
 #include "if_virt.h"
 #include "virtif_user.h"
@@ -54,7 +56,7 @@ struct virtif_user {
 	int viu_devnum;
 	int viu_fd;
 	int viu_dying;
-	char viu_rcvbuf[9018]; /* jumbo frame max len */
+	char viu_rcvbuf[9018] __attribute__ ((aligned (16))); /* jumbo frame max len */
 };
 
 static void
@@ -71,7 +73,10 @@ rcvthread(void *arg)
 		nn = read(viu->viu_fd,
 			viu->viu_rcvbuf, sizeof(viu->viu_rcvbuf));
 		if (nn == -1 && errno == EAGAIN) {
-			schedule(); /* XXX pass fd? */
+			//schedule(); /* XXX pass fd? */
+			rumpuser_component_schedule(NULL);
+			clock_sleep(CLOCK_MONOTONIC, 0, 1000);
+			rumpuser_component_unschedule();
 			continue;
 		}
 		if (nn == -1) {
@@ -88,6 +93,22 @@ rcvthread(void *arg)
 	assert(viu->viu_dying);
 
 	rumpuser_component_kthread_release();
+}
+
+/* XXX hack, work out better way */
+int
+rumpns_virt_hwaddr(char *ifname, uint8_t hwaddr[6])
+{
+	int ret, fd;
+	struct stat st;
+
+	if (strlen(ifname) < 5 || strncmp(ifname, "virt", 4) != 0)
+		return -1;
+	fd = atoi(&ifname[4]);
+
+	memcpy(hwaddr, __franken_fd[fd].st.st_hwaddr, 6);
+
+	return 0;
 }
 
 int

@@ -3,7 +3,7 @@ RUMP?=$(RUMPOBJ)/rump
 LIBDIR=$(RUMP)/lib
 LIB=$(LIBDIR)/librumpnet_virtif.a
 OBJDIR=$(RUMPOBJ)/libvirtif
-INC=-nostdinc -I../franken/include -I../franken/ucontext -I../franken/thread -I../platform/include -I../librumpuser
+INC=-nostdinc -I../franken/include -I../franken/ucontext -I../franken/init -I../franken/thread -I../platform/include -I../librumpuser
 CFLAGS+=-fno-stack-protector
 USER_FLAGS=$(CPPFLAGS) -DVIRTIF_BASE=virt $(INC) $(CFLAGS)
 RANLIB?=ranlib
