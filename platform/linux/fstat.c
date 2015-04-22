@@ -5,6 +5,10 @@
 
 #include "linux.h"
 
+/* XX tmp */
+#include <unistd.h>
+#include <string.h>
+
 int __platform_random_fd = -1;
 
 int
@@ -23,6 +27,19 @@ fstat(int fd, struct stat *st)
 
 	if (LINUX_S_ISBLK(lst.st_mode)) {
 		syscall(SYS_ioctl, fd, BLKGETSIZE64, &st->st_size);
+	}
+
+	/* XXX be more specific, test if tap device major? */
+	if (LINUX_S_ISCHR(lst.st_mode)) {
+		struct ifreq ifr;
+
+		ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
+		if (ret == 0) {
+			/* use sock type to tell config we are network */
+			lst.st_mode = S_IFSOCK;
+			write(1, ifr.ifr_name, strlen(ifr.ifr_name));
+			write(1, "\n", 1);
+		}
 	}
 
 	st->st_mode = (LINUX_S_ISDIR (lst.st_mode) ? S_IFDIR  : 0) |

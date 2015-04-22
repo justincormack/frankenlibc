@@ -55,6 +55,7 @@ __franken_fdinit()
 	struct stat st;
 	char *mem;
 	char *key;
+	int ret;
 
 	/* iterate over numbered descriptors, stopping when one does not exist */
 	for (fd = 0; fd < MAXFD; fd++) {
@@ -88,9 +89,11 @@ __franken_fdinit()
 			rump_pub_etfs_register(key, &key[7], RUMP_ETFS_BLK);
 			break;
 		case S_IFSOCK:
-			key = mkkey(__franken_fd[fd].key, "virtif", fd);
-			rump_pub_netconfig_ifcreate(key);
-			rump_pub_netconfig_dhcp_ipv4_oneshot(key);
+			key = mkkey(__franken_fd[fd].key, "virt", fd);
+			ret = rump_pub_netconfig_ifcreate(key);
+			if (ret == 0) {
+				rump_pub_netconfig_dhcp_ipv4_oneshot(key);
+			}
 			break;
 		default:
 			break;

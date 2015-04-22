@@ -171,6 +171,13 @@ filter_fd(int fd, int flags, mode_t mode)
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, BLKGETSIZE64));
 		if (ret < 0) return ret;
 	}
+	/* XXX be more specific, only for tap devices */
+	if (S_ISCHR(mode)) {
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
+			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TUNGETIFF));
+		if (ret < 0) return ret;
+	}
+
 	return 0;
 }
 

@@ -8,6 +8,7 @@
 struct stat {
 	mode_t		st_mode;
 	off_t		st_size;
+	char		st_hwaddr[6];
 };
 
 #define S_IFMT   0170000
