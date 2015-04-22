@@ -1,4 +1,4 @@
-/rump*
+/rump/
 /rumpobj/
 *.core
 ktrace.out
