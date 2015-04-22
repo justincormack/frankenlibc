@@ -1,7 +1,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#include "freebsd.h"
+#include "netbsd.h"
 
 int __ioctl(int, unsigned long, ...);
 int __fstat(int, struct netbsd_stat *);

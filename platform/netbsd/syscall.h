@@ -22,6 +22,8 @@
 #define SYS_ioctl			54
 #define SYS_kill			37
 #define SYS_fsync			95
+#define SYS_readv			120
+#define SYS_writev			121
 #define SYS_pread			173
 #define SYS_pwrite			174
 #define SYS___clock_gettime50		427
