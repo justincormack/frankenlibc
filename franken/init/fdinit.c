@@ -17,30 +17,14 @@ enum rump_etfs_type {
 	RUMP_ETFS_DIR_SUBDIRS
 };
 
-int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type) __attribute__ ((weak));
-int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
-int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
+int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type);
+int rump_pub_netconfig_ifcreate(const char *);
+int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *);
 
-int
-rump_pub_etfs_register(const char *key, const char *hostpath, enum rump_etfs_type ftype)
-{
-
-	return 0;
-}
-
-int
-rump_pub_netconfig_ifcreate(const char *key)
-{
-
-	return 0;
-}
-
-int
-rump_pub_netconfig_dhcp_ipv4_oneshot(const char *key)
-{
-
-	return 0;
-}
+int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
+#define CTL_NET         4
+#define CTL_NET_INET6   24
+#define IPV6CTL_ACCEPT_RTADV    12
 
 struct __fdtable __franken_fd[MAXFD];
 
@@ -113,11 +97,6 @@ __franken_fdinit()
 		}
 	}
 }
-
-int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
-#define CTL_NET         4
-#define CTL_NET_INET6   24
-#define IPV6CTL_ACCEPT_RTADV    12
 
 void
 __franken_autoconf()
