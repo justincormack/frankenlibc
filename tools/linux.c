@@ -132,7 +132,6 @@ int
 filter_fd(int fd, int flags, struct stat *st)
 {
 	int ret;
-	mode_t mode = st->st_mode & O_ACCMODE;
 
 	/* read(fd, ...), pread(fd, ...) */
 	if (flags == O_RDONLY || flags == O_RDWR) {
@@ -140,6 +139,9 @@ filter_fd(int fd, int flags, struct stat *st)
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(pread64), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(readv), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
 	}
@@ -152,6 +154,9 @@ filter_fd(int fd, int flags, struct stat *st)
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(pwrite64), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(writev), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
+		if (ret < 0) return ret;
 	}
 
 	/* fsync(fd) */
@@ -159,22 +164,22 @@ filter_fd(int fd, int flags, struct stat *st)
 		SCMP_A0(SCMP_CMP_EQ, fd));
 	if (ret < 0) return ret;
 
-	if (S_ISBLK(mode)) {
+	if (S_ISBLK(st->st_mode)) {
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, BLKGETSIZE64));
 		if (ret < 0) return ret;
 	}
 	/* XXX be more specific, only for tap devices */
-	if (S_ISCHR(mode)) {
+	if (S_ISCHR(st->st_mode)) {
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TUNGETIFF));
 		if (ret < 0) return ret;
-		/* need to disable offload if unsupported */
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TUNSETIFF));
+		if (ret < 0) return ret;
 	}
 	/* XXX be more specific only for our dummy socket */
-	if (S_ISSOCK(mode)) {
+	if (S_ISSOCK(st->st_mode)) {
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, SIOCGIFHWADDR));
 		if (ret < 0) return ret;

@@ -77,7 +77,6 @@ filter_fd(int fd, int flags, struct stat *st)
 {
 	cap_rights_t rights;
 	int ret;
-	mode_t mode = st->st_mode & O_ACCMODE;
 	unsigned long ioctl[1] = {DIOCGMEDIASIZE};
 
 	/* XXX we could cut capabilities down a little further eg seek only
