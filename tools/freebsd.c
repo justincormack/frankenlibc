@@ -82,7 +82,7 @@ filter_fd(int fd, int flags, struct stat *st)
 	/* XXX we could cut capabilities down a little further eg seek only
 	   used on block devices for example */
 
-	switch (flags) {
+	switch (flags & O_ACCMODE) {
 	case O_RDONLY:
 		cap_rights_init(&rights, CAP_READ, \
 			CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_R);

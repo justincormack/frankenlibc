@@ -94,6 +94,26 @@ filter_init(char *program)
 #ifdef SYS_getrandom
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getrandom), 0);
 	if (ret < 0) return ret;
+#else
+#if defined(__x86_64__)
+#define SYS_getrandom 318
+#elif defined(__i386__)
+#define SYS_getrandom 355
+#elif defined(__ARMEL__) || defined(__ARMEB__)
+#define SYS_getrandom 384
+#elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
+#define SYS_getrandom 278
+#elif defined(__PPC64__)
+#define SYS_getrandom 359
+#elif defined(__PPC__)
+#define SYS_getrandom 359
+#elif defined(__MIPSEL__) || defined(__MIPSEB__)
+#define SYS_getrandom 4353
+#else
+#error "Unknown architecture"
+#endif
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SYS_getrandom, 0);
+	if (ret < 0) return ret;
 #endif
 
 	/* kill(0, SIGABRT) */
@@ -134,7 +154,7 @@ filter_fd(int fd, int flags, struct stat *st)
 	int ret;
 
 	/* read(fd, ...), pread(fd, ...) */
-	if (flags == O_RDONLY || flags == O_RDWR) {
+	if ((flags & O_ACCMODE) == O_RDONLY || (flags & O_ACCMODE) == O_RDWR) {
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
@@ -147,7 +167,7 @@ filter_fd(int fd, int flags, struct stat *st)
 	}
 
 	/* write(fd, ...), pwrite(fd, ...) */
-	if (flags == O_WRONLY || flags == O_RDWR) {
+	if ((flags & O_ACCMODE) == O_WRONLY || (flags & O_ACCMODE) == O_RDWR) {
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(write), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
