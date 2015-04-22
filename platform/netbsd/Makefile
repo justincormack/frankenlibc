@@ -10,7 +10,8 @@ OBJ+=$(CRTDIR)/crtbegin.o $(CRTDIR)/crtbeginT.o
 OBJ+=$(CRTDIR)/crtend.o
 OBJ+=$(OBJDIR)/clock_getres.o $(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o $(OBJDIR)/__clock_nanosleep.o
-OBJ+=$(OBJDIR)/_exit.o $(OBJDIR)/fstat.o $(OBJDIR)/fsync.o
+OBJ+=$(OBJDIR)/_exit.o
+OBJ+=$(OBJDIR)/fstat.o $(OBJDIR)/__fstat.o $(OBJDIR)/fsync.o
 OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/kill.o $(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
@@ -73,8 +74,11 @@ $(OBJDIR)/__clock_nanosleep.o:	__clock_nanosleep.S $(HEADERS)
 $(OBJDIR)/_exit.o:		_exit.S $(HEADERS)
 				$(COMPILE.S) -o $@ _exit.S
 
-$(OBJDIR)/fstat.o:		fstat.S $(HEADERS)
-				$(COMPILE.S) -o $@ fstat.S
+$(OBJDIR)/fstat.o:		fstat.c $(HEADERS)
+				$(COMPILE.c) -o $@ fstat.c
+
+$(OBJDIR)/__fstat.o:		__fstat.S $(HEADERS)
+				$(COMPILE.S) -o $@ __fstat.S
 
 $(OBJDIR)/fsync.o:		fsync.S $(HEADERS)
 				$(COMPILE.S) -o $@ fsync.S
