@@ -132,7 +132,7 @@ int
 filter_fd(int fd, int flags, struct stat *st)
 {
 	int ret;
-	mode_t mode = st.st_mode & O_ACCMODE;
+	mode_t mode = st->st_mode & O_ACCMODE;
 
 	/* read(fd, ...), pread(fd, ...) */
 	if (flags == O_RDONLY || flags == O_RDWR) {
