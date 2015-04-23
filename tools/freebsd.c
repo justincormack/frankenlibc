@@ -2,6 +2,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/disk.h>
+#include <sys/socket.h>
+#include <net/if.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <stdio.h>
@@ -77,23 +79,38 @@ filter_fd(int fd, int flags, struct stat *st)
 {
 	cap_rights_t rights;
 	int ret;
-	unsigned long ioctl[1] = {DIOCGMEDIASIZE};
+	unsigned long ioctlb[1] = {DIOCGMEDIASIZE};
+	unsigned long ioctlc[1] = {SIOCGIFADDR};
 
-	/* XXX we could cut capabilities down a little further eg seek only
-	   used on block devices for example */
+	/* XXX we could cut capabilities down a little further */
 
 	switch (flags & O_ACCMODE) {
 	case O_RDONLY:
-		cap_rights_init(&rights, CAP_READ, \
-			CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_R);
+		if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {
+			cap_rights_init(&rights, CAP_READ, \
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_R);
+		} else {
+			cap_rights_init(&rights, CAP_READ, \
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_MMAP_R);
+		}
 		break;
 	case O_WRONLY:
-		cap_rights_init(&rights, CAP_WRITE, \
-			CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_W);
+		if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {
+			cap_rights_init(&rights, CAP_WRITE, \
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_W);
+		} else {
+			cap_rights_init(&rights, CAP_WRITE, \
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_MMAP_W);
+		}
 		break;
 	case O_RDWR:
-		cap_rights_init(&rights, CAP_READ, CAP_WRITE, \
-			CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_RW);
+		if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {
+			cap_rights_init(&rights, CAP_READ, CAP_WRITE, \
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_RW);
+		} else {
+			cap_rights_init(&rights, CAP_READ, CAP_WRITE, \
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_MMAP_RW);
+		}
 		break;
 	default:
 		abort();
@@ -101,8 +118,13 @@ filter_fd(int fd, int flags, struct stat *st)
 	ret = cap_rights_limit(fd, &rights);
 	if (ret == -1) return ret;
 
-	ret = cap_ioctls_limit(fd, ioctl, 1);
-	if (ret == -1) return ret;
+	if (S_ISBLK(st->st_mode)) {
+		ret = cap_ioctls_limit(fd, ioctlb, 1);
+		if (ret == -1) return ret;
+	} else if (S_ISCHR(st->st_mode)) {
+		ret = cap_ioctls_limit(fd, ioctlc, 1);
+		if (ret == -1) return ret;
+	}
 
 	return 0;
 }

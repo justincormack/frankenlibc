@@ -24,6 +24,15 @@ fstat(int fd, struct stat *st)
 		__ioctl(fd, DIOCGMEDIASIZE, &fst.st_size);
 	}
 
+	/* XXX only for tap device */
+	if (FREEBSD_S_ISCHR(fst.st_mode)) {
+		ret = __ioctl(fd, SIOCGIFADDR, st->st_hwaddr);
+		if (ret == 0) {
+			/* say we are a "socket" ie network device */
+			fst.st_mode = FREEBSD_S_IFSOCK;
+		}
+	}
+
 	st->st_mode = (FREEBSD_S_ISDIR (fst.st_mode) ? S_IFDIR  : 0) |
 		      (FREEBSD_S_ISCHR (fst.st_mode) ? S_IFCHR  : 0) |
 		      (FREEBSD_S_ISBLK (fst.st_mode) ? S_IFBLK  : 0) |
