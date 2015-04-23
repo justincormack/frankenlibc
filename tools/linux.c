@@ -286,7 +286,7 @@ os_open(char *pre, char *post)
 		int fd;
 
 		strncpy(ifr.ifr_name, post, IFNAMSIZ);
-		ifr.ifr_flags = IFF_TAP;
+		ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
 
 		fd = open("/dev/net/tun", O_RDWR);
 		if (fd == -1)
