@@ -73,8 +73,9 @@ rcvthread(void *arg)
 		nn = read(viu->viu_fd,
 			viu->viu_rcvbuf, sizeof(viu->viu_rcvbuf));
 		if (nn == -1 && errno == EAGAIN) {
-			//schedule(); /* XXX pass fd? */
 			rumpuser_component_schedule(NULL);
+			/* XXX temporary until we do interrupts properly */
+			/* schedule(); */
 			clock_sleep(CLOCK_MONOTONIC, 0, 1000);
 			rumpuser_component_unschedule();
 			continue;
