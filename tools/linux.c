@@ -15,6 +15,11 @@
 
 #include "rumprun.h"
 
+/* only in linux/fcntl.h that cannot be included */
+#ifndef AT_EMPTY_PATH
+#define AT_EMPTY_PATH		0x1000
+#endif
+
 #ifndef SECCOMP
 int
 filter_init(char *program)
@@ -208,12 +213,26 @@ filter_fd(int fd, int flags, struct stat *st)
 	return 0;
 }
 
+#ifdef SYS_execveat
+/* not yet defined by libc */
+int execveat(int, const char *, char *const [], char *const [], int);
+
+int
+execveat(int dirfd, const char *pathname,
+	char *const argv[], char *const envp[], int flags)
+{
+
+	return syscall(SYS_execveat, dirfd, pathname, argv, envp, flags);
+}
+#endif
+
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
 
 #ifdef SYS_execveat
+	const char *emptystring = "";
 	int fd = open(program, O_RDONLY | O_CLOEXEC);
 
 	if (fd == -1) {
@@ -227,10 +246,13 @@ filter_load_exec(char *program, char **argv, char **envp)
 #ifndef SYS_execveat
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0);
 #else
-	/* lock down execveat to just the one we need to exec program */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 2
-		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A5(SCMP_CMP_EQ, AT_EMPTY_PATH));
-	/* cd / */
+	/* lock down execveat to exactly what we need to exec program */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 5,
+		SCMP_A0(SCMP_CMP_EQ, fd),
+		SCMP_A1(SCMP_CMP_EQ, (long)emptystring),
+		SCMP_A2(SCMP_CMP_EQ, (long)argv),
+		SCMP_A3(SCMP_CMP_EQ, (long)envp),
+		SCMP_A4(SCMP_CMP_EQ, AT_EMPTY_PATH));
 	chdir("/");
 #endif
 	if (ret < 0) return ret;
@@ -248,7 +270,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 		exit(1);
 	}
 #else
-	if (execveat(fd, "", argv, envp, AT_EMPTY_PATH) == -1) {
+	if (execveat(fd, emptystring, argv, envp, AT_EMPTY_PATH) == -1) {
 		perror("execveat");
 		exit(1);
 	}
