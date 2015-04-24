@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/syscall.h>
 #include <linux/fs.h>
@@ -281,14 +282,26 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 #endif /* SECCOMP */
 
+int getrandom(void *, size_t, unsigned int);
+
+int
+getrandom(void *buf, size_t buflen, unsigned int flags)
+{
+
+	return syscall(SYS_getrandom, buf, buflen, flags);
+}
+
 int
 os_pre()
 {
 	int sock[2];
 	int ret, fd;
+	char buf[1];
 
-	/* need not open if getrandom() syscall works; test it */
-	fd = open("/dev/urandom", O_RDONLY);
+	/* if getrandom() syscall works we do not need to pass random source in */
+	if (getrandom(buf, 1, 0) == -1 && errno == ENOSYS) {
+		fd = open("/dev/urandom", O_RDONLY);
+	}
 
 	/* Linux needs a socket to do ioctls on to get mac addresses */
 	/* XXX Add a tap ioctl to get hwaddr */
