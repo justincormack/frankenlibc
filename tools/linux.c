@@ -21,6 +21,26 @@
 #define AT_EMPTY_PATH		0x1000
 #endif
 
+#ifndef SYS_getrandom
+#if defined(__x86_64__)
+#define SYS_getrandom 318
+#elif defined(__i386__)
+#define SYS_getrandom 355
+#elif defined(__ARMEL__) || defined(__ARMEB__)
+#define SYS_getrandom 384
+#elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
+#define SYS_getrandom 278
+#elif defined(__PPC64__)
+#define SYS_getrandom 359
+#elif defined(__PPC__)
+#define SYS_getrandom 359
+#elif defined(__MIPSEL__) || defined(__MIPSEB__)
+#define SYS_getrandom 4353
+#else
+#error "Unknown architecture"
+#endif
+#endif
+
 #ifndef SECCOMP
 int
 filter_init(char *program)
@@ -97,30 +117,8 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* getrandom(x, y, z) */
-#ifdef SYS_getrandom
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getrandom), 0);
 	if (ret < 0) return ret;
-#else
-#if defined(__x86_64__)
-#define SYS_getrandom 318
-#elif defined(__i386__)
-#define SYS_getrandom 355
-#elif defined(__ARMEL__) || defined(__ARMEB__)
-#define SYS_getrandom 384
-#elif defined(__AARCH64EL__) || defined (__AARCH64EB__)
-#define SYS_getrandom 278
-#elif defined(__PPC64__)
-#define SYS_getrandom 359
-#elif defined(__PPC__)
-#define SYS_getrandom 359
-#elif defined(__MIPSEL__) || defined(__MIPSEB__)
-#define SYS_getrandom 4353
-#else
-#error "Unknown architecture"
-#endif
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SYS_getrandom, 0);
-	if (ret < 0) return ret;
-#endif
 
 	/* kill(0, SIGABRT) */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(kill), 2,
