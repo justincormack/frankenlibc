@@ -39,6 +39,7 @@ helpme()
 	printf "\t-m: hardcode rump memory limit. default from env or unlimited\n"
 	printf "\t-M: thread stack size. default: 64k\n"
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
+	printf "\t-r: release build, without debug settings\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
 	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
 	printf "\t-d: location of installed files. defaule PWD/rump\n"
@@ -109,7 +110,7 @@ fi
 
 . ./buildrump.sh/subr.sh
 
-while getopts '?d:F:Hhj:L:M:m:o:p:qs:V:' opt; do
+while getopts '?d:F:Hhj:L:M:m:o:p:qrs:V:' opt; do
 	case "$opt" in
 	"d")
 		mkdir -p ${OPTARG}
@@ -152,7 +153,7 @@ while getopts '?d:F:Hhj:L:M:m:o:p:qs:V:' opt; do
 		esac
 		;;
 	"H")
-		EXTRAFLAGS="${EXTRAFLAGS} -H"
+		appendvar EXTRAFLAGS "-H"
 		;;
 	"h")
 		helpme
@@ -183,11 +184,15 @@ while getopts '?d:F:Hhj:L:M:m:o:p:qs:V:' opt; do
 	"q")
 		BUILD_QUIET=${BUILD_QUIET:=-}q
 		;;
+	"r")
+		DBG_F="-O2"
+		appendvar EXTRAFLAGS "-r"
+		;;
 	"s")
 		RUMPSRC=${OPTARG}
 		;;
 	"V")
-		EXTRAFLAGS="${EXTRAFLAGS} -V ${OPTARG}"
+		appendvar EXTRAFLAGS "-V ${OPTARG}"
 		;;
 	"?")
 		helpme
