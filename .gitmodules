@@ -1,3 +1,0 @@
-[submodule "rumpsrc"]
-	path = rumpsrc
-	url = https://github.com/rumpkernel/src-netbsd.git
