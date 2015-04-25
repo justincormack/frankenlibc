@@ -117,7 +117,7 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* getrandom(x, y, z) */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getrandom), 0);
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SYS_getrandom, 0);
 	if (ret < 0) return ret;
 
 	/* kill(0, SIGABRT) */
