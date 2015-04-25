@@ -7,7 +7,7 @@ There are known and unknown bugs!
 
 [![Build Status](https://travis-ci.org/justincormack/frankenlibc.png?branch=master)](https://travis-ci.org/justincormack/frankenlibc)
 
-build with "make", or with "./buildc.sh" for additional options.
+build with "make", or with "./build.sh" for additional options.
 
 Frankenlibc provides a small libc that is enough to let the fiber-based librumpuser
 library run natively on your platform without any system libraries. It

@@ -1,11 +1,11 @@
 default:	
-		./buildc.sh
+		./build.sh
 
 seccomp:
-		./buildc.sh seccomp
+		./build.sh seccomp
 
 qemu-arm:
-		./buildc.sh qemu-arm
+		./build.sh qemu-arm
 
 PHONY:		clean distclean qemu-arm seccomp
 
