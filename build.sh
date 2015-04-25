@@ -102,13 +102,11 @@ appendvar ()
 	appendvar_fs "${vname}" ' ' $*
 }
 
-[ ! -f ./buildrump.sh/subr.sh ] && git submodule update --init buildrump.sh
-
 if [ ${RUMPSRC} = "rumpsrc" ]; then
 	[ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
 fi
 
-. ./buildrump.sh/subr.sh
+. ./buildrump/subr.sh
 
 while getopts '?d:F:Hhj:L:M:m:o:p:qrs:V:' opt; do
 	case "$opt" in
@@ -241,7 +239,7 @@ fi
 
 [ -f platform/${OS}/platform.sh ] && . platform/${OS}/platform.sh
 
-./buildrump.sh/buildrump.sh \
+./buildrump/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
