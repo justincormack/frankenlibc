@@ -1,0 +1,34 @@
+language: c
+
+compiler:
+  - gcc
+  - clang
+
+sudo: false
+
+before_script:
+  - ./buildrump.sh checkout
+
+env:
+  - NAME='static' LIBTYPE='MKPIC=no' BUILDTYPE='' TESTS='tests'
+  - NAME='dynamic' LIBTYPE='MKSTATICLIB=no' BUILDTYPE='' TESTS='tests'
+  - NAME='debug' LIBTYPE='MKSTATICLIB=no' BUILDTYPE='-DDD' TESTS='tests'
+  - NAME='release' LIBTYPE='MKSTATICLIB=no' BUILDTYPE='-r' TESTS='tests'
+  - NAME='fibers' LIBTYPE='MKSTATICLIB=no' BUILDTYPE='-V RUMPUSER_THREADS=fiber -V RUMP_CURLWP=hypercall' TESTS=''
+
+script:
+  -  ./buildrump.sh -o obj.${NAME} -d rump.${NAME} -qq -j16 -V ${LIBTYPE} ${BUILDTYPE} fullbuild ${TESTS}
+
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#rumpkernel-builds"
+    template:
+      - '%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}'
+    skip_join: true
+    use_notice: true
+  email:
+    recipients:
+      - rumpkernel-builds@freelists.org
+    on_success: always
+    on_failure: always
