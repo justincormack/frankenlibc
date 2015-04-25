@@ -4,7 +4,7 @@ MAKE=${MAKE-make}
 
 RUMPOBJ=${PWD}/rumpobj
 RUMP=${RUMPOBJ}/rump
-RUMPSRC=rumpsrc
+RUMPSRC=src
 OUTDIR=${PWD}/rump
 
 RUNTESTS="test"
@@ -101,10 +101,6 @@ appendvar ()
 	shift
 	appendvar_fs "${vname}" ' ' $*
 }
-
-if [ ${RUMPSRC} = "rumpsrc" ]; then
-	[ ! -f rumpsrc/build.sh ] && git submodule update --init rumpsrc
-fi
 
 . ./buildrump/subr.sh
 
