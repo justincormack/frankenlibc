@@ -244,6 +244,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 	   but this is not widely available yet */
 #ifndef SYS_execveat
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0);
+	if (ret < 0) return ret;
 #else
 	/* lock down execveat to exactly what we need to exec program */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 5,
@@ -252,9 +253,10 @@ filter_load_exec(char *program, char **argv, char **envp)
 		SCMP_A2(SCMP_CMP_EQ, (long)argv),
 		SCMP_A3(SCMP_CMP_EQ, (long)envp),
 		SCMP_A4(SCMP_CMP_EQ, AT_EMPTY_PATH));
-	chdir("/");
-#endif
 	if (ret < 0) return ret;
+	ret = chdir("/");
+	if (ret < 0) return ret;
+#endif
 
 	/* seccomp_export_pfc(ctx, 1); */
 

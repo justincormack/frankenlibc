@@ -16,7 +16,7 @@ case ${TARGET} in
 *-linux*)
 	OS=linux
 	FILTER="-DNOSECCOMP"
-	NCPU=$(cat /proc/cpuinfo | grep -i --count processor )
+	NCPU=$(nproc )
 	;;
 *-netbsd*)
 	OS=netbsd
