@@ -1,0 +1,24 @@
+/Makefile/1.4/Thu May  3 05:26:08 2001//
+/clockvar.h/1.11/Sat May 23 19:11:19 2009//
+/dec_boot.h/1.7/Sun Dec 11 12:21:20 2005//
+/dz.c/1.42/Fri Jul 25 08:10:36 2014//
+/dzkbd.c/1.27/Fri Jan  2 21:32:26 2015//
+/dzkbdvar.h/1.3/Mon Jan  6 21:05:37 2003//
+/dzms.c/1.22/Sat Oct 27 17:18:15 2012//
+/dzreg.h/1.4/Sun Dec 11 12:21:20 2005//
+/dzvar.h/1.11/Tue May 12 14:18:16 2009//
+/files.dec/1.8/Sat Jul 29 19:10:56 2006//
+/if_le_dec.c/1.20/Tue Jan 19 22:06:23 2010//
+/lk201.h/1.9/Sun Dec 11 12:21:20 2005//
+/lk201_ws.c/1.9/Fri Jan  2 21:32:26 2015//
+/lk201reg.h/1.3/Sun Dec 11 12:21:20 2005//
+/lk201var.h/1.7/Fri Jan  2 21:32:26 2015//
+/mcclock.c/1.28/Mon Nov 17 02:15:49 2014//
+/mcclock_pad32.c/1.16/Sat Mar 14 21:04:19 2009//
+/mcclock_pad32.h/1.10/Fri Feb 11 02:36:16 2000//
+/mcclockvar.h/1.8/Sat Jun  4 01:43:56 2011//
+/vsxxx.c/1.11/Sat Mar 14 21:04:19 2009//
+/vsxxxvar.h/1.6/Sat Oct 27 17:18:15 2012//
+/wskbdmap_lk201.c/1.6/Wed Mar 13 15:21:30 2002//
+/wskbdmap_lk201.h/1.3/Wed Mar 13 15:22:51 2002//
+D

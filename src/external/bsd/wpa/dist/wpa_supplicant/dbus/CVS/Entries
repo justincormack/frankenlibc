@@ -1,0 +1,26 @@
+/.gitignore/1.1.1.1/Wed Aug  4 10:23:39 2010//
+/Makefile/1.1.1.3/Thu Oct 16 19:16:04 2014//
+/dbus-wpa_supplicant.conf/1.1.1.1/Wed Aug  4 10:23:28 2010//
+/dbus_common.c/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/dbus_common.h/1.1.1.2/Fri Jan  3 02:05:32 2014//
+/dbus_common_i.h/1.1.1.2/Fri Jan  3 02:05:32 2014//
+/dbus_dict_helpers.c/1.1.1.5/Wed Apr  1 19:24:41 2015//
+/dbus_dict_helpers.h/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/dbus_new.c/1.1.1.7/Wed Apr  1 19:24:41 2015//
+/dbus_new.h/1.1.1.5/Wed Apr  1 19:24:41 2015//
+/dbus_new_handlers.c/1.1.1.7/Wed Apr  1 19:24:41 2015//
+/dbus_new_handlers.h/1.1.1.6/Wed Apr  1 19:24:41 2015//
+/dbus_new_handlers_p2p.c/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/dbus_new_handlers_p2p.h/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/dbus_new_handlers_wps.c/1.1.1.5/Wed Apr  1 19:24:41 2015//
+/dbus_new_helpers.c/1.1.1.5/Wed Apr  1 19:24:41 2015//
+/dbus_new_helpers.h/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/dbus_new_introspect.c/1.1.1.4/Wed Apr  1 19:24:40 2015//
+/dbus_old.c/1.1.1.6/Wed Apr  1 19:24:41 2015//
+/dbus_old.h/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/dbus_old_handlers.c/1.1.1.6/Wed Apr  1 19:24:41 2015//
+/dbus_old_handlers.h/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/dbus_old_handlers_wps.c/1.1.1.4/Wed Apr  1 19:24:41 2015//
+/fi.epitest.hostap.WPASupplicant.service.in/1.1.1.1/Sun Oct  7 23:48:07 2012//
+/fi.w1.wpa_supplicant1.service.in/1.1.1.1/Sun Oct  7 23:48:06 2012//
+D

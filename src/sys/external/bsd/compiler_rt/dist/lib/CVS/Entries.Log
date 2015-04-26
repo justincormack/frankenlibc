@@ -1,0 +1,12 @@
+A D/arm////
+A D/builtins////
+A D/i386////
+A D/lsan////
+A D/ppc////
+A D/profile////
+A D/x86_64////
+R D/x86_64////
+R D/ppc////
+R D/lsan////
+R D/i386////
+R D/arm////

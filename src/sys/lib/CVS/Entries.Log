@@ -1,0 +1,10 @@
+A D/libc_sa////
+A D/libgnuefi////
+A D/libkern////
+A D/libnetboot////
+A D/libsa////
+A D/libunwind////
+A D/libx86emu////
+A D/libz////
+R D/libnetboot////
+R D/libc_sa////

@@ -1,0 +1,20 @@
+/Makefile/1.1.1.3/Sun Jun  5 14:58:29 2011//
+/README/1.1.1.1/Sun Jul 19 23:03:41 2009//
+/dsa.h/1.1.1.5/Mon Mar 23 08:29:19 2015//
+/dsa_ameth.c/1.3/Mon Mar 23 10:22:46 2015//
+/dsa_asn1.c/1.1.1.5/Mon Mar 23 08:29:19 2015//
+/dsa_depr.c/1.1.1.2/Mon Mar 23 08:29:19 2015//
+/dsa_err.c/1.1.1.4/Mon Mar 23 08:29:19 2015//
+/dsa_gen.c/1.1.1.5/Mon Mar 23 08:29:19 2015//
+/dsa_key.c/1.1.1.3/Mon Mar 23 08:29:19 2015//
+/dsa_lib.c/1.1.1.3/Mon Mar 23 08:29:20 2015//
+/dsa_locl.h/1.1.1.3/Mon Mar 23 08:29:20 2015//
+/dsa_ossl.c/1.1.1.3/Mon Mar 23 08:29:20 2015//
+/dsa_pmeth.c/1.1.1.5/Mon Mar 23 08:29:20 2015//
+/dsa_prn.c/1.1.1.2/Mon Mar 23 08:29:20 2015//
+/dsa_sign.c/1.1.1.5/Mon Mar 23 08:29:20 2015//
+/dsa_vrf.c/1.1.1.4/Mon Mar 23 08:29:20 2015//
+/dsagen.c/1.1.1.2/Mon Mar 23 08:29:19 2015//
+/dsatest.c/1.1.1.2/Mon Mar 23 08:29:20 2015//
+/fips186a.txt/1.1.1.1/Sun Jul 19 23:03:43 2009//
+D

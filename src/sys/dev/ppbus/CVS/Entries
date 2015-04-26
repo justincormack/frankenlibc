@@ -1,0 +1,20 @@
+/files.ppbus/1.8/Tue Apr 29 14:07:36 2008//
+/if_plip.c/1.25/Thu Jun  5 23:48:16 2014//
+/lpt.c/1.30/Fri Jul 25 08:10:38 2014//
+/lptio.h/1.8/Mon Apr 28 20:23:56 2008//
+/lptreg.h/1.6/Sun Dec 11 12:23:28 2005//
+/lptvar.h/1.10/Mon Apr 28 20:23:56 2008//
+/ppbus_1284.c/1.13/Sun Jul 13 17:12:23 2014//
+/ppbus_1284.h/1.8/Sun Apr  5 09:56:16 2009//
+/ppbus_base.c/1.20/Tue Oct 14 01:04:39 2014//
+/ppbus_base.h/1.8/Tue Apr 15 15:02:29 2008//
+/ppbus_conf.c/1.20/Sat Oct 27 17:18:37 2012//
+/ppbus_conf.h/1.12/Fri Feb 18 21:38:17 2011//
+/ppbus_device.h/1.6/Tue Apr 15 15:02:29 2008//
+/ppbus_gpio.c/1.1/Tue Apr 29 14:07:37 2008//
+/ppbus_io.h/1.6/Sun Dec 11 12:23:28 2005//
+/ppbus_msq.c/1.10/Sun Jul 17 20:54:51 2011//
+/ppbus_msq.h/1.7/Tue Apr 15 15:02:29 2008//
+/ppbus_var.h/1.5/Sun Dec 11 12:23:28 2005//
+/pps_ppbus.c/1.16/Fri Jul 25 08:10:38 2014//
+D

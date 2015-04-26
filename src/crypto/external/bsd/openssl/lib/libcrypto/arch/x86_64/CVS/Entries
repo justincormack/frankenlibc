@@ -1,0 +1,22 @@
+/Makefile/1.6/Sat Aug  4 11:03:34 2012//
+/aes-x86_64.S/1.6/Sat Aug  4 11:03:34 2012//
+/aes.inc/1.4/Mon Jul 25 09:36:10 2011//
+/aesni-sha1-x86_64.S/1.3/Sat Aug  4 11:03:34 2012//
+/aesni-x86_64.S/1.6/Sat Aug  4 11:03:34 2012//
+/bsaes-x86_64.S/1.4/Sat Jan 11 18:21:45 2014//
+/cmll-x86_64.S/1.5/Sat Aug  4 11:03:34 2012//
+/crypto.inc/1.1/Tue Jul  5 10:42:54 2011//
+/ghash-x86_64.S/1.3/Sat Aug  4 11:03:34 2012//
+/md5-x86_64.S/1.3/Sat Aug  4 11:03:34 2012//
+/modes.inc/1.1/Thu Jul 26 19:58:42 2012//
+/modexp512-x86_64.S/1.2/Sat Aug  4 11:03:35 2012//
+/rc4-md5-x86_64.S/1.2/Sat Aug  4 11:03:35 2012//
+/rc4-x86_64.S/1.6/Sat Aug  4 11:03:35 2012//
+/rc4.inc/1.2/Thu Jul 26 19:58:42 2012//
+/sha1-x86_64.S/1.5/Sat Aug  4 11:03:35 2012//
+/sha512-x86_64.S/1.6/Sat Aug  4 11:03:35 2012//
+/uplink-x86_64.S/1.2/Sat Aug  4 11:03:35 2012//
+/vpaes-x86_64.S/1.4/Thu Jun  5 14:39:49 2014//
+/wp-x86_64.S/1.6/Sat Aug  4 11:03:35 2012//
+/x86_64cpuid.S/1.4/Sat Aug  4 11:03:35 2012//
+D

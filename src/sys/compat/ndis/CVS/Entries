@@ -1,0 +1,19 @@
+/cfg_var.h/1.2/Fri Mar 31 00:03:57 2006//
+/files.ndis/1.2/Mon Nov 17 01:01:57 2014//
+/hal_var.h/1.1/Thu Mar 30 22:56:50 2006//
+/kern_ndis.c/1.26/Tue Mar 25 16:23:58 2014//
+/kern_windrv.c/1.8/Wed Mar 18 17:06:48 2009//
+/nbcompat.c/1.12/Sun Jul 17 20:54:50 2011//
+/nbcompat.h/1.15/Sat May 14 12:44:16 2011//
+/ndis_var.h/1.6/Sat May 14 12:44:16 2011//
+/ntoskrnl_var.h/1.8/Sat Jul 28 00:43:22 2012//
+/pe_var.h/1.5/Thu Nov 16 01:32:44 2006//
+/resource_var.h/1.2/Tue Dec 25 18:33:36 2007//
+/subr_hal.c/1.8/Sat Jul 28 00:43:22 2012//
+/subr_ndis.c/1.28/Tue Mar 25 16:23:58 2014//
+/subr_ntoskrnl.c/1.25/Wed Mar 26 18:11:26 2014//
+/subr_pe.c/1.7/Fri Feb  3 23:39:59 2012//
+/subr_usbd.c/1.6/Sat Mar 14 15:36:16 2009//
+/usbd_var.h/1.1/Thu Mar 30 22:56:50 2006//
+/winx64_wrap.S/1.1/Thu Mar 30 22:56:50 2006//
+D

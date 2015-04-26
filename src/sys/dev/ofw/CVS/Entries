@@ -1,0 +1,14 @@
+/Makefile/1.5/Wed Apr 11 19:07:37 2001//
+/files.ofw/1.13/Mon Jan  8 06:43:09 2007//
+/ofbus.c/1.25/Fri Jun  3 07:39:30 2011//
+/ofcons.c/1.45/Fri Jul 25 08:10:37 2014//
+/ofdisk.c/1.50/Wed Dec 31 19:52:06 2014//
+/ofnet.c/1.53/Sat Oct 27 17:18:28 2012//
+/ofrtc.c/1.23/Tue Jul 26 08:59:38 2011//
+/ofw_network_subr.c/1.7/Sat Mar 14 21:04:21 2009//
+/ofw_pci.h/1.7/Mon Apr 28 20:23:54 2008//
+/ofw_subr.c/1.23/Fri Oct 25 14:32:10 2013//
+/openfirm.h/1.30/Thu May 16 18:43:09 2013//
+/openfirmio.c/1.13/Fri Jul 25 08:10:37 2014//
+/openfirmio.h/1.6/Sun Dec 11 12:22:48 2005//
+D

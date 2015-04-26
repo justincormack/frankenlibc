@@ -1,0 +1,10 @@
+/Makefile/1.4/Sun Mar  8 15:21:20 2015//
+/rump_sunos_compat.c/1.1/Tue Apr  9 13:08:33 2013//
+/rump_sunos_syscall.h/1.3/Sun Mar  8 15:21:20 2015//
+/rump_sunos_syscallargs.h/1.3/Sun Mar  8 15:21:20 2015//
+/rump_sunos_syscalls.c/1.3/Sun Mar  8 15:21:20 2015//
+/rump_sunos_sysent.c/1.3/Sun Mar  8 15:21:20 2015//
+/sys_sunos_component.c/1.1/Thu Mar 13 02:04:14 2014//
+/syscalls.conf/1.1/Tue Apr  9 13:08:33 2013//
+/syscalls.master/1.2/Wed May 15 21:39:30 2013//
+D

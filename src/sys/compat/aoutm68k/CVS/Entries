@@ -1,0 +1,14 @@
+/Makefile/1.7/Tue Jan 14 18:51:24 2014//
+/aoutm68k_exec.c/1.27/Sun Feb 19 21:06:36 2012//
+/aoutm68k_mod.c/1.3/Fri Mar  7 01:33:43 2014//
+/aoutm68k_stat.c/1.24/Mon Apr 28 20:23:41 2008//
+/aoutm68k_stat.h/1.8/Sun Jan 11 22:54:16 2009//
+/aoutm68k_syscall.h/1.44/Sat Mar  7 16:41:52 2015//
+/aoutm68k_syscallargs.h/1.42/Sat Mar  7 16:41:52 2015//
+/aoutm68k_syscalls.c/1.41/Sat Mar  7 16:41:52 2015//
+/aoutm68k_sysent.c/1.46/Sat Mar  7 16:41:52 2015//
+/aoutm68k_util.h/1.2/Mon Apr 28 20:23:41 2008//
+/files.aoutm68k/1.7/Mon Nov 17 01:01:57 2014//
+/syscalls.conf/1.2/Fri Nov  1 20:39:17 2002//
+/syscalls.master/1.37/Mon Mar  7 19:26:35 2011//
+D

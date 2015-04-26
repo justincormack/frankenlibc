@@ -1,0 +1,14 @@
+/Makefile/1.4/Wed Apr 11 07:42:33 2001//
+/dpti.c/1.48/Fri Jul 25 08:10:37 2014//
+/dptivar.h/1.9/Sat Oct 27 17:18:17 2012//
+/files.i2o/1.10/Sat Dec  1 18:14:48 2007//
+/i2o.h/1.15/Mon Sep  8 23:36:54 2008//
+/i2odpt.h/1.5/Mon Sep  8 23:36:54 2008//
+/iop.c/1.86/Fri Jul 25 08:10:37 2014//
+/iopio.h/1.6/Mon Apr 28 20:23:48 2008//
+/iopreg.h/1.2/Mon Apr 28 20:23:48 2008//
+/iopsp.c/1.36/Sat Oct 27 17:18:17 2012//
+/iopspvar.h/1.9/Sat Oct 27 17:18:17 2012//
+/iopvar.h/1.24/Sat Oct 27 17:18:17 2012//
+/ld_iop.c/1.35/Mon Apr 13 16:33:24 2015//
+D

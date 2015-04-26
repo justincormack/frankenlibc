@@ -1,0 +1,11 @@
+/bcopy.S/1.1/Wed Sep  3 19:34:25 2014//
+/bzero.S/1.1/Wed Sep  3 19:34:25 2014//
+/clz.S/1.1/Wed Sep  3 19:34:25 2014//
+/ctz.S/1.1/Wed Sep  3 19:34:25 2014//
+/ffs.S/1.1/Wed Sep  3 19:34:25 2014//
+/memcmp.S/1.1/Wed Sep  3 19:34:25 2014//
+/memcpy.c/1.1/Wed Sep  3 19:34:25 2014//
+/memmove.S/1.1/Wed Sep  3 19:34:25 2014//
+/memset.S/1.1/Wed Sep  3 19:34:25 2014//
+/strlen.S/1.1/Wed Sep  3 19:34:25 2014//
+D

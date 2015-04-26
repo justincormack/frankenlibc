@@ -1,0 +1,13 @@
+/Makefile/1.3/Thu Sep  3 12:04:50 2009//
+/files.smbfs/1.3/Sat Oct 11 06:42:19 2014//
+/smbfs.h/1.18/Sun Dec 21 10:48:53 2014//
+/smbfs_io.c/1.34/Fri Apr 23 15:38:47 2010//
+/smbfs_kq.c/1.26/Thu Oct 17 21:04:44 2013//
+/smbfs_node.c/1.53/Sun Dec 21 10:48:53 2014//
+/smbfs_node.h/1.15/Fri Jan  2 09:48:01 2015//
+/smbfs_smb.c/1.47/Sun Dec 21 10:48:53 2014//
+/smbfs_subr.c/1.19/Mon Nov 17 02:23:33 2014//
+/smbfs_subr.h/1.22/Sat Nov 15 18:52:44 2014//
+/smbfs_vfsops.c/1.104/Sun Dec 21 10:48:53 2014//
+/smbfs_vnops.c/1.93/Sun Dec 21 10:48:53 2014//
+D

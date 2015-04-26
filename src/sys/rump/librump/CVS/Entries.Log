@@ -1,0 +1,10 @@
+A D/rumpcrypto////
+A D/rumpdev////
+A D/rumpkern////
+A D/rumpnet////
+A D/rumpuser////
+A D/rumpvfs////
+A D/test////
+R D/test////
+R D/rumpuser////
+R D/rumpcrypto////

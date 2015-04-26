@@ -1,0 +1,13 @@
+/Makefile/1.1/Mon Dec 23 17:30:40 2002//
+/filecore.h/1.5/Tue Dec 25 18:33:43 2007//
+/filecore_bmap.c/1.11/Sat Mar 28 19:24:05 2015//
+/filecore_extern.h/1.22/Sun Jun 23 07:28:36 2013//
+/filecore_lookup.c/1.21/Sat Oct  4 13:27:24 2014//
+/filecore_mount.h/1.6/Sat Dec  3 17:34:43 2005//
+/filecore_node.c/1.27/Sat Oct  4 13:27:24 2014//
+/filecore_node.h/1.6/Sat Oct  4 13:27:24 2014//
+/filecore_utils.c/1.11/Thu Dec 20 08:03:42 2012//
+/filecore_vfsops.c/1.78/Sat Mar 28 19:24:05 2015//
+/filecore_vnops.c/1.44/Mon Apr 20 23:03:08 2015//
+/files.filecorefs/1.4/Sat Oct 11 06:42:18 2014//
+D

@@ -1,0 +1,12 @@
+/Makefile.inc/1.5/Fri May  3 21:38:43 1996//
+/extern.h/1.8/Tue Aug 26 21:18:38 2008//
+/rec_close.c/1.15/Thu Sep 11 12:58:00 2008//
+/rec_delete.c/1.17/Thu Sep 11 12:58:00 2008//
+/rec_get.c/1.18/Wed Dec 25 19:42:23 2013//
+/rec_open.c/1.20/Sun Dec  1 00:22:48 2013//
+/rec_put.c/1.21/Sat Dec 14 18:04:56 2013//
+/rec_search.c/1.14/Thu Sep 11 12:58:00 2008//
+/rec_seq.c/1.14/Thu Sep 11 12:58:00 2008//
+/rec_utils.c/1.14/Sat Dec 14 18:04:56 2013//
+/recno.h/1.6/Thu Aug  7 16:42:44 2003//
+D

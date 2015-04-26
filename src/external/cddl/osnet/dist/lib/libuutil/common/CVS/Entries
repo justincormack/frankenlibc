@@ -1,0 +1,13 @@
+/libuutil.h/1.1.1.1/Fri Aug  7 18:32:34 2009//
+/libuutil_common.h/1.1.1.1/Fri Aug  7 18:32:34 2009//
+/libuutil_impl.h/1.1.1.1/Fri Aug  7 18:32:34 2009//
+/uu_alloc.c/1.1.1.1/Fri Aug  7 18:32:34 2009//
+/uu_avl.c/1.1.1.1/Fri Aug  7 18:32:34 2009//
+/uu_dprintf.c/1.1.1.1/Fri Aug  7 18:32:34 2009//
+/uu_ident.c/1.1.1.1/Fri Aug  7 18:32:34 2009//
+/uu_list.c/1.1.1.1/Fri Aug  7 18:32:35 2009//
+/uu_misc.c/1.2/Fri Apr 10 22:38:30 2015//
+/uu_open.c/1.1.1.1/Fri Aug  7 18:32:35 2009//
+/uu_pname.c/1.1.1.1/Fri Aug  7 18:32:35 2009//
+/uu_strtoint.c/1.1.1.1/Fri Aug  7 18:32:35 2009//
+D

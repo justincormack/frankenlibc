@@ -1,0 +1,17 @@
+/Makefile/1.1/Mon Jun  2 03:45:41 2003//
+/cs80bus.c/1.16/Sat Oct 27 17:18:16 2012//
+/cs80busvar.h/1.6/Sat Oct 27 17:18:16 2012//
+/ct.c/1.27/Fri Jul 25 08:10:36 2014//
+/ctreg.h/1.4/Tue Dec 25 18:33:37 2007//
+/files.gpib/1.1/Mon Jun  2 03:45:41 2003//
+/gpib.c/1.22/Fri Jul 25 08:10:36 2014//
+/gpibio.h/1.3/Sun Dec 11 12:21:21 2005//
+/gpibvar.h/1.5/Sat Oct 27 17:18:16 2012//
+/hil_gpib.c/1.12/Sat Oct 27 17:18:16 2012//
+/mt.c/1.29/Fri Jul 25 08:10:36 2014//
+/mtreg.h/1.4/Sun Dec 11 12:21:21 2005//
+/ppi.c/1.22/Fri Jul 25 08:10:36 2014//
+/ppiio.h/1.3/Sun Dec 11 12:21:21 2005//
+/rd.c/1.40/Mon Apr 13 16:33:24 2015//
+/rdreg.h/1.6/Tue Feb  8 20:20:27 2011//
+D

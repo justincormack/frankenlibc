@@ -1,0 +1,8 @@
+A D/libcrypto////
+A D/libcrypto_idea////
+A D/libcrypto_mdc2////
+A D/libcrypto_rc5////
+A D/libdes////
+A D/libssl////
+R D/libcrypto_mdc2////
+R D/libcrypto_idea////

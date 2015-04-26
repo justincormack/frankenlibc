@@ -1,0 +1,21 @@
+/Makefile.inc/1.16/Mon Apr 24 17:15:06 2006//
+/creat.3/1.16/Thu Aug  7 16:42:39 2003//
+/creat.c/1.10/Thu Aug  7 16:42:39 2003//
+/getdtablesize.3/1.14/Thu Jan  5 07:05:59 2012//
+/getdtablesize.c/1.10/Sun Jun 24 15:26:03 2012//
+/gethostid.3/1.12/Thu Aug  7 16:42:39 2003//
+/gethostid.c/1.6/Mon Apr 19 13:16:42 2004//
+/getwd.c/1.15/Mon Jun 25 22:32:43 2012//
+/killpg.3/1.16/Thu Aug  7 16:42:39 2003//
+/killpg.c/1.8/Thu Aug  7 16:42:39 2003//
+/sethostid.c/1.7/Mon Apr 19 13:16:42 2004//
+/setpgrp.c/1.8/Thu Aug  7 16:42:40 2003//
+/setrgid.c/1.12/Thu Aug  7 16:42:40 2003//
+/setruid.3/1.10/Thu Aug  7 16:42:40 2003//
+/setruid.c/1.13/Thu Aug  7 16:42:40 2003//
+/sigblock.3/1.17/Thu Aug  7 16:42:40 2003//
+/sigcompat.c/1.13/Sat Dec 24 21:11:16 2005//
+/sigpause.3/1.15/Thu Aug  7 16:42:40 2003//
+/sigsetmask.3/1.19/Mon May  6 13:29:12 2013//
+/sigvec.3/1.26/Mon Mar 22 19:30:53 2010//
+D

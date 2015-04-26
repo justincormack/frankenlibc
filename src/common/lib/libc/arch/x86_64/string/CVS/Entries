@@ -1,0 +1,15 @@
+/bcmp.S/1.3/Sat Mar 22 19:16:34 2014//
+/bcopy.S/1.5/Sat Mar 22 19:16:34 2014//
+/ffs.S/1.5/Sat Mar 22 19:16:34 2014//
+/memchr.S/1.6/Sat Mar 22 19:16:34 2014//
+/memcmp.S/1.3/Sat Mar 22 19:16:34 2014//
+/memcpy.S/1.1/Tue Dec 20 19:28:51 2005//
+/memmove.S/1.1/Tue Dec 20 19:28:51 2005//
+/memset.S/1.5/Thu May 22 16:47:31 2014//
+/strcat.S/1.2/Sat Mar 22 19:16:34 2014//
+/strchr.S/1.7/Sat Mar 22 19:16:34 2014//
+/strcmp.S/1.2/Sat Mar 22 19:16:34 2014//
+/strcpy.S/1.2/Sat Mar 22 19:16:34 2014//
+/strlen.S/1.6/Sat Mar 22 19:16:34 2014//
+/strrchr.S/1.3/Sat Mar 22 19:16:34 2014//
+D

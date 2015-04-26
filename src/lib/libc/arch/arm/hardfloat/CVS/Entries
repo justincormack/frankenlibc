@@ -1,0 +1,8 @@
+/fabs_ieee754.S/1.1/Fri Jan 17 22:19:46 2014//
+/fpgetmask.S/1.7/Fri Aug  2 02:07:00 2013//
+/fpgetround.c/1.6/Fri Jan 11 13:55:26 2013//
+/fpgetsticky.S/1.6/Fri Jan 11 13:55:26 2013//
+/fpsetmask.S/1.7/Thu Jan 23 00:00:16 2014//
+/fpsetround.c/1.8/Sun Feb  3 01:50:54 2013//
+/fpsetsticky.S/1.6/Fri Jan 11 13:55:26 2013//
+D

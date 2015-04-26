@@ -1,0 +1,9 @@
+A D/dtrace////
+A D/fbt////
+A D/linux32_syscall////
+A D/linux_syscall////
+A D/lockstat////
+A D/netbsd32_syscall////
+A D/profile////
+A D/sdt////
+A D/syscall////
