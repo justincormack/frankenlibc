@@ -6,6 +6,7 @@ RUMPOBJ=${PWD}/rumpobj
 RUMP=${RUMPOBJ}/rump
 RUMPSRC=src
 OUTDIR=${PWD}/rump
+NCPU=1
 
 RUNTESTS="test"
 
@@ -15,19 +16,22 @@ case ${TARGET} in
 *-linux*)
 	OS=linux
 	FILTER="-DNOSECCOMP"
+	NCPU=$(cat /proc/cpuinfo | grep --count processor )
 	;;
 *-netbsd*)
 	OS=netbsd
+	NCPU=$(sysctl -n hw.ncpu )
 	;;
 *-freebsd*)
 	OS=freebsd
 	FILTER="-DCAPSICUM"
+	NCPU=$(sysctl -n hw.ncpu )
 	;;
 *)
 	OS=unknown
 esac
 
-STDJ="-j 4"
+STDJ="-j ${NCPU}"
 BUILD_QUIET="-qq"
 DBG_F='-O2 -g'
 
