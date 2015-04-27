@@ -108,8 +108,8 @@ $(OBJDIR)/pwrite.o:		pwrite.c $(HEADERS)
 $(OBJDIR)/read.o:		read.c $(HEADERS)
 				$(COMPILE.c) -o $@ read.c
 
-$(OBJDIR)/set_thread_area.o:	set_thread_area.c $(HEADERS)
-				$(COMPILE.c) -o $@ set_thread_area.c
+$(OBJDIR)/set_thread_area.o:	set_thread_area.S $(HEADERS)
+				$(COMPILE.S) -o $@ set_thread_area.S
 
 $(OBJDIR)/syscall.o:		syscall.S $(HEADERS)
 				$(COMPILE.S) -o $@ syscall.S
