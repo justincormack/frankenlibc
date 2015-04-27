@@ -358,7 +358,7 @@ then
 			appendvar ALL_LIBS "${RUMP}/lib/librumpvfs.a"
 			;;
 		fs_*)
-			appendvar ALL_LIBS "${RUMP}/lib/librumpvfs.a"
+			appendvar ALL_LIBS "${RUMP}/lib/librumpvfs.a ${RUMP}/lib/librumpdev.a ${RUMP}/lib/librumpdev_disk.a"
 			;;
 		esac
 		appendvar ALL_LIBS "${RUMP}/lib/librump${l}.a"

@@ -18,8 +18,10 @@ enum rump_etfs_type {
 };
 
 int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type);
-int rump_pub_netconfig_ifcreate(const char *);
-int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *);
+int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
+int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
+int rump_pub_netconfig_ifcreate(const char *interface) {return 0;}
+int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *interface) {return 0;}
 
 int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 #define CTL_NET         4
