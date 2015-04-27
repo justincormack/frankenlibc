@@ -1,11 +1,7 @@
 #include <elf.h>
 #include <stdint.h>
 
-#include "linux.h"
-
-#ifndef TP_ADJ
-#define TP_ADJ(p) (p)
-#endif
+typedef __SIZE_TYPE__ size_t;
 
 /* move to a header somewhere */
 int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
@@ -20,7 +16,7 @@ size_t __sysinfo;
 size_t __pagesize;
 size_t __random;
 
-int __set_thread_area(void *);
+int __platform_set_thread_area(void *);
 static int64_t builtin_tls[4096/sizeof(int64_t)];
 
 int
@@ -41,8 +37,7 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 	__random = aux[AT_RANDOM];
 
 	/* init tls; gcc needs this even for some non-tls using programs */
-	/* XXX will do properly soon */
-	__set_thread_area(TP_ADJ(builtin_tls));
+	__platform_set_thread_area(builtin_tls);
 
 	return __franken_start_main(main, argc, argv, envp);
 }
