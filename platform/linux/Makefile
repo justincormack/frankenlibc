@@ -20,7 +20,9 @@ OBJ+=$(OBJDIR)/mprotect.o
 OBJ+=$(OBJDIR)/munmap.o
 OBJ+=$(OBJDIR)/__libc_start_main.o
 OBJ+=$(OBJDIR)/pread.o
+OBJ+=$(OBJDIR)/preadv.o
 OBJ+=$(OBJDIR)/pwrite.o
+OBJ+=$(OBJDIR)/pwritev.o
 OBJ+=$(OBJDIR)/read.o
 OBJ+=$(OBJDIR)/readv.o
 OBJ+=$(OBJDIR)/set_thread_area.o
@@ -104,8 +106,14 @@ $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
 $(OBJDIR)/pread.o:		pread.c $(HEADERS)
 				$(COMPILE.c) -o $@ pread.c
 
+$(OBJDIR)/preadv.o:		preadv.c $(HEADERS)
+				$(COMPILE.c) -o $@ preadv.c
+
 $(OBJDIR)/pwrite.o:		pwrite.c $(HEADERS)
 				$(COMPILE.c) -o $@ pwrite.c
+
+$(OBJDIR)/pwritev.o:		pwritev.c $(HEADERS)
+				$(COMPILE.c) -o $@ pwritev.c
 
 $(OBJDIR)/read.o:		read.c $(HEADERS)
 				$(COMPILE.c) -o $@ read.c

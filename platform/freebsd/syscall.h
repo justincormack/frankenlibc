@@ -29,5 +29,7 @@
 #define SYS_exit			1
 #define SYS___sysctl			202
 #define SYS_nanosleep			240
+#define	SYS_preadv			289
+#define	SYS_pwritev			290
 #define SYS_pread			475
 #define SYS_pwrite			476

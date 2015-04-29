@@ -1,6 +1,7 @@
 #include <sys/types.h>
 
 #define LINUX_EAGAIN	11
+#define LINUX_ESPIPE	29
 
 #define LINUX_CLOCK_REALTIME 0
 #define LINUX_CLOCK_MONOTONIC 1
