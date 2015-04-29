@@ -9,6 +9,7 @@ struct __fdtable {
 	int valid;
 	char *mem;
 	int flags;
+	int seek;
 	struct stat st;
 	char key[16];
 	char num[16];

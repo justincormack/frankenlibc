@@ -168,6 +168,8 @@ filter_fd(int fd, int flags, struct stat *st)
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(readv), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(preadv), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
 	}
 
 	/* write(fd, ...), pwrite(fd, ...) */
@@ -181,6 +183,8 @@ filter_fd(int fd, int flags, struct stat *st)
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(writev), 1,
 			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(pwritev), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
 	}
 
 	/* fsync(fd) */

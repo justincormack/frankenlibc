@@ -67,26 +67,20 @@ __franken_fdinit()
 		memcpy(&__franken_fd[fd].st, &st, sizeof(struct stat));
 		switch (st.st_mode & S_IFMT) {
 		case S_IFREG:
-			mem = mmap(0, st.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-			if (mem != MAP_FAILED)
-				__franken_fd[fd].flags = PROT_READ | PROT_WRITE;
-			if (mem == MAP_FAILED) {
-				mem = mmap(0, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
-				if (mem != MAP_FAILED)
-					__franken_fd[fd].flags = PROT_READ;
-			}
-			if (mem == MAP_FAILED) {
-				__franken_fd[fd].valid = 0;
-				break;
-			}
-			__franken_fd[fd].mem = mem;
+			__franken_fd[fd].seek = 1;
 			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
 			break;
 		case S_IFBLK:
+			__franken_fd[fd].seek = 1;
 			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
 			/* XXX premount root */
 			break;
+		case S_IFIFO:
+			__franken_fd[fd].seek = 0;
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
+			break;
 		case S_IFSOCK:
+			__franken_fd[fd].seek = 0;
 			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "virt", fd);
 			break;
 		}

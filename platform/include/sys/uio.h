@@ -3,6 +3,8 @@
 
 #include <sys/types.h>
 
+#define preadv(f, i, n, o) __platform_preadv(f, i, n, o)
+#define pwritev(f, i, n, o) __platform_pwritev(f, i, n, o)
 #define readv(f, i, n) __platform_readv(f, i, n)
 #define writev(f, i, n) __platform_writev(f, i, n)
 

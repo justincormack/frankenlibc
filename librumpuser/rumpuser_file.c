@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/mman.h>
+#include <sys/uio.h>
 
 #include <rump/rumpuser.h>
 
@@ -76,31 +77,19 @@ int
 rumpuser_iovread(int fd, struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
-	size_t i;
-	off_t size = __franken_fd[fd].st.st_size;
-	size_t n = 0;
+	size_t n;
 
-	/* Only used eg in device drivers, ignore */
-	if (roff == RUMPUSER_IOV_NOSEEK)
-		roff = 0;
-
-	if (roff > size) {
-		*retp = 0;
+	if (roff == RUMPUSER_IOV_NOSEEK || __franken_fd[fd].seek == 0) {
+		n = readv(fd, (struct iovec *)ruiov, iovlen);
+		if (n == -1)
+			return errno;
+		*retp = n;
 		return 0;
 	}
 
-	for (i = 0; i < iovlen; i++) {
-		size_t len = ruiov[i].iov_len;
-
-		if (len > size - roff)
-			len = size - roff;
-		memcpy(ruiov[i].iov_base, __franken_fd[fd].mem + roff, len);
-		n += len;
-		roff += len;
-		if (len != ruiov[i].iov_len)
-			break;
-	}
-
+	n = preadv(fd, (struct iovec *)ruiov, iovlen, roff);
+	if (n == -1)
+		return errno;
 	*retp = n;
 	return 0;
 }
@@ -109,31 +98,19 @@ int
 rumpuser_iovwrite(int fd, const struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
-	size_t i;
-	off_t size = __franken_fd[fd].st.st_size;
-	size_t n = 0;
+	size_t n;
 
-	/* Only used eg in device drivers, ignore */
-	if (roff == RUMPUSER_IOV_NOSEEK)
-		roff = 0;
-
-	if (roff > size) {
-		*retp = 0;
+	if (roff == RUMPUSER_IOV_NOSEEK || __franken_fd[fd].seek == 0) {
+		n = writev(fd, (struct iovec *)ruiov, iovlen);
+		if (n == -1)
+			return errno;
+		*retp = n;
 		return 0;
 	}
 
-	for (i = 0; i < iovlen; i++) {
-		size_t len = ruiov[i].iov_len;
-
-		if (len > size - roff)
-			len = size - roff;
-		memcpy(__franken_fd[fd].mem + roff, ruiov[i].iov_base, len);
-		n += len;
-		roff += len;
-		if (len != ruiov[i].iov_len)
-			break;
-	}
-
+	n = pwritev(fd, (struct iovec *)ruiov, iovlen, roff);
+	if (n == -1)
+		return errno;
 	*retp = n;
 	return 0;
 }
@@ -141,8 +118,12 @@ rumpuser_iovwrite(int fd, const struct rumpuser_iovec *ruiov, size_t iovlen,
 int
 rumpuser_syncfd(int fd, int flags, uint64_t start, uint64_t len)
 {
+	int ret;
 
-	/* XXX would need msync, but not used anywhere in tree */
+	ret = fsync(fd);
+	if (ret == -1)
+		return errno;
+
 	return 0;
 }
 
