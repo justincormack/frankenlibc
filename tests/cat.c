@@ -9,16 +9,18 @@ main(int argc, char **argv)
 {
 	char buf[BUFSIZE];
 	int ret;
+	int fd = 3;
 
 	while (1) {
-		ret = read(3, buf, BUFSIZE);
+		ret = read(fd, buf, BUFSIZE);
 		if (ret == -1) {
-			perror("read");
-			return 1;
+			break;
 		}
 		if (ret == 0) {
-			fprintf(stderr, "EOF\n");
-			break;
+			fd++;
+			if (fd == 1)
+				fd = 3;
+			continue;
 		}
 		ret = write(1, buf, ret);
 		if (ret == -1) {
