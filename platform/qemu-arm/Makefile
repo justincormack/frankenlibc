@@ -22,7 +22,9 @@ OBJ+=$(OBJDIR)/__libc_start_main.o
 OBJ+=$(OBJDIR)/pread.o
 OBJ+=$(OBJDIR)/pwrite.o
 OBJ+=$(OBJDIR)/read.o
+OBJ+=$(OBJDIR)/readv.o
 OBJ+=$(OBJDIR)/write.o
+OBJ+=$(OBJDIR)/writev.o
 HEADERS=$(CRTDIR) $(OBJDIR)
 INCLUDES=-I../include -I../../franken/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -102,8 +104,14 @@ $(OBJDIR)/pwrite.o:		pwrite.c $(HEADERS)
 $(OBJDIR)/read.o:		read.c $(HEADERS)
 				$(COMPILE.c) -o $@ read.c
 
+$(OBJDIR)/readv.o:		readv.c $(HEADERS)
+				$(COMPILE.c) -o $@ readv.c
+
 $(OBJDIR)/write.o:		write.c $(HEADERS)
 				$(COMPILE.c) -o $@ write.c
+
+$(OBJDIR)/writev.o:		writev.c $(HEADERS)
+				$(COMPILE.c) -o $@ writev.c
 
 .PHONY:				clean
 clean:		

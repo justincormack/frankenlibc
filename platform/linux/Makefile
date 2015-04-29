@@ -22,7 +22,9 @@ OBJ+=$(OBJDIR)/__libc_start_main.o
 OBJ+=$(OBJDIR)/pread.o
 OBJ+=$(OBJDIR)/pwrite.o
 OBJ+=$(OBJDIR)/read.o
-OBJ+=$(OBJDIR)/set_thread_area.o $(OBJDIR)/write.o
+OBJ+=$(OBJDIR)/readv.o
+OBJ+=$(OBJDIR)/set_thread_area.o
+OBJ+=$(OBJDIR)/write.o
 OBJ+=$(OBJDIR)/writev.o
 OBJ+=$(OBJDIR)/syscall.o $(OBJDIR)/syscall_ret.o
 OBJ+=$(OBJDIR)/vdso.o
@@ -107,6 +109,9 @@ $(OBJDIR)/pwrite.o:		pwrite.c $(HEADERS)
 
 $(OBJDIR)/read.o:		read.c $(HEADERS)
 				$(COMPILE.c) -o $@ read.c
+
+$(OBJDIR)/readv.o:		readv.c $(HEADERS)
+				$(COMPILE.c) -o $@ readv.c
 
 $(OBJDIR)/set_thread_area.o:	set_thread_area.c $(HEADERS)
 				$(COMPILE.c) -o $@ set_thread_area.c

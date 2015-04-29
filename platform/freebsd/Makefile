@@ -17,7 +17,9 @@ OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/mmap.o $(OBJDIR)/__mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
-OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o $(OBJDIR)/read.o
+OBJ+=$(OBJDIR)/pread.o $(OBJDIR)/pwrite.o
+OBJ+=$(OBJDIR)/read.o
+OBJ+=$(OBJDIR)/readv.o
 OBJ+=$(OBJDIR)/_start1.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 OBJ+=$(OBJDIR)/writev.o
@@ -124,6 +126,9 @@ $(OBJDIR)/pwrite.o:		pwrite.S $(HEADERS)
 
 $(OBJDIR)/read.o:		read.S $(HEADERS)
 				$(COMPILE.S) -o $@ read.S
+
+$(OBJDIR)/readv.o:		readv.S $(HEADERS)
+				$(COMPILE.S) -o $@ readv.S
 
 $(OBJDIR)/_start1.o:		_start1.c $(HEADERS)
 				$(COMPILE.c) -o $@ _start1.c
