@@ -39,7 +39,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 		exit(1);
 	}
 
-	chdir("/");
+	emptydir();
 
 	if (fexecve(pfd, argv, envp) == -1) {
 		perror("fexecve");

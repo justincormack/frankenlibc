@@ -172,3 +172,53 @@ colon_open(char *pre, char *post)
 
 	return os_open(pre, post);
 }
+
+/* create an empty working directory, chroot if able */
+int
+emptydir()
+{
+	char template[20] = "/tmp/dirXXXXXX";
+	char *dir;
+	int ret;
+	int dirfd;
+
+	dirfd = open(".", O_RDONLY|O_DIRECTORY);
+	if (dirfd == -1) {
+		perror("open");
+		return 1;
+	}
+
+	dir = mkdtemp(template);
+	if (! dir) {
+		perror("mkdtemp");
+		return 1;
+	}
+
+	if (chdir(dir) == -1) {
+		perror("chdir");
+		return 1;
+	}
+
+	if (unlinkat(dirfd, dir, AT_REMOVEDIR) == -1) {
+		perror("unlinkat");
+		return 1;
+	}
+
+	if (close(dirfd) == -1) {
+		perror("close");
+		return 1;
+	}
+
+	if (chroot(".") == 0) {
+		if (chdir("/") == -1) {
+			perror("chdir");
+			return 1;
+		}
+		if (chmod(".", 0) == -1) {
+			perror("chmod");
+			return -1;
+		}
+	}
+
+	return 0;	
+}

@@ -212,6 +212,8 @@ filter_fd(int fd, int flags, struct stat *st)
 	return 0;
 }
 
+/* without being able to exec a file descriptor, we cannot lock down as
+   much, but this is only a very recent facility in Linux */
 #ifdef SYS_execveat
 /* not yet defined by libc */
 int execveat(int, const char *, char *const [], char *const [], int);
@@ -223,14 +225,11 @@ execveat(int dirfd, const char *pathname,
 
 	return syscall(SYS_execveat, dirfd, pathname, argv, envp, flags);
 }
-#endif
 
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
-
-#ifdef SYS_execveat
 	const char *emptystring = "";
 	int fd = open(program, O_RDONLY | O_CLOEXEC);
 
@@ -238,14 +237,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 		perror("open");
 		exit(1);
 	}
-#endif
 
-	/* only working fexecve using execveat really safe
-	   but this is not widely available yet */
-#ifndef SYS_execveat
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0);
-	if (ret < 0) return ret;
-#else
 	/* lock down execveat to exactly what we need to exec program */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 5,
 		SCMP_A0(SCMP_CMP_EQ, fd),
@@ -254,9 +246,8 @@ filter_load_exec(char *program, char **argv, char **envp)
 		SCMP_A3(SCMP_CMP_EQ, (long)envp),
 		SCMP_A4(SCMP_CMP_EQ, AT_EMPTY_PATH));
 	if (ret < 0) return ret;
-	ret = chdir("/");
+	ret = emptydir();
 	if (ret < 0) return ret;
-#endif
 
 	/* seccomp_export_pfc(ctx, 1); */
 
@@ -265,20 +256,37 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	seccomp_release(ctx);
 
-#ifndef SYS_execveat
-	if (execve(program, argv, envp) == -1) {
-		perror("execve");
-		exit(1);
-	}
-#else
 	if (execveat(fd, emptystring, argv, envp, AT_EMPTY_PATH) == -1) {
 		perror("execveat");
 		exit(1);
 	}
-#endif
 
 	return 0;
 }
+#else /* execveat */
+int
+filter_load_exec(char *program, char **argv, char **envp)
+{
+	int ret;
+
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0);
+	if (ret < 0) return ret;
+
+	/* seccomp_export_pfc(ctx, 1); */
+
+	ret = seccomp_load(ctx);
+	if (ret < 0) return ret;
+
+	seccomp_release(ctx);
+
+	if (execve(program, argv, envp) == -1) {
+		perror("execve");
+		exit(1);
+	}
+
+	return 0;
+}
+#endif /* execveat */
 
 #endif /* SECCOMP */
 
