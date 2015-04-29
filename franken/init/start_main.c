@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include "init.h"
+
 void rump_boot_setsigmodel(int);
 int rump_init(void);
 int rump_pub_lwproc_rfork(int);
@@ -15,8 +17,6 @@ char *__progname = empty_string;
 void _libc_init(void) __attribute__((weak));
 void _libc_init() {}
 
-void __franken_fdinit(void);
-void __franken_autoconf(void);
 int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
 void _init(void) __attribute__ ((weak));
@@ -59,6 +59,8 @@ __franken_start_main(int(*main)(int,char **,char **), int argc, char **argv, cha
 		}
 	}
 
+	__franken_fdinit();
+
 	rump_boot_setsigmodel(RUMP_SIGMODEL_IGNORE);
 	rump_init();
 
@@ -74,7 +76,7 @@ __franken_start_main(int(*main)(int,char **,char **), int argc, char **argv, cha
 		(*(void (**)())a)();
 
 	/* see if we have any devices to init */
-	__franken_fdinit();
+	__franken_fdinit_create();
 	/* autoconfigure what we can */
 	__franken_autoconf();
 

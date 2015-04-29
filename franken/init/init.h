@@ -11,9 +11,11 @@ struct __fdtable {
 	int flags;
 	struct stat st;
 	char key[16];
+	char num[16];
 };
 
 extern struct __fdtable __franken_fd[MAXFD];
 
 void __franken_fdinit(void);
+void __franken_fdinit_create(void);
 void __franken_autoconf(void);

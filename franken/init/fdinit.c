@@ -31,23 +31,25 @@ int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const v
 struct __fdtable __franken_fd[MAXFD];
 
 /* XXX should have proper functions in libc */
-static char *
-mkkey(char *key, const char *pre, int fd)
+void
+mkkey(char *k, char *n, const char *pre, int fd)
 {
-	char *k = key;
-	int i;
+	int i, d;
 
 	if (fd > 99) abort();
 	for (i = 0; i < strlen(pre); i++)
 		*k++ = pre[i];
 	if (fd > 9) {
-		*k++ = (fd / 10) + '0';
+		d = (fd / 10) + '0';
+		*k++ = d;
+		*n++ = d;
 		fd /= 10;
 	}
-	*k++ = fd + '0';
+	d = fd + '0';
+	*k++ = d;
 	*k++ = 0;
-
-	return key;
+	*n++ = d;
+	*n++ = 0;
 }
 
 void
@@ -56,7 +58,6 @@ __franken_fdinit()
 	int fd;
 	struct stat st;
 	char *mem;
-	char *key;
 	int ret;
 
 	/* iterate over numbered descriptors, stopping when one does not exist */
@@ -83,20 +84,40 @@ __franken_fdinit()
 				break;
 			}
 			__franken_fd[fd].mem = mem;
-			key = mkkey(__franken_fd[fd].key, "/dev/fd", fd);
-			rump_pub_etfs_register(key, &key[7], RUMP_ETFS_REG);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
 			break;
 		case S_IFBLK:
-			key = mkkey(__franken_fd[fd].key, "/dev/fd", fd);
-			rump_pub_etfs_register(key, &key[7], RUMP_ETFS_BLK);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
+			/* XXX premount root */
 			break;
 		case S_IFSOCK:
-			key = mkkey(__franken_fd[fd].key, "virt", fd);
-			ret = rump_pub_netconfig_ifcreate(key);
-			if (ret == 0) {
-				rump_pub_netconfig_dhcp_ipv4_oneshot(key);
-			}
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "virt", fd);
 			break;
+		}
+	}
+}
+
+void
+__franken_fdinit_create()
+{
+	int fd, ret;
+
+	for (fd = 0; fd < MAXFD; fd++) {
+		if (__franken_fd[fd].valid == 0)
+			break;
+		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
+		case S_IFREG:
+			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_REG);
+		break;
+		case S_IFBLK:
+			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
+		break;
+		case S_IFSOCK:
+			ret = rump_pub_netconfig_ifcreate(__franken_fd[fd].key);
+			if (ret == 0) {
+				rump_pub_netconfig_dhcp_ipv4_oneshot(__franken_fd[fd].key);
+			}
+		break;
 		}
 	}
 }
