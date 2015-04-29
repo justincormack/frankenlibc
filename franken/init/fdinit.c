@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/mman.h>
@@ -22,11 +23,6 @@ int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_ifcreate(const char *interface) {return 0;}
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *interface) {return 0;}
-
-int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
-#define CTL_NET         4
-#define CTL_NET_INET6   24
-#define IPV6CTL_ACCEPT_RTADV    12
 
 struct __fdtable __franken_fd[MAXFD];
 
@@ -97,6 +93,15 @@ __franken_fdinit()
 	}
 }
 
+/* XXX would be much nicer to build these functions against NetBSD libc headers, but at present
+   they are not built, or installed, yet. Need to reorder the build process */
+
+int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
+#define CTL_NET         4
+#define CTL_NET_INET6   24
+#define IPV6CTL_ACCEPT_RTADV    12
+int rump___sysimpl_open(const char *, int, ...);
+
 void
 __franken_fdinit_create()
 {
@@ -108,6 +113,8 @@ __franken_fdinit_create()
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
 		case S_IFREG:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_REG);
+			/* XXX need to implement fcntl to get how to open */
+			rump___sysimpl_open(__franken_fd[fd].key, O_RDWR);
 		break;
 		case S_IFBLK:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
