@@ -88,28 +88,28 @@ filter_fd(int fd, int flags, struct stat *st)
 	case O_RDONLY:
 		if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {
 			cap_rights_init(&rights, CAP_READ, \
-				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_R);
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL);
 		} else {
 			cap_rights_init(&rights, CAP_READ, \
-				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_MMAP_R);
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT);
 		}
 		break;
 	case O_WRONLY:
 		if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {
 			cap_rights_init(&rights, CAP_WRITE, \
-				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_W);
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL);
 		} else {
 			cap_rights_init(&rights, CAP_WRITE, \
-				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_MMAP_W);
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT);
 		}
 		break;
 	case O_RDWR:
 		if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {
 			cap_rights_init(&rights, CAP_READ, CAP_WRITE, \
-				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL, CAP_MMAP_RW);
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_IOCTL);
 		} else {
 			cap_rights_init(&rights, CAP_READ, CAP_WRITE, \
-				CAP_SEEK, CAP_FSYNC, CAP_FSTAT, CAP_MMAP_RW);
+				CAP_SEEK, CAP_FSYNC, CAP_FSTAT);
 		}
 		break;
 	default:
