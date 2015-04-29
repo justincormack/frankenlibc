@@ -26,6 +26,8 @@
 #define SYS_writev			121
 #define SYS_pread			173
 #define SYS_pwrite			174
+#define	SYS_preadv			289
+#define	SYS_pwritev			290
 #define SYS___clock_gettime50		427
 #define SYS___clock_getres50		429
 #define SYS_clock_nanosleep		477
