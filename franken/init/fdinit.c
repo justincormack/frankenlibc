@@ -95,13 +95,22 @@ int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const v
 #define CTL_NET_INET6   24
 #define IPV6CTL_ACCEPT_RTADV    12
 int rump___sysimpl_open(const char *, int, ...);
+int rump___sysimpl_close(int);
 
 void
 __franken_fdinit_create()
 {
 	int fd, ret;
 
-	for (fd = 0; fd < MAXFD; fd++) {
+/* XXX not working yet
+	if (__franken_fd[0].valid) {
+		rump___sysimpl_close(0);
+		rump___sysimpl_open(__franken_fd[0].key, O_RDONLY);
+		__franken_fd[0].st.st_mode = S_IFREG;
+	}
+*/
+
+	for (fd = 3; fd < MAXFD; fd++) {
 		if (__franken_fd[fd].valid == 0)
 			break;
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
