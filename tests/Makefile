@@ -9,7 +9,7 @@ CFLAGS+=-g
 
 DEPS=$(OBJDIR) $(LIBDIR)/libc.a
 
-OBJ=$(OBJDIR)/hello $(OBJDIR)/ctor
+OBJ=$(OBJDIR)/hello $(OBJDIR)/ctor $(OBJDIR)/cat
 
 default:		test
 
@@ -18,6 +18,7 @@ test:			run
 run:			$(OBJ)
 			RUMP_VERBOSE=1 ${BINDIR}/rumprun $(OBJDIR)/hello
 			${BINDIR}/rumprun $(OBJDIR)/ctor
+			echo frankenlibc | ${BINDIR}/rumprun $(OBJDIR)/cat
 
 $(OBJDIR):		
 			mkdir -p $(OBJDIR)
@@ -27,6 +28,9 @@ $(OBJDIR)/ctor:		ctor.c $(DEPS)
 
 $(OBJDIR)/hello:	hello.c $(DEPS)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ hello.c
+
+$(OBJDIR)/cat:		cat.c $(DEPS)
+			${CC} ${CFLAGS} ${LDFLAGS} -o $@ cat.c
 
 .PHONY:			test clean
 clean:		
