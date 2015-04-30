@@ -112,8 +112,10 @@ __franken_fdinit_create()
 	if (__franken_fd[0].valid) {
 		rump_pub_etfs_register(__franken_fd[0].key, __franken_fd[0].num, RUMP_ETFS_REG);
 		fd = rump___sysimpl_open(__franken_fd[0].key, O_RDONLY);
-		rump___sysimpl_dup2(fd, 0);
-		rump___sysimpl_close(fd);
+		if (fd != -1) {
+			rump___sysimpl_dup2(fd, 0);
+			rump___sysimpl_close(fd);
+		}
 	}
 
 	for (fd = 3; fd < MAXFD; fd++) {
