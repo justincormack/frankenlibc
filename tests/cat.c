@@ -12,7 +12,7 @@ main(int argc, char **argv)
 {
 	char buf[BUFSIZE];
 	int ret;
-	int fd = 3, last;
+	int fd = 0, last;
 
 	last = open("/dev/null", O_RDONLY);
 	if (last == -1) {

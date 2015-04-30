@@ -40,7 +40,10 @@ rumpuser_getfileinfo(const char *path, uint64_t *sizep, int *ftp)
 		ft = RUMPUSER_FT_BLK;
 		break;
 	case S_IFCHR:
-		ft = RUMPUSER_FT_CHR;
+		ft = RUMPUSER_FT_OTHER;
+		break;
+	case S_IFIFO:
+		ft = RUMPUSER_FT_OTHER;
 		break;
 	default:
 		ft = RUMPUSER_FT_OTHER;

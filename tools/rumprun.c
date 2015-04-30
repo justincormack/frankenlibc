@@ -110,7 +110,9 @@ main(int argc, char **argv)
 			perror("fcntl");
 			abort();
 		}
-		ret = fcntl(fd, F_SETFL, fl | O_NONBLOCK);
+		if (fd > 2) {
+			ret = fcntl(fd, F_SETFL, fl | O_NONBLOCK);
+		}
 		ret = fstat(fd, &st);
 		if (ret == -1) {
 			perror("fstat");

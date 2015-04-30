@@ -68,16 +68,21 @@ __franken_fdinit()
 		switch (st.st_mode & S_IFMT) {
 		case S_IFREG:
 			__franken_fd[fd].seek = 1;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
 			break;
 		case S_IFBLK:
 			__franken_fd[fd].seek = 1;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
 			/* XXX premount root */
+			break;
+		case S_IFCHR:
+			/* XXX Linux presents stdin as char device see notes to clean up */
+			__franken_fd[fd].seek = 0;
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
 			break;
 		case S_IFIFO:
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fd", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
 			break;
 		case S_IFSOCK:
 			__franken_fd[fd].seek = 0;
@@ -96,19 +101,20 @@ int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const v
 #define IPV6CTL_ACCEPT_RTADV    12
 int rump___sysimpl_open(const char *, int, ...);
 int rump___sysimpl_close(int);
+int rump___sysimpl_dup2(int, int);
 
 void
 __franken_fdinit_create()
 {
 	int fd, ret;
 
-/* XXX not working yet
+/* XXX not working yet */
 	if (__franken_fd[0].valid) {
-		rump___sysimpl_close(0);
-		rump___sysimpl_open(__franken_fd[0].key, O_RDONLY);
-		__franken_fd[0].st.st_mode = S_IFREG;
+		rump_pub_etfs_register(__franken_fd[0].key, __franken_fd[0].num, RUMP_ETFS_REG);
+		fd = rump___sysimpl_open(__franken_fd[0].key, O_RDONLY);
+		rump___sysimpl_dup2(fd, 0);
+		rump___sysimpl_close(fd);
 	}
-*/
 
 	for (fd = 3; fd < MAXFD; fd++) {
 		if (__franken_fd[fd].valid == 0)
@@ -118,16 +124,16 @@ __franken_fdinit_create()
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_REG);
 			/* XXX need to implement fcntl to get how to open */
 			rump___sysimpl_open(__franken_fd[fd].key, O_RDWR);
-		break;
+			break;
 		case S_IFBLK:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
-		break;
+			break;
 		case S_IFSOCK:
 			ret = rump_pub_netconfig_ifcreate(__franken_fd[fd].key);
 			if (ret == 0) {
 				rump_pub_netconfig_dhcp_ipv4_oneshot(__franken_fd[fd].key);
 			}
-		break;
+			break;
 		}
 	}
 }
