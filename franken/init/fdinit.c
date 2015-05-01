@@ -108,12 +108,28 @@ __franken_fdinit_create()
 {
 	int fd, ret;
 
-/* XXX not working yet */
 	if (__franken_fd[0].valid) {
 		rump_pub_etfs_register(__franken_fd[0].key, __franken_fd[0].num, RUMP_ETFS_REG);
 		fd = rump___sysimpl_open(__franken_fd[0].key, O_RDONLY);
 		if (fd != -1) {
 			rump___sysimpl_dup2(fd, 0);
+			rump___sysimpl_close(fd);
+		}
+	}
+	if (__franken_fd[1].valid) {
+		rump_pub_etfs_register(__franken_fd[1].key, __franken_fd[1].num, RUMP_ETFS_REG);
+		fd = rump___sysimpl_open(__franken_fd[1].key, O_WRONLY);
+		if (fd != -1) {
+			rump___sysimpl_dup2(fd, 1);
+			rump___sysimpl_close(fd);
+		}
+	}
+
+	if (__franken_fd[2].valid) {
+		rump_pub_etfs_register(__franken_fd[2].key, __franken_fd[2].num, RUMP_ETFS_REG);
+		fd = rump___sysimpl_open(__franken_fd[2].key, O_WRONLY);
+		if (fd != -1) {
+			rump___sysimpl_dup2(fd, 2);
 			rump___sysimpl_close(fd);
 		}
 	}
