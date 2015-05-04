@@ -72,7 +72,8 @@ rcvthread(void *arg)
 
 		nn = read(viu->viu_fd,
 			viu->viu_rcvbuf, sizeof(viu->viu_rcvbuf));
-		if (nn == -1 && errno == EAGAIN) {
+		/* standard tap devices, not macvtap, return 0 not EAGAIN */
+		if (nn == 0 || (nn == -1 && errno == EAGAIN)) {
 			rumpuser_component_schedule(NULL);
 			/* XXX temporary until we do interrupts properly */
 			/* schedule(); */
