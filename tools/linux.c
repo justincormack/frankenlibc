@@ -205,6 +205,9 @@ filter_fd(int fd, int flags, struct stat *st)
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, TUNSETIFF));
 		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
+			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, SIOCGIFHWADDR));
+		if (ret < 0) return ret;
 	}
 	/* XXX be more specific only for our dummy socket */
 	if (S_ISSOCK(st->st_mode)) {
