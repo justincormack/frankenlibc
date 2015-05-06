@@ -73,7 +73,6 @@ __franken_fdinit()
 		case S_IFBLK:
 			__franken_fd[fd].seek = 1;
 			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
-			/* XXX premount root */
 			break;
 		case S_IFCHR:
 			/* XXX Linux presents stdin as char device see notes to clean up */
@@ -95,6 +94,10 @@ __franken_fdinit()
 /* XXX would be much nicer to build these functions against NetBSD libc headers, but at present
    they are not built, or installed, yet. Need to reorder the build process */
 
+struct ufs_args {
+	char *fspec;
+};
+
 int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 #define CTL_NET         4
 #define CTL_NET_INET6   24
@@ -102,11 +105,13 @@ int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const v
 int rump___sysimpl_open(const char *, int, ...);
 int rump___sysimpl_close(int);
 int rump___sysimpl_dup2(int, int);
+int rump___sysimpl_mount50(const char *, const char *, int, void *, size_t);
 
 void
 __franken_fdinit_create()
 {
 	int fd, ret;
+	int root = 0;
 
 	if (__franken_fd[0].valid) {
 		rump_pub_etfs_register(__franken_fd[0].key, __franken_fd[0].num, RUMP_ETFS_REG);
@@ -145,6 +150,21 @@ __franken_fdinit_create()
 			break;
 		case S_IFBLK:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
+			if (root == 0) {
+				struct ufs_args ufs;
+
+				ufs.fspec = __franken_fd[fd].key;
+				/* XXX MNT_RDONLY if we do not have permission */
+				ret = rump___sysimpl_mount50("ffs", "/", 0, &ufs, sizeof(struct ufs_args));
+				if (ret == 0) {
+					root = 1;
+				} else {
+					ret = rump___sysimpl_mount50("ext2fs", "/", 0, &ufs, sizeof(struct ufs_args));
+					if (ret == 0) {
+						root = 1;
+					}
+				}
+			}
 			break;
 		case S_IFSOCK:
 			ret = rump_pub_netconfig_ifcreate(__franken_fd[fd].key);
