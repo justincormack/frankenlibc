@@ -47,7 +47,9 @@ fstat(int fd, struct stat *st)
 			/* use sock type to tell config we are network */
 			lst.st_mode = LINUX_S_IFSOCK;
 			/* find mac address */
-			ret = syscall(SYS_ioctl, __platform_socket_fd, SIOCGIFHWADDR, &ifr);
+			ret = syscall(SYS_ioctl, fd, SIOCGIFHWADDR, &ifr);
+			if (ret == -1 && __platform_socket_fd != -1)
+				ret = syscall(SYS_ioctl, __platform_socket_fd, SIOCGIFHWADDR, &ifr);
 			if (ret == 0) {
 				memcpy(st->st_hwaddr, ifr.ifr_addr.sa_data, 6);
 			}
