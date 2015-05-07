@@ -21,6 +21,7 @@
 #define SYS_munmap			73
 #define SYS_ioctl			54
 #define SYS_kill			37
+#define	SYS_fcntl			92
 #define	SYS_fsync			95
 #define SYS_readv			120
 #define SYS_writev			121

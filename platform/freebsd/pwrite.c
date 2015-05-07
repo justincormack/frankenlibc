@@ -4,7 +4,7 @@
 
 #include "init.h"
 
-ssize_t pwrite(int, const void *, size_t, off_t);
+ssize_t __pwrite(int, const void *, size_t, off_t);
 
 ssize_t
 pwrite(int fd, const void *buf, size_t count, off_t offset)
