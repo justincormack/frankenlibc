@@ -30,6 +30,8 @@
 	(((y) & 0xffffff00ULL) << 12) | \
 	(((y) & 0x000000ffULL)) )
 
+#define LINUX_F_GETFL 3
+
 /* note on 64 bit platforms, Linux timespec is the same as NetBSD,
    but this is not true on 32 bit platforms */
 

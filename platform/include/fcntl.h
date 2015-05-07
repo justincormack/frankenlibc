@@ -6,4 +6,10 @@
 #define O_RDWR          0x00000002
 #define O_ACCMODE       0x00000003
 
+#define F_GETFL 	3
+
+#define fcntl(f, a, b) __platform_fcntl(f, a, b)
+
+int fcntl(int, int, ...);
+
 #endif
