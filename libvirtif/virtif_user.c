@@ -64,9 +64,11 @@ rcvthread(void *arg)
 {
 	struct virtif_user *viu = arg;
 	struct iovec iov;
-	size_t nn = 0;
+	ssize_t nn;
 
 	rumpuser_component_kthread();
+
+	__franken_fd[viu->viu_fd].wake = viu->viu_rcvthr;
 
 	while (!viu->viu_dying) {
 
@@ -75,9 +77,8 @@ rcvthread(void *arg)
 		/* standard tap devices, not macvtap, return 0 not EAGAIN */
 		if (nn == 0 || (nn == -1 && errno == EAGAIN)) {
 			rumpuser_component_schedule(NULL);
-			/* XXX temporary until we do interrupts properly */
-			/* schedule(); */
-			clock_sleep(CLOCK_MONOTONIC, 0, 1000);
+			/* will be woken by poll */
+			clock_sleep(CLOCK_REALTIME, 10, 0);
 			rumpuser_component_unschedule();
 			continue;
 		}

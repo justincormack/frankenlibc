@@ -13,6 +13,7 @@ struct __fdtable {
 	struct stat st;
 	char key[16];
 	char num[16];
+	struct thread *wake;
 };
 
 extern struct __fdtable __franken_fd[MAXFD];

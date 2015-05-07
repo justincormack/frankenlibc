@@ -45,6 +45,8 @@
 #define exit_thread __sched_exit_thread
 #define create_thread(n, c, f, a, s, ss, j) __sched_create_thread(n, c, f, a, s, ss, j)
 #define join_thread(t) __sched_join_thread(t)
+#define clock_sleep(a, b, c) __sched_clock_sleep(a, b, c)
+#define wake(t) __sched_wake(t)
 
 #define mutex_init(m, i) __sched_mutex_init(m, i)
 #define mutex_enter(m) __sched_mutex_enter(m)
@@ -83,6 +85,7 @@ struct thread *create_thread(const char *, void *,
 	void (*)(void *), void *, void *, size_t, int);
 void join_thread(struct thread *);
 int clock_sleep(clockid_t, int64_t, long);
+void wake(struct thread *);
 
 struct rumpuser_mtx;
 #define MTX_SPIN       0x01

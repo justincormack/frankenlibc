@@ -135,7 +135,6 @@ struct waiter {
 	int onlist;
 };
 
-static void wake(struct thread *);
 static void block(struct thread *);
 static int is_runnable(struct thread *);
 static void set_runnable(struct thread *);
@@ -434,7 +433,7 @@ clock_sleep(clockid_t clk, int64_t sec, long nsec)
 	return 0;
 }
 
-static void
+void
 wake(struct thread *thread)
 {
 
