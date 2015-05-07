@@ -193,7 +193,7 @@ filter_fd(int fd, int flags, struct stat *st)
 	if (ret < 0) return ret;
 
 	/* fcntl(fd, F_GETFL, ...) */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fsync), 2,
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 2,
 		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, F_GETFL));
 	if (ret < 0) return ret;
 
