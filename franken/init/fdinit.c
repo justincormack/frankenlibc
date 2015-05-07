@@ -98,6 +98,8 @@ struct ufs_args {
 	char *fspec;
 };
 
+#define MNT_RDONLY	0x00000001
+
 int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 #define CTL_NET         4
 #define CTL_NET_INET6   24
@@ -110,7 +112,7 @@ int rump___sysimpl_mount50(const char *, const char *, int, void *, size_t);
 void
 __franken_fdinit_create()
 {
-	int fd, ret;
+	int fd, ret, flags;
 	int root = 0;
 
 	if (__franken_fd[0].valid) {
@@ -145,8 +147,9 @@ __franken_fdinit_create()
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
 		case S_IFREG:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_REG);
-			/* XXX need to implement fcntl to get how to open */
-			rump___sysimpl_open(__franken_fd[fd].key, O_RDWR);
+			flags = fcntl(fd, F_GETFL, 0);
+			if (flags != -1)
+				rump___sysimpl_open(__franken_fd[fd].key, flags & O_ACCMODE);
 			break;
 		case S_IFBLK:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
@@ -154,8 +157,12 @@ __franken_fdinit_create()
 				struct ufs_args ufs;
 
 				ufs.fspec = __franken_fd[fd].key;
-				/* XXX MNT_RDONLY if we do not have permission */
-				ret = rump___sysimpl_mount50("ffs", "/", 0, &ufs, sizeof(struct ufs_args));
+				flags = fcntl(fd, F_GETFL, 0);
+				if ((flags & O_ACCMODE) == O_RDWR)
+					flags = 0;
+				else
+					flags = MNT_RDONLY;
+				ret = rump___sysimpl_mount50("ffs", "/", flags, &ufs, sizeof(struct ufs_args));
 				if (ret == 0) {
 					root = 1;
 				} else {
