@@ -14,6 +14,7 @@ fstat(int fd, struct stat *st)
 {
 	int ret;
 	struct linux_stat lst;
+	struct ifreq ifr;
 
 	ret = syscall(SYS_fstat, fd, &lst);
 	if (ret == -1) {
@@ -23,20 +24,17 @@ fstat(int fd, struct stat *st)
 
 	st->st_size = lst.st_size;
 
-	if (LINUX_S_ISSOCK(lst.st_mode)) {
+	switch (lst.st_mode & LINUX_S_IFMT) {
+	case LINUX_S_IFSOCK:
 		__platform_socket_fd = fd;
 		/* currently no support for raw socket networking */
 		lst.st_mode = 0;
-	}
-
-	if (LINUX_S_ISBLK(lst.st_mode)) {
+		break;
+	case LINUX_S_IFBLK:
 		syscall(SYS_ioctl, fd, BLKGETSIZE64, &st->st_size);
-	}
-
-	/* XXX be more specific, test if tap device major? */
-	if (LINUX_S_ISCHR(lst.st_mode)) {
-		struct ifreq ifr;
-
+		break;
+	case LINUX_S_IFCHR:
+		/* XXX be more specific, test if tap device major? */
 		ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
 		if (ret == 0) {
 			/* we do not yet support macvtap offload facilities */
@@ -54,8 +52,8 @@ fstat(int fd, struct stat *st)
 				memcpy(st->st_hwaddr, ifr.ifr_addr.sa_data, 6);
 			}
 		}
+		break;
 	}
-
 	st->st_mode = (LINUX_S_ISDIR (lst.st_mode) ? S_IFDIR  : 0) |
 		      (LINUX_S_ISCHR (lst.st_mode) ? S_IFCHR  : 0) |
 		      (LINUX_S_ISBLK (lst.st_mode) ? S_IFBLK  : 0) |
