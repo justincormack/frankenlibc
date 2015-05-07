@@ -64,6 +64,7 @@ __franken_fdinit()
 			break;
 		}
 		__franken_fd[fd].valid = 1;
+		__franken_fd[fd].flags = fcntl(fd, F_GETFL, 0);
 		memcpy(&__franken_fd[fd].st, &st, sizeof(struct stat));
 		switch (st.st_mode & S_IFMT) {
 		case S_IFREG:
@@ -147,9 +148,8 @@ __franken_fdinit_create()
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
 		case S_IFREG:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_REG);
-			flags = fcntl(fd, F_GETFL, 0);
-			if (flags != -1)
-				rump___sysimpl_open(__franken_fd[fd].key, flags & O_ACCMODE);
+			flags = __franken_fd[fd].flags & O_ACCMODE;
+			rump___sysimpl_open(__franken_fd[fd].key, flags);
 			break;
 		case S_IFBLK:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
@@ -157,8 +157,8 @@ __franken_fdinit_create()
 				struct ufs_args ufs;
 
 				ufs.fspec = __franken_fd[fd].key;
-				flags = fcntl(fd, F_GETFL, 0);
-				if ((flags & O_ACCMODE) == O_RDWR)
+				flags = __franken_fd[fd].flags & O_ACCMODE;
+				if (flags == O_RDWR)
 					flags = 0;
 				else
 					flags = MNT_RDONLY;
