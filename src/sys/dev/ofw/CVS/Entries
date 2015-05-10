@@ -2,7 +2,7 @@
 /files.ofw/1.13/Mon Jan  8 06:43:09 2007//
 /ofbus.c/1.25/Fri Jun  3 07:39:30 2011//
 /ofcons.c/1.45/Fri Jul 25 08:10:37 2014//
-/ofdisk.c/1.50/Wed Dec 31 19:52:06 2014//
+/ofdisk.c/1.51/Sun Apr 26 15:15:20 2015//
 /ofnet.c/1.53/Sat Oct 27 17:18:28 2012//
 /ofrtc.c/1.23/Tue Jul 26 08:59:38 2011//
 /ofw_network_subr.c/1.7/Sat Mar 14 21:04:21 2009//

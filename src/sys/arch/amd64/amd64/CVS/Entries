@@ -22,7 +22,7 @@
 /lock_stubs.S/1.25/Sat Jun 22 06:23:28 2013//
 /locore.S/1.77/Sun Aug 17 21:17:43 2014//
 /machdep.c/1.212/Fri Apr 24 00:04:04 2015//
-/mainbus.c/1.34/Wed Jul 31 14:05:33 2013//
+/mainbus.c/1.35/Mon Apr 27 07:03:57 2015//
 /mptramp.S/1.17/Wed Jan 15 22:24:41 2014//
 /netbsd32_machdep.c/1.93/Sun Dec 14 21:27:49 2014//
 /netbsd32_sigcode.S/1.7/Mon Apr 28 20:23:12 2008//

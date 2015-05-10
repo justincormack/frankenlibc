@@ -1,4 +1,4 @@
-/arm_machdep.c/1.47/Wed Apr 15 21:26:48 2015//
+/arm_machdep.c/1.49/Sat May  2 16:20:41 2015//
 /ast.c/1.28/Fri Apr 17 17:28:33 2015//
 /bcopyinout.S/1.20/Sun Aug 18 06:28:18 2013//
 /bcopyinout_xscale.S/1.11/Sun Dec  1 02:54:33 2013//
@@ -11,8 +11,8 @@
 /compat_13_machdep.c/1.18/Sun Aug 18 06:50:31 2013//
 /compat_16_machdep.c/1.17/Sun Aug 18 06:50:31 2013//
 /copystr.S/1.11/Sun Aug 18 06:28:18 2013//
-/core_machdep.c/1.7/Tue Feb 25 21:29:12 2014//
-/cpu_exec.c/1.9/Thu Feb 20 15:45:20 2014//
+/core_machdep.c/1.8/Mon Apr 27 06:54:12 2015//
+/cpu_exec.c/1.10/Mon Apr 27 06:54:12 2015//
 /cpu_in_cksum.S/1.11/Sun Feb 15 17:21:08 2015//
 /cpu_in_cksum_buffer.S/1.8/Sun Dec 23 13:24:22 2012//
 /cpu_in_cksum_fold.S/1.4/Sun Dec 23 13:26:21 2012//
@@ -42,7 +42,7 @@
 /cpufunc_asm_xscale.S/1.23/Sun Mar 30 01:15:03 2014//
 /db_disasm.c/1.6/Wed Feb 21 22:59:38 2007//
 /db_trace.c/1.31/Sat Jan 24 15:44:32 2015//
-/disassem.c/1.32/Tue Mar 31 16:15:07 2015//
+/disassem.c/1.33/Sat May  2 16:18:49 2015//
 /disassem.h/1.4/Sun Mar  4 04:15:58 2001//
 /disksubr.c/1.25/Fri Apr 25 20:17:28 2014//
 /disksubr_acorn.c/1.12/Sat Mar  9 16:02:25 2013//

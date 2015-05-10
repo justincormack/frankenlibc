@@ -1,10 +1,10 @@
-/*	$NetBSD: pcidevs.h,v 1.1214 2015/04/02 15:10:49 tnn Exp $	*/
+/*	$NetBSD: pcidevs.h,v 1.1217 2015/05/09 21:54:35 christos Exp $	*/
 
 /*
  * THIS FILE AUTOMATICALLY GENERATED.  DO NOT EDIT.
  *
  * generated from:
- *	NetBSD: pcidevs,v 1.1220 2015/04/02 15:08:22 tnn Exp
+ *	NetBSD: pcidevs,v 1.1223 2015/05/09 21:53:45 christos Exp
  */
 
 /*
@@ -2095,6 +2095,7 @@
 #define	PCI_PRODUCT_DLINK_DWL610	0x3300		/* DWL-610 802.11b WLAN */
 #define	PCI_PRODUCT_DLINK_DL4000	0x4000		/* DL-4000 Gigabit Ethernet */
 #define	PCI_PRODUCT_DLINK_DGE550SX	0x4001		/* DGE-550SX */
+#define	PCI_PRODUCT_DLINK_DFE520TX	0x4200		/* DFE-520TX 10/100 Ethernet */
 #define	PCI_PRODUCT_DLINK_DGE528T	0x4300		/* DGE-528T Gigabit Ethernet */
 #define	PCI_PRODUCT_DLINK_DGE560T	0x4b00		/* DGE-560T Gigabit Ethernet */
 #define	PCI_PRODUCT_DLINK_DGE560T_2	0x4b01		/* DGE-560T_2 Gigabit Ethernet */
@@ -4917,7 +4918,15 @@
 #define	PCI_PRODUCT_NVIDIA_MCP67_HDA_2	0x055d		/* nForce MCP67 High Definition Audio Controller */
 #define	PCI_PRODUCT_NVIDIA_MCP67_IDE	0x0560		/* nForce MCP67 ATA133 IDE Controller */
 #define	PCI_PRODUCT_NVIDIA_MCP73_IDE	0x056c		/* nForce MCP73 ATA133 IDE Controller */
+#define	PCI_PRODUCT_NVIDIA_GEFORCE_8800_GT	0x0611		/* GeForce 8800 GT */
+#define	PCI_PRODUCT_NVIDIA_GEFORCE_9800_GT	0x0614		/* GeForce 9800 GT */
+#define	PCI_PRODUCT_NVIDIA_GEFORCE_9600_GT	0x0622		/* GeForce 9600 GT */
+#define	PCI_PRODUCT_NVIDIA_GEFORCE_9500_GT	0x0640		/* GeForce 9500 GT */
+#define	PCI_PRODUCT_NVIDIA_GEFORCE_9300_GE_1	0x06e0		/* GeForce 9300 GE */
 #define	PCI_PRODUCT_NVIDIA_GEFORCE8400GS	0x06e4		/* GeForce 8400 GS */
+#define	PCI_PRODUCT_NVIDIA_GEFORCE9300M_GS	0x06e9		/* GeForce 9300M GS */
+#define	PCI_PRODUCT_NVIDIA_QUADRONVS150	0x06ea		/* Quadro NVS 150m */
+#define	PCI_PRODUCT_NVIDIA_QUADRONVS160	0x06eb		/* Quadro NVS 160m */
 #define	PCI_PRODUCT_NVIDIA_MCP77_IDE	0x0759		/* nForce MCP77 ATA133 IDE Controller */
 #define	PCI_PRODUCT_NVIDIA_MCP77_LAN1	0x0760		/* nForce MCP77 Gigabit Ethernet Controller */
 #define	PCI_PRODUCT_NVIDIA_MCP77_LAN2	0x0761		/* nForce MCP77 Gigabit Ethernet Controller */
@@ -5627,6 +5636,7 @@
 /* System Base products */
 #define	PCI_PRODUCT_SYSTEMBASE_SB16C1054	0x0004		/* SB16C1054 UARTs */
 #define	PCI_PRODUCT_SYSTEMBASE_SB16C1058	0x0008		/* SB16C1058 UARTs */
+#define	PCI_PRODUCT_SYSTEMBASE_SB16C1050	0x4d02		/* SB16C1050 UARTs */
 
 /* Schneider & Koch (really SysKonnect) products */
 #define	PCI_PRODUCT_SCHNEIDERKOCH_SKNET_FDDI	0x4000		/* SK-NET FDDI-xP */

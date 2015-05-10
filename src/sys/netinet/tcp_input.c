@@ -1,4 +1,4 @@
-/*	$NetBSD: tcp_input.c,v 1.337 2015/03/14 02:08:16 rtr Exp $	*/
+/*	$NetBSD: tcp_input.c,v 1.339 2015/05/02 17:18:03 rtr Exp $	*/
 
 /*
  * Copyright (C) 1995, 1996, 1997, and 1998 WIDE Project.
@@ -148,7 +148,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: tcp_input.c,v 1.337 2015/03/14 02:08:16 rtr Exp $");
+__KERNEL_RCSID(0, "$NetBSD: tcp_input.c,v 1.339 2015/05/02 17:18:03 rtr Exp $");
 
 #include "opt_inet.h"
 #include "opt_ipsec.h"
@@ -174,7 +174,6 @@ __KERNEL_RCSID(0, "$NetBSD: tcp_input.c,v 1.337 2015/03/14 02:08:16 rtr Exp $");
 #include <sys/cprng.h>
 
 #include <net/if.h>
-#include <net/route.h>
 #include <net/if_types.h>
 
 #include <netinet/in.h>
@@ -4077,7 +4076,7 @@ syn_cache_get(struct sockaddr *src, struct sockaddr *dst,
 	am->m_len = src->sa_len;
 	bcopy(src, mtod(am, void *), src->sa_len);
 	if (inp) {
-		if (in_pcbconnect(inp, am, &lwp0)) {
+		if (in_pcbconnect_m(inp, am, &lwp0)) {
 			(void) m_free(am);
 			goto resetandabort;
 		}
@@ -4098,7 +4097,7 @@ syn_cache_get(struct sockaddr *src, struct sockaddr *dst,
 				&sin6->sin6_addr.s6_addr32[3],
 				sizeof(sin6->sin6_addr.s6_addr32[3]));
 		}
-		if (in6_pcbconnect(in6p, am, NULL)) {
+		if (in6_pcbconnect_m(in6p, am, NULL)) {
 			(void) m_free(am);
 			goto resetandabort;
 		}
@@ -4797,8 +4796,7 @@ syn_cache_respond(struct syn_cache *sc, struct mbuf *m)
 #ifdef INET6
 	case AF_INET6:
 		ip6->ip6_hlim = in6_selecthlim(NULL,
-				(rt = rtcache_validate(ro)) != NULL ? rt->rt_ifp
-				                                    : NULL);
+		    (rt = rtcache_validate(ro)) != NULL ? rt->rt_ifp : NULL);
 
 		error = ip6_output(m, NULL /*XXX*/, ro, 0, NULL, so, NULL);
 		break;

@@ -1,4 +1,4 @@
-/*	$NetBSD: nfs_socket.c,v 1.194 2015/04/03 20:01:07 rtr Exp $	*/
+/*	$NetBSD: nfs_socket.c,v 1.196 2015/05/09 15:22:47 rtr Exp $	*/
 
 /*
  * Copyright (c) 1989, 1991, 1993, 1995
@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: nfs_socket.c,v 1.194 2015/04/03 20:01:07 rtr Exp $");
+__KERNEL_RCSID(0, "$NetBSD: nfs_socket.c,v 1.196 2015/05/09 15:22:47 rtr Exp $");
 
 #ifdef _KERNEL_OPT
 #include "opt_nfs.h"
@@ -243,7 +243,7 @@ nfs_connect(struct nfsmount *nmp, struct nfsreq *rep, struct lwp *l)
 			goto bad;
 		}
 	} else {
-		error = soconnect(so, nmp->nm_nam, l);
+		error = soconnect(so, mtod(nmp->nm_nam, struct sockaddr *), l);
 		if (error) {
 			sounlock(so);
 			goto bad;
@@ -439,7 +439,7 @@ nfs_safedisconnect(struct nfsmount *nmp)
 int
 nfs_send(struct socket *so, struct mbuf *nam, struct mbuf *top, struct nfsreq *rep, struct lwp *l)
 {
-	struct mbuf *sendnam;
+	struct sockaddr *sendnam;
 	int error, soflags, flags;
 
 	/* XXX nfs_doio()/nfs_request() calls with  rep->r_lwp == NULL */
@@ -463,7 +463,7 @@ nfs_send(struct socket *so, struct mbuf *nam, struct mbuf *top, struct nfsreq *r
 	if ((soflags & PR_CONNREQUIRED) || (so->so_state & SS_ISCONNECTED))
 		sendnam = NULL;
 	else
-		sendnam = nam;
+		sendnam = mtod(nam, struct sockaddr *);
 	if (so->so_type == SOCK_SEQPACKET)
 		flags = MSG_EOR;
 	else
@@ -800,7 +800,8 @@ nfs_timer(void *arg)
 			    m, NULL, NULL, NULL);
 			else
 			    error = (*so->so_proto->pr_usrreqs->pr_send)(so,
-			    m, nmp->nm_nam, NULL, NULL);
+				m, mtod(nmp->nm_nam, struct sockaddr *),
+				NULL, NULL);
 			if (error) {
 				if (NFSIGNORE_SOERROR(nmp->nm_soflags, error)) {
 #ifdef DEBUG

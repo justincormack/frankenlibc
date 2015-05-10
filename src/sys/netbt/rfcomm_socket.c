@@ -1,4 +1,4 @@
-/*	$NetBSD: rfcomm_socket.c,v 1.35 2015/04/24 22:32:37 rtr Exp $	*/
+/*	$NetBSD: rfcomm_socket.c,v 1.37 2015/05/02 17:18:03 rtr Exp $	*/
 
 /*-
  * Copyright (c) 2006 Itronix Inc.
@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: rfcomm_socket.c,v 1.35 2015/04/24 22:32:37 rtr Exp $");
+__KERNEL_RCSID(0, "$NetBSD: rfcomm_socket.c,v 1.37 2015/05/02 17:18:03 rtr Exp $");
 
 /* load symbolic names */
 #ifdef BLUETOOTH_DEBUG
@@ -173,10 +173,10 @@ rfcomm_listen(struct socket *so, struct lwp *l)
 }
 
 static int
-rfcomm_connect(struct socket *so, struct mbuf *nam, struct lwp *l)
+rfcomm_connect(struct socket *so, struct sockaddr *nam, struct lwp *l)
 {
 	struct rfcomm_dlc *pcb = so->so_pcb;
-	struct sockaddr_bt *sa;
+	struct sockaddr_bt *sa = (struct sockaddr_bt *)nam;
 
 	KASSERT(solocked(so));
 	KASSERT(nam != NULL);
@@ -184,7 +184,6 @@ rfcomm_connect(struct socket *so, struct mbuf *nam, struct lwp *l)
 	if (pcb == NULL)
 		return EINVAL;
 
-	sa = mtod(nam, struct sockaddr_bt *);
 	if (sa->bt_len != sizeof(struct sockaddr_bt))
 		return EINVAL;
 
@@ -307,7 +306,7 @@ rfcomm_recvoob(struct socket *so, struct mbuf *m, int flags)
 }
 
 static int
-rfcomm_send(struct socket *so, struct mbuf *m, struct mbuf *nam,
+rfcomm_send(struct socket *so, struct mbuf *m, struct sockaddr *nam,
     struct mbuf *control, struct lwp *l)
 {
 	struct rfcomm_dlc *pcb = so->so_pcb;
@@ -357,70 +356,6 @@ rfcomm_purgeif(struct socket *so, struct ifnet *ifp)
 {
 
 	return EOPNOTSUPP;
-}
-
-/*
- * User Request.
- * up is socket
- * m is optional mbuf chain containing message
- * ctl is either
- *	optional mbuf chain containing socket options
- * l is pointer to process requesting action (if any)
- *
- * we are responsible for disposing of m and ctl if
- * they are mbuf chains
- */
-static int
-rfcomm_usrreq(struct socket *up, int req, struct mbuf *m,
-		struct mbuf *nam, struct mbuf *ctl, struct lwp *l)
-{
-	struct rfcomm_dlc *pcb = up->so_pcb;
-	int err = 0;
-
-	DPRINTFN(2, "%s\n", prurequests[req]);
-	KASSERT(req != PRU_ATTACH);
-	KASSERT(req != PRU_DETACH);
-	KASSERT(req != PRU_ACCEPT);
-	KASSERT(req != PRU_BIND);
-	KASSERT(req != PRU_LISTEN);
-	KASSERT(req != PRU_CONNECT);
-	KASSERT(req != PRU_CONNECT2);
-	KASSERT(req != PRU_DISCONNECT);
-	KASSERT(req != PRU_SHUTDOWN);
-	KASSERT(req != PRU_ABORT);
-	KASSERT(req != PRU_CONTROL);
-	KASSERT(req != PRU_SENSE);
-	KASSERT(req != PRU_PEERADDR);
-	KASSERT(req != PRU_SOCKADDR);
-	KASSERT(req != PRU_RCVD);
-	KASSERT(req != PRU_RCVOOB);
-	KASSERT(req != PRU_SEND);
-	KASSERT(req != PRU_SENDOOB);
-	KASSERT(req != PRU_PURGEIF);
-
-	if (pcb == NULL) {
-		err = EINVAL;
-		goto release;
-	}
-
-	switch(req) {
-	case PRU_FASTTIMO:
-	case PRU_SLOWTIMO:
-	case PRU_PROTORCV:
-	case PRU_PROTOSEND:
-		err = EOPNOTSUPP;
-		break;
-
-	default:
-		UNKNOWN(req);
-		err = EOPNOTSUPP;
-		break;
-	}
-
-release:
-	if (m) m_freem(m);
-	if (ctl) m_freem(ctl);
-	return err;
 }
 
 /*
@@ -596,7 +531,6 @@ PR_WRAP_USRREQS(rfcomm)
 #define	rfcomm_send		rfcomm_send_wrapper
 #define	rfcomm_sendoob		rfcomm_sendoob_wrapper
 #define	rfcomm_purgeif		rfcomm_purgeif_wrapper
-#define	rfcomm_usrreq		rfcomm_usrreq_wrapper
 
 const struct pr_usrreqs rfcomm_usrreqs = {
 	.pr_attach	= rfcomm_attach,
@@ -618,5 +552,4 @@ const struct pr_usrreqs rfcomm_usrreqs = {
 	.pr_send	= rfcomm_send,
 	.pr_sendoob	= rfcomm_sendoob,
 	.pr_purgeif	= rfcomm_purgeif,
-	.pr_generic	= rfcomm_usrreq,
 };

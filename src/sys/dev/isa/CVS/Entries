@@ -41,7 +41,7 @@
 /ess_isa.c/1.24/Sat May 22 16:35:00 2010//
 /essreg.h/1.17/Sat Aug 16 13:01:33 2014//
 /essvar.h/1.27/Sat Aug 16 13:01:33 2014//
-/fd.c/1.108/Mon Apr 13 16:33:24 2015//
+/fd.c/1.109/Sun Apr 26 15:15:20 2015//
 /fdc_isa.c/1.20/Mon Apr 13 16:33:24 2015//
 /fdcvar.h/1.10/Mon Apr 28 20:23:52 2008//
 /fdreg.h/1.7/Thu Jun 30 20:09:39 2011//
@@ -111,7 +111,7 @@
 /lm_wbsio.c/1.2/Wed Jan 18 00:14:32 2012//
 /lpt_isa.c/1.68/Mon Nov 23 02:13:47 2009//
 /madreg.h/1.5/Tue Dec  8 14:26:57 1998//
-/mcd.c/1.114/Wed Dec 31 19:52:05 2014//
+/mcd.c/1.115/Sun Apr 26 15:15:20 2015//
 /mcdreg.h/1.9/Thu Jun  8 18:22:16 2000//
 /midi_pcppi.c/1.26/Mon Apr  9 10:18:17 2012//
 /moxa_isa.c/1.20/Sat Oct 27 17:18:25 2012//

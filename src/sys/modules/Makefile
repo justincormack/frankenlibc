@@ -1,4 +1,4 @@
-#	$NetBSD: Makefile,v 1.146 2015/04/23 23:22:27 pgoyette Exp $
+#	$NetBSD: Makefile,v 1.152 2015/05/10 07:41:16 pgoyette Exp $
 
 .include <bsd.own.mk>
 
@@ -20,6 +20,7 @@ SUBDIR+=	crypto
 SUBDIR+=	coda
 SUBDIR+=	coda5
 SUBDIR+=	compat
+SUBDIR+=	compat_sysv
 SUBDIR+=	compat_ossaudio
 SUBDIR+=	coredump
 SUBDIR+=	dbcool
@@ -147,6 +148,7 @@ SUBDIR+=	hdaudioverbose
 SUBDIR+=	hpet
 SUBDIR+=	odcm
 SUBDIR+=	powernow
+SUBDIR+=	tco
 SUBDIR+=	tprof_pmi
 SUBDIR+=	tprof_amdpmi
 SUBDIR+=	vmt
@@ -203,6 +205,10 @@ SUBDIR+=	wmihp
 SUBDIR+=	wmimsi
 .endif
 
+.if ${MACHINE_CPU} == "arm" || !empty(MACHINE_ARCH:Mmips64*)
+SUBDIR+=	compat_netbsd32
+.endif
+
 .if ${MACHINE_ARCH} == "x86_64"
 SUBDIR+=	compat_linux32
 SUBDIR+=	compat_netbsd32
@@ -224,6 +230,7 @@ SUBDIR+=	sisdrm
 SUBDIR+=	tdfxdrm
 SUBDIR+=	viac7temp
 SUBDIR+=	viadrm
+SUBDIR+=	viadrmums
 .endif
 
 .if ${MACHINE_ARCH} == "i386" || \

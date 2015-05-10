@@ -1,4 +1,4 @@
-/*	$NetBSD: if_wmreg.h,v 1.66 2015/02/15 21:32:33 msaitoh Exp $	*/
+/*	$NetBSD: if_wmreg.h,v 1.69 2015/05/04 10:10:42 msaitoh Exp $	*/
 
 /*
  * Copyright (c) 2001 Wasabi Systems, Inc.
@@ -582,9 +582,6 @@ struct livengood_tcpip_ctxdesc {
 
 #define	DEFAULT_80003ES2LAN_TCTL_EXT_GCEX 0x00010000
 
-#define	WMREG_TQSA_LO	0x0408
-#define	WMREG_TQSA_HI	0x040c
-
 #define	WMREG_TIPG	0x0410	/* Transmit IPG Register */
 #define	TIPG_IPGT(x)	(x)		/* IPG transmit time */
 #define	TIPG_IPGR1(x)	((x) << 10)	/* IPG receive time 1 */
@@ -670,6 +667,7 @@ struct livengood_tcpip_ctxdesc {
 #define	PBA_8K		0x0008
 #define	PBA_10K		0x000a
 #define	PBA_12K		0x000c
+#define	PBA_14K		0x000e
 #define	PBA_16K		0x0010		/* 16K, default Tx allocation */
 #define	PBA_20K		0x0014
 #define	PBA_22K		0x0016
@@ -738,6 +736,9 @@ struct livengood_tcpip_ctxdesc {
 
 #define WMREG_EITR(x)	(0x01680 + (0x4 * (x)))
 #define EITR_ITR_INT_MASK	0x0000ffff
+
+#define	WMREG_RXPBS	0x2404	/* Rx Packet Buffer Size  */
+#define RXPBS_SIZE_MASK_82576	0x0000007F
 
 #define	WMREG_RDFH	0x2410	/* Receive Data FIFO Head */
 #define	WMREG_RDFT	0x2418	/* Receive Data FIFO Tail */

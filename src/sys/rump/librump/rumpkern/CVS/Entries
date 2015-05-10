@@ -23,7 +23,7 @@
 /rump_curlwp_hypercall.h/1.2/Sun Mar 16 15:30:05 2014//
 /rump_lwproc.3/1.2/Mon Mar 23 15:42:29 2015//
 /rump_private.h/1.92/Wed Apr 22 17:38:33 2015//
-/rump_syscalls.c/1.108/Wed Apr  8 13:31:42 2015//
+/rump_syscalls.c/1.111/Sun May 10 08:13:41 2015//
 /rumpcopy.c/1.20/Sat Apr 18 15:49:18 2015//
 /rumpkern.ifspec/1.13/Fri Apr 25 13:10:42 2014//
 /rumpkern_if_priv.h/1.16/Fri Apr 25 17:50:28 2014//

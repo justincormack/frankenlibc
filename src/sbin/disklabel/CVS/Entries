@@ -2,12 +2,12 @@
 /bswap.c/1.2/Fri May  3 16:05:12 2013//
 /bswap.h/1.2/Fri May  3 16:05:12 2013//
 /disklabel.5/1.27/Sat Feb 25 01:55:00 2006//
-/disklabel.8/1.64/Tue Aug  2 10:21:12 2011//
+/disklabel.8/1.65/Wed Apr 29 17:07:11 2015//
 /dkcksum.c/1.14/Fri May  3 16:05:12 2013//
 /dkcksum.h/1.6/Fri May  3 16:05:12 2013//
 /extern.h/1.13/Fri May  3 16:05:12 2013//
 /interact.c/1.38/Fri May  3 16:05:12 2013//
-/main.c/1.44/Sat Apr 25 21:43:53 2015//
+/main.c/1.45/Mon Apr 27 17:05:58 2015//
 /pathnames.h/1.8/Thu Aug  7 10:04:13 2003//
 /printlabel.c/1.16/Thu Jan  6 21:39:01 2011//
 D

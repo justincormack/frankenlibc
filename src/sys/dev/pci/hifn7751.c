@@ -1,4 +1,4 @@
-/*	$NetBSD: hifn7751.c,v 1.57 2015/04/13 16:33:25 riastradh Exp $	*/
+/*	$NetBSD: hifn7751.c,v 1.60 2015/05/09 21:57:56 riastradh Exp $	*/
 /*	$FreeBSD: hifn7751.c,v 1.5.2.7 2003/10/08 23:52:00 sam Exp $ */
 /*	$OpenBSD: hifn7751.c,v 1.140 2003/08/01 17:55:54 deraadt Exp $	*/
 
@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: hifn7751.c,v 1.57 2015/04/13 16:33:25 riastradh Exp $");
+__KERNEL_RCSID(0, "$NetBSD: hifn7751.c,v 1.60 2015/05/09 21:57:56 riastradh Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -433,12 +433,12 @@ hifn_attach(device_t parent, device_t self, void *aux)
 	    sc->sc_dmamap->dm_mapsize,
 	    BUS_DMASYNC_PREREAD | BUS_DMASYNC_PREWRITE);
 
+	mutex_init(&sc->sc_mtx, MUTEX_DEFAULT, IPL_VM);
+
 	if (sc->sc_flags & (HIFN_HAS_PUBLIC | HIFN_HAS_RNG)) {
 		hifn_init_pubrng(sc);
 		sc->sc_rng_need = RND_POOLBITS / NBBY;
 	}
-
-	mutex_init(&sc->sc_mtx, MUTEX_DEFAULT, IPL_VM);
 
 #ifdef	__OpenBSD__
 	timeout_set(&sc->sc_tickto, hifn_tick, sc);
@@ -538,8 +538,7 @@ hifn_rng_get(size_t bytes, void *priv)
 
 	mutex_enter(&sc->sc_mtx);
 	sc->sc_rng_need = bytes;
-
-	hifn_rng_locked(sc);
+	callout_reset(&sc->sc_rngto, 0, hifn_rng, sc);
 	mutex_exit(&sc->sc_mtx);
 }
 
@@ -3123,6 +3122,7 @@ hifn_mkmbuf_chain(int totlen, struct mbuf *mtemplate)
 		}
 		MCLGET(m, M_DONTWAIT);
 		if (!(m->m_flags & M_EXT)) {
+			m_freem(m);
 			m_freem(m0);
 			return (NULL);
 		}

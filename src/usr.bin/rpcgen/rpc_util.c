@@ -1,4 +1,4 @@
-/*	$NetBSD: rpc_util.c,v 1.13 2013/12/15 00:40:17 christos Exp $	*/
+/*	$NetBSD: rpc_util.c,v 1.17 2015/05/09 23:28:43 dholland Exp $	*/
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
  * unrestricted use provided that this legend is included on all tape
@@ -38,7 +38,7 @@
 #if 0
 static char sccsid[] = "@(#)rpc_util.c 1.11 89/02/22 (C) 1987 SMI";
 #else
-__RCSID("$NetBSD: rpc_util.c,v 1.13 2013/12/15 00:40:17 christos Exp $");
+__RCSID("$NetBSD: rpc_util.c,v 1.17 2015/05/09 23:28:43 dholland Exp $");
 #endif
 #endif
 
@@ -49,6 +49,7 @@ __RCSID("$NetBSD: rpc_util.c,v 1.13 2013/12/15 00:40:17 christos Exp $");
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <err.h>
 #include <ctype.h>
 #include "rpc_scan.h"
 #include "rpc_parse.h"
@@ -253,13 +254,18 @@ pvname(const char *pname, const char *vnum)
 /*
  * print a useful (?) error message, and then die
  */
-void
-error(const char *msg)
+__printflike(1, 2) void
+error(const char *msg, ...)
 {
+	va_list ap;
+
 	printwhere();
-	f_print(stderr, "%s, line %d: ", infilename, linenum);
-	f_print(stderr, "%s\n", msg);
-	crash();
+	fprintf(stderr, "%s:%d: ", infilename, linenum);
+	va_start(ap, msg);
+	vfprintf(stderr, msg, ap);
+	va_end(ap);
+	fprintf(stderr, "\n");
+	errx(EXIT_FAILURE, "Cannot recover from this error");
 }
 /*
  * Something went wrong, unlink any files that we may have created and then
@@ -270,10 +276,12 @@ crash(void)
 {
 	int     i;
 
+	if (!docleanup)
+		return;
+
 	for (i = 0; i < nfiles; i++) {
 		(void) unlink(outfiles[i]);
 	}
-	exit(1);
 }
 
 void
@@ -282,12 +290,9 @@ record_open(const char *file)
 	if (nfiles < NFILES) {
 		outfiles[nfiles++] = file;
 	} else {
-		f_print(stderr, "too many files!\n");
-		crash();
+		errx(EXIT_FAILURE, "Too many files!");
 	}
 }
-
-static char expectbuf[100];
 
 /*
  * error, token encountered was not the expected one
@@ -295,9 +300,7 @@ static char expectbuf[100];
 void
 expected1(tok_kind exp1)
 {
-	s_print(expectbuf, "expected '%s'",
-	    toktostr(exp1));
-	error(expectbuf);
+	error("Expected '%s'", toktostr(exp1));
 }
 /*
  * error, token encountered was not one of two expected ones
@@ -305,10 +308,9 @@ expected1(tok_kind exp1)
 void
 expected2(tok_kind exp1, tok_kind exp2)
 {
-	s_print(expectbuf, "expected '%s' or '%s'",
+	error("Expected '%s' or '%s'",
 	    toktostr(exp1),
 	    toktostr(exp2));
-	error(expectbuf);
 }
 /*
  * error, token encountered was not one of 3 expected ones
@@ -316,11 +318,10 @@ expected2(tok_kind exp1, tok_kind exp2)
 void
 expected3(tok_kind exp1, tok_kind exp2, tok_kind exp3)
 {
-	s_print(expectbuf, "expected '%s', '%s' or '%s'",
+	error("Expected '%s', '%s', or '%s'",
 	    toktostr(exp1),
 	    toktostr(exp2),
 	    toktostr(exp3));
-	error(expectbuf);
 }
 
 void
@@ -431,8 +432,7 @@ make_argname(const char *pname, const char *vname)
 	len = strlen(pname) + strlen(vname) + strlen(ARGEXT) + 3;
 	name = malloc(len);
 	if (!name) {
-		fprintf(stderr, "failed in malloc");
-		exit(1);
+		errx(EXIT_FAILURE, "Out of memory");
 	}
 	snprintf(name, len, "%s_%s_%s", locase(pname), vname, ARGEXT);
 	return (name);
@@ -447,8 +447,7 @@ add_type(int len, const char *type)
 	bas_type *ptr;
 
 	if ((ptr = malloc(sizeof(bas_type))) == NULL) {
-		fprintf(stderr, "failed in malloc");
-		exit(1);
+		errx(EXIT_FAILURE, "Out of memory");
 	}
 	ptr->name = type;
 	ptr->length = len;

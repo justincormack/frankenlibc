@@ -25,6 +25,9 @@
 /if_gfe.c/1.45/Mon Apr 13 16:33:24 2015//
 /if_gfevar.h/1.13/Tue Apr 14 20:32:36 2015//
 /if_mvgbe.c/1.41/Wed Apr 15 10:15:40 2015//
+/if_mvxpe.c/1.1/Sun May  3 14:38:10 2015//
+/if_mvxpereg.h/1.1/Sun May  3 14:38:10 2015//
+/if_mvxpevar.h/1.1/Sun May  3 14:38:10 2015//
 /marvellreg.h/1.8/Sat Mar 15 10:40:39 2014//
 /marvellvar.h/1.5/Sat Mar 15 11:47:43 2014//
 /mvcesa.c/1.1/Fri Jul 27 03:00:01 2012//

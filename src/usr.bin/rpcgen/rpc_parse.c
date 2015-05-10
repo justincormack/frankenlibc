@@ -1,4 +1,4 @@
-/*	$NetBSD: rpc_parse.c,v 1.18 2013/12/15 00:40:17 christos Exp $	*/
+/*	$NetBSD: rpc_parse.c,v 1.21 2015/05/09 23:29:51 dholland Exp $	*/
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
  * unrestricted use provided that this legend is included on all tape
@@ -38,7 +38,7 @@
 #if 0
 static char sccsid[] = "@(#)rpc_parse.c 1.8 89/02/22 (C) 1987 SMI";
 #else
-__RCSID("$NetBSD: rpc_parse.c,v 1.18 2013/12/15 00:40:17 christos Exp $");
+__RCSID("$NetBSD: rpc_parse.c,v 1.21 2015/05/09 23:29:51 dholland Exp $");
 #endif
 #endif
 
@@ -103,7 +103,7 @@ get_definition(void)
 		free(defp);
 		return (NULL);
 	default:
-		error("definition keyword expected");
+		error("Expected definition keyword");
 	}
 	scan(TOK_SEMICOLON, &tok);
 	isdefined(defp);
@@ -175,7 +175,7 @@ def_program(definition *defp)
 			get_type(&plist->res_prefix, &plist->res_type,
 			    DEF_PROGRAM);
 			if (streq(plist->res_type, "opaque")) {
-				error("illegal result type");
+				error("Illegal result type");
 			}
 			scan(TOK_IDENT, &tok);
 			plist->proc_name = tok.str;
@@ -207,10 +207,10 @@ def_program(definition *defp)
 			}
 			/* multiple arguments are only allowed in newstyle */
 			if (!newstyle && num_args > 1) {
-				error("only one argument is allowed");
+				error("Only one argument is allowed");
 			}
 			if (isvoid && num_args > 1) {
-				error("illegal use of void in program definition");
+				error("Illegal use of void in program definition");
 			}
 			*tailp = NULL;
 			scan(TOK_RPAREN, &tok);
@@ -377,21 +377,16 @@ static void
 check_type_name(const char *name, int new_type)
 {
 	int     i;
-	char    tmp[100];
 
 	for (i = 0; reserved_words[i] != NULL; i++) {
 		if (strcmp(name, reserved_words[i]) == 0) {
-			sprintf(tmp,
-			    "illegal (reserved) name :\'%s\' in type definition", name);
-			error(tmp);
+			error("Illegal (reserved) name '%s' in type definition", name);
 		}
 	}
 	if (new_type) {
 		for (i = 0; reserved_types[i] != NULL; i++) {
 			if (strcmp(name, reserved_types[i]) == 0) {
-				sprintf(tmp,
-				    "illegal (reserved) name :\'%s\' in type definition", name);
-				error(tmp);
+				error("Illegal (reserved) name '%s' in type definition", name);
 			}
 		}
 	}
@@ -432,7 +427,7 @@ get_declaration(declaration *dec, defkind dkind)
 	dec->name = tok.str;
 	if (peekscan(TOK_LBRACKET, &tok)) {
 		if (dec->rel == REL_POINTER) {
-			error("no array-of-pointer declarations -- use typedef");
+			error("No array-of-pointer declarations -- use typedef");
 		}
 		dec->rel = REL_VECTOR;
 		scan_num(&tok);
@@ -441,7 +436,7 @@ get_declaration(declaration *dec, defkind dkind)
 	} else
 		if (peekscan(TOK_LANGLE, &tok)) {
 			if (dec->rel == REL_POINTER) {
-				error("no array-of-pointer declarations -- use typedef");
+				error("No array-of-pointer declarations -- use typedef");
 			}
 			dec->rel = REL_ARRAY;
 			if (peekscan(TOK_RANGLE, &tok)) {
@@ -455,12 +450,12 @@ get_declaration(declaration *dec, defkind dkind)
 		}
 	if (streq(dec->type, "opaque")) {
 		if (dec->rel != REL_ARRAY && dec->rel != REL_VECTOR) {
-			error("array declaration expected");
+			error("Array declaration expected");
 		}
 	} else
 		if (streq(dec->type, "string")) {
 			if (dec->rel != REL_ARRAY) {
-				error("variable-length array declaration expected");
+				error("Variable-length array declaration expected");
 			}
 		}
 }
@@ -489,25 +484,25 @@ get_prog_declaration(declaration *dec, defkind dkind, int num /* arg number */)
 		sprintf(name, "%s%d", ARGNAME, num);	/* default name of
 							 * argument */
 
-	dec->name = (char *) strdup(name);
+	dec->name = strdup(name);
 
 	if (streq(dec->type, "void")) {
 		return;
 	}
 	if (streq(dec->type, "opaque")) {
-		error("opaque -- illegal argument type");
+		error("Opaque -- illegal argument type");
 	}
 	if (peekscan(TOK_STAR, &tok)) {
 		if (streq(dec->type, "string")) {
-			error("pointer to string not allowed in program arguments\n");
+			error("Pointer to string not allowed in program arguments\n");
 		}
 		dec->rel = REL_POINTER;
 		if (peekscan(TOK_IDENT, &tok))	/* optional name of argument */
-			dec->name = (char *) strdup(tok.str);
+			dec->name = strdup(tok.str);
 	}
 	if (peekscan(TOK_LANGLE, &tok)) {
 		if (!streq(dec->type, "string")) {
-			error("arrays cannot be declared as arguments to procedures -- use typedef");
+			error("Arrays cannot be declared as arguments to procedures -- use typedef");
 		}
 		dec->rel = REL_ARRAY;
 		if (peekscan(TOK_RANGLE, &tok)) {
@@ -567,7 +562,7 @@ get_type(const char **prefixp, const char **typep, defkind dkind)
 		break;
 	case TOK_VOID:
 		if (dkind != DEF_UNION && dkind != DEF_PROGRAM) {
-			error("voids allowed only inside union and program definitions with one argument");
+			error("Void is allowed only inside union and program definitions with one argument");
 		}
 		*typep = tok.str;
 		break;
@@ -582,7 +577,7 @@ get_type(const char **prefixp, const char **typep, defkind dkind)
 		*typep = tok.str;
 		break;
 	default:
-		error("expected type specifier");
+		error("Type specifier expected");
 	}
 }
 

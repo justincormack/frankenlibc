@@ -40,7 +40,7 @@
 /svr4_stat.c/1.70/Thu Aug 14 17:29:30 2014//
 /svr4_stat.h/1.10/Mon Apr 28 20:23:45 2008//
 /svr4_statvfs.h/1.4/Mon Apr 28 20:23:45 2008//
-/svr4_stream.c/1.84/Fri Apr 24 22:32:37 2015//
+/svr4_stream.c/1.85/Sat May  2 17:18:03 2015//
 /svr4_stropts.h/1.14/Mon Apr 28 20:23:45 2008//
 /svr4_syscall.h/1.86/Sat Mar  7 16:41:54 2015//
 /svr4_syscallargs.h/1.85/Sat Mar  7 16:41:54 2015//

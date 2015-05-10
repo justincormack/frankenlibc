@@ -4,10 +4,10 @@
 /heapsort.c/1.3/Mon Nov 17 10:21:30 2008//
 /mi_vector_hash.c/1.1/Wed Dec 11 01:24:08 2013//
 /random.c/1.4/Thu Jun 12 20:59:46 2014//
-/strtoi.c/1.1/Fri Jan 16 18:35:28 2015//
+/strtoi.c/1.2/Fri May  1 14:17:56 2015//
 /strtoimax.c/1.2/Mon Dec  2 12:20:44 2013//
 /strtoll.c/1.7/Tue Apr 16 21:44:06 2013//
-/strtou.c/1.1/Fri Jan 16 18:35:28 2015//
+/strtou.c/1.2/Fri May  1 14:17:56 2015//
 /strtoul.c/1.3/Wed Aug 20 19:58:34 2008//
 /strtoull.c/1.6/Tue Apr 16 21:44:06 2013//
 /strtoumax.c/1.6/Tue Apr 16 21:44:06 2013//

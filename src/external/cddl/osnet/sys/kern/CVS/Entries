@@ -10,7 +10,7 @@
 /printf.c/1.1/Fri Aug  7 20:57:57 2009//
 /string.c/1.2/Tue Dec 14 01:01:40 2010//
 /taskq.c/1.5/Sat Apr 11 16:32:07 2015//
-/vfs.c/1.5/Mon Nov 25 22:48:05 2013//
+/vfs.c/1.6/Wed May  6 15:57:07 2015//
 /zfs_stub.c/1.1/Fri Aug  7 20:57:57 2009//
 /zone.c/1.1/Fri Aug  7 20:57:57 2009//
 D

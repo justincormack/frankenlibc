@@ -158,11 +158,11 @@
 /clmpcc.c/1.51/Sat Nov 15 19:18:18 2014//
 /clmpccreg.h/1.4/Mon Apr 28 20:23:49 2008//
 /clmpccvar.h/1.13/Sat Oct 27 17:18:20 2012//
-/com.c/1.333/Mon Apr 13 16:33:24 2015//
+/com.c/1.336/Mon May  4 22:59:36 2015//
 /com_cpcbus.c/1.11/Mon Apr 28 20:23:49 2008//
 /com_upc.c/1.11/Sun Jan 25 14:34:14 2009//
 /comreg.h/1.24/Sat Mar  7 15:49:20 2015//
-/comvar.h/1.80/Mon Apr 13 16:33:24 2015//
+/comvar.h/1.81/Sun May  3 17:22:54 2015//
 /cpc700.c/1.19/Fri Jan 27 18:53:07 2012//
 /cpc700reg.h/1.5/Mon Apr 28 20:23:49 2008//
 /cpc700uic.h/1.4/Mon Apr 28 20:23:49 2008//

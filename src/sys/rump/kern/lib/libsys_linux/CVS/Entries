@@ -1,9 +1,5 @@
-/Makefile/1.8/Sun Mar  8 15:20:07 2015//
+/Makefile/1.9/Sat May  9 12:03:10 2015//
 /linux_rump.c/1.2/Fri Jan 10 19:44:47 2014//
-/rump_linux_syscall.h/1.15/Sun Mar  8 15:07:33 2015//
-/rump_linux_syscallargs.h/1.18/Sun Mar  8 15:07:33 2015//
-/rump_linux_syscalls.c/1.18/Sun Mar  8 15:07:33 2015//
-/rump_linux_sysent.c/1.18/Sun Mar  8 15:07:33 2015//
 /sys_linux_component.c/1.2/Fri Apr  4 18:24:12 2014//
 /syscalls.conf/1.2/Thu Mar  7 19:08:54 2013//
 /syscalls.master/1.16/Thu May 29 10:41:48 2014//

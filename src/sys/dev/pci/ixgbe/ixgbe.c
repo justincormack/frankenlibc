@@ -59,12 +59,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /*$FreeBSD: head/sys/dev/ixgbe/ixgbe.c 250108 2013-04-30 16:18:29Z luigi $*/
-/*$NetBSD: ixgbe.c,v 1.28 2015/04/24 07:00:51 msaitoh Exp $*/
+/*$NetBSD: ixgbe.c,v 1.30 2015/05/09 13:08:26 christos Exp $*/
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
 
 #include "ixgbe.h"
+#include "vlan.h"
 
 /*********************************************************************
  *  Set this to one to display debug statistics
@@ -716,6 +717,7 @@ ixgbe_detach(device_t dev, int flags)
 
 	INIT_DEBUGOUT("ixgbe_detach: begin");
 
+#if NVLAN > 0
 	/* Make sure VLANs are not using driver */
 	if (!VLAN_ATTACHED(&adapter->osdep.ec))
 		;	/* nothing to do: no VLANs */ 
@@ -725,6 +727,7 @@ ixgbe_detach(device_t dev, int flags)
 		aprint_error_dev(dev, "VLANs in use\n");
 		return EBUSY;
 	}
+#endif
 
 	IXGBE_CORE_LOCK(adapter);
 	ixgbe_stop(adapter);
@@ -1974,8 +1977,6 @@ ixgbe_xmit(struct tx_ring *txr, struct mbuf *m_head)
 		default:
 			adapter->other_tx_dma_setup.ev_count++;
 			return error;
-		case 0:
-			break;
 		}
 	}
 

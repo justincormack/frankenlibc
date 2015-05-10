@@ -1,4 +1,4 @@
-/*	$NetBSD: arm32_boot.c,v 1.12 2015/01/12 01:18:38 jakllsch Exp $	*/
+/*	$NetBSD: arm32_boot.c,v 1.15 2015/05/04 00:55:30 matt Exp $	*/
 
 /*
  * Copyright (c) 2002, 2003, 2005  Genetec Corporation.  All rights reserved.
@@ -123,7 +123,7 @@
 
 #include <sys/cdefs.h>
 
-__KERNEL_RCSID(1, "$NetBSD: arm32_boot.c,v 1.12 2015/01/12 01:18:38 jakllsch Exp $");
+__KERNEL_RCSID(1, "$NetBSD: arm32_boot.c,v 1.15 2015/05/04 00:55:30 matt Exp $");
 
 #include "opt_ddb.h"
 #include "opt_kgdb.h"

@@ -1,4 +1,4 @@
-.\"	$NetBSD: strtoul.3,v 1.29 2015/03/10 13:00:58 christos Exp $
+.\"	$NetBSD: strtoul.3,v 1.31 2015/05/03 12:29:28 wiz Exp $
 .\"
 .\" Copyright (c) 1990, 1991, 1993
 .\"	The Regents of the University of California.  All rights reserved.
@@ -33,11 +33,10 @@
 .\"
 .\"     from: @(#)strtoul.3	8.1 (Berkeley) 6/4/93
 .\"
-.Dd March 10, 2015
+.Dd April 30, 2015
 .Dt STRTOUL 3
 .Os
 .Sh NAME
-.Nm strtou ,
 .Nm strtoul ,
 .Nm strtoull ,
 .Nm strtoumax ,
@@ -54,8 +53,6 @@
 .Fn strtoull "const char * restrict nptr" "char ** restrict endptr" "int base"
 .Pp
 .In inttypes.h
-.Ft uintmax_t
-.Fn strtou "const char * restrict nptr" "char ** restrict endptr" "int base" "uintmax_t lo" "uintmax_t hi" "int *rstatus"
 .Ft uintmax_t
 .Fn strtoumax "const char * restrict nptr" "char ** restrict endptr" "int base"
 .Pp
@@ -89,26 +86,6 @@ converts the string in
 to an
 .Ft uintmax_t
 value.
-.Fn strtou
-function
-uses internally
-.Fn strtoumax
-and ensures that the result is always in the range [
-.Fa lo ..
-.Fa hi
-].
-In adddition it always places
-.Dv 0
-on success or a conversion status in the
-.Fa rstatus
-argument, avoiding the
-.Dv errno
-gymnastics the other functions require.
-The
-.Fa rstatus
-argument can be
-.Dv NULL
-if conversion status is to be ignored.
 The
 .Fn strtouq
 function
@@ -117,6 +94,7 @@ converts the string in
 to a
 .Ft u_quad_t
 value.
+.Pp
 The conversion is done according to the given
 .Fa base ,
 which must be between 2 and 36 inclusive,
@@ -142,8 +120,7 @@ is taken as 10 (decimal) unless the next character is
 .Ql 0 ,
 in which case it is taken as 8 (octal).
 .Pp
-The remainder of the string is converted to an
-.Em unsigned long
+The remainder of the string is converted to an appropriate
 value in the obvious manner,
 stopping at the end of the string
 or at the first character that does not produce a valid digit
@@ -159,13 +136,10 @@ representing 35.)
 .Pp
 If
 .Fa endptr
-is non-nil,
-.Fn strtoul
-stores the address of the first invalid character in
+is non-nil, the functions store the address of the first invalid character in
 .Fa *endptr .
 If there were no digits at all, however,
-.Fn strtoul
-stores the original value of
+the functions store the original value of
 .Fa nptr
 in
 .Fa *endptr .
@@ -179,15 +153,6 @@ is
 .Ql \e0
 on return, the entire string was valid.)
 .Sh RETURN VALUES
-The
-.Fn strtou
-function
-always returns the closest value in the range specified by
-the
-.Fa lo
-and
-.Fa hi
-arguments.
 The
 .Fn strtoul
 function
@@ -233,21 +198,6 @@ is left unchanged.
 This behavior (which is unlike most library functions) is guaranteed
 by the pertinent standards.
 .Sh EXAMPLES
-The
-.Fn strtou
-function is the simplest to use:
-.Bd -literal -offset indent
-int e;
-uintmax_t lval = strtou(buf, NULL, 0, 1, 99, &e);
-if (e)
-	warnc(e, "conversion of `%s' to a number failed, using %ju",
-	    buf, lval);
-.Ed
-.Pp
-This will always return a number in
-.Dv [1..99]
-range no matter what the input is, and warn if the conversion failed.
-.Pp
 Because the return value of
 .Fn strtoul
 cannot be used unambiguously to detect an error,
@@ -290,29 +240,17 @@ is not between 2 and 36 and does not contain the special value 0.
 .It Bq Er ERANGE
 The given string was out of range; the value converted has been clamped.
 .El
-.Pp
-In addition to the above errors
-.Fn strtou
-returns:
-.Bl -tag -width Er
-.It Bq Er ECANCELED
-The string did not contain any characters that were converted.
-.It Bq Er ENOTSUP
-The string contained non-numeric characters that did not get converted.
-In this case,
-.Fa endptr
-points to the first unconverted character.
-.It Bq Er ERANGE
-The range given was invalid, i.e.
-.Fa lo
-\*[Gt]
-.Fa hi .
-.El
 .Sh SEE ALSO
+.Xr atof 3 ,
+.Xr atoi 3 ,
+.Xr atol 3 ,
+.Xr atoll 3 ,
+.Xr strtod 3 ,
 .Xr strtoi 3 ,
 .Xr strtoimax 3 ,
 .Xr strtol 3 ,
-.Xr strtoll 3
+.Xr strtoll 3 ,
+.Xr strtou 3
 .Sh STANDARDS
 The
 .Fn strtoul
@@ -325,9 +263,13 @@ and
 .Fn strtoumax
 functions conform to
 .St -isoC-99 .
+.Pp
 The
-.Fn strtou
-function appeared in
-.Nx 8 .
+.Fn strtouq
+function is a
+.Bx
+legacy function equivalent to
+.Fn strtoull
+and should not be used in a new code.
 .Sh BUGS
 Ignores the current locale.

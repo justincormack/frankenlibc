@@ -1,4 +1,4 @@
-/*	$NetBSD: if_bge.c,v 1.282 2015/04/13 16:33:25 riastradh Exp $	*/
+/*	$NetBSD: if_bge.c,v 1.287 2015/05/01 03:42:15 msaitoh Exp $	*/
 
 /*
  * Copyright (c) 2001 Wind River Systems
@@ -79,7 +79,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: if_bge.c,v 1.282 2015/04/13 16:33:25 riastradh Exp $");
+__KERNEL_RCSID(0, "$NetBSD: if_bge.c,v 1.287 2015/05/01 03:42:15 msaitoh Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -435,16 +435,8 @@ static const struct bge_product {
 	  "Broadcom BCM5723 Gigabit Ethernet",
 	  },
 	{ PCI_VENDOR_BROADCOM,
-	  PCI_PRODUCT_BROADCOM_BCM5724,
-	  "Broadcom BCM5724 Gigabit Ethernet",
-	  },
-	{ PCI_VENDOR_BROADCOM,
 	  PCI_PRODUCT_BROADCOM_BCM5750,
 	  "Broadcom BCM5750 Gigabit Ethernet",
-	  },
-	{ PCI_VENDOR_BROADCOM,
-	  PCI_PRODUCT_BROADCOM_BCM5750M,
-	  "Broadcom BCM5750M Gigabit Ethernet",
 	  },
 	{ PCI_VENDOR_BROADCOM,
 	  PCI_PRODUCT_BROADCOM_BCM5751,
@@ -740,6 +732,7 @@ static const struct bge_revision {
 	{ BGE_CHIPID_BCM5761_A1, "BCM5761 A1" },
 	{ BGE_CHIPID_BCM5784_A0, "BCM5784 A0" },
 	{ BGE_CHIPID_BCM5784_A1, "BCM5784 A1" },
+	{ BGE_CHIPID_BCM5784_B0, "BCM5784 B0" },
 	/* 5754 and 5787 share the same ASIC ID */
 	{ BGE_CHIPID_BCM5787_A0, "BCM5754/5787 A0" },
 	{ BGE_CHIPID_BCM5787_A1, "BCM5754/5787 A1" },
@@ -1744,8 +1737,10 @@ bge_newbuf_std(struct bge_softc *sc, int i, struct mbuf *m,
 	if (!(sc->bge_flags & BGEF_RX_ALIGNBUG))
 	    m_adj(m_new, ETHER_ALIGN);
 	if (bus_dmamap_load_mbuf(sc->bge_dmatag, dmamap, m_new,
-	    BUS_DMA_READ|BUS_DMA_NOWAIT))
+	    BUS_DMA_READ|BUS_DMA_NOWAIT)) {
+		m_freem(m_new);
 		return ENOBUFS;
+	}
 	bus_dmamap_sync(sc->bge_dmatag, dmamap, 0, dmamap->dm_mapsize,
 	    BUS_DMASYNC_PREREAD);
 
@@ -3256,7 +3251,6 @@ bge_chipid(const struct pci_attach_args *pa)
 		case PCI_PRODUCT_BROADCOM_BCM5718:
 		case PCI_PRODUCT_BROADCOM_BCM5719:
 		case PCI_PRODUCT_BROADCOM_BCM5720:
-		case PCI_PRODUCT_BROADCOM_BCM5724: /* ??? */
 			id = pci_conf_read(pa->pa_pc, pa->pa_tag,
 			    BGE_PCI_GEN2_PRODID_ASICREV);
 			break;
@@ -4723,7 +4717,7 @@ bge_asf_driver_up(struct bge_softc *sc)
 			bge_wait_for_event_ack(sc);
 
 			bge_writemem_ind(sc, BGE_SRAM_FW_CMD_MB,
-			    BGE_FW_CMD_DRV_ALIVE);
+			    BGE_FW_CMD_DRV_ALIVE3);
 			bge_writemem_ind(sc, BGE_SRAM_FW_CMD_LEN_MB, 4);
 			bge_writemem_ind(sc, BGE_SRAM_FW_CMD_DATA_MB,
 			    BGE_FW_HB_TIMEOUT_SEC);
@@ -5384,6 +5378,29 @@ bge_init(struct ifnet *ifp)
 	bge_sig_pre_reset(sc, BGE_RESET_START);
 	bge_reset(sc);
 	bge_sig_legacy(sc, BGE_RESET_START);
+
+	if (BGE_CHIPREV(sc->bge_chipid) == BGE_CHIPREV_5784_AX) {
+		reg = CSR_READ_4(sc, BGE_CPMU_CTRL);
+		reg &= ~(BGE_CPMU_CTRL_LINK_AWARE_MODE |
+		    BGE_CPMU_CTRL_LINK_IDLE_MODE);
+		CSR_WRITE_4(sc, BGE_CPMU_CTRL, reg);
+
+		reg = CSR_READ_4(sc, BGE_CPMU_LSPD_10MB_CLK);
+		reg &= ~BGE_CPMU_LSPD_10MB_CLK;
+		reg |= BGE_CPMU_LSPD_10MB_MACCLK_6_25;
+		CSR_WRITE_4(sc, BGE_CPMU_LSPD_10MB_CLK, reg);
+
+		reg = CSR_READ_4(sc, BGE_CPMU_LNK_AWARE_PWRMD);
+		reg &= ~BGE_CPMU_LNK_AWARE_MACCLK_MASK;
+		reg |= BGE_CPMU_LNK_AWARE_MACCLK_6_25;
+		CSR_WRITE_4(sc, BGE_CPMU_LNK_AWARE_PWRMD, reg);
+
+		reg = CSR_READ_4(sc, BGE_CPMU_HST_ACC);
+		reg &= ~BGE_CPMU_HST_ACC_MACCLK_MASK;
+		reg |= BGE_CPMU_HST_ACC_MACCLK_6_25;
+		CSR_WRITE_4(sc, BGE_CPMU_HST_ACC, reg);
+	}
+
 	bge_sig_post_reset(sc, BGE_RESET_START);
 
 	bge_chipinit(sc);
@@ -5569,9 +5586,32 @@ bge_ifmedia_upd(struct ifnet *ifp)
 		return 0;
 	}
 
+	if ((BGE_ASICREV(sc->bge_chipid) == BGE_ASICREV_BCM5784) &&
+	    (BGE_CHIPREV(sc->bge_chipid) != BGE_CHIPREV_5784_AX)) {
+		uint32_t reg;
+
+		reg = CSR_READ_4(sc, BGE_CPMU_CTRL);
+		if ((reg & BGE_CPMU_CTRL_GPHY_10MB_RXONLY) != 0) {
+			reg &= ~BGE_CPMU_CTRL_GPHY_10MB_RXONLY;
+			CSR_WRITE_4(sc, BGE_CPMU_CTRL, reg);
+		}
+	}
+
 	BGE_STS_SETBIT(sc, BGE_STS_LINK_EVT);
 	if ((rc = mii_mediachg(mii)) == ENXIO)
 		return 0;
+
+	if (BGE_CHIPREV(sc->bge_chipid) == BGE_CHIPREV_5784_AX) {
+		uint32_t reg;
+
+		reg = CSR_READ_4(sc, BGE_CPMU_LSPD_1000MB_CLK);
+		if ((reg & BGE_CPMU_LSPD_1000MB_MACCLK_MASK)
+		    == (BGE_CPMU_LSPD_1000MB_MACCLK_12_5)) {
+			reg &= ~BGE_CPMU_LSPD_1000MB_MACCLK_MASK;
+			delay(40);
+			CSR_WRITE_4(sc, BGE_CPMU_LSPD_1000MB_CLK, reg);
+		}
+	}
 
 	/*
 	 * Force an interrupt so that we will call bge_link_upd
@@ -5943,6 +5983,23 @@ bge_link_upd(struct bge_softc *sc)
 		mii_pollstat(mii);
 	}
 
+	if (BGE_CHIPREV(sc->bge_chipid) == BGE_CHIPREV_5784_AX) {
+		uint32_t reg, scale;
+
+		reg = CSR_READ_4(sc, BGE_CPMU_CLCK_STAT) &
+		    BGE_CPMU_CLCK_STAT_MAC_CLCK_MASK;
+		if (reg == BGE_CPMU_CLCK_STAT_MAC_CLCK_62_5)
+			scale = 65;
+		else if (reg == BGE_CPMU_CLCK_STAT_MAC_CLCK_6_25)
+			scale = 6;
+		else
+			scale = 12;
+
+		reg = CSR_READ_4(sc, BGE_MISC_CFG) &
+		    ~BGE_MISCCFG_TIMER_PRESCALER;
+		reg |= scale << 1;
+		CSR_WRITE_4(sc, BGE_MISC_CFG, reg);
+	}
 	/* Clear the attention */
 	CSR_WRITE_4(sc, BGE_MAC_STS, BGE_MACSTAT_SYNC_CHANGED|
 	    BGE_MACSTAT_CFG_CHANGED|BGE_MACSTAT_MI_COMPLETE|

@@ -57,6 +57,7 @@ A D/compat_ossaudio////
 A D/compat_sunos////
 A D/compat_sunos32////
 A D/compat_svr4////
+A D/compat_sysv////
 A D/coram////
 A D/coredump////
 A D/coretemp////
@@ -222,6 +223,7 @@ A D/sysmon_power////
 A D/sysmon_taskq////
 A D/sysmon_wdog////
 A D/sysvbfs////
+A D/tco////
 A D/tdfxdrm////
 A D/thinkpad////
 A D/tmpfs////
@@ -244,6 +246,7 @@ A D/vboxdrm////
 A D/vcoda////
 A D/viac7temp////
 A D/viadrm////
+A D/viadrmums////
 A D/vmt////
 A D/vnd////
 A D/wbsio////

@@ -1,4 +1,4 @@
-/*	$NetBSD: socketvar.h,v 1.137 2015/04/24 22:32:38 rtr Exp $	*/
+/*	$NetBSD: socketvar.h,v 1.139 2015/05/09 15:22:47 rtr Exp $	*/
 
 /*-
  * Copyright (c) 2008, 2009 The NetBSD Foundation, Inc.
@@ -127,6 +127,8 @@ struct so_accf {
 	char	*so_accept_filter_str;	/* saved user args */
 };
 
+struct sockaddr;
+
 struct socket {
 	kmutex_t * volatile so_lock;	/* pointer to lock on structure */
 	kcondvar_t	so_cv;		/* notifier */
@@ -167,7 +169,7 @@ struct socket {
 	void		*so_internal;	/* Space for svr4 stream data */
 	void		(*so_upcall) (struct socket *, void *, int, int);
 	void *		so_upcallarg;	/* Arg for above */
-	int		(*so_send) (struct socket *, struct mbuf *,
+	int		(*so_send) (struct socket *, struct sockaddr *,
 					struct uio *, struct mbuf *,
 					struct mbuf *, int, struct lwp *);
 	int		(*so_receive) (struct socket *,
@@ -241,7 +243,6 @@ extern int		sock_loan_thresh;
 extern kmutex_t		*softnet_lock;
 
 struct mbuf;
-struct sockaddr;
 struct lwp;
 struct msghdr;
 struct stat;
@@ -293,7 +294,7 @@ int	sobind(struct socket *, struct sockaddr *, struct lwp *);
 void	socantrcvmore(struct socket *);
 void	socantsendmore(struct socket *);
 int	soclose(struct socket *);
-int	soconnect(struct socket *, struct mbuf *, struct lwp *);
+int	soconnect(struct socket *, struct sockaddr *, struct lwp *);
 int	soconnect2(struct socket *, struct socket *);
 int	socreate(int, struct socket **, int, int, struct lwp *,
 		 struct socket *);
@@ -315,7 +316,7 @@ int	soreceive(struct socket *, struct mbuf **, struct uio *,
 	    struct mbuf **, struct mbuf **, int *);
 int	soreserve(struct socket *, u_long, u_long);
 void	sorflush(struct socket *);
-int	sosend(struct socket *, struct mbuf *, struct uio *,
+int	sosend(struct socket *, struct sockaddr *, struct uio *,
 	    struct mbuf *, struct mbuf *, int, struct lwp *);
 int	sosetopt(struct socket *, struct sockopt *);
 int	so_setsockopt(struct lwp *, struct socket *, int, int, const void *, size_t);
@@ -355,7 +356,7 @@ int	do_sys_recvmsg(struct lwp *, int, struct msghdr *, struct mbuf **,
 	    struct mbuf **, register_t *);
 
 int	do_sys_bind(struct lwp *, int, struct sockaddr *);
-int	do_sys_connect(struct lwp *, int, struct mbuf *);
+int	do_sys_connect(struct lwp *, int, struct sockaddr *);
 int	do_sys_accept(struct lwp *, int, struct sockaddr *, register_t *,
 	    const sigset_t *, int, int);
 

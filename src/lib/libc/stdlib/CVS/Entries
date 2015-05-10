@@ -4,7 +4,7 @@
 /Lint_labs.c/1.2/Wed Jun 14 06:49:07 2000//
 /Lint_ldiv.c/1.2/Wed Jun 14 06:49:07 2000//
 /Lint_llabs.c/1.2/Tue Mar  7 20:02:00 2000//
-/Makefile.inc/1.89/Tue Feb 17 20:29:21 2015//
+/Makefile.inc/1.90/Fri May  1 14:17:56 2015//
 /_env.c/1.9/Tue Jan 20 18:31:25 2015//
 /_rand48.c/1.7/Sun Jun 12 05:21:27 2005//
 /a64l.3/1.10/Thu May  6 18:55:34 2010//
@@ -105,12 +105,14 @@
 /strsuftoll.3/1.11/Tue Dec 14 13:00:34 2010//
 /strsuftoll.c/1.9/Sat Oct 22 22:08:47 2011//
 /strtod.3/1.20/Wed Oct 24 13:42:10 2007//
-/strtol.3/1.31/Wed Mar 11 09:57:35 2015//
+/strtoi.3/1.2/Sun May  3 12:27:32 2015//
+/strtol.3/1.32/Fri May  1 14:17:56 2015//
 /strtol.c/1.18/Wed Aug 20 12:42:26 2008//
 /strtonum.3/1.2/Mon Jan 19 11:47:41 2015//
 /strtonum.c/1.4/Tue Mar 10 12:57:56 2015//
 /strtoq.c/1.19/Wed Aug 20 12:42:26 2008//
-/strtoul.3/1.29/Tue Mar 10 13:00:58 2015//
+/strtou.3/1.2/Sun May  3 12:28:20 2015//
+/strtoul.3/1.31/Sun May  3 12:29:28 2015//
 /strtouq.c/1.20/Tue Aug 26 12:21:24 2008//
 /system.3/1.17/Wed Aug 27 06:45:02 2008//
 /system.c/1.25/Tue Jan 20 18:31:25 2015//

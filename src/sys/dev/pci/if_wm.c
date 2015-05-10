@@ -1,4 +1,4 @@
-/*	$NetBSD: if_wm.c,v 1.316 2015/04/17 02:54:15 msaitoh Exp $	*/
+/*	$NetBSD: if_wm.c,v 1.320 2015/05/04 10:10:42 msaitoh Exp $	*/
 
 /*
  * Copyright (c) 2001, 2002, 2003, 2004 Wasabi Systems, Inc.
@@ -81,7 +81,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: if_wm.c,v 1.316 2015/04/17 02:54:15 msaitoh Exp $");
+__KERNEL_RCSID(0, "$NetBSD: if_wm.c,v 1.320 2015/05/04 10:10:42 msaitoh Exp $");
 
 #ifdef _KERNEL_OPT
 #include "opt_net_mpsafe.h"
@@ -251,6 +251,10 @@ static uint16_t swfwphysem[] = {
 	SWFW_PHY1_SM,
 	SWFW_PHY2_SM,
 	SWFW_PHY3_SM
+};
+
+static const uint32_t wm_82580_rxpbs_table[] = {
+	36, 72, 144, 1, 2, 4, 8, 16, 35, 70, 140
 };
 
 /*
@@ -566,6 +570,7 @@ static void	wm_get_auto_rd_done(struct wm_softc *);
 static void	wm_lan_init_done(struct wm_softc *);
 static void	wm_get_cfg_done(struct wm_softc *);
 static void	wm_initialize_hardware_bits(struct wm_softc *);
+static uint32_t	wm_rxpbs_adjust_82580(uint32_t);
 static void	wm_reset(struct wm_softc *);
 static int	wm_add_rxbuf(struct wm_softc *, int);
 static void	wm_rxdrain(struct wm_softc *);
@@ -3425,6 +3430,17 @@ wm_initialize_hardware_bits(struct wm_softc *sc)
 	}
 }
 
+static uint32_t
+wm_rxpbs_adjust_82580(uint32_t val)
+{
+	uint32_t rv = 0;
+
+	if (val < __arraycount(wm_82580_rxpbs_table))
+		rv = wm_82580_rxpbs_table[val];
+
+	return rv;
+}
+
 /*
  * wm_reset:
  *
@@ -3456,20 +3472,8 @@ wm_reset(struct wm_softc *sc)
 	case WM_T_82571:
 	case WM_T_82572:
 	case WM_T_82575:	/* XXX need special handing for jumbo frames */
-	case WM_T_I350:
-	case WM_T_I354:
 	case WM_T_80003:
 		sc->sc_pba = PBA_32K;
-		break;
-	case WM_T_82580:
-		sc->sc_pba = PBA_35K;
-		break;
-	case WM_T_I210:
-	case WM_T_I211:
-		sc->sc_pba = PBA_34K;
-		break;
-	case WM_T_82576:
-		sc->sc_pba = PBA_64K;
 		break;
 	case WM_T_82573:
 		sc->sc_pba = PBA_12K;
@@ -3478,6 +3482,19 @@ wm_reset(struct wm_softc *sc)
 	case WM_T_82583:
 		sc->sc_pba = PBA_20K;
 		break;
+	case WM_T_82576:
+		sc->sc_pba = CSR_READ(sc, WMREG_RXPBS);
+		sc->sc_pba &= RXPBS_SIZE_MASK_82576;
+		break;
+	case WM_T_82580:
+	case WM_T_I350:
+	case WM_T_I354:
+		sc->sc_pba = wm_rxpbs_adjust_82580(CSR_READ(sc, WMREG_RXPBS));
+		break;
+	case WM_T_I210:
+	case WM_T_I211:
+		sc->sc_pba = PBA_34K;
+		break;
 	case WM_T_ICH8:
 		/* Workaround for a bit corruption issue in FIFO memory */
 		sc->sc_pba = PBA_8K;
@@ -3485,7 +3502,8 @@ wm_reset(struct wm_softc *sc)
 		break;
 	case WM_T_ICH9:
 	case WM_T_ICH10:
-		sc->sc_pba = PBA_10K;
+		sc->sc_pba = sc->sc_ethercom.ec_if.if_mtu > 4096 ?
+		    PBA_14K : PBA_10K;
 		break;
 	case WM_T_PCH:
 	case WM_T_PCH2:
@@ -3497,7 +3515,13 @@ wm_reset(struct wm_softc *sc)
 		    PBA_40K : PBA_48K;
 		break;
 	}
-	CSR_WRITE(sc, WMREG_PBA, sc->sc_pba);
+	/*
+	 * Only old or non-multiqueue devices have the PBA register
+	 * XXX Need special handling for 82575.
+	 */
+	if (((sc->sc_flags & WM_F_NEWQUEUE) == 0)
+	    || (sc->sc_type == WM_T_82575))
+		CSR_WRITE(sc, WMREG_PBA, sc->sc_pba);
 
 	/* Prevent the PCI-E bus from sticking */
 	if (sc->sc_flags & WM_F_PCIE) {
@@ -3950,6 +3974,32 @@ wm_init_locked(struct ifnet *ifp)
 	if (sc->sc_flags & WM_F_HAS_MII)
 		wm_gmii_reset(sc);
 
+	/* Calculate (E)ITR value */
+	if ((sc->sc_flags & WM_F_NEWQUEUE) != 0) {
+		sc->sc_itr = 450;	/* For EITR */
+	} else if (sc->sc_type >= WM_T_82543) {
+		/*
+		 * Set up the interrupt throttling register (units of 256ns)
+		 * Note that a footnote in Intel's documentation says this
+		 * ticker runs at 1/4 the rate when the chip is in 100Mbit
+		 * or 10Mbit mode.  Empirically, it appears to be the case
+		 * that that is also true for the 1024ns units of the other
+		 * interrupt-related timer registers -- so, really, we ought
+		 * to divide this value by 4 when the link speed is low.
+		 *
+		 * XXX implement this division at link speed change!
+		 */
+
+		/*
+		 * For N interrupts/sec, set this value to:
+		 * 1000000000 / (N * 256).  Note that we set the
+		 * absolute and packet timer values to this value
+		 * divided by 4 to get "simple timer" behavior.
+		 */
+
+		sc->sc_itr = 1500;		/* 2604 ints/sec */
+	}
+
 	/* Initialize the transmit descriptor ring. */
 	memset(sc->sc_txdescs, 0, WM_TXDESCSIZE(sc));
 	WM_CDTXSYNC(sc, 0, WM_NTXDESC(sc),
@@ -3969,8 +4019,6 @@ wm_init_locked(struct ifnet *ifp)
 		CSR_WRITE(sc, WMREG_TDBAL, WM_CDTXADDR_LO(sc, 0));
 		CSR_WRITE(sc, WMREG_TDLEN, WM_TXDESCSIZE(sc));
 		CSR_WRITE(sc, WMREG_TDH, 0);
-		CSR_WRITE(sc, WMREG_TIDV, 375);		/* ITR / 4 */
-		CSR_WRITE(sc, WMREG_TADV, 375);		/* should be same */
 
 		if ((sc->sc_flags & WM_F_NEWQUEUE) != 0)
 			/*
@@ -3981,6 +4029,13 @@ wm_init_locked(struct ifnet *ifp)
 			    | TXDCTL_PTHRESH(0) | TXDCTL_HTHRESH(0)
 			    | TXDCTL_WTHRESH(0));
 		else {
+			/* ITR / 4 */
+			CSR_WRITE(sc, WMREG_TIDV, sc->sc_itr / 4);
+			if (sc->sc_type >= WM_T_82540) {
+				/* should be same */
+				CSR_WRITE(sc, WMREG_TADV, sc->sc_itr / 4);
+			}
+
 			CSR_WRITE(sc, WMREG_TDT, 0);
 			CSR_WRITE(sc, WMREG_TXDCTL(0), TXDCTL_PTHRESH(0) |
 			    TXDCTL_HTHRESH(0) | TXDCTL_WTHRESH(0));
@@ -3988,8 +4043,6 @@ wm_init_locked(struct ifnet *ifp)
 			    RXDCTL_HTHRESH(0) | RXDCTL_WTHRESH(1));
 		}
 	}
-	CSR_WRITE(sc, WMREG_TQSA_LO, 0);
-	CSR_WRITE(sc, WMREG_TQSA_HI, 0);
 
 	/* Initialize the transmit job descriptors. */
 	for (i = 0; i < WM_TXQUEUELEN(sc); i++)
@@ -4020,8 +4073,8 @@ wm_init_locked(struct ifnet *ifp)
 		CSR_WRITE(sc, WMREG_RDBAH, WM_CDRXADDR_HI(sc, 0));
 		CSR_WRITE(sc, WMREG_RDBAL, WM_CDRXADDR_LO(sc, 0));
 		CSR_WRITE(sc, WMREG_RDLEN, sizeof(sc->sc_rxdescs));
+
 		if ((sc->sc_flags & WM_F_NEWQUEUE) != 0) {
-			CSR_WRITE(sc, WMREG_EITR(0), 450);
 			if (MCLBYTES & ((1 << SRRCTL_BSIZEPKT_SHIFT) - 1))
 				panic("%s: MCLBYTES %d unsupported for i2575 or higher\n", __func__, MCLBYTES);
 			CSR_WRITE(sc, WMREG_SRRCTL, SRRCTL_DESCTYPE_LEGACY
@@ -4183,26 +4236,13 @@ wm_init_locked(struct ifnet *ifp)
 
 	if (sc->sc_type >= WM_T_82543) {
 		/*
-		 * Set up the interrupt throttling register (units of 256ns)
-		 * Note that a footnote in Intel's documentation says this
-		 * ticker runs at 1/4 the rate when the chip is in 100Mbit
-		 * or 10Mbit mode.  Empirically, it appears to be the case
-		 * that that is also true for the 1024ns units of the other
-		 * interrupt-related timer registers -- so, really, we ought
-		 * to divide this value by 4 when the link speed is low.
-		 *
-		 * XXX implement this division at link speed change!
+		 * XXX 82574 has both ITR and EITR. SET EITR when we use
+		 * the multi queue function with MSI-X.
 		 */
-
-		/*
-		 * For N interrupts/sec, set this value to:
-		 * 1000000000 / (N * 256).  Note that we set the
-		 * absolute and packet timer values to this value
-		 * divided by 4 to get "simple timer" behavior.
-		 */
-
-		sc->sc_itr = 1500;		/* 2604 ints/sec */
-		CSR_WRITE(sc, WMREG_ITR, sc->sc_itr);
+		if ((sc->sc_flags & WM_F_NEWQUEUE) != 0)
+			CSR_WRITE(sc, WMREG_EITR(0), sc->sc_itr);
+		else
+			CSR_WRITE(sc, WMREG_ITR, sc->sc_itr);
 	}
 
 	/* Set the VLAN ethernetype. */

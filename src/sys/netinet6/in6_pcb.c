@@ -1,4 +1,4 @@
-/*	$NetBSD: in6_pcb.c,v 1.136 2015/04/24 22:32:37 rtr Exp $	*/
+/*	$NetBSD: in6_pcb.c,v 1.140 2015/05/02 17:18:03 rtr Exp $	*/
 /*	$KAME: in6_pcb.c,v 1.84 2001/02/08 18:02:08 itojun Exp $	*/
 
 /*
@@ -62,7 +62,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: in6_pcb.c,v 1.136 2015/04/24 22:32:37 rtr Exp $");
+__KERNEL_RCSID(0, "$NetBSD: in6_pcb.c,v 1.140 2015/05/02 17:18:03 rtr Exp $");
 
 #include "opt_inet.h"
 #include "opt_ipsec.h"
@@ -418,18 +418,31 @@ in6_pcbbind(void *v, struct sockaddr_in6 *sin6, struct lwp *l)
 }
 
 /*
+ * adapter function that accepts nam as mbuf for in6_pcbconnect
+ */
+int
+in6_pcbconnect_m(void *v, struct mbuf *nam, struct lwp *l)
+{
+	struct sockaddr_in6 *sin6 = mtod(nam, struct sockaddr_in6 *);
+
+	if (sizeof (*sin6) != nam->m_len) {
+		return EINVAL;
+	}
+
+	return in6_pcbconnect(v, sin6, l);
+}
+
+/*
  * Connect from a socket to a specified address.
  * Both address and port must be specified in argument sin6.
  * If don't have a local address for this socket yet,
  * then pick one.
  */
 int
-in6_pcbconnect(void *v, struct mbuf *nam, struct lwp *l)
+in6_pcbconnect(void *v, struct sockaddr_in6 *sin6, struct lwp *l)
 {
-	struct rtentry *rt;
 	struct in6pcb *in6p = v;
 	struct in6_addr *in6a = NULL;
-	struct sockaddr_in6 *sin6 = mtod(nam, struct sockaddr_in6 *);
 	struct ifnet *ifp = NULL;	/* outgoing interface */
 	int error = 0;
 	int scope_ambiguous = 0;
@@ -444,7 +457,7 @@ in6_pcbconnect(void *v, struct mbuf *nam, struct lwp *l)
 	if (in6p->in6p_af != AF_INET6)
 		return (EINVAL);
 
-	if (nam->m_len != sizeof(*sin6))
+	if (sin6->sin6_len != sizeof(*sin6))
 		return (EINVAL);
 	if (sin6->sin6_family != AF_INET6)
 		return (EAFNOSUPPORT);
@@ -524,10 +537,11 @@ in6_pcbconnect(void *v, struct mbuf *nam, struct lwp *l)
 			return (error);
 		}
 	}
-	if (ifp == NULL && (rt = rtcache_validate(&in6p->in6p_route)) != NULL)
-		ifp = rt->rt_ifp;
 
-	in6p->in6p_ip6.ip6_hlim = (u_int8_t)in6_selecthlim(in6p, ifp);
+	if (ifp != NULL)
+		in6p->in6p_ip6.ip6_hlim = (u_int8_t)in6_selecthlim(in6p, ifp);
+	else
+		in6p->in6p_ip6.ip6_hlim = (u_int8_t)in6_selecthlim_rt(in6p);
 
 	if (in6_pcblookup_connect(in6p->in6p_table, &sin6->sin6_addr,
 	    sin6->sin6_port,
@@ -1098,7 +1112,8 @@ in6_pcbrtentry(struct in6pcb *in6p)
 		addr.s_addr = in6p->in6p_faddr.s6_addr32[3];
 
 		sockaddr_in_init(&u.dst4, &addr, 0);
-		rtcache_setdst(ro, &u.dst);
+		if (rtcache_setdst(ro, &u.dst) != 0)
+			return NULL;
 
 		rt = rtcache_init(ro);
 	} else
@@ -1110,7 +1125,8 @@ in6_pcbrtentry(struct in6pcb *in6p)
 		} u;
 
 		sockaddr_in6_init(&u.dst6, &in6p->in6p_faddr, 0, 0, 0);
-		rtcache_setdst(ro, &u.dst);
+		if (rtcache_setdst(ro, &u.dst) != 0)
+			return NULL;
 
 		rt = rtcache_init(ro);
 	}

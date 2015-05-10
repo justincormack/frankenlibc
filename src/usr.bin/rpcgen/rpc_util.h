@@ -1,4 +1,4 @@
-/*	$NetBSD: rpc_util.h,v 1.8 2013/12/15 00:40:17 christos Exp $	*/
+/*	$NetBSD: rpc_util.h,v 1.11 2015/05/09 23:28:43 dholland Exp $	*/
 /*
  * Sun RPC is a product of Sun Microsystems, Inc. and is provided for
  * unrestricted use provided that this legend is included on all tape
@@ -35,8 +35,8 @@
  * rpc_util.h, Useful definitions for the RPC protocol compiler 
  */
 
-#define alloc(size)		(void *)malloc((unsigned)(size))
-#define ALLOC(object)   (object *) malloc(sizeof(object))
+#define alloc(size)		((char *)malloc((size_t)(size)))
+#define ALLOC(object)		((object *)malloc(sizeof(object)))
 
 #define s_print	(void) sprintf
 #define f_print (void) fprintf
@@ -57,6 +57,7 @@ typedef struct list list;
 extern char curline[MAXLINESIZE];
 extern char *where;
 extern int linenum;
+extern int docleanup;
 
 extern const char *infilename;
 extern FILE *fout;
@@ -113,8 +114,8 @@ int isvectordef(const char *, relation);
 char *locase(const char *);
 void pvname_svc(const char *, const char *);
 void pvname(const char *, const char *);
-void error(const char *) __dead;
-void crash(void) __dead;
+__printflike(1, 2) void error(const char *, ...);
+void crash(void);
 void record_open(const char *);
 void expected1(tok_kind) __dead;
 void expected2(tok_kind, tok_kind) __dead;

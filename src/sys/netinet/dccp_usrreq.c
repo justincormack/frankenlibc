@@ -1,5 +1,5 @@
 /*	$KAME: dccp_usrreq.c,v 1.67 2005/11/03 16:05:04 nishida Exp $	*/
-/*	$NetBSD: dccp_usrreq.c,v 1.3 2015/04/24 22:32:37 rtr Exp $ */
+/*	$NetBSD: dccp_usrreq.c,v 1.6 2015/05/02 17:18:03 rtr Exp $ */
 
 /*
  * Copyright (c) 2003 Joacim Häggmark, Magnus Erixzon, Nils-Erik Mattsson 
@@ -67,7 +67,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: dccp_usrreq.c,v 1.3 2015/04/24 22:32:37 rtr Exp $");
+__KERNEL_RCSID(0, "$NetBSD: dccp_usrreq.c,v 1.6 2015/05/02 17:18:03 rtr Exp $");
 
 #include "opt_inet.h"
 #include "opt_dccp.h"
@@ -91,7 +91,6 @@ __KERNEL_RCSID(0, "$NetBSD: dccp_usrreq.c,v 1.3 2015/04/24 22:32:37 rtr Exp $");
 #include <sys/queue.h>
 
 #include <net/if.h>
-#include <net/route.h>
 
 #include <netinet/in.h>
 #include <netinet/in_systm.h>
@@ -1852,11 +1851,10 @@ dccp_bind(struct socket *so, struct sockaddr *nam, struct lwp *l)
  * Called by the connect system call.
  */
 static int
-dccp_connect(struct socket *so, struct mbuf *m, struct lwp *l)
+dccp_connect(struct socket *so, struct sockaddr *nam, struct lwp *l)
 {
 	struct inpcb *inp;
 	struct dccpcb *dp;
-	struct sockaddr *nam;
 	int error;
 	struct sockaddr_in *sin;
 	char test[2];
@@ -1890,7 +1888,6 @@ dccp_connect(struct socket *so, struct mbuf *m, struct lwp *l)
 
 	dccpstat.dccps_connattempt++;
 
-	nam = mtod(m, struct sockaddr *);
 	sin = (struct sockaddr_in *)nam;
 	if (sin->sin_family == AF_INET
 	    && IN_MULTICAST(ntohl(sin->sin_addr.s_addr))) {
@@ -1898,7 +1895,7 @@ dccp_connect(struct socket *so, struct mbuf *m, struct lwp *l)
 		goto bad;
 	}
 
-	error = dccp_doconnect(so, m, l, 0);
+	error = dccp_doconnect(so, nam, l, 0);
 
 	if (error != 0)
 		goto bad;
@@ -1932,7 +1929,8 @@ dccp_connect2(struct socket *so, struct socket *so2)
  *
  */
 int
-dccp_doconnect(struct socket *so, struct mbuf *m, struct lwp *l, int isipv6)
+dccp_doconnect(struct socket *so, struct sockaddr *nam,
+    struct lwp *l, int isipv6)
 { 
 	struct inpcb *inp;
 #ifdef INET6
@@ -1975,11 +1973,11 @@ dccp_doconnect(struct socket *so, struct mbuf *m, struct lwp *l, int isipv6)
 
 #ifdef INET6
 	if (isipv6) {
-		error = in6_pcbconnect(in6p, m, l);
+		error = in6_pcbconnect(in6p, (struct sockaddr_in6 *)nam, l);
 		DCCP_DEBUG((LOG_INFO, "in6_pcbconnect=%d\n",error));
 	} else
 #endif
-		error = in_pcbconnect(inp, m, l);
+		error = in_pcbconnect(inp, (struct sockaddr_in *)nam, l);
 	if (error) {
 		DCCP_DEBUG((LOG_INFO, "in_pcbconnect=%d\n",error));
 		return error;
@@ -2113,12 +2111,11 @@ dccp_disconnect2(struct dccpcb *dp)
 }
 
 int
-dccp_send(struct socket *so, struct mbuf *m, struct mbuf *nam,
+dccp_send(struct socket *so, struct mbuf *m, struct sockaddr *addr,
     struct mbuf *control, struct lwp *l)
 {
 	struct inpcb	*inp;
 	struct dccpcb	*dp;
-	struct sockaddr *addr;
 	int		error = 0;
 	int		isipv6 = 0;
 
@@ -2131,11 +2128,6 @@ dccp_send(struct socket *so, struct mbuf *m, struct mbuf *nam,
 		m_freem(m);
 		return EINVAL;
 	}
-
-	if (nam == 0)
-		addr = NULL;
-	else
-		addr = mtod(nam, struct sockaddr *);
 
 #ifdef INET6
 	isipv6 = addr && addr->sa_family == AF_INET6;
@@ -2198,7 +2190,7 @@ dccp_send(struct socket *so, struct mbuf *m, struct mbuf *nam,
 	dp->pktcnt ++;
 
 	if (addr && dp->state == DCCPS_CLOSED) {
-		error = dccp_doconnect(so, nam, l, isipv6);
+		error = dccp_doconnect(so, addr, l, isipv6);
 		if (error)
 			goto out;
 	}
@@ -2308,9 +2300,6 @@ dccp_newdccpcb(int family, void *aux)
 	struct inpcb *inp;
 	struct in6pcb *in6p;
 	struct dccpcb	*dp;
-#ifdef INET6
-	struct rtentry *rt;
-#endif
 
 	DCCP_DEBUG((LOG_INFO, "Creating a new dccpcb!\n"));
 
@@ -2362,8 +2351,7 @@ dccp_newdccpcb(int family, void *aux)
 	case PF_INET6:
 		in6p = (struct in6pcb *)aux;
 		dp->d_in6pcb = in6p;
-		rt = rtcache_validate(&in6p->in6p_route);
-		in6p->in6p_ip6.ip6_hlim = in6_selecthlim(in6p, (rt != NULL) ? rt->rt_ifp : NULL);
+		in6p->in6p_ip6.ip6_hlim = in6_selecthlim_rt(in6p);
 		in6p->in6p_ppcb = dp;
 		break;
 	}
@@ -2978,40 +2966,6 @@ dccp_purgeif(struct socket *so, struct ifnet *ifp)
 	return 0;
 }
 
-int
-dccp_usrreq(struct socket *so, int req, struct mbuf *m, struct mbuf *nam,
-	    struct mbuf *control, struct lwp *l)
-{
-	KASSERT(req != PRU_ATTACH);
-	KASSERT(req != PRU_DETACH);
-	KASSERT(req != PRU_ACCEPT);
-	KASSERT(req != PRU_BIND);
-	KASSERT(req != PRU_LISTEN);
-	KASSERT(req != PRU_CONNECT);
-	KASSERT(req != PRU_CONNECT2);
-	KASSERT(req != PRU_DISCONNECT);
-	KASSERT(req != PRU_SHUTDOWN);
-	KASSERT(req != PRU_ABORT);
-	KASSERT(req != PRU_CONTROL);
-	KASSERT(req != PRU_SENSE);
-	KASSERT(req != PRU_PEERADDR);
-	KASSERT(req != PRU_SOCKADDR);
-	KASSERT(req != PRU_RCVD);
-	KASSERT(req != PRU_RCVOOB);
-	KASSERT(req != PRU_SEND);
-	KASSERT(req != PRU_SENDOOB);
-	KASSERT(req != PRU_PURGEIF);
-
-	KASSERT(solocked(so));
-
-	if (sotoinpcb(so) == NULL)
-		return EINVAL;
-
-	panic("dccp_usrreq");
-
-	return 0;
-}
-
 /****** Ack Vector functions *********/
 
 /**
@@ -3384,7 +3338,6 @@ PR_WRAP_USRREQS(dccp)
 #define	dccp_send	dccp_send_wrapper
 #define	dccp_sendoob	dccp_sendoob_wrapper
 #define	dccp_purgeif	dccp_purgeif_wrapper
-#define	dccp_usrreq	dccp_usrreq_wrapper
 
 const struct pr_usrreqs dccp_usrreqs = {
 	.pr_attach	= dccp_attach,
@@ -3406,5 +3359,4 @@ const struct pr_usrreqs dccp_usrreqs = {
 	.pr_send	= dccp_send,
 	.pr_sendoob	= dccp_sendoob,
 	.pr_purgeif	= dccp_purgeif,
-	.pr_generic	= dccp_usrreq,
 };

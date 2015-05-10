@@ -1,4 +1,4 @@
-/*	$NetBSD: if_iwm.c,v 1.30 2015/04/15 05:40:48 nonaka Exp $	*/
+/*	$NetBSD: if_iwm.c,v 1.32 2015/04/29 03:35:09 nonaka Exp $	*/
 /*	OpenBSD: if_iwm.c,v 1.39 2015/03/23 00:35:19 jsg Exp	*/
 
 /*
@@ -105,7 +105,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: if_iwm.c,v 1.30 2015/04/15 05:40:48 nonaka Exp $");
+__KERNEL_RCSID(0, "$NetBSD: if_iwm.c,v 1.32 2015/04/29 03:35:09 nonaka Exp $");
 
 #include <sys/param.h>
 #include <sys/conf.h>
@@ -116,6 +116,7 @@ __KERNEL_RCSID(0, "$NetBSD: if_iwm.c,v 1.30 2015/04/15 05:40:48 nonaka Exp $");
 #include <sys/proc.h>
 #include <sys/socket.h>
 #include <sys/sockio.h>
+#include <sys/sysctl.h>
 #include <sys/systm.h>
 
 #include <sys/cpu.h>
@@ -154,7 +155,7 @@ __KERNEL_RCSID(0, "$NetBSD: if_iwm.c,v 1.30 2015/04/15 05:40:48 nonaka Exp $");
 #ifdef IWM_DEBUG
 #define DPRINTF(x)	do { if (iwm_debug > 0) printf x; } while (0)
 #define DPRINTFN(n, x)	do { if (iwm_debug >= (n)) printf x; } while (0)
-int iwm_debug = 1;
+int iwm_debug = 0;
 #else
 #define DPRINTF(x)	do { ; } while (0)
 #define DPRINTFN(n, x)	do { ; } while (0)
@@ -6628,7 +6629,9 @@ iwm_attach(device_t parent, device_t self, void *aux)
 {
 	struct iwm_softc *sc = device_private(self);
 	struct pci_attach_args *pa = aux;
+#ifndef __HAVE_PCI_MSI_MSIX
 	pci_intr_handle_t ih;
+#endif
 	pcireg_t reg, memtype;
 	const char *intrstr;
 	int error;
@@ -6676,14 +6679,46 @@ iwm_attach(device_t parent, device_t self, void *aux)
 	}
 
 	/* Install interrupt handler. */
+	sc->sc_intr_type = IWM_INTR_INTX;
+#ifdef __HAVE_PCI_MSI_MSIX
+	error = ENODEV;
+	if (pci_msi_count(pa) > 0) {
+		error = pci_msi_alloc_exact(pa, &sc->sc_pihp, 1);
+		if (error == 0)
+			sc->sc_intr_type = IWM_INTR_MSI;
+	}
+	if (error != 0) {
+		if (pci_intx_alloc(pa, &sc->sc_pihp)) {
+			aprint_error_dev(self, "can't map interrupt\n");
+			return;
+		}
+	}
+#else	/* !__HAVE_PCI_MSI_MSIX */
 	if (pci_intr_map(pa, &ih)) {
 		aprint_error_dev(self, "can't map interrupt\n");
 		return;
 	}
+#endif	/* __HAVE_PCI_MSI_MSIX */
 
 	char intrbuf[PCI_INTRSTR_LEN];
+#ifdef __HAVE_PCI_MSI_MSIX
+	intrstr = pci_intr_string(sc->sc_pct, sc->sc_pihp[0], intrbuf,
+	    sizeof(intrbuf));
+	switch (sc->sc_intr_type) {
+	case IWM_INTR_MSI:
+		sc->sc_ih = pci_msi_establish(sc->sc_pct, sc->sc_pihp[0],
+		    IPL_NET, iwm_intr, sc);
+		break;
+
+	case IWM_INTR_INTX:
+		sc->sc_ih = pci_intr_establish(sc->sc_pct, sc->sc_pihp[0],
+		    IPL_NET, iwm_intr, sc);
+		break;
+	}
+#else	/* !__HAVE_PCI_MSI_MSIX */
 	intrstr = pci_intr_string(sc->sc_pct, ih, intrbuf, sizeof(intrbuf));
 	sc->sc_ih = pci_intr_establish(sc->sc_pct, ih, IPL_NET, iwm_intr, sc);
+#endif	/* __HAVE_PCI_MSI_MSIX */
 	if (sc->sc_ih == NULL) {
 		aprint_error_dev(self, "can't establish interrupt");
 		if (intrstr != NULL)
@@ -6876,3 +6911,29 @@ iwm_activate(device_t self, enum devact act)
 
 CFATTACH_DECL_NEW(iwm, sizeof(struct iwm_softc), iwm_match, iwm_attach,
 	NULL, NULL);
+
+#ifdef IWM_DEBUG
+SYSCTL_SETUP(sysctl_iwm, "sysctl iwm(4) subtree setup")
+{
+	const struct sysctlnode *rnode, *cnode;
+	int rc;
+
+	if ((rc = sysctl_createv(clog, 0, NULL, &rnode,
+	    CTLFLAG_PERMANENT, CTLTYPE_NODE, "iwm",
+	    SYSCTL_DESCR("iwm global controls"),
+	    NULL, 0, NULL, 0, CTL_HW, CTL_CREATE, CTL_EOL)) != 0)
+		goto err;
+
+	/* control debugging printfs */
+	if ((rc = sysctl_createv(clog, 0, &rnode, &cnode,
+	    CTLFLAG_PERMANENT|CTLFLAG_READWRITE, CTLTYPE_INT,
+	    "debug", SYSCTL_DESCR("Enable debugging output"),
+	    NULL, 0, &iwm_debug, 0, CTL_CREATE, CTL_EOL)) != 0)
+		goto err;
+
+	return;
+
+ err:
+	aprint_error("%s: sysctl_createv failed (rc = %d)\n", __func__, rc);
+}
+#endif /* IWM_DEBUG */

@@ -15,6 +15,7 @@ A D/syncfs////
 A D/umapfs////
 A D/union////
 R D/union////
+R D/syncfs////
 R D/ptyfs////
 R D/portal////
 R D/lofs////

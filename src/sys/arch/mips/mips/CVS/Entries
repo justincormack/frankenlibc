@@ -1,9 +1,10 @@
 /bds_emul.S/1.6/Sun Dec 25 11:51:15 2011//
 /bus_dma.c/1.34/Tue Feb 17 09:58:33 2015//
 /bus_space_alignstride_chipdep.c/1.23/Fri Feb 27 14:44:16 2015//
-/cache.c/1.48/Thu Nov 24 04:17:11 2011//
+/cache.c/1.49/Wed Apr 29 08:32:00 2015//
 /cache_ls2.c/1.4/Wed Jun  8 17:47:48 2011//
 /cache_mipsNN.c/1.14/Fri Apr 29 22:19:30 2011//
+/cache_octeon.c/1.1/Wed Apr 29 08:32:00 2015//
 /cache_r10k.c/1.5/Sun Feb 20 07:45:47 2011//
 /cache_r3k.c/1.5/Sun Feb 20 07:45:47 2011//
 /cache_r3k_subr.S/1.5/Mon Dec 14 00:46:05 2009//
@@ -33,6 +34,7 @@
 /locore.S/1.190/Fri Mar  1 18:25:47 2013//
 /locore_mips1.S/1.84/Sun Feb 19 21:06:17 2012//
 /locore_mips3.S/1.102/Tue Aug 16 06:55:11 2011//
+/locore_octeon.S/1.1/Wed Apr 29 08:32:00 2015//
 /loongson2_subr.S/1.1/Sun Jul 31 15:39:29 2011//
 /mips32_subr.S/1.6/Sun Jul 31 15:39:29 2011//
 /mips32r2_subr.S/1.2/Sun Jul 31 15:39:29 2011//
@@ -47,7 +49,7 @@
 /mips_fixup.c/1.10/Wed Nov  9 17:05:50 2011//
 /mips_fpu.c/1.12/Fri May 16 00:48:41 2014//
 /mips_fputrap.c/1.10/Sat Feb 26 15:41:32 2011//
-/mips_machdep.c/1.262/Tue Nov 25 05:28:26 2014//
+/mips_machdep.c/1.263/Wed Apr 29 08:32:00 2015//
 /mips_mcclock.c/1.19/Sun Feb 20 07:45:48 2011//
 /mips_mcclock.h/1.6/Sun Feb 20 07:45:48 2011//
 /mips_mcclock_loop.S/1.5/Mon Mar 28 12:26:59 2011//
