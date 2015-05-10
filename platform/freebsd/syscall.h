@@ -29,6 +29,7 @@
 #define SYS_clock_getres		234
 #define SYS_exit			1
 #define SYS___sysctl			202
+#define	SYS_poll			209
 #define SYS_nanosleep			240
 #define	SYS_preadv			289
 #define	SYS_pwritev			290

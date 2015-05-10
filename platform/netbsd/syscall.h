@@ -35,3 +35,4 @@
 #define SYS_exit			1
 #define SYS___sysctl			202
 #define SYS___nanosleep50		430
+#define SYS___pollts50			437
