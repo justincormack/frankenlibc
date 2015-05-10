@@ -1,9 +1,9 @@
-/*	$NetBSD: makerumpif.sh,v 1.6 2013/02/14 10:54:54 pooka Exp $	*/
+/*	$NetBSD: makerumpif.sh,v 1.9 2015/04/23 10:50:00 pooka Exp $	*/
 
 /*
  * Automatically generated.  DO NOT EDIT.
  * from: ;
- * by:   NetBSD: makerumpif.sh,v 1.6 2013/02/14 10:54:54 pooka Exp 
+ * by:   NetBSD: makerumpif.sh,v 1.9 2015/04/23 10:50:00 pooka Exp 
  */
 
 #include <sys/cdefs.h>
@@ -96,6 +96,18 @@ rump_pub_netconfig_ipv4_ifaddr(const char *arg1, const char *arg2, const char *a
 }
 
 int
+rump_pub_netconfig_ipv4_ifaddr_cidr(const char *arg1, const char *arg2, int arg3)
+{
+	int rv;
+
+	rump_schedule();
+	rv = rump_netconfig_ipv4_ifaddr_cidr(arg1, arg2, arg3);
+	rump_unschedule();
+
+	return rv;
+}
+
+int
 rump_pub_netconfig_ipv6_ifaddr(const char *arg1, const char *arg2, int arg3)
 {
 	int rv;
@@ -138,6 +150,18 @@ rump_pub_netconfig_dhcp_ipv4_oneshot(const char *arg1)
 
 	rump_schedule();
 	rv = rump_netconfig_dhcp_ipv4_oneshot(arg1);
+	rump_unschedule();
+
+	return rv;
+}
+
+int
+rump_pub_netconfig_auto_ipv6(const char *arg1)
+{
+	int rv;
+
+	rump_schedule();
+	rv = rump_netconfig_auto_ipv6(arg1);
 	rump_unschedule();
 
 	return rv;
