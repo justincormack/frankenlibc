@@ -77,8 +77,6 @@ __franken_start_main(int(*main)(int,char **,char **), int argc, char **argv, cha
 
 	/* see if we have any devices to init */
 	__franken_fdinit_create();
-	/* autoconfigure what we can */
-	__franken_autoconf();
 
 	atexit(finifn);
 

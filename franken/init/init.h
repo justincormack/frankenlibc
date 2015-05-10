@@ -20,4 +20,3 @@ extern struct __fdtable __franken_fd[MAXFD];
 
 void __franken_fdinit(void);
 void __franken_fdinit_create(void);
-void __franken_autoconf(void);

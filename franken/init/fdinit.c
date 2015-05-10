@@ -19,10 +19,14 @@ enum rump_etfs_type {
 };
 
 int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type);
+
 int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
+int rump_pub_netconfig_auto_ipv6(const char *) __attribute__ ((weak));
+
 int rump_pub_netconfig_ifcreate(const char *interface) {return 0;}
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *interface) {return 0;}
+int rump_pub_netconfig_auto_ipv6(const char *interface) {return 0;}
 
 struct __fdtable __franken_fd[MAXFD];
 
@@ -112,6 +116,7 @@ int rump___sysimpl_mount50(const char *, const char *, int, void *, size_t);
 int rump___sysimpl_socket30(int, int, int);
 
 #define AF_INET 2
+#define AF_INET6 24
 #define SOCK_STREAM 1
 
 void
@@ -185,19 +190,13 @@ __franken_fdinit_create()
 					rump_pub_netconfig_dhcp_ipv4_oneshot(__franken_fd[fd].key);
 					rump___sysimpl_close(ret);
 				}
+				ret = rump___sysimpl_socket30(AF_INET6, SOCK_STREAM, 0);
+				if (ret != -1) {
+					rump_pub_netconfig_auto_ipv6(__franken_fd[fd].key);
+					rump___sysimpl_close(ret);
+				}
 			}
 			break;
 		}
 	}
-}
-
-void
-__franken_autoconf()
-{
-	const int sc[4] = {CTL_NET, CTL_NET_INET6, 41, IPV6CTL_ACCEPT_RTADV};
-	int set = 1;
-	size_t setlen = sizeof(int);
-
-	/* enable ipv6 autoconf */
-	rump___sysimpl___sysctl(sc, 4, NULL, NULL, &set, setlen);
 }
