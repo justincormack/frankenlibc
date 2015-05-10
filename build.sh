@@ -410,7 +410,7 @@ mkdir -p ${RUMPOBJ}/explode/platform
 rm -rf ${OUTDIR}
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
 rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
-${INSTALL-install} ${RUMP}/bin/rumprun ${OUTDIR}/bin
+${INSTALL-install} ${RUMP}/bin/re ${OUTDIR}/bin
 (
 	cd ${RUMP}/lib
 	for f in ${USER_LIBS}

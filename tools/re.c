@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "rumprun.h"
+#include "re.h"
 
 extern char **environ;
 

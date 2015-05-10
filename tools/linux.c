@@ -14,7 +14,7 @@
 #include <net/if.h>
 #include <linux/if_tun.h>
 
-#include "rumprun.h"
+#include "re.h"
 
 /* only in linux/fcntl.h that cannot be included */
 #ifndef AT_EMPTY_PATH

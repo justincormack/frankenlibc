@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "rumprun.h"
+#include "re.h"
 
 int
 filter_init(char *program)
