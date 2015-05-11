@@ -103,14 +103,14 @@ main(int argc, char **argv)
 	for (; p < argc; p++)
 		pargs[p] = 0;
 
+	nfds = open("/dev/null", O_RDONLY);
+	close(nfds);
+
 	ret = filter_init(program);
 	if (ret < 0) {
 		fprintf(stderr, "filter_init failed\n");
 		abort();
 	}
-
-	nfds = open("/dev/null", O_RDONLY);
-	close(nfds);
 
 	for (fd = 0; fd < nfds; fd++) {
 		fl = fcntl(fd, F_GETFL);
