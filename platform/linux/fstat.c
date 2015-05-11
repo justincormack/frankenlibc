@@ -9,7 +9,7 @@
 int __platform_random_fd = -1;
 int __platform_socket_fd = -1;
 int __platform_npoll = 0;
-struct pollfd __platform_poll[MAXFD];
+struct pollfd __platform_pollfd[MAXFD];
 
 int
 fstat(int fd, struct stat *st)
@@ -53,8 +53,8 @@ fstat(int fd, struct stat *st)
 			if (ret == 0) {
 				memcpy(st->st_hwaddr, ifr.ifr_addr.sa_data, 6);
 			}
-			__platform_poll[__platform_npoll].fd = fd;
-			__platform_poll[__platform_npoll].events = POLLIN | POLLPRI;
+			__platform_pollfd[__platform_npoll].fd = fd;
+			__platform_pollfd[__platform_npoll].events = POLLIN | POLLPRI;
 			__platform_npoll++;
 		}
 		break;

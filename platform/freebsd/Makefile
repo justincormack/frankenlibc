@@ -18,6 +18,7 @@ OBJ+=$(OBJDIR)/getpagesize.o $(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/ioctl.o $(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/mmap.o $(OBJDIR)/__mmap.o
 OBJ+=$(OBJDIR)/munmap.o $(OBJDIR)/mprotect.o $(OBJDIR)/nanosleep.o
+OBJ+=$(OBJDIR)/poll.o
 OBJ+=$(OBJDIR)/pread.o
 OBJ+=$(OBJDIR)/pwrite.o $(OBJDIR)/__pwrite.o
 OBJ+=$(OBJDIR)/preadv.o $(OBJDIR)/pwritev.o
@@ -27,7 +28,7 @@ OBJ+=$(OBJDIR)/_start1.o
 OBJ+=$(OBJDIR)/sysctl.o $(OBJDIR)/write.o
 OBJ+=$(OBJDIR)/writev.o
 HEADERS=syscall.h i386/syscall.h x86_64/syscall.h freebsd.h
-INCLUDES=-I../include -I../../franken/include -I../../franken/init
+INCLUDES=-I../include -I../../franken/include -I../../franken/init -I../../franken/ucontext -I../../librumpuser -I../../franken/thread
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
@@ -123,6 +124,9 @@ $(OBJDIR)/munmap.o:		munmap.S $(HEADERS)
 
 $(OBJDIR)/nanosleep.o:		nanosleep.S $(HEADERS)
 				$(COMPILE.S) -o $@ nanosleep.S
+
+$(OBJDIR)/poll.o:		poll.S $(HEADERS)
+				$(COMPILE.S) -o $@ poll.S
 
 $(OBJDIR)/pread.o:		pread.S $(HEADERS)
 				$(COMPILE.S) -o $@ pread.S

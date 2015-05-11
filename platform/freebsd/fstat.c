@@ -2,9 +2,13 @@
 #include <errno.h>
 
 #include "freebsd.h"
+#include "init.h"
 
 int __ioctl(int, unsigned long, ...);
 int __fstat(int, struct freebsd_stat *);
+
+int __platform_npoll = 0;
+struct pollfd __platform_pollfd[MAXFD];
 
 int
 fstat(int fd, struct stat *st)
@@ -20,17 +24,22 @@ fstat(int fd, struct stat *st)
 
 	st->st_size = fst.st_size;
 
-	if (FREEBSD_S_ISBLK(fst.st_mode)) {
+	switch (fst.st_mode & FREEBSD_S_IFMT) {
+	case FREEBSD_S_IFBLK:
 		__ioctl(fd, DIOCGMEDIASIZE, &fst.st_size);
-	}
-
-	/* XXX only for tap device */
-	if (FREEBSD_S_ISCHR(fst.st_mode)) {
+		break;
+	case FREEBSD_S_IFCHR:
+		/* XXX only for tap device */
 		ret = __ioctl(fd, SIOCGIFADDR, st->st_hwaddr);
 		if (ret == 0) {
 			/* say we are a "socket" ie network device */
 			fst.st_mode = FREEBSD_S_IFSOCK;
+			/* add to poll */
+			__platform_pollfd[__platform_npoll].fd = fd;
+			__platform_pollfd[__platform_npoll].events = POLLIN | POLLPRI;
+			__platform_npoll++;
 		}
+		break;
 	}
 
 	st->st_mode = (FREEBSD_S_ISDIR (fst.st_mode) ? S_IFDIR  : 0) |

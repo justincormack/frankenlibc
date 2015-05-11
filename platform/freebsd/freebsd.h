@@ -118,23 +118,38 @@ typedef uint32_t freebsd_blksize_t;
 typedef uint32_t freebsd_fflags_t;
 
 struct freebsd_stat {
-  freebsd_dev_t			st_dev;
-  freebsd_ino_t			st_ino;
-  freebsd_mode_t		st_mode;
-  freebsd_nlink_t		st_nlink;
-  uid_t				st_uid;
-  gid_t				st_gid;
-  freebsd_dev_t			st_rdev;
-  struct freebsd_timespec	st_atim;
-  struct freebsd_timespec	st_mtim;
-  struct freebsd_timespec	st_ctim;
-  off_t				st_size;
-  freebsd_blkcnt_t		st_blocks;
-  freebsd_blksize_t		st_blksize;
-  freebsd_fflags_t		st_flags;
-  uint32_t			st_gen;
-  int32_t			st_lspare;
-  struct freebsd_timespec	st_birthtim;
-  unsigned int :(8 / 2) * (16 - (int)sizeof(struct freebsd_timespec));
-  unsigned int :(8 / 2) * (16 - (int)sizeof(struct freebsd_timespec));
+	freebsd_dev_t			st_dev;
+	freebsd_ino_t			st_ino;
+	freebsd_mode_t			st_mode;
+	freebsd_nlink_t			st_nlink;
+	uid_t				st_uid;
+	gid_t				st_gid;
+	freebsd_dev_t			st_rdev;
+	struct freebsd_timespec		st_atim;
+	struct freebsd_timespec		st_mtim;
+	struct freebsd_timespec		st_ctim;
+	off_t				st_size;
+	freebsd_blkcnt_t		st_blocks;
+	freebsd_blksize_t		st_blksize;
+	freebsd_fflags_t		st_flags;
+	uint32_t			st_gen;
+	int32_t				st_lspare;
+	struct freebsd_timespec		st_birthtim;
+	unsigned int :(8 / 2) * (16 - (int)sizeof(struct freebsd_timespec));
+	unsigned int :(8 / 2) * (16 - (int)sizeof(struct freebsd_timespec));
 };
+
+typedef unsigned int nfds_t;
+
+struct pollfd {
+	int	fd;
+	short	events;
+	short	revents;
+};
+
+#define POLLIN		0x0001
+#define POLLPRI		0x0002
+#define POLLOUT		0x0004
+#define POLLERR		0x0008
+#define POLLHUP		0x0010
+#define POLLNVAL	0x0020

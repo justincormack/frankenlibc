@@ -9,7 +9,7 @@
 
 /* XXX tidy up */
 extern int __platform_npoll;
-extern struct pollfd __platform_poll[MAXFD];
+extern struct pollfd __platform_pollfd[MAXFD];
 
 int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request, struct timespec *remain)
 {
@@ -50,7 +50,7 @@ int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request,
 
 	/* use poll instead as we might have network events */
 
-	ret = syscall(SYS_ppoll, __platform_poll, __platform_npoll, &ltp, NULL);
+	ret = syscall(SYS_ppoll, __platform_pollfd, __platform_npoll, &ltp, NULL);
 	if (ret == -1) {
 		errno = EINVAL;
 		return -1;
@@ -59,9 +59,9 @@ int clock_nanosleep(clockid_t clk_id, int flags, const struct timespec *request,
 	if (ret == 0)
 		return 0;
 
-	for (i == 0; i < __platform_npoll; i++) {
-		if (__platform_poll[i].revents) {
-			thread = __franken_fd[__platform_poll[i].fd].wake;
+	for (i = 0; i < __platform_npoll; i++) {
+		if (__platform_pollfd[i].revents) {
+			thread = __franken_fd[__platform_pollfd[i].fd].wake;
 			if (thread)
 				wake(thread);
 		}
