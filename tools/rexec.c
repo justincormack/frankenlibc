@@ -205,10 +205,12 @@ emptydir()
 		return 1;
 	}
 
+#ifdef AT_REMOVEDIR
 	if (unlinkat(dirfd, dir, AT_REMOVEDIR) == -1) {
 		perror("unlinkat");
 		return 1;
 	}
+#endif
 
 	if (close(dirfd) == -1) {
 		perror("close");
