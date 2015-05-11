@@ -71,6 +71,10 @@ filter_init(char *program)
 		exit(1);
 	}
 
+	cap_rights_init(&rights, CAP_READ, CAP_FEXECVE);
+	ret = cap_rights_limit(pfd, &rights);
+	if (ret == -1) return ret;
+
 	return 0;
 }
 
@@ -138,8 +142,6 @@ filter_fd(int fd, int flags, struct stat *st)
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {
-
-	chdir("/");
 
 	if (fexecve(pfd, argv, envp) == -1) {
 		perror("fexecve");

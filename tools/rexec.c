@@ -34,6 +34,7 @@ main(int argc, char **argv)
 	char *pargs[argc];
 	int access = O_RDWR;
 	int ret;
+	int fl;
 	struct timespec ts;
 	struct fdinfo *fds;
 	int nfds = 3;
@@ -81,6 +82,16 @@ main(int argc, char **argv)
 				perror("open");
 				exit(1);
 			}
+			fl = fcntl(fd, F_GETFL);
+			if (fl == -1) {
+				perror("fcntl");
+				abort();
+			}
+			ret = fcntl(fd, F_SETFL, fl | O_NONBLOCK);
+			if (ret == -1) {
+				perror("fcntl");
+				abort();
+			}
 		}
 	}
 
@@ -102,23 +113,16 @@ main(int argc, char **argv)
 	close(nfds);
 
 	for (fd = 0; fd < nfds; fd++) {
-		int fl;
-		struct stat st;
-
 		fl = fcntl(fd, F_GETFL);
 		if (fl == -1) {
 			perror("fcntl");
 			abort();
-		}
-		if (fd > 2) {
-			ret = fcntl(fd, F_SETFL, fl | O_NONBLOCK);
 		}
 		ret = fstat(fd, &st);
 		if (ret == -1) {
 			perror("fstat");
 			abort();
 		}
-
 		ret = filter_fd(fd, fl, &st);
 		if (ret < 0) {
 			fprintf(stderr, "filter_fd failed\n");
