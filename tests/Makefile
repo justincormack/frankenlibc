@@ -3,7 +3,7 @@ OBJDIR=$(RUMPOBJ)/tests
 RUMPDIR?=../rump
 LIBDIR=$(RUMPDIR)/lib
 BINDIR=$(RUMPDIR)/bin
-RE=${BINDIR}/re
+REXEC=${BINDIR}/rexec
 INCDIR=$(RUMPDIR)/include
 LDFLAGS+=-static
 CFLAGS+=-g
@@ -17,9 +17,9 @@ default:		test
 test:			run
 
 run:			$(OBJ)
-			RUMP_VERBOSE=1 ${RE} $(OBJDIR)/hello
-			${RE} $(OBJDIR)/ctor
-			echo frankenlibc | ${RE} $(OBJDIR)/cat
+			RUMP_VERBOSE=1 ${REXEC} $(OBJDIR)/hello
+			${REXEC} $(OBJDIR)/ctor
+			echo frankenlibc | ${REXEC} $(OBJDIR)/cat
 
 $(OBJDIR):		
 			mkdir -p $(OBJDIR)

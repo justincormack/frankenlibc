@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "re.h"
+#include "rexec.h"
 
 #ifdef NOCAPSICUM
 int

@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "re.h"
+#include "rexec.h"
 
 extern char **environ;
 

@@ -3,9 +3,9 @@ RUMPOBJ?=../rumpobj
 OBJDIR=$(RUMPOBJ)/tools
 RUMP?=$(RUMPOBJ)/rump
 BINDIR=$(RUMP)/bin
-BIN=$(BINDIR)/re
-OBJ=$(OBJDIR)/re.o
-INC=re.h
+BIN=$(BINDIR)/rexec
+OBJ=$(OBJDIR)/rexec.o
+INC=rexec.h
 DEPS=$(INC) $(OBJDIR) $(BINDIR)
 PLATFORMS=freebsd linux netbsd qemu-arm
 
@@ -17,8 +17,8 @@ $(OBJDIR):
 $(BINDIR):
 			mkdir -p $(BINDIR)
 
-$(OBJDIR)/re.o:		re.c $(DEPS)
-			$(COMPILE.c) -o $@ re.c
+$(OBJDIR)/rexec.o:	rexec.c $(DEPS)
+			$(COMPILE.c) -o $@ rexec.c
 
 $(OBJDIR)/linux.o:	linux.c $(DEPS)
 			$(COMPILE.c) -o $@ linux.c

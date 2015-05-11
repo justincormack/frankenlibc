@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "re.h"
+#include "rexec.h"
 
 int
 filter_init(char *program)
