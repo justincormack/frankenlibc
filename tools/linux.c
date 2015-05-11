@@ -149,6 +149,10 @@ filter_init(char *program)
 #endif
 	if (ret < 0) return ret;
 
+	/* allow ppoll for network readiness */
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ppoll), 0);
+	if (ret < 0) return ret;
+
 	return 0;
 }
 
