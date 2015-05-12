@@ -9,6 +9,8 @@ CRTFILES+=$(CRTDIR)/crti.o $(CRTDIR)/crtn.o
 CRTFILES+=$(CRTDIR)/crtbegin.o $(CRTDIR)/crtbeginT.o
 CRTFILES+=$(CRTDIR)/crtend.o
 OBJ=$(CRTFILES)
+LIBG=$(CRTDIR)/libg.a
+OBJ+=$(LIBG)
 OBJ+=$(OBJDIR)/clock_getres.o
 OBJ+=$(OBJDIR)/clock_gettime.o
 OBJ+=$(OBJDIR)/clock_nanosleep.o
@@ -34,6 +36,7 @@ HEADERS=$(CRTDIR) $(OBJDIR)
 INCLUDES=-I../include -I../../franken/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
+RANLIB?=ranlib
 
 default:			$(OBJ)
 
@@ -64,6 +67,12 @@ $(CRTDIR)/crtbeginT.o:		$(CRTDIR)
 $(CRTDIR)/crtend.o:		$(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
+$(LIBG):			$(CRTDIR)
+				printf "\n" | $(COMPILE.c) -o $(OBJDIR)/g.o -x c -
+				$(AR) cr $@ $(OBJDIR)/g.o
+				$(RANLIB) $@
+				rm -f $(OBJDIR)/g.o
+				
 $(OBJDIR)/clock_getres.o:	clock_getres.c $(HEADERS)
 				$(COMPILE.c) -o $@ clock_getres.c
 

@@ -419,6 +419,7 @@ ${INSTALL-install} ${RUMP}/bin/rexec ${OUTDIR}/bin
 	done
 )
 ${INSTALL-install} ${RUMP}/lib/*.o ${OUTDIR}/lib
+[ -f ${RUMP}/lib/libg.a ] && ${INSTALL-install} ${RUMP}/lib/libg.a ${OUTDIR}/lib
 ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
 # permissions set wrong
 chmod -R ug+rw ${RUMP}/include/*
