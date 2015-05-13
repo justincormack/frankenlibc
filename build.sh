@@ -493,8 +493,9 @@ chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 
 # install some useful applications
 
-(
-	cd ${RUMPSRC}/bin/pax
+mktool()
+{
+	cd ${RUMPSRC}/$2
 
 	LIBCRT0= \
 	LIBCRTI= \
@@ -507,10 +508,13 @@ chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 	DESTDIR=${OUTDIR} \
 	MKMAN=no \
 		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
-	${INSTALL-install} pax ${OUTDIR}/bin/rump.pax
+	${INSTALL-install} $1 ${OUTDIR}/bin/rump.$1
 	MAKESYSPATH="${RUMPSRC}/share/mk" \
 		${OUTDIR}/bin/nbmake clean
-)
+}
+
+( mktool pax bin/pax )
+( mktool newfs sbin/newfs )
 (
 	cd ${OUTDIR}/bin
 	ln rump.pax rump.tar
