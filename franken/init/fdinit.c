@@ -19,6 +19,7 @@ enum rump_etfs_type {
 };
 
 int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type);
+int rump_pub_etfs_register_withsize(const char *, const char *, enum rump_etfs_type, uint64_t, uint64_t);
 
 int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
@@ -170,8 +171,10 @@ __franken_fdinit_create()
 			rump___sysimpl_open(__franken_fd[fd].key, flags);
 			break;
 		case S_IFBLK:
-			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
-			rump_pub_etfs_register(__franken_fd[fd].rkey, __franken_fd[fd].num, RUMP_ETFS_CHR);
+			rump_pub_etfs_register_withsize(__franken_fd[fd].key, __franken_fd[fd].num,
+				RUMP_ETFS_BLK, 0, __franken_fd[fd].st.st_size);
+			rump_pub_etfs_register_withsize(__franken_fd[fd].rkey, __franken_fd[fd].num,
+				RUMP_ETFS_CHR, 0, __franken_fd[fd].st.st_size);
 			if (root == 0) {
 				struct ufs_args ufs;
 
