@@ -411,7 +411,6 @@ rm -rf ${OUTDIR}
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
 rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
 ${INSTALL-install} ${RUMP}/bin/rexec ${OUTDIR}/bin
-${INSTALL-install} ${RUMPOBJ}/tooldir/bin/nbmake ${OUTDIR}/bin
 (
 	cd ${RUMP}/lib
 	for f in ${USER_LIBS}
@@ -453,9 +452,10 @@ then
 		appendvar COMPILER_FLAGS "-I${OUTDIR}/include -L${OUTDIR}/lib -B${OUTDIR}/lib"
 		printf "#!/bin/sh\n\nexec ${CC-cc} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
 	fi
+	COMPILER="${TOOL_PREFIX}-clang"
 	( cd ${OUTDIR}/bin
-	  ln -s ${TOOL_PREFIX}-clang ${TOOL_PREFIX}-cc
-	  ln -s ${TOOL_PREFIX}-clang rumprun-cc
+	  ln -s ${COMPILER} ${TOOL_PREFIX}-cc
+	  ln -s ${COMPILER} rumprun-cc
 	)
 else
 	# spec file for gcc
@@ -481,9 +481,10 @@ else
 		-e "s/--sysroot=[^ ]*//" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
 	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec ${COMPILER_FLAGS} -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-gcc
+	COMPILER="${TOOL_PREFIX}-gcc"
 	( cd ${OUTDIR}/bin
-	  ln -s ${TOOL_PREFIX}-gcc ${TOOL_PREFIX}-cc
-	  ln -s ${TOOL_PREFIX}-gcc rumprun-cc
+	  ln -s ${COMPILER} ${TOOL_PREFIX}-cc
+	  ln -s ${COMPILER} rumprun-cc
 	)
 fi
 printf "#!/bin/sh\n\nexec ${AR-ar} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-ar
@@ -500,18 +501,14 @@ mktool()
 	mkdir -p ${OBJDIR}
 
 	LIBCRT0= \
-	LIBCRTI= \
-	LIBCRTBEGIN= \
-	LIBCRTEND= \
 	LIBC="${OUTDIR}/lib/libc.a" \
 	LIBUTIL="${OUTDIR}/lib/libutil.a" \
 	LIBRMT="${OUTDIR}/lib/librmt.a" \
 	MAKESYSPATH="${RUMPSRC}/share/mk" \
 	DESTDIR=${OUTDIR} \
-	MAKEOBJDIR=${OBJDIR} \
 	MKDOC=no \
 	MKMAN=no \
-		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
+		${RUMPOBJ}/tooldir/rumpmake CC="${OUTDIR}/bin/${COMPILER}" MAKEOBJDIR=${OBJDIR}
 	${INSTALL-install} ${OBJDIR}/$1 ${OUTDIR}/bin/rump.$1
 }
 
@@ -526,7 +523,7 @@ mktool()
 
 if [ ${RUNTESTS} = "test" ]
 then
-	CC="${OUTDIR}/bin/rumprun-cc" \
+	CC="${OUTDIR}/bin/${COMPILER}" \
 		RUMPOBJ="${RUMPOBJ}" \
 		OUTDIR="${OUTDIR}" \
 		${MAKE} -C tests
