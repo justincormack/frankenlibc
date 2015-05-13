@@ -495,6 +495,7 @@ chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 
 mktool()
 {
+	cd ${RUMPSRC}/$2
 	OBJDIR=${RUMPOBJ}/$1
 	mkdir -p ${OBJDIR}
 
@@ -510,13 +511,13 @@ mktool()
 	MAKEOBJDIR=${OBJDIR} \
 	MKDOC=no \
 	MKMAN=no \
-		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc" ${RUMPSRC}/$2
+		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
 	${INSTALL-install} ${OBJDIR}/$1 ${OUTDIR}/bin/rump.$1
 }
 
-mktool pax bin/pax
-mktool newfs sbin/newfs
-mktool fsck_ffs sbin/fsck_ffs
+( mktool pax bin/pax )
+( mktool newfs sbin/newfs )
+( mktool fsck_ffs sbin/fsck_ffs )
 (
 	cd ${OUTDIR}/bin
 	ln rump.pax rump.tar
