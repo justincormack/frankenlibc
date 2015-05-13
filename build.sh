@@ -452,7 +452,10 @@ then
 		appendvar COMPILER_FLAGS "-I${OUTDIR}/include -L${OUTDIR}/lib -B${OUTDIR}/lib"
 		printf "#!/bin/sh\n\nexec ${CC-cc} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
 	fi
-	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}-clang ${TOOL_PREFIX}-cc )
+	( cd ${OUTDIR}/bin
+	  ln -s ${TOOL_PREFIX}-clang ${TOOL_PREFIX}-cc
+	  ln -s ${TOOL_PREFIX}-clang rumprun-cc
+	)
 else
 	# spec file for gcc
 	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-gcc) | sed -e 's/-gcc//' -e 's/--/-rumprun-/')
@@ -477,7 +480,10 @@ else
 		-e "s/--sysroot=[^ ]*//" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
 	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec ${COMPILER_FLAGS} -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-gcc
-	( cd ${OUTDIR}/bin; ln -s ${TOOL_PREFIX}-gcc ${TOOL_PREFIX}-cc )
+	( cd ${OUTDIR}/bin
+	  ln -s ${TOOL_PREFIX}-gcc ${TOOL_PREFIX}-cc
+	  ln -s ${TOOL_PREFIX}-gcc rumprun-cc
+	)
 fi
 printf "#!/bin/sh\n\nexec ${AR-ar} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-ar
 printf "#!/bin/sh\n\nexec ${NM-nm} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-nm
