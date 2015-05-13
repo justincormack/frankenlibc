@@ -411,6 +411,7 @@ rm -rf ${OUTDIR}
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
 rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
 ${INSTALL-install} ${RUMP}/bin/rexec ${OUTDIR}/bin
+${INSTALL-install} ${RUMPOBJ}/tooldir/bin/nbmake ${OUTDIR}/bin
 (
 	cd ${RUMP}/lib
 	for f in ${USER_LIBS}
