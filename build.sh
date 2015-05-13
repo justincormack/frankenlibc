@@ -507,9 +507,14 @@ chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 	DESTDIR=${OUTDIR} \
 	MKMAN=no \
 		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
-	${INSTALL-install} pax ${OUTDIR}/bin
+	${INSTALL-install} pax ${OUTDIR}/bin/rump.pax
 	MAKESYSPATH="${RUMPSRC}/share/mk" \
 		${OUTDIR}/bin/nbmake clean
+)
+(
+	cd ${OUTDIR}/bin
+	ln rump.pax rump.tar
+	ln rump.pax rump.cpio
 )
 
 if [ ${RUNTESTS} = "test" ]
