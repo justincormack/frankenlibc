@@ -12,5 +12,9 @@ _mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 		return MAP_FAILED;
 	}
 
+	/* NetBSD allows missing MAP_PRIVATE, technically invalid */
+	if (flags == MAP_ANON)
+		flags |= MAP_PRIVATE;
+
 	return mmap(addr, length, prot, flags, fd, offset);
 }
