@@ -496,6 +496,8 @@ chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 mktool()
 {
 	cd ${RUMPSRC}/$2
+	OBJDIR=${RUMPOBJ}/$1
+	mkdir -p ${OBJDIR}
 
 	LIBCRT0= \
 	LIBCRTI= \
@@ -506,12 +508,11 @@ mktool()
 	LIBRMT="${OUTDIR}/lib/librmt.a" \
 	MAKESYSPATH="${RUMPSRC}/share/mk" \
 	DESTDIR=${OUTDIR} \
-	MKGROFF=no \
+	MAKEOBJDIR=${OBJDIR} \
+	MKDOC=no \
 	MKMAN=no \
-		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc" MKGROFF=no
-	${INSTALL-install} $1 ${OUTDIR}/bin/rump.$1
-	MAKESYSPATH="${RUMPSRC}/share/mk" \
-		${OUTDIR}/bin/nbmake clean
+		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
+	${INSTALL-install} ${OBJDIR}/$1 ${OUTDIR}/bin/rump.$1
 }
 
 ( mktool pax bin/pax )
