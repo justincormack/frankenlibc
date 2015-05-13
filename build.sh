@@ -515,6 +515,13 @@ mktool()
 ( mktool pax bin/pax )
 ( mktool newfs sbin/newfs )
 ( mktool fsck_ffs sbin/fsck_ffs )
+( mktool mknod sbin/mknod )
+( mktool mkdir bin/mkdir )
+( mktool ls bin/ls )
+( mktool rm bin/rm )
+( mktool ln bin/ln )
+( mktool chmod bin/chmod )
+( mktool chown sbin/chown )
 (
 	cd ${OUTDIR}/bin
 	ln rump.pax rump.tar

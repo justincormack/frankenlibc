@@ -23,7 +23,8 @@ OBJ+=$(OBJDIR)/stub_setcontext.o $(OBJDIR)/stub_setpriority.o
 OBJ+=$(OBJDIR)/stub___sigaltstack14.o $(OBJDIR)/stub___sigaction_sigtramp.o
 OBJ+=$(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub_sigqueueinfo.o
 OBJ+=$(OBJDIR)/stub___sigsuspend14.o $(OBJDIR)/stub_____sigtimedwait50.o
-OBJ+=$(OBJDIR)/stub_swapctl.o $(OBJDIR)/stub_uuidgen.o
+OBJ+=$(OBJDIR)/stub_swapctl.o $(OBJDIR)/stub_undelete.o
+OBJ+=$(OBJDIR)/stub_uuidgen.o
 OBJ+=$(OBJDIR)/stub___vfork14.o $(OBJDIR)/stub___wait450.o
 INCLUDES=-I../include -I../../platform/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
@@ -163,6 +164,9 @@ $(OBJDIR)/stub_____sigtimedwait50.o:	____sigtimedwait50.c
 
 $(OBJDIR)/stub_swapctl.o:		swapctl.c
 					$(COMPILE.c) -o $@ swapctl.c
+
+$(OBJDIR)/stub_undelete.o:		undelete.c
+					$(COMPILE.c) -o $@ undelete.c
 
 $(OBJDIR)/stub_uuidgen.o:		uuidgen.c
 					$(COMPILE.c) -o $@ uuidgen.c
