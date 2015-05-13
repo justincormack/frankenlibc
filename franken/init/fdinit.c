@@ -32,22 +32,28 @@ struct __fdtable __franken_fd[MAXFD];
 
 /* XXX should have proper functions in libc */
 void
-mkkey(char *k, char *n, const char *pre, int fd)
+mkkey(char *k, char *n, const char *pre, int dev, int fd)
 {
 	int i, d;
 
-	if (fd > 99) abort();
+	if (fd > 99 || dev > 99) abort();
 	for (i = 0; i < strlen(pre); i++)
 		*k++ = pre[i];
+	if (dev > 9) {
+		d = (dev / 10) + '0';
+		*k++ = d;
+		dev /= 10;
+	}
+	d = dev + '0';
+	*k++ = d;
+	*k++ = 0;
+
 	if (fd > 9) {
 		d = (fd / 10) + '0';
-		*k++ = d;
 		*n++ = d;
 		fd /= 10;
 	}
 	d = fd + '0';
-	*k++ = d;
-	*k++ = 0;
 	*n++ = d;
 	*n++ = 0;
 }
@@ -59,6 +65,7 @@ __franken_fdinit()
 	struct stat st;
 	char *mem;
 	int ret;
+	int n_reg = 0, n_block = 0, n_net = 0;
 
 	/* iterate over numbered descriptors, stopping when one does not exist */
 	for (fd = 0; fd < MAXFD; fd++) {
@@ -73,24 +80,24 @@ __franken_fdinit()
 		switch (st.st_mode & S_IFMT) {
 		case S_IFREG:
 			__franken_fd[fd].seek = 1;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vfile", n_reg++, fd);
 			break;
 		case S_IFBLK:
 			__franken_fd[fd].seek = 1;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vblock", n_block++, fd);
 			break;
 		case S_IFCHR:
 			/* XXX Linux presents stdin as char device see notes to clean up */
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vfile", n_reg++, fd);
 			break;
 		case S_IFIFO:
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/fr", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vfile", n_reg++, fd);
 			break;
 		case S_IFSOCK:
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "virt", fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "virt", n_net++, fd);
 			break;
 		}
 	}
