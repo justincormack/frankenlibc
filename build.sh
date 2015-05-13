@@ -504,6 +504,7 @@ chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 	LIBUTIL="${OUTDIR}/lib/libutil.a" \
 	LIBRMT="${OUTDIR}/lib/librmt.a" \
 	MAKESYSPATH="${RUMPSRC}/share/mk" \
+	DESTDIR=${OUTDIR} \
 	MKMAN=no \
 		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
 	${INSTALL-install} pax ${OUTDIR}/bin
