@@ -506,8 +506,9 @@ mktool()
 	LIBRMT="${OUTDIR}/lib/librmt.a" \
 	MAKESYSPATH="${RUMPSRC}/share/mk" \
 	DESTDIR=${OUTDIR} \
+	MKGROFF=no \
 	MKMAN=no \
-		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
+		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc" MKGROFF=no
 	${INSTALL-install} $1 ${OUTDIR}/bin/rump.$1
 	MAKESYSPATH="${RUMPSRC}/share/mk" \
 		${OUTDIR}/bin/nbmake clean
@@ -515,6 +516,7 @@ mktool()
 
 ( mktool pax bin/pax )
 ( mktool newfs sbin/newfs )
+( mktool fsck_ffs sbin/fsck_ffs )
 (
 	cd ${OUTDIR}/bin
 	ln rump.pax rump.tar
