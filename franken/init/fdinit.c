@@ -84,7 +84,9 @@ __franken_fdinit()
 			break;
 		case S_IFBLK:
 			__franken_fd[fd].seek = 1;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vblock", n_block++, fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/block", n_block, fd);
+			mkkey(__franken_fd[fd].rkey, __franken_fd[fd].num, "/dev/rblock", n_block, fd);
+			n_block++;
 			break;
 		case S_IFCHR:
 			/* XXX Linux presents stdin as char device see notes to clean up */
@@ -169,6 +171,7 @@ __franken_fdinit_create()
 			break;
 		case S_IFBLK:
 			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_BLK);
+			rump_pub_etfs_register(__franken_fd[fd].rkey, __franken_fd[fd].num, RUMP_ETFS_CHR);
 			if (root == 0) {
 				struct ufs_args ufs;
 

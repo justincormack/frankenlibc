@@ -7,7 +7,7 @@ void *
 _mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 {
 
-	if (! (fd == -1 && flags & MAP_ANON)) {
+	if (! (fd == -1 && (flags & MAP_ANON))) {
 		errno = ENOSYS;
 		return MAP_FAILED;
 	}

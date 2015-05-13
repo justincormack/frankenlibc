@@ -12,6 +12,7 @@ struct __fdtable {
 	int seek;
 	struct stat st;
 	char key[16];
+	char rkey[16];
 	char num[16];
 	struct thread *wake;
 };
