@@ -4,7 +4,7 @@ MAKE=${MAKE-make}
 
 RUMPOBJ=${PWD}/rumpobj
 RUMP=${RUMPOBJ}/rump
-RUMPSRC=src
+RUMPSRC=${PWD}/src
 OUTDIR=${PWD}/rump
 NCPU=1
 
@@ -491,9 +491,29 @@ printf "#!/bin/sh\n\nexec ${NM-nm} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-nm
 printf "#!/bin/sh\n\nexec ${OBJCOPY-objcopy} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-objcopy
 chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 
+# install some useful applications
+
+(
+	cd ${RUMPSRC}/bin/pax
+
+	LIBCRT0= \
+	LIBCRTI= \
+	LIBCRTBEGIN= \
+	LIBCRTEND= \
+	LIBC="${OUTDIR}/lib/libc.a" \
+	LIBUTIL="${OUTDIR}/lib/libutil.a" \
+	LIBRMT="${OUTDIR}/lib/librmt.a" \
+	MAKESYSPATH="${RUMPSRC}/share/mk" \
+	MKMAN=no \
+		${OUTDIR}/bin/nbmake CC="${OUTDIR}/bin/rumprun-cc"
+	${INSTALL-install} pax ${OUTDIR}/bin
+	MAKESYSPATH="${RUMPSRC}/share/mk" \
+		${OUTDIR}/bin/nbmake clean
+)
+
 if [ ${RUNTESTS} = "test" ]
 then
-	CC="${OUTDIR}/bin/${TOOL_PREFIX}-cc" \
+	CC="${OUTDIR}/bin/rumprun-cc" \
 		RUMPOBJ="${RUMPOBJ}" \
 		OUTDIR="${OUTDIR}" \
 		${MAKE} -C tests
