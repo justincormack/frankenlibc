@@ -318,7 +318,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	${MAKE} -C libvirtif
 
 # userspace libraries to build from NetBSD base
-USER_LIBS="m pthread z crypt util rmt"
+USER_LIBS="m pthread z crypt util prop rmt"
 NETBSDLIBS="${RUMPSRC}/lib/libc"
 for f in ${USER_LIBS}
 do
