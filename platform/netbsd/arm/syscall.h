@@ -14,4 +14,4 @@ name:; \
 	str r0, [r1]; \
 	mov r0, #-1; \
 .errnoret:; \
-	mov pc, lr;\
+	mov pc, lr;
