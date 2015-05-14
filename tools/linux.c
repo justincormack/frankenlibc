@@ -341,8 +341,8 @@ int
 os_open(char *pre, char *post)
 {
 
-	/* eg /dev/net/tun:tap0 for tap0 */
-	if (strcmp(pre, "/dev/net/tun") == 0) {
+	/* eg tun:tap0 for tap0 */
+	if (strcmp(pre, "tun") == 0) {
 		struct ifreq ifr;
 		int fd;
 
