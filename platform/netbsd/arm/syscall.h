@@ -3,7 +3,7 @@
 .type name,#function; \
 name:; \
 	mov ip,r7; \
-	ldr r7, =SYS_ ## name; \
+	ldr r7, =SYS_ ## sc; \
 	svc 0; \
 	mov r7, ip; \
 	cmp r0, #0; \
