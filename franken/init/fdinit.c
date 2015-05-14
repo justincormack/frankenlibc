@@ -188,10 +188,10 @@ __franken_fdinit_create()
 				ufs.fspec = __franken_fd[fd].key;
 				flags = __franken_fd[fd].flags & O_ACCMODE;
 				if (flags == O_RDWR)
-					flags = 0;
+					flags = MNT_LOG;
 				else
 					flags = MNT_RDONLY;
-				ret = rump___sysimpl_mount50("ffs", "/", flags | MNT_LOG, &ufs, sizeof(struct ufs_args));
+				ret = rump___sysimpl_mount50("ffs", "/", flags, &ufs, sizeof(struct ufs_args));
 				if (ret == 0) {
 					root = 1;
 				} else {
