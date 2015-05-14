@@ -318,7 +318,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	${MAKE} -C libvirtif
 
 # userspace libraries to build from NetBSD base
-USER_LIBS="m pthread z crypt util prop rmt"
+USER_LIBS="m pthread z crypt util prop rmt ipsec"
 NETBSDLIBS="${RUMPSRC}/lib/libc"
 for f in ${USER_LIBS}
 do
@@ -508,6 +508,7 @@ mktool()
 	DESTDIR=${OUTDIR} \
 	MKDOC=no \
 	MKMAN=no \
+	MKRUMP=no \
 		${RUMPOBJ}/tooldir/rumpmake CC="${OUTDIR}/bin/${COMPILER}" MAKEOBJDIR=${OBJDIR}
 	${INSTALL-install} ${OBJDIR}/$1 ${OUTDIR}/bin/rump.$1
 }
@@ -520,6 +521,13 @@ mktool()
 ( mktool ls bin/ls )
 ( mktool rm bin/rm )
 ( mktool ln bin/ln )
+( mktool dd bin/dd )
+( mktool df bin/df )
+( mktool mount sbin/mount )
+( mktool ifconfig sbin/ifconfig )
+( mktool ping sbin/ping )
+( mktool ping6 sbin/ping6 )
+( mktool rmdir bin/rmdir )
 ( mktool chmod bin/chmod )
 ( mktool chown sbin/chown )
 (
