@@ -20,6 +20,7 @@ enum rump_etfs_type {
 
 int rump_pub_etfs_register(const char *, const char *, enum rump_etfs_type);
 int rump_pub_etfs_register_withsize(const char *, const char *, enum rump_etfs_type, uint64_t, uint64_t);
+int rump_pub_etfs_remove(const char *);
 
 int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
