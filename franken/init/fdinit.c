@@ -116,10 +116,6 @@ struct ufs_args {
 #define MNT_RDONLY	0x00000001
 #define MNT_LOG		0x02000000
 
-int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
-#define CTL_NET         4
-#define CTL_NET_INET6   24
-#define IPV6CTL_ACCEPT_RTADV    12
 int rump___sysimpl_open(const char *, int, ...);
 int rump___sysimpl_close(int);
 int rump___sysimpl_dup2(int, int);
