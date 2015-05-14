@@ -114,6 +114,7 @@ struct ufs_args {
 };
 
 #define MNT_RDONLY	0x00000001
+#define MNT_LOG		0x02000000
 
 int rump___sysimpl___sysctl(const int *, unsigned int, void *, size_t *, const void *, size_t);
 #define CTL_NET         4
@@ -184,7 +185,7 @@ __franken_fdinit_create()
 					flags = 0;
 				else
 					flags = MNT_RDONLY;
-				ret = rump___sysimpl_mount50("ffs", "/", flags, &ufs, sizeof(struct ufs_args));
+				ret = rump___sysimpl_mount50("ffs", "/", flags | MNT_LOG, &ufs, sizeof(struct ufs_args));
 				if (ret == 0) {
 					root = 1;
 				} else {
