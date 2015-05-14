@@ -62,8 +62,8 @@ rexec rump.rm /dev/loop0 -- dev.tar data.tar etc.tar
 # (cant get macvtap bridging working correctly)
 
 # replace p5p1 with your network eg eth0; note wireless probably wont work
-ip link add link p5p1 name macvtap0 type macvtap
-ip link set dev macvtap0 up
+sudo ip link add link p5p1 name macvtap0 type macvtap
+sudo ip link set dev macvtap0 up
 # created /dev/tap6 - the number depends on the interface number, ls /dev/tap* to see
 sudo chown justin /dev/tap6
 
