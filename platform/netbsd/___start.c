@@ -10,6 +10,9 @@ struct ps_strings {
 	int	ps_nenvstr;	/* the number of environment strings */
 };
 
+/* XXX need to set from sysctl it seems */
+size_t __hwcap = 0;
+
 extern int main(int, char **, char **);
 
 /* The second argument is an Obj_Entry from libexec/ld.elf_so/rtld.h
