@@ -1,6 +1,6 @@
 #define SYSCALL(sc, name) \
 .global name; \
-.type name,@function; \
+.type name,#function; \
 name:; \
 	mov ip,r7; \
 	ldr r7, =SYS_ ## name; \
