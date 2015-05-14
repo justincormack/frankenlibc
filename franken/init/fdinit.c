@@ -207,14 +207,14 @@ __franken_fdinit_create()
 		case S_IFSOCK:
 			ret = rump_pub_netconfig_ifcreate(__franken_fd[fd].key);
 			if (ret == 0) {
-				ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
-				if (ret != -1) {
-					rump_pub_netconfig_dhcp_ipv4_oneshot(__franken_fd[fd].key);
-					rump___sysimpl_close(ret);
-				}
 				ret = rump___sysimpl_socket30(AF_INET6, SOCK_STREAM, 0);
 				if (ret != -1) {
 					rump_pub_netconfig_auto_ipv6(__franken_fd[fd].key);
+					rump___sysimpl_close(ret);
+				}
+				ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
+				if (ret != -1) {
+					rump_pub_netconfig_dhcp_ipv4_oneshot(__franken_fd[fd].key);
 					rump___sysimpl_close(ret);
 				}
 			}
