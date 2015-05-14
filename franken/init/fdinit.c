@@ -115,16 +115,26 @@ struct ufs_args {
 
 #define MNT_RDONLY	0x00000001
 #define MNT_LOG		0x02000000
+#define MNT_FORCE	0x00080000
 
 int rump___sysimpl_open(const char *, int, ...);
 int rump___sysimpl_close(int);
 int rump___sysimpl_dup2(int, int);
 int rump___sysimpl_mount50(const char *, const char *, int, void *, size_t);
+int rump___sysimpl_unmount(const char *, int);
 int rump___sysimpl_socket30(int, int, int);
 
 #define AF_INET 2
 #define AF_INET6 24
 #define SOCK_STREAM 1
+
+static void
+unmount_atexit(void)
+{
+	int ret __attribute__((__unused__));
+
+	ret = rump___sysimpl_unmount("/", MNT_FORCE);
+}
 
 void
 __franken_fdinit_create()
@@ -190,6 +200,8 @@ __franken_fdinit_create()
 						root = 1;
 					}
 				}
+				if (root == 1)
+					atexit(unmount_atexit);
 			}
 			break;
 		case S_IFSOCK:
