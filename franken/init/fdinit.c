@@ -67,7 +67,6 @@ __franken_fdinit()
 	struct stat st;
 	char *mem;
 	int ret;
-	int n_reg = 0, n_block = 0;
 
 	/* iterate over numbered descriptors, stopping when one does not exist */
 	for (fd = 0; fd < MAXFD; fd++) {
@@ -79,29 +78,23 @@ __franken_fdinit()
 		__franken_fd[fd].valid = 1;
 		__franken_fd[fd].flags = fcntl(fd, F_GETFL, 0);
 		memcpy(&__franken_fd[fd].st, &st, sizeof(struct stat));
+		/* XXX move this to platform code */
 		switch (st.st_mode & S_IFMT) {
 		case S_IFREG:
 			__franken_fd[fd].seek = 1;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vfile", n_reg++, fd);
 			break;
 		case S_IFBLK:
 			__franken_fd[fd].seek = 1;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/block", n_block, fd);
-			mkkey(__franken_fd[fd].rkey, __franken_fd[fd].num, "/dev/rblock", n_block, fd);
-			n_block++;
 			break;
 		case S_IFCHR:
 			/* XXX Linux presents stdin as char device see notes to clean up */
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vfile", n_reg++, fd);
 			break;
 		case S_IFIFO:
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "/dev/vfile", n_reg++, fd);
 			break;
 		case S_IFSOCK:
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "virt", fd, fd);
 			break;
 		}
 	}
@@ -142,18 +135,23 @@ __franken_fdinit_create()
 {
 	int fd, ret, flags;
 	int root = 0;
+	char key[16], rkey[16], num[16];
+	int n_reg = 0, n_block = 0;
+	struct ufs_args ufs;
 
 	if (__franken_fd[0].valid) {
-		rump_pub_etfs_register(__franken_fd[0].key, __franken_fd[0].num, RUMP_ETFS_REG);
-		fd = rump___sysimpl_open(__franken_fd[0].key, O_RDONLY);
+		mkkey(key, num, "/dev/vfile", n_reg++, 0);
+		rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
+		fd = rump___sysimpl_open(key, O_RDONLY);
 		if (fd != -1) {
 			rump___sysimpl_dup2(fd, 0);
 			rump___sysimpl_close(fd);
 		}
 	}
 	if (__franken_fd[1].valid) {
-		rump_pub_etfs_register(__franken_fd[1].key, __franken_fd[1].num, RUMP_ETFS_REG);
-		fd = rump___sysimpl_open(__franken_fd[1].key, O_WRONLY);
+		mkkey(key, num, "/dev/vfile", n_reg++, 1);
+		rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
+		fd = rump___sysimpl_open(key, O_WRONLY);
 		if (fd != -1) {
 			rump___sysimpl_dup2(fd, 1);
 			rump___sysimpl_close(fd);
@@ -161,8 +159,9 @@ __franken_fdinit_create()
 	}
 
 	if (__franken_fd[2].valid) {
-		rump_pub_etfs_register(__franken_fd[2].key, __franken_fd[2].num, RUMP_ETFS_REG);
-		fd = rump___sysimpl_open(__franken_fd[2].key, O_WRONLY);
+		mkkey(key, num, "/dev/vfile", n_reg++, 2);
+		rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
+		fd = rump___sysimpl_open(key, O_WRONLY);
 		if (fd != -1) {
 			rump___sysimpl_dup2(fd, 2);
 			rump___sysimpl_close(fd);
@@ -174,19 +173,21 @@ __franken_fdinit_create()
 			break;
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
 		case S_IFREG:
-			rump_pub_etfs_register(__franken_fd[fd].key, __franken_fd[fd].num, RUMP_ETFS_REG);
+			mkkey(key, num, "/dev/vfile", n_reg++, fd);
+			rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
 			flags = __franken_fd[fd].flags & O_ACCMODE;
-			rump___sysimpl_open(__franken_fd[fd].key, flags);
+			rump___sysimpl_open(key, flags);
 			break;
 		case S_IFBLK:
-			rump_pub_etfs_register_withsize(__franken_fd[fd].key, __franken_fd[fd].num,
+			mkkey(key, num, "/dev/block", n_block, fd);
+			mkkey(rkey, num, "/dev/rblock", n_block, fd);
+			n_block++;
+			rump_pub_etfs_register_withsize(key, num,
 				RUMP_ETFS_BLK, 0, __franken_fd[fd].st.st_size);
-			rump_pub_etfs_register_withsize(__franken_fd[fd].rkey, __franken_fd[fd].num,
+			rump_pub_etfs_register_withsize(rkey, num,
 				RUMP_ETFS_CHR, 0, __franken_fd[fd].st.st_size);
 			if (root == 0) {
-				struct ufs_args ufs;
-
-				ufs.fspec = __franken_fd[fd].key;
+				ufs.fspec = key;
 				flags = __franken_fd[fd].flags & O_ACCMODE;
 				if (flags == O_RDWR)
 					flags = MNT_LOG;
@@ -196,7 +197,9 @@ __franken_fdinit_create()
 				if (ret == 0) {
 					root = 1;
 				} else {
-					ret = rump___sysimpl_mount50("ext2fs", "/", 0, &ufs, sizeof(struct ufs_args));
+					if (flags == MNT_LOG)
+						flags = 0;
+					ret = rump___sysimpl_mount50("ext2fs", "/", flags, &ufs, sizeof(struct ufs_args));
 					if (ret == 0) {
 						root = 1;
 					}
@@ -206,16 +209,17 @@ __franken_fdinit_create()
 			}
 			break;
 		case S_IFSOCK:
-			ret = rump_pub_netconfig_ifcreate(__franken_fd[fd].key);
+			mkkey(key, num, "virt", fd, fd);
+			ret = rump_pub_netconfig_ifcreate(key);
 			if (ret == 0) {
 				ret = rump___sysimpl_socket30(AF_INET6, SOCK_STREAM, 0);
 				if (ret != -1) {
-					rump_pub_netconfig_auto_ipv6(__franken_fd[fd].key);
+					rump_pub_netconfig_auto_ipv6(key);
 					rump___sysimpl_close(ret);
 				}
 				ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
 				if (ret != -1) {
-					rump_pub_netconfig_dhcp_ipv4_oneshot(__franken_fd[fd].key);
+					rump_pub_netconfig_dhcp_ipv4_oneshot(key);
 					rump___sysimpl_close(ret);
 				}
 			}
