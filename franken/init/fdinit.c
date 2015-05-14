@@ -66,7 +66,7 @@ __franken_fdinit()
 	struct stat st;
 	char *mem;
 	int ret;
-	int n_reg = 0, n_block = 0, n_net = 0;
+	int n_reg = 0, n_block = 0;
 
 	/* iterate over numbered descriptors, stopping when one does not exist */
 	for (fd = 0; fd < MAXFD; fd++) {
@@ -100,7 +100,7 @@ __franken_fdinit()
 			break;
 		case S_IFSOCK:
 			__franken_fd[fd].seek = 0;
-			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "virt", n_net++, fd);
+			mkkey(__franken_fd[fd].key, __franken_fd[fd].num, "virt", fd, fd);
 			break;
 		}
 	}

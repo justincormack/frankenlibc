@@ -103,7 +103,6 @@ int
 rumpns_virt_hwaddr(char *ifname, uint8_t hwaddr[6])
 {
 	int ret, fd;
-	struct stat st;
 
 	if (strlen(ifname) < 5 || strncmp(ifname, "virt", 4) != 0)
 		return -1;
