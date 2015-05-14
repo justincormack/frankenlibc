@@ -32,13 +32,15 @@ main(int argc, char **argv)
 	int fd;
 	char *program = NULL;
 	char *pargs[argc];
-	int access = O_RDWR;
+	int mode = O_RDWR;
 	int ret;
 	int fl;
 	struct timespec ts;
 	struct fdinfo *fds;
 	int nfds = 3;
 	struct stat st;
+	char *path;
+	char prog[4096];
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -56,11 +58,11 @@ main(int argc, char **argv)
 			continue;
 		}
 		if (strcmp(arg, "-ro") == 0) {
-			access = O_RDONLY;
+			mode = O_RDONLY;
 			continue;
 		}
 		if (strcmp(arg, "-rw") == 0) {
-			access = O_RDWR;
+			mode = O_RDWR;
 			continue;
 		}
 		if (strcmp(arg, "--") == 0) {
@@ -77,7 +79,7 @@ main(int argc, char **argv)
 			if (fd == -1)
 				continue;
 		} else {
-			fd = open(arg, access);
+			fd = open(arg, mode);
 			if (fd == -1) {
 				perror("open");
 				exit(1);
@@ -105,6 +107,35 @@ main(int argc, char **argv)
 
 	nfds = open("/dev/null", O_RDONLY);
 	close(nfds);
+
+	if (strchr(program, '/') == NULL) {
+		char *part;
+
+		/* only name specified, look in PATH */
+		path = getenv("PATH");
+		if (! path) {
+			fprintf(stderr, "no PATH set\n");
+			abort();
+		}
+		path = strdup(path);
+		part = strtok(path, ":");
+		while (part) {
+			if (strlen(part) + 1 + strlen(program) < sizeof(prog)) {
+				strncpy(prog, part, sizeof(prog));
+				strncat(prog, "/", 1);
+				strncat(prog, program, strlen(program));
+				if (access(prog, R_OK | X_OK) == 0)
+					break;
+			}
+			part = strtok(NULL, ":");
+		}
+		free(path);
+		if (! part) {
+			fprintf(stderr, "Could not find %s in PATH", program);
+			abort();
+		}
+		program = prog;
+	}
 
 	ret = filter_init(program);
 	if (ret < 0) {
