@@ -509,6 +509,7 @@ mktool()
 	mkdir -p ${OBJDIR}
 
 	LIBCRT0= \
+	LIBCRTBEGIN= \
 	LIBC="${OUTDIR}/lib/libc.a" \
 	LIBUTIL="${OUTDIR}/lib/libutil.a" \
 	LIBRMT="${OUTDIR}/lib/librmt.a" \
