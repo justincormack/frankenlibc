@@ -1,5 +1,7 @@
 /* platform specific initialization before we hand over to generic code */
 
+typedef __SIZE_TYPE__ size_t;
+
 /* move to a header somewhere */
 int __franken_start_main(int (*)(int,char **,char **), int, char **, char **);
 
