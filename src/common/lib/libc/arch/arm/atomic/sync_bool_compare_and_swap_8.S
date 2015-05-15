@@ -30,7 +30,7 @@
 
 #include "atomic_op_asm.h"
 
-#if defined(_ARM_ARCH_6)
+#if defined(_ARM_ARCH_6) && !defined(_RUMPKERNEL)
 /*
  * ARMv6 has load-exclusive/store-exclusive which works for both user
  * and kernel.

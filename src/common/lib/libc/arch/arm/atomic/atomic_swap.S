@@ -84,7 +84,7 @@ STRONG_ALIAS(_atomic_swap_uint,_atomic_swap_32)
 STRONG_ALIAS(_atomic_swap_ulong,_atomic_swap_32)
 STRONG_ALIAS(_atomic_swap_ptr,_atomic_swap_32)
 
-#if (!defined(_KERNEL) || defined(_RUMPKERNEL)) && !defined(_STANDALONE)
+#if (!defined(_KERNEL) || !defined(_RUMPKERNEL)) && !defined(_STANDALONE)
 ENTRY_NP(__sync_lock_release_4)
 	mov	r1, #0
 #ifdef _ARM_ARCH_7
@@ -125,7 +125,7 @@ CRT_ALIAS(__atomic_exchange_1,_atomic_swap_8)
 STRONG_ALIAS(_atomic_swap_char,_atomic_swap_8)
 STRONG_ALIAS(_atomic_swap_uchar,_atomic_swap_8)
 
-#if (!defined(_KERNEL) || defined(_RUMPKERNEL)) && !defined(_STANDALONE)
+#if (!defined(_KERNEL) || !defined(_RUMPKERNEL)) && !defined(_STANDALONE)
 ENTRY_NP(__sync_lock_release_1)
 	mov	r1, #0
 #ifdef _ARM_ARCH_7

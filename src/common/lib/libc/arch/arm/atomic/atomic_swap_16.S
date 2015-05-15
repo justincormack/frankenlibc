@@ -55,7 +55,7 @@ CRT_ALIAS(__atomic_exchange_2,_atomic_swap_16)
 STRONG_ALIAS(_atomic_swap_short,_atomic_swap_16)
 STRONG_ALIAS(_atomic_swap_ushort,_atomic_swap_16)
 
-#if (!defined(_KERNEL) || defined(_RUMPKERNEL)) && !defined(_STANDALONE)
+#if (!defined(_KERNEL) || !defined(_RUMPKERNEL)) && !defined(_STANDALONE)
 ENTRY_NP(__sync_lock_release_2)
 	mov	r1, #0
 	strh	r1, [r0]
