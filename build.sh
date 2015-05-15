@@ -508,7 +508,7 @@ if [ -n "${DUPSYMS}" ]
 then
 	printf "Duplicated symbols found:\n"
 	echo ${DUPSYMS}
-	#exit 1
+	exit 1
 fi
 
 # install some useful applications
