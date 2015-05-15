@@ -52,6 +52,7 @@ helpme()
 	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
 	printf "\tnotests: do not run tests\n"
+	printf "\tnotools: do not build extra tools\n"
 	printf "\tclean: clean object directory first\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
@@ -225,6 +226,12 @@ for arg in "$@"; do
 		;;
 	"notest"|"notests")
 		RUNTESTS="notest"
+		;;
+	"tools")
+		MAKETOOLS="yes"
+		;;
+	"notools")
+		MAKETOOLS="no"
 		;;
 	*)
 		OS=${arg}
