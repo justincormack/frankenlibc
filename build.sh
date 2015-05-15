@@ -9,6 +9,7 @@ OUTDIR=${PWD}/rump
 NCPU=1
 
 RUNTESTS="test"
+MAKETOOLS="yes"
 
 TARGET=$(LC_ALL=C ${CC-cc} -v 2>&1 | sed -n 's/^Target: //p' )
 
@@ -513,29 +514,32 @@ mktool()
 	${INSTALL-install} ${OBJDIR}/$1 ${OUTDIR}/bin/rump.$1
 }
 
-( mktool pax bin/pax )
-( mktool newfs sbin/newfs )
-( mktool fsck_ffs sbin/fsck_ffs )
-( mktool mknod sbin/mknod )
-( mktool mkdir bin/mkdir )
-( mktool ls bin/ls )
-( mktool rm bin/rm )
-( mktool ln bin/ln )
-( mktool dd bin/dd )
-( mktool df bin/df )
-( mktool mount sbin/mount )
-( mktool ifconfig sbin/ifconfig )
-( mktool route sbin/route )
-( mktool ping sbin/ping )
-( mktool ping6 sbin/ping6 )
-( mktool rmdir bin/rmdir )
-( mktool chmod bin/chmod )
-( mktool chown sbin/chown )
-(
-	cd ${OUTDIR}/bin
-	ln rump.pax rump.tar
-	ln rump.pax rump.cpio
-)
+if [ ${MAKETOOLS} = "yes" ]
+then
+	( mktool pax bin/pax )
+	( mktool newfs sbin/newfs )
+	( mktool fsck_ffs sbin/fsck_ffs )
+	( mktool mknod sbin/mknod )
+	( mktool mkdir bin/mkdir )
+	( mktool ls bin/ls )
+	( mktool rm bin/rm )
+	( mktool ln bin/ln )
+	( mktool dd bin/dd )
+	( mktool df bin/df )
+	( mktool mount sbin/mount )
+	( mktool ifconfig sbin/ifconfig )
+	( mktool route sbin/route )
+	( mktool ping sbin/ping )
+	( mktool ping6 sbin/ping6 )
+	( mktool rmdir bin/rmdir )
+	( mktool chmod bin/chmod )
+	( mktool chown sbin/chown )
+	(
+		cd ${OUTDIR}/bin
+		ln rump.pax rump.tar
+		ln rump.pax rump.cpio
+	)
+fi
 
 if [ ${RUNTESTS} = "test" ]
 then

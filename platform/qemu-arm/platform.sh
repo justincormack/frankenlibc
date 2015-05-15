@@ -18,4 +18,7 @@ LINKSCRIPT="${PWD}/platform/qemu-arm/link.ld"
 EXTRA_LDSCRIPT="-T ${LINKSCRIPT}"
 EXTRA_LDSCRIPT_CC="-Wl,-T,${LINKSCRIPT}"
 
+# do not build tools, they are not useful and they are not building
+MAKETOOLS="no"
+
 EXTRAFLAGS="-F CPPFLAGS=${EXTRA_CPPFLAGS} -F ACFLAGS=${EXTRA_AFLAGS} -F CWARNFLAGS=${EXTRA_CWARNFLAGS} ${EXTRAFLAGS}"
