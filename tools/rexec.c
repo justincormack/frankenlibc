@@ -87,12 +87,12 @@ main(int argc, char **argv)
 			fl = fcntl(fd, F_GETFL);
 			if (fl == -1) {
 				perror("fcntl");
-				abort();
+				exit(1);
 			}
 			ret = fcntl(fd, F_SETFL, fl | O_NONBLOCK);
 			if (ret == -1) {
 				perror("fcntl");
-				abort();
+				exit(1);
 			}
 		}
 	}
@@ -115,7 +115,7 @@ main(int argc, char **argv)
 		path = getenv("PATH");
 		if (! path) {
 			fprintf(stderr, "no PATH set\n");
-			abort();
+			exit(1);
 		}
 		path = strdup(path);
 		part = strtok(path, ":");
@@ -131,8 +131,8 @@ main(int argc, char **argv)
 		}
 		free(path);
 		if (! part) {
-			fprintf(stderr, "Could not find %s in PATH", program);
-			abort();
+			fprintf(stderr, "Could not find %s in PATH\n", program);
+			exit(1);
 		}
 		program = prog;
 	}
@@ -140,31 +140,31 @@ main(int argc, char **argv)
 	ret = filter_init(program);
 	if (ret < 0) {
 		fprintf(stderr, "filter_init failed\n");
-		abort();
+		exit(1);
 	}
 
 	for (fd = 0; fd < nfds; fd++) {
 		fl = fcntl(fd, F_GETFL);
 		if (fl == -1) {
 			perror("fcntl");
-			abort();
+			exit(1);
 		}
 		ret = fstat(fd, &st);
 		if (ret == -1) {
 			perror("fstat");
-			abort();
+			exit(1);
 		}
 		ret = filter_fd(fd, fl, &st);
 		if (ret < 0) {
 			fprintf(stderr, "filter_fd failed\n");
-			abort();
+			exit(1);
 		}
 	}
 
 	ret = filter_load_exec(program, pargs, environ);
 	if (ret < 0) {
 		fprintf(stderr, "filter_load_exec failed\n");
-		abort();
+		exit(1);
 	}
 
 	return 0;	
