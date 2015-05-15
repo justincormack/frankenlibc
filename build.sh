@@ -8,9 +8,6 @@ RUMPSRC=${PWD}/src
 OUTDIR=${PWD}/rump
 NCPU=1
 
-RUNTESTS="test"
-MAKETOOLS="yes"
-
 TARGET=$(LC_ALL=C ${CC-cc} -v 2>&1 | sed -n 's/^Target: //p' )
 
 case ${TARGET} in
@@ -246,6 +243,9 @@ if [ "${OS}" = "unknown" ]; then
 fi
 
 [ -f platform/${OS}/platform.sh ] && . platform/${OS}/platform.sh
+
+RUNTESTS="${RUNTESTS-test}"
+MAKETOOLS="${MAKETOOLS-yes}"
 
 ./buildrump/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
