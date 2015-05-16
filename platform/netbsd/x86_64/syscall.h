@@ -1,29 +1,36 @@
+#define xstr(s) str(s)
+#define str(s) #s
+
 #define SYSCALL(sc, name) \
-.global name; \
-.type name,@function; \
-name:; \
-	mov	$SYS_ ## sc, %rax; \
-	mov	%rcx, %r10; \
-	syscall; \
-	jnc	_syscall_return ## sc; \
-	mov	%rax, errno; \
-	mov	$-1, %rax; \
-_syscall_return ## sc:; \
-	ret;
+__asm__( " \n\
+.global " #name "; \n\
+.type " #name ",@function; \n\
+" #name ":; \n\
+	mov	$" xstr(SYS_ ## sc) ", %rax; \n\
+	mov	%rcx, %r10; \n\
+	syscall; \n\
+	jnc	" xstr(_syscall_return_ ## sc) "; \n\
+	mov	%rax, errno; \n\
+	mov	$-1, %rax; \n\
+" xstr(_syscall_return_ ## sc) ":; \n\
+	ret; \n\
+");
 
 #define SYSCALL6(sc, name) \
-.global name; \
-.type name,@function; \
-name:; \
-	sub	$0x10, %rsp; \
-	mov	%r9, 0x8(%rsp); \
-	mov	$0, %r9; \
-	mov	$SYS_ ## sc, %rax; \
-	mov	%rcx, %r10; \
-	syscall; \
-	jnc	_syscall_return ## sc; \
-	mov	%rax, errno; \
-	mov	$-1, %rax; \
-_syscall_return ## sc:; \
-	add	$0x10, %rsp; \
-	ret
+__asm__( "\n\
+.global " #name "; \n\
+.type " #name ",@function; \n\
+" #name ":; \n\
+	sub	$0x10, %rsp; \n\
+	mov	%r9, 0x8(%rsp); \n\
+	mov	$0, %r9; \n\
+	mov	$" xstr(SYS_ ## sc) ", %rax; \n\
+	mov	%rcx, %r10; \n\
+	syscall; \n\
+	jnc	" xstr(_syscall_return_ ## sc) "; \n\
+	mov	%rax, errno; \n\
+	mov	$-1, %rax; \n\
+" xstr(_syscall_return_ ## sc) ":; \n\
+	add	$0x10, %rsp; \n\
+	ret; \n\
+");

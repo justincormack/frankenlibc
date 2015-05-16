@@ -70,8 +70,8 @@ $(OBJDIR)/getrandom.o:		getrandom.c $(HEADERS)
 $(OBJDIR)/___start.o:		___start.c $(HEADERS)
 				$(COMPILE.c) -o $@ ___start.c
 
-$(OBJDIR)/syscall.o:		syscall.S $(HEADERS)
-				$(COMPILE.S) -o $@ syscall.S
+$(OBJDIR)/syscall.o:		syscall.c $(HEADERS)
+				$(COMPILE.c) -o $@ syscall.c
 
 .PHONY:				clean
 clean:		

@@ -1,11 +1,16 @@
+#define xstr(s) str(s)
+#define str(s) #s
+
 #define SYSCALL(sc, name) \
-.global name; \
-.type name,@function; \
-name:; \
-	mov	$SYS_ ## sc, %eax; \
-	int	$0x80; \
-	jnc	_syscall_return ## sc; \
-	mov	%eax, errno; \
-	mov	$-1, %eax; \
-_syscall_return ## sc:; \
-	ret;
+__asm__(" \n\
+.global " #name "; \n\
+.type " #name ",@function; \n\
+" #name ":; \n\
+	mov	" xstr($SYS_ ## sc) ", %eax; \n\
+	int	$0x80; \n\
+	jnc	" xstr(_syscall_return_ ## sc) "; \n\
+	mov	%eax, errno; \n\
+	mov	$-1, %eax; \n\
+" xstr(_syscall_return_ ## sc) ":; \n\
+	ret; \n\
+");
