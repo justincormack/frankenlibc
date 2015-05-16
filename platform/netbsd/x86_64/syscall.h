@@ -11,7 +11,7 @@ name:; \
 _syscall_return:; \
 	ret;
 
-#define SYSCALL_MMAP(sc, name) \
+#define SYSCALL6(sc, name) \
 .global name; \
 .type name,@function; \
 name:; \
