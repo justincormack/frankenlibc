@@ -4,8 +4,8 @@
 name:; \
 	mov	$SYS_ ## sc, %eax; \
 	int	$0x80; \
-	jnc	_syscall_return; \
+	jnc	_syscall_return ## sc; \
 	mov	%eax, errno; \
 	mov	$-1, %eax; \
-_syscall_return:; \
+_syscall_return ## sc:; \
 	ret;

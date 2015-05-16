@@ -5,10 +5,10 @@ name:; \
 	mov	$SYS_ ## sc, %rax; \
 	mov	%rcx, %r10; \
 	syscall; \
-	jnc	_syscall_return; \
+	jnc	_syscall_return ## sc; \
 	mov	%rax, errno; \
 	mov	$-1, %rax; \
-_syscall_return:; \
+_syscall_return ## sc:; \
 	ret;
 
 #define SYSCALL6(sc, name) \
@@ -21,9 +21,9 @@ name:; \
 	mov	$SYS_ ## sc, %rax; \
 	mov	%rcx, %r10; \
 	syscall; \
-	jnc	_syscall_return; \
+	jnc	_syscall_return ## sc; \
 	mov	%rax, errno; \
 	mov	$-1, %rax; \
-_syscall_return:; \
+_syscall_return ## sc:; \
 	add	$0x10, %rsp; \
 	ret

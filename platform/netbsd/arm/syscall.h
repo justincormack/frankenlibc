@@ -7,11 +7,11 @@ name:; \
 	svc 0; \
 	mov r7, ip; \
 	cmp r0, #0; \
-	bge .errnoret; \
+	bge .errnoret ## sc; \
 	mov r1, #0; \
 	sub r0, r1, r0; \
 	ldr r1, =errno; \
 	str r0, [r1]; \
 	mov r0, #-1; \
-.errnoret:; \
+.errnoret ## sc:; \
 	mov pc, lr;
