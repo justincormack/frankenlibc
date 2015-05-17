@@ -54,7 +54,7 @@
 /mips_mcclock.h/1.6/Sun Feb 20 07:45:48 2011//
 /mips_mcclock_loop.S/1.5/Mon Mar 28 12:26:59 2011//
 /mips_softint.c/1.6/Tue Sep 27 01:02:34 2011//
-/netbsd32_machdep.c/1.11/Sat Jan 25 15:20:55 2014//
+/netbsd32_machdep.c/1.12/Sun May 17 18:52:37 2015//
 /pmap.c/1.214/Sun May 11 07:53:28 2014//
 /pmap_segtab.c/1.8/Sun May 11 07:53:28 2014//
 /pmap_tlb.c/1.8/Tue Sep 27 01:02:34 2011//

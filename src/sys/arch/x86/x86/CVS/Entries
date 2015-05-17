@@ -9,7 +9,7 @@
 /cpu_topology.c/1.9/Sat Feb 22 17:48:08 2014//
 /cpu_ucode.c/1.5/Wed Jan  7 07:05:48 2015//
 /cpu_ucode_amd.c/1.7/Fri Nov 15 08:47:55 2013//
-/cpu_ucode_intel.c/1.6/Fri Dec 12 02:25:55 2014//
+/cpu_ucode_intel.c/1.8/Tue May 12 00:00:35 2015//
 /db_memrw.c/1.1/Mon May  7 17:45:29 2012//
 /db_trace.c/1.3/Thu Apr 21 00:24:07 2011//
 /errata.c/1.21/Thu Mar 21 13:22:37 2013//
@@ -20,7 +20,7 @@
 /identcpu.c/1.48/Mon Dec  8 15:22:47 2014//
 /idt.c/1.3/Sun Apr 19 14:11:37 2009//
 /intel_busclock.c/1.21/Fri Mar 27 05:32:38 2015//
-/intr.c/1.84/Sat May  9 13:05:51 2015//
+/intr.c/1.85/Fri May 15 08:36:41 2015//
 /ioapic.c/1.50/Mon Apr 27 07:03:58 2015//
 /ipi.c/1.26/Sun Jul 20 15:48:54 2014//
 /ipmi.c/1.61/Mon Apr 13 16:03:51 2015//
@@ -49,7 +49,7 @@
 /viac7temp.c/1.8/Sun Aug 10 16:44:34 2014//
 /vm_machdep.c/1.25/Tue Mar 11 20:55:19 2014//
 /vmt.c/1.11/Thu Apr 23 23:23:00 2015//
-/x86_autoconf.c/1.72/Sun Sep 21 16:52:26 2014//
+/x86_autoconf.c/1.74/Sun May 10 22:21:38 2015//
 /x86_machdep.c/1.67/Mon Aug 11 03:43:25 2014//
 /x86_stub.c/1.4/Wed Oct 19 05:01:43 2011//
 /x86_userconf.c/1.1/Tue May 31 23:28:53 2011//

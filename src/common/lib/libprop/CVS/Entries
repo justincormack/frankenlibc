@@ -14,12 +14,12 @@
 /prop_dictionary_util.c/1.5/Fri Jul 27 09:10:59 2012//
 /prop_ingest.3/1.6/Thu Feb 18 14:00:39 2010//
 /prop_ingest.c/1.5/Fri Sep  5 05:19:24 2014//
-/prop_kern.c/1.18/Sun Dec 14 23:48:58 2014//
+/prop_kern.c/1.19/Mon May 11 16:48:34 2015//
 /prop_number.3/1.10/Thu Jan 20 10:44:42 2011//
 /prop_number.c/1.27/Fri Sep  5 05:19:24 2014//
 /prop_object.3/1.8/Thu Jan 20 10:44:42 2011//
-/prop_object.c/1.29/Fri Oct 18 18:26:20 2013//
-/prop_object_impl.h/1.31/Fri Jul 27 09:10:59 2012//
+/prop_object.c/1.30/Tue May 12 14:59:35 2015//
+/prop_object_impl.h/1.32/Mon May 11 16:50:35 2015//
 /prop_rb.c/1.10/Fri Jul 27 09:10:59 2012//
 /prop_rb_impl.h/1.9/Fri Jul 27 09:11:00 2012//
 /prop_send_ioctl.3/1.8/Tue Sep 27 11:12:49 2011//

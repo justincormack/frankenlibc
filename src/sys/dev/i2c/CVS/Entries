@@ -3,7 +3,7 @@
 /act8846.c/1.3/Fri Jan  2 21:55:31 2015//
 /act8846.h/1.1/Thu Jan  1 17:33:18 2015//
 /adm1021.c/1.8/Sat Oct 27 17:18:17 2012//
-/at24cxx.c/1.18/Fri Jul 25 08:10:37 2014//
+/at24cxx.c/1.19/Sun May 10 22:54:06 2015//
 /at24cxxvar.h/1.2/Sun Dec 11 12:21:22 2005//
 /au8522.c/1.7/Sat Mar  7 14:16:51 2015//
 /au8522mod.h/1.2/Sun Jul 10 00:47:34 2011//
@@ -23,12 +23,12 @@
 /dbcool.c/1.43/Thu Apr 23 23:23:00 2015//
 /dbcool_reg.h/1.7/Wed Aug  7 19:38:45 2013//
 /dbcool_var.h/1.14/Tue Aug  2 14:06:15 2011//
-/ddc.c/1.4/Mon Nov 17 00:46:44 2014//
+/ddc.c/1.5/Sun May 17 01:27:16 2015//
 /ddcreg.h/1.2/Sun May 14 21:42:27 2006//
-/ddcvar.h/1.2/Mon Nov 17 00:46:44 2014//
+/ddcvar.h/1.3/Sun May 17 01:27:16 2015//
 /ds1307.c/1.21/Thu Nov 20 16:34:26 2014//
 /ds1307reg.h/1.5/Sun Oct 12 01:23:23 2014//
-/files.i2c/1.64/Sun Jan 11 16:54:21 2015//
+/files.i2c/1.65/Tue May 12 20:54:08 2015//
 /g760a.c/1.4/Sun Jul 29 07:04:09 2012//
 /g760areg.h/1.1/Sat Oct  2 06:07:37 2010//
 /gttwsi_core.c/1.2/Sun Nov 23 13:37:27 2014//
@@ -89,6 +89,7 @@
 /smscmon.c/1.2/Mon Jun 20 20:16:19 2011//
 /smscmonvar.h/1.1/Mon Feb 22 03:50:56 2010//
 /spdmem_i2c.c/1.10/Sat Mar  7 14:16:51 2015//
+/titemp.c/1.1/Tue May 12 20:54:08 2015//
 /tps65217pmic.c/1.10/Sun Jul 20 23:01:22 2014//
 /tps65217pmicreg.h/1.7/Sun Jul 20 23:01:22 2014//
 /tps65217pmicvar.h/1.1/Sun Jul 20 23:01:22 2014//

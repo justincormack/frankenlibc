@@ -1,4 +1,4 @@
-/*	$NetBSD: swwdog.c,v 1.17 2015/04/24 19:49:24 christos Exp $	*/
+/*	$NetBSD: swwdog.c,v 1.19 2015/05/12 10:20:14 pgoyette Exp $	*/
 
 /*
  * Copyright (c) 2004, 2005 Steven M. Bellovin
@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: swwdog.c,v 1.17 2015/04/24 19:49:24 christos Exp $");
+__KERNEL_RCSID(0, "$NetBSD: swwdog.c,v 1.19 2015/05/12 10:20:14 pgoyette Exp $");
 
 /*
  *
@@ -309,8 +309,10 @@ swwdog_init(void *arg)
 	 * Merge the driver info into the kernel tables and attach the
 	 * pseudo-device
 	 */
-	int error;
+	int error = 0;
 
+
+#ifdef _MODULE
 	error = config_cfdriver_attach(&swwdog_cd);
 	if (error) {
 		aprint_error("%s: unable to attach cfdriver\n",
@@ -322,6 +324,7 @@ swwdog_init(void *arg)
 		aprint_error("%s: device attach failed\n", swwdog_cd.cd_name);
 		config_cfdriver_detach(&swwdog_cd);
 	}
+#endif
 
 	return error;
 }
@@ -334,6 +337,7 @@ swwdog_fini(void *arg)
 
 	error = config_detach(swwdog_dev, 0);
 
+#ifdef _MODULE
 	error = config_cfattach_detach(swwdog_cd.cd_name, &swwdog_ca);
 	if (error)
 		aprint_error("%s: error detaching cfattach: %d\n",
@@ -343,6 +347,7 @@ swwdog_fini(void *arg)
 	if (error)
 		aprint_error("%s: error detaching cfdriver: %d\n",
 		    swwdog_cd.cd_name, error);
+#endif
 
         return error;
 }

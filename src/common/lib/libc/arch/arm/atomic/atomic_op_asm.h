@@ -1,4 +1,4 @@
-/*	$NetBSD: atomic_op_asm.h,v 1.6 2014/03/04 16:15:28 matt Exp $	*/
+/*	$NetBSD: atomic_op_asm.h,v 1.7 2015/05/17 20:57:11 justin Exp $	*/
 
 /*-
  * Copyright (c) 2007 The NetBSD Foundation, Inc.

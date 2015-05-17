@@ -130,7 +130,7 @@
 /pcdisplay.c/1.41/Sat Oct 27 17:18:25 2012//
 /pcdisplayvar.h/1.4/Sun Dec 11 12:22:03 2005//
 /pckbc_isa.c/1.26/Thu Apr  3 23:49:47 2014//
-/pcppi.c/1.43/Mon Dec  8 16:16:45 2014//
+/pcppi.c/1.44/Sun May 17 05:20:37 2015//
 /pcppireg.h/1.1/Wed Apr 15 20:26:18 1998//
 /pcppivar.h/1.11/Wed Nov 23 23:07:32 2011//
 /ptcd.c/1.3/Mon Dec 17 17:46:27 2012//
@@ -152,7 +152,7 @@
 /smsc.c/1.12/Thu Apr 23 23:23:00 2015//
 /smscvar.h/1.5/Sat Oct 27 17:18:25 2012//
 /soekrisgpio.c/1.2/Mon Jun 10 07:14:02 2013//
-/spkr.c/1.35/Fri Jul 25 08:10:37 2014//
+/spkr.c/1.36/Sun May 17 05:20:37 2015//
 /spkrio.h/1.1/Wed Apr 15 20:26:19 1998//
 /tcic2_isa.c/1.26/Sat Oct 27 17:18:25 2012//
 /tcom.c/1.19/Tue May 12 09:10:16 2009//

@@ -1,4 +1,4 @@
-/*	$NetBSD: example.c,v 1.7 2010/10/25 22:41:42 jnemeth Exp $	*/
+/*	$NetBSD: properties.c,v 1.1 2015/05/13 07:07:36 pgoyette Exp $	*/
 
 /*-
  * Copyright (c) 2008 The NetBSD Foundation, Inc.
@@ -27,22 +27,15 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: example.c,v 1.7 2010/10/25 22:41:42 jnemeth Exp $");
+__KERNEL_RCSID(0, "$NetBSD: properties.c,v 1.1 2015/05/13 07:07:36 pgoyette Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
 #include <sys/module.h>
 
-/*
- * Last parameter of MODULE macro is a list of names (as string; names are
- * separated by commas) of dependencies.  If module has no dependencies,
- * then NULL should be passed.
- */
+MODULE(MODULE_CLASS_MISC, properties, NULL);
 
-MODULE(MODULE_CLASS_MISC, example, NULL);
-
-static
-void
+static void
 handle_props(prop_dictionary_t props)
 {
 	const char *msg;
@@ -68,26 +61,15 @@ handle_props(prop_dictionary_t props)
 }
 
 static int
-example_modcmd(modcmd_t cmd, void *arg)
+properties_modcmd(modcmd_t cmd, void *arg)
 {
-
 	switch (cmd) {
 	case MODULE_CMD_INIT:
-		printf("Example module loaded.\n");
 		handle_props(arg);
-		break;
-
+		return 0;
 	case MODULE_CMD_FINI:
-		printf("Example module unloaded.\n");
-		break;
-
-	case MODULE_CMD_STAT:
-		printf("Example module status queried.\n");
-		return ENOTTY;
-
+		return 0;
 	default:
 		return ENOTTY;
 	}
-
-	return 0;
 }

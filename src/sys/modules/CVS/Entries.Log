@@ -83,6 +83,7 @@ A D/efs////
 A D/emdtv////
 A D/est////
 A D/example////
+A D/examples////
 A D/exec_aout////
 A D/exec_ecoff////
 A D/exec_elf32////
@@ -213,6 +214,7 @@ A D/smbfs////
 A D/smsc////
 A D/solaris////
 A D/spdmem////
+A D/spkr////
 A D/suser////
 A D/swcrypto////
 A D/swsensor////
@@ -222,6 +224,7 @@ A D/sysmon_envsys////
 A D/sysmon_power////
 A D/sysmon_taskq////
 A D/sysmon_wdog////
+A D/sysv_ipc////
 A D/sysvbfs////
 A D/tco////
 A D/tdfxdrm////
@@ -272,6 +275,7 @@ R D/luacore////
 R D/ksem////
 R D/i915drm2////
 R D/filecorefs////
+R D/example////
 R D/drm2pci////
 R D/drm2////
 R D/dirhash////

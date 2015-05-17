@@ -17,7 +17,7 @@
 /cpu_in_cksum_buffer.S/1.8/Sun Dec 23 13:24:22 2012//
 /cpu_in_cksum_fold.S/1.4/Sun Dec 23 13:26:21 2012//
 /cpu_in_cksum_v4hdr.S/1.4/Thu Dec 20 07:16:01 2012//
-/cpufunc.c/1.153/Fri Apr 17 13:39:01 2015//
+/cpufunc.c/1.154/Thu May 14 05:39:32 2015//
 /cpufunc_asm.S/1.16/Sun Aug 18 06:28:18 2013//
 /cpufunc_asm_arm10.S/1.11/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_arm11.S/1.17/Wed Oct 29 16:22:31 2014//
@@ -32,10 +32,10 @@
 /cpufunc_asm_armv5.S/1.7/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_armv5_ec.S/1.6/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_armv6.S/1.7/Fri Aug  1 05:53:31 2014//
-/cpufunc_asm_armv7.S/1.21/Sun Nov  9 09:21:57 2014//
+/cpufunc_asm_armv7.S/1.22/Sat May 16 07:22:37 2015//
 /cpufunc_asm_fa526.S/1.7/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_ixp12x0.S/1.4/Sun Mar 30 01:15:03 2014//
-/cpufunc_asm_pj4b.S/1.7/Wed Apr 15 10:52:18 2015//
+/cpufunc_asm_pj4b.S/1.9/Thu May 14 17:15:56 2015//
 /cpufunc_asm_sa1.S/1.15/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_sa11x0.S/1.6/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_sheeva.S/1.6/Mon Apr 14 20:50:46 2014//

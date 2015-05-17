@@ -2,7 +2,7 @@
 /__builtin_object_size.3/1.10/Thu Jul 19 06:44:12 2012//
 /fgets_chk.c/1.6/Thu Feb  5 05:41:51 2009//
 /gets_chk.c/1.7/Fri Oct  4 20:49:16 2013//
-/memcpy_chk.c/1.6/Sat May  9 15:42:21 2015//
+/memcpy_chk.c/1.7/Wed May 13 19:57:16 2015//
 /memmove_chk.c/1.5/Wed Sep 17 00:39:28 2014//
 /memset_chk.c/1.5/Wed Sep 17 00:39:28 2014//
 /snprintf_chk.c/1.5/Mon Apr 28 20:23:00 2008//

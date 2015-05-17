@@ -536,9 +536,9 @@
 /smc91cxxvar.h/1.20/Mon Apr 13 16:33:24 2015//
 /smc93cx6.c/1.15/Sat Mar 14 15:36:17 2009//
 /smc93cx6var.h/1.9/Sun Dec 11 12:21:28 2005//
-/spdmem.c/1.13/Mon Apr 20 02:55:14 2015//
+/spdmem.c/1.14/Fri May 15 08:44:24 2015//
 /spdmemreg.h/1.3/Mon Apr 20 02:55:14 2015//
-/spdmemvar.h/1.6/Mon Apr 20 07:51:36 2015//
+/spdmemvar.h/1.7/Fri May 15 08:44:24 2015//
 /spic.c/1.19/Thu Oct 17 21:24:24 2013//
 /spicvar.h/1.7/Wed Feb 24 22:37:58 2010//
 /st16650reg.h/1.3/Sun Dec 11 12:21:28 2005//
