@@ -16,11 +16,11 @@ libc that you can just use to link against applications to make them run
 against a rump kernel rather than the host.
 
 Currently there are three userspace implementations included, NetBSD, Linux and FreeBSD,
-and one very basic baremetal implementation, qemu-arm. The supported architectures
-are x86\_64, i386, arm, powerpc, powerpc64 and mips, with work in progress support for aarch64. Both arm
-and mips work with hard and soft float. Powerpc supports the v1 ELF ABI only at present. Not all
-the architectures work on all the platforms
-yet but the work to port them is minimal. Additional implementations and architectures
+and one very basic baremetal implementation, qemu-arm. The currently supported and tested architecture/OS
+combinations are: Linux x86\_64, i386, arm, powerpc64, mips, NetBSD x86\_64, i386, arm, FreeBSD
+x86\_64, i386. There is work in progress support for powerpc and aarch64. Both arm
+and mips work with hard and soft float. Powerpc64 supports the v1 ELF ABI only at present, arm is
+EABI only, and mips is o32 ABI only. Additional implementations and architectures
 will be added soon.
 
 There is also an option to build a deterministic version with no random numbers and a fake
@@ -39,3 +39,6 @@ does not support sysroot. For most systems a line like the following will work i
 do not use the wrapper:
 
 gcc -nostdinc -Irump/include -Lrump/lib -Brump/lib -o rumpobj/tests/hello -static tests/hello.c
+
+A number of NetBSD system tools are built as part of the build, named with the rump. prefix eg rump.ls,
+rump.ifconfig, rump.newfs, rump.tar to allow simple tests and file system manipulation.
