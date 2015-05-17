@@ -506,7 +506,7 @@ DUPSYMS=$(nm rump/lib/libc.a | grep ' T ' | sed 's/.* T //g' | sort | uniq -c -d
 
 if [ -n "${DUPSYMS}" ]
 then
-	printf "Duplicated symbols found:\n"
+	printf "WARNING: Duplicate symbols found:\n"
 	echo ${DUPSYMS}
 	#exit 1
 fi
@@ -515,6 +515,7 @@ fi
 
 mktool()
 {
+	echo "Building $1"
 	cd ${RUMPSRC}/$2
 	OBJDIR=${RUMPOBJ}/$1
 	mkdir -p ${OBJDIR}
