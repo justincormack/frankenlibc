@@ -12,6 +12,8 @@
 #include "powerpc/swapcontext.S"
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include "mips/swapcontext.S"
+#elif defined(__riscv64)
+#include "riscv64/swapcontext.S"
 #else
 #error "Unknown architecture"
 #endif

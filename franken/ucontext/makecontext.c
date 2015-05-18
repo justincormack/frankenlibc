@@ -12,6 +12,8 @@
 #include "powerpc/makecontext.c"
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include "mips/makecontext.c"
+#elif defined(__riscv64)
+#include "riscv64/makecontext.c"
 #else
 #error "Unknown architecture"
 #endif

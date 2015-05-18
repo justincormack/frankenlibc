@@ -17,6 +17,8 @@
 #include <powerpc/ucontext.h>
 #elif defined(__MIPSEL__) || defined(__MIPSEB__)
 #include <mips/ucontext.h>
+#elif defined(__riscv64)
+#include "riscv64/ucontext.h"
 #else
 #error "Unknown architecture"
 #endif
