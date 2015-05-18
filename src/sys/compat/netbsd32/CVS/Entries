@@ -19,8 +19,8 @@
 /netbsd32_exec_elf32.c/1.39/Fri Mar 20 20:36:27 2015//
 /netbsd32_execve.c/1.38/Sun Feb  2 14:48:57 2014//
 /netbsd32_fs.c/1.72/Sun Oct  5 20:17:28 2014//
-/netbsd32_ioctl.c/1.69/Fri Jan 24 12:16:10 2014//
-/netbsd32_ioctl.h/1.44/Fri Jan 24 10:41:07 2014//
+/netbsd32_ioctl.c/1.70/Mon May 18 06:38:59 2015//
+/netbsd32_ioctl.h/1.45/Mon May 18 06:38:59 2015//
 /netbsd32_ipc.c/1.17/Sat Dec 12 10:30:09 2009//
 /netbsd32_lwp.c/1.18/Fri May 15 07:56:25 2015//
 /netbsd32_mod.c/1.5/Tue Jul 22 08:18:33 2014//

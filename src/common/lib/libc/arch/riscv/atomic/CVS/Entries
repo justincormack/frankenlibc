@@ -7,7 +7,7 @@
 /atomic_cas_64.S/1.2/Fri Mar 27 06:42:37 2015//
 /atomic_nand_32.S/1.2/Fri Mar 27 06:42:37 2015//
 /atomic_nand_64.S/1.2/Fri Mar 27 06:42:37 2015//
-/atomic_op_asm.h/1.1/Fri Sep 19 17:36:24 2014//
+/atomic_op_asm.h/1.2/Mon May 18 08:24:10 2015//
 /atomic_or_32.S/1.2/Fri Mar 27 06:42:37 2015//
 /atomic_or_64.S/1.2/Fri Mar 27 06:42:37 2015//
 /atomic_sub_32.S/1.2/Fri Mar 27 06:42:37 2015//

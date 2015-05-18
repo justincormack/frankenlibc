@@ -18,7 +18,7 @@
 /copy.S/1.15/Tue Aug 16 06:55:11 2011//
 /core_machdep.c/1.7/Wed Jan  1 18:57:15 2014//
 /cpu_exec.c/1.64/Sun Jul 10 23:21:58 2011//
-/cpu_subr.c/1.17/Mon May 19 22:47:53 2014//
+/cpu_subr.c/1.18/Mon May 18 01:32:52 2015//
 /db_disasm.c/1.24/Thu Aug 18 21:04:23 2011//
 /db_interface.c/1.75/Thu Aug 18 21:04:23 2011//
 /db_trace.c/1.42/Fri Apr 29 22:14:59 2011//
