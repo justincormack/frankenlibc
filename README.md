@@ -18,7 +18,7 @@ against a rump kernel rather than the host.
 Currently there are three userspace implementations included, NetBSD, Linux and FreeBSD,
 and one very basic baremetal implementation, qemu-arm. The currently supported and tested architecture/OS
 combinations are: Linux x86\_64, i386, arm, powerpc64, mips, NetBSD x86\_64, i386, arm, FreeBSD
-x86\_64, i386. There is work in progress support for powerpc and aarch64. Both arm
+x86\_64, i386. There is work in progress support for powerpc, aarch64 and riscv64. Both arm
 and mips work with hard and soft float. Powerpc64 supports the v1 ELF ABI only at present, arm is
 EABI only, and mips is o32 ABI only. Additional implementations and architectures
 will be added soon.
