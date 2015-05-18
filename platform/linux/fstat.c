@@ -36,7 +36,9 @@ fstat(int fd, struct stat *st)
 		syscall(SYS_ioctl, fd, BLKGETSIZE64, &st->st_size);
 		break;
 	case LINUX_S_IFCHR:
-		/* XXX be more specific, test if tap device major? */
+		/* test if /dev/net/tun or macvtap */
+		if (!(lst.st_rdev == makedev(10, 200) || major(lst.st_rdev) == 246))
+			break;
 		ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
 		if (ret == 0) {
 			/* we do not yet support macvtap offload facilities */
@@ -68,7 +70,7 @@ fstat(int fd, struct stat *st)
 		      (LINUX_S_ISSOCK(lst.st_mode) ? S_IFSOCK : 0);
 
 	/* if we are passed in /dev/urandom use as a random source */
-	if (LINUX_S_ISCHR(lst.st_mode) && lst.st_rdev == linux_makedev(1, 9))
+	if (LINUX_S_ISCHR(lst.st_mode) && lst.st_rdev == makedev(1, 9))
 		__platform_random_fd = fd;
 
 	return 0;
