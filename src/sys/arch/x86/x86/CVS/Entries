@@ -5,7 +5,7 @@
 /convert_xmm_s87.c/1.3/Sat Feb 15 22:20:42 2014//
 /core_machdep.c/1.5/Sat Jan  4 00:10:03 2014//
 /coretemp.c/1.33/Thu Apr 23 23:23:00 2015//
-/cpu.c/1.113/Mon Jan 12 16:34:39 2015//
+/cpu.c/1.115/Mon May 18 13:09:55 2015//
 /cpu_topology.c/1.9/Sat Feb 22 17:48:08 2014//
 /cpu_ucode.c/1.5/Wed Jan  7 07:05:48 2015//
 /cpu_ucode_amd.c/1.7/Fri Nov 15 08:47:55 2013//
@@ -24,7 +24,7 @@
 /ioapic.c/1.50/Mon Apr 27 07:03:58 2015//
 /ipi.c/1.26/Sun Jul 20 15:48:54 2014//
 /ipmi.c/1.61/Mon Apr 13 16:03:51 2015//
-/lapic.c/1.47/Fri Nov 15 08:47:55 2013//
+/lapic.c/1.48/Mon May 18 13:04:21 2015//
 /linux_trap.c/1.11/Sun Feb 19 21:06:35 2012//
 /mp.c/1.3/Fri Jul  1 18:21:31 2011//
 /mpacpi.c/1.97/Mon Mar 25 01:30:37 2013//

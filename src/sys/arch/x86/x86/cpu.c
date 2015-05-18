@@ -1,4 +1,4 @@
-/*	$NetBSD: cpu.c,v 1.113 2015/01/12 16:34:39 christos Exp $	*/
+/*	$NetBSD: cpu.c,v 1.115 2015/05/18 13:09:55 msaitoh Exp $	*/
 
 /*-
  * Copyright (c) 2000-2012 NetBSD Foundation, Inc.
@@ -62,7 +62,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: cpu.c,v 1.113 2015/01/12 16:34:39 christos Exp $");
+__KERNEL_RCSID(0, "$NetBSD: cpu.c,v 1.115 2015/05/18 13:09:55 msaitoh Exp $");
 
 #include "opt_ddb.h"
 #include "opt_mpbios.h"		/* for MPDEBUG */
