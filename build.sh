@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+
 MAKE=${MAKE-make}
 
 RUMPOBJ=${PWD}/rumpobj
