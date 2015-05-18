@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -x
 MAKE=${MAKE-make}
 
 RUMPOBJ=${PWD}/rumpobj
@@ -114,7 +114,6 @@ while getopts '?d:F:Hhj:L:M:m:o:p:qrs:V:' opt; do
 		OUTDIR=$(abspath ${OPTARG})
 		;;
 	"F")
-		EXTRAFLAGS="${EXTRAFLAGS} -F ${OPTARG}"
 		ARG=${OPTARG#*=}
 		case ${OPTARG} in
 			CFLAGS\=*)
@@ -252,7 +251,14 @@ MAKETOOLS="${MAKETOOLS-yes}"
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
 	-F CFLAGS=-fno-stack-protector \
 	-k -s ${RUMPSRC} -o ${RUMPOBJ} -d ${RUMP} \
-	${BUILD_QUIET} ${STDJ} ${EXTRAFLAGS} \
+	${BUILD_QUIET} ${STDJ} \
+	-F CPPFLAGS="${EXTRA_CPPFLAGS}" \
+	-F CFLAGS="${EXTRA_CFLAGS}" \
+	-F AFLAGS="${EXTRA_AFLAGS}" \
+	-F LDFLAGS="${EXTRA_LDFLAGS}" \
+	-F CWARNFLAGS="${EXTRA_CWARNFLAGS}" \
+	-F DBG="${F_DBG}" \
+	${EXTRAFLAGS} \
 	tools build kernelheaders install
 
 # remove libraries that are not/will not work
