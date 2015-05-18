@@ -4,7 +4,7 @@ LIBDIR=$(RUMP)/lib
 LIB=$(LIBDIR)/libplatform.a
 OBJDIR=$(RUMPOBJ)/platform
 RANLIB?=ranlib
-PLATFORMS=freebsd linux netbsd qemu-arm
+PLATFORMS=freebsd linux netbsd qemu-arm pk
 
 .PHONY:		$(PLATFORMS) deterministic clean test
 
