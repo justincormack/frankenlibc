@@ -77,7 +77,7 @@ rexec rump.ifconfig tun:tap0
 rexec rump.ifconfig /dev/tap6
 
 # if that works lets try nginx
-rexec nginx/objs/nginx /dev/tap6 /dev/loop0 -- -c /data/conf/nginx.conf
+rexec bin/nginx /dev/tap6 /dev/loop0 -- -c /data/conf/nginx.conf
 
 # notice if you restart it it will say "/: replaying log to disk" that is because we
 # did not do a clean shutdown on a rw mounted fs, so it replays the journal.
