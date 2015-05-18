@@ -36,9 +36,7 @@ fstat(int fd, struct stat *st)
 		syscall(SYS_ioctl, fd, BLKGETSIZE64, &st->st_size);
 		break;
 	case LINUX_S_IFCHR:
-		/* test if /dev/net/tun or macvtap */
-		if (!(lst.st_rdev == makedev(10, 200) || major(lst.st_rdev) == 246))
-			break;
+		/* macvtap has a dynamic major number, so hard to test */
 		ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
 		if (ret == 0) {
 			/* we do not yet support macvtap offload facilities */
