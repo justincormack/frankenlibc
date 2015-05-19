@@ -37,6 +37,8 @@ fstat(int fd, struct stat *st)
 		break;
 	case LINUX_S_IFCHR:
 		/* macvtap has a dynamic major number, so hard to test */
+		if (lst.st_rdev != makedev(10, 200) && major(lst.st_rdev) < 128)
+			break;
 		ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
 		if (ret == 0) {
 			/* we do not yet support macvtap offload facilities */
