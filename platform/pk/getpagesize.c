@@ -4,5 +4,5 @@ int
 getpagesize(void)
 {
 
-	return 4096;
+	return 8092;
 }
