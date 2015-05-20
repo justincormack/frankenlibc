@@ -4,7 +4,7 @@ RUMPOBJ?=../../rumpobj
 OBJDIR=$(RUMPOBJ)/platform
 RUMP?=$(RUMPOBJ)/rump
 CRTDIR=$(RUMP)/lib
-CRTFILES=$(CRTDIR)/crt0.o
+CRTFILES=$(CRTDIR)/crt0.o $(CRTDIR)/crt.o
 CRTFILES+=$(CRTDIR)/crti.o $(CRTDIR)/crtn.o
 CRTFILES+=$(CRTDIR)/crtbegin.o $(CRTDIR)/crtbeginT.o
 CRTFILES+=$(CRTDIR)/crtend.o
@@ -21,7 +21,7 @@ OBJ+=$(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/kill.o
 OBJ+=$(OBJDIR)/mmap.o
 OBJ+=$(OBJDIR)/mprotect.o
-OBJ+=$(OBJDIR)/__libc_start_main.o
+OBJ+=$(OBJDIR)/_init.o
 OBJ+=$(OBJDIR)/pread.o
 OBJ+=$(OBJDIR)/pwrite.o
 OBJ+=$(OBJDIR)/preadv.o
@@ -44,8 +44,11 @@ $(OBJDIR):
 $(CRTDIR):			
 				mkdir -p $(CRTDIR)
 
-$(CRTDIR)/crt0.o:		crt0.c $(CRTDIR)
-				$(COMPILE.c) -o $@ crt0.c
+$(CRTDIR)/crt.o:		crt.S $(CRTDIR)
+				$(COMPILE.S) -o $@ crt.S
+
+$(CRTDIR)/crt0.o:		$(CRTDIR)
+				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
 $(CRTDIR)/crti.o:		$(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
@@ -92,8 +95,8 @@ $(OBJDIR)/getrandom.o:		getrandom.c $(HEADERS)
 $(OBJDIR)/kill.o:		kill.c $(HEADERS)
 				$(COMPILE.c) -o $@ kill.c
 
-$(OBJDIR)/__libc_start_main.o:	__libc_start_main.c $(HEADERS)
-				$(COMPILE.c) -o $@ __libc_start_main.c
+$(OBJDIR)/_init.o:		_init.c $(HEADERS)
+				$(COMPILE.c) -o $@ _init.c
 
 $(OBJDIR)/mmap.o:		mmap.c $(HEADERS)
 				$(COMPILE.c) -o $@ mmap.c
