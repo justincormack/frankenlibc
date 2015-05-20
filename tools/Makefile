@@ -7,7 +7,7 @@ BIN=$(BINDIR)/rexec
 OBJ=$(OBJDIR)/rexec.o
 INC=rexec.h
 DEPS=$(INC) $(OBJDIR) $(BINDIR)
-PLATFORMS=freebsd linux netbsd qemu-arm pk
+PLATFORMS=freebsd linux netbsd qemu-arm spike
 
 default:		linux
 
@@ -41,8 +41,8 @@ netbsd:			$(OBJ) $(OBJDIR)/netbsd.o
 qemu-arm:		qemu-arm.sh
 			cp qemu-arm.sh $(BIN)
 
-pk:			pk.sh
-			cp pk.sh $(BIN)
+spike:			spike.sh
+			cp spike.sh $(BIN)
 
 .PHONY:			clean $(PLATFORMS)
 clean:		

@@ -7,10 +7,10 @@ seccomp:
 qemu-arm:
 		./build.sh qemu-arm
 
-pk:
-		./build.sh pk
+spike:
+		./build.sh spike
 
-PHONY:		clean distclean qemu-arm pk seccomp
+PHONY:		clean distclean qemu-arm spike seccomp
 
 clean:		
 		rm -rf rumpobj
