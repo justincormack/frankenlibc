@@ -9,6 +9,6 @@ _exit(int status)
 
 	write(1, die, sizeof(die));
 
-	syscall(SYS_exit, status, 0, 0);
+	_syscall(SYS_exit, status, 0, 0);
 	while (1) {};
 }

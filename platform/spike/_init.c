@@ -111,7 +111,7 @@ void __attribute__((weak)) thread_entry(int cid, int nc)
 int __attribute__((weak)) main(int argc, char** argv)
 {
   // single-threaded programs override this function.
-  printstr("Implement main(), foo!\n");
+  //printstr("Implement main(), foo!\n");
   return -1;
 }
 
