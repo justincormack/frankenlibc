@@ -11,5 +11,7 @@ EXTRA_LDSCRIPT_CC="-Wl,-T,${LINKSCRIPT}"
 
 appendvar EXTRA_FLAGS="-mfdiv"
 
+LIBS="net_netinet,net_netinet6"
+
 # Tools slow to build, so omit by default
 MAKETOOLS="${MAKETOOLS-no}"
