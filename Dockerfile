@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
   binutils \
   cpp \
   curl \
+  g++ \
   gcc \
   git \
   libc6-dev \
