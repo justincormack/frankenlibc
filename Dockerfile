@@ -7,6 +7,7 @@ MAINTAINER Justin Cormack
 RUN apt-get update && apt-get install -y \
   binutils \
   cpp \
+  curl \
   gcc \
   git \
   libc6-dev \
