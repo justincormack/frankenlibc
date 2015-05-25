@@ -13,6 +13,5 @@ RUN apt-get update && apt-get install -y \
   libseccomp-dev
 
 COPY . /usr/src/frankenlibc
-WORKDIR /usr/src/frankenlibc
 
-RUN ./build.sh -d /usr/local seccomp notests && /usr/local/bin/rumprun-cc -g -O2 tests/hello.c -o /usr/local/bin/rump-helloworld && rm -rf /usr/src/frankenlibc
+RUN cd /usr/src/frankenlibc && ./build.sh -d /usr/local seccomp notests && /usr/local/bin/rumprun-cc -g -O2 tests/hello.c -o /usr/local/bin/rump.helloworld && rm -rf /usr/src/frankenlibc
