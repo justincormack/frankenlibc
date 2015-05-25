@@ -506,9 +506,9 @@ printf "#!/bin/sh\n\nexec ${NM-nm} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-nm
 printf "#!/bin/sh\n\nexec ${OBJCOPY-objcopy} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-objcopy
 chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
 
-# test for suplicated symbols
+# test for duplicated symbols
 
-DUPSYMS=$(nm rump/lib/libc.a | grep ' T ' | sed 's/.* T //g' | sort | uniq -c -d)
+DUPSYMS=$(nm ${OUTDIR}/lib/libc.a | grep ' T ' | sed 's/.* T //g' | sort | uniq -c -d)
 
 if [ -n "${DUPSYMS}" ]
 then
