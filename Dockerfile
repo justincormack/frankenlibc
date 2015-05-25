@@ -8,4 +8,4 @@ RUN apt-get install -y build-essential libseccomp2 libseccomp-dev
 COPY . /usr/src/frankenlibc
 WORKDIR /usr/src/frankenlibc
 
-RUN ./build.sh seccomp
+RUN ./build.sh -d /usr/local seccomp
