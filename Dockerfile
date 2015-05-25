@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
   binutils \
   cpp \
   gcc \
+  git \
   libc6-dev \
   libseccomp2 \
   libseccomp-dev \
