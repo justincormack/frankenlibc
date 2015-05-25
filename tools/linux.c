@@ -270,7 +270,10 @@ filter_load_exec(char *program, char **argv, char **envp)
 	/* seccomp_export_pfc(ctx, 1); */
 
 	ret = seccomp_load(ctx);
-	if (ret < 0) return ret;
+	if (ret < 0) {
+		fprintf(stderr, "seccomp_load failed, probably no kernel support\n");
+		return ret;
+	}
 
 	seccomp_release(ctx);
 
