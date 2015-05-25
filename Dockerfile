@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
   gcc \
   libc6-dev \
   libseccomp2 \
-  libseccomp-dev
+  libseccomp-dev \
+  make
 
 COPY . /usr/src/frankenlibc
 
