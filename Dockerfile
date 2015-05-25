@@ -4,7 +4,13 @@ FROM ubuntu:15.04
 
 MAINTAINER Justin Cormack
 
-RUN apt-get update && apt-get install -y build-essential libseccomp2 libseccomp-dev
+RUN apt-get update && apt-get install -y \
+  binutils \
+  cpp \
+  gcc \
+  libc6-dev \
+  libseccomp2 \
+  libseccomp-dev
 
 COPY . /usr/src/frankenlibc
 WORKDIR /usr/src/frankenlibc
