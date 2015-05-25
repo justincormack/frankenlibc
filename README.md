@@ -50,4 +50,5 @@ A docker repository with the tools built for linux is available at
 
 ```
 docker pull justincormack/frankenlibc
+docker run -e RUMP_VERBOSE=1 justincormack/frankenlibc rexec rump.helloworld
 ```
