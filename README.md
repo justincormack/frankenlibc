@@ -38,7 +38,15 @@ is used, while many clang installations can use a sysroot, although eg NetBSD's 
 does not support sysroot. For most systems a line like the following will work if you
 do not use the wrapper:
 
+```
 gcc -nostdinc -Irump/include -Lrump/lib -Brump/lib -o rumpobj/tests/hello -static tests/hello.c
+```
 
 A number of NetBSD system tools are built as part of the build, named with the rump. prefix eg rump.ls,
 rump.ifconfig, rump.newfs, rump.tar to allow simple tests and file system manipulation.
+
+A docker repository with the tools built for linux is available at
+[Docker hub](https://registry.hub.docker.com/u/justincormack/frankenlibc/) or with 
+```
+docker pull justincormack/frankenlibc
+```
