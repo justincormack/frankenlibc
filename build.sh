@@ -570,7 +570,7 @@ fi
 if [ ${RUNTESTS} = "test" ]
 then
 	CC="${OUTDIR}/bin/${COMPILER}" \
+		RUMPDIR="${OUTDIR}" \
 		RUMPOBJ="${RUMPOBJ}" \
-		OUTDIR="${OUTDIR}" \
 		${MAKE} -C tests
 fi
