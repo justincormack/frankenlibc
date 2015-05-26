@@ -32,7 +32,6 @@ int rump_pub_netconfig_auto_ipv6(const char *interface) {return 0;}
 
 struct __fdtable __franken_fd[MAXFD];
 
-/* XXX should have proper functions in libc */
 void
 mkkey(char *k, char *n, const char *pre, int dev, int fd)
 {
@@ -140,14 +139,60 @@ register_reg(int dev, int fd, int flags)
 	return rump___sysimpl_open(key, flags);
 }
 
+static void
+register_net(int fd)
+{
+	char key[16], num[16];
+	int ret;
+
+	mkkey(key, num, "virt", fd, fd);
+	ret = rump_pub_netconfig_ifcreate(key);
+	if (ret == 0) {
+		ret = rump___sysimpl_socket30(AF_INET6, SOCK_STREAM, 0);
+		if (ret != -1) {
+			rump_pub_netconfig_auto_ipv6(key);
+			rump___sysimpl_close(ret);
+		}
+		ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
+		if (ret != -1) {
+			rump_pub_netconfig_dhcp_ipv4_oneshot(key);
+			rump___sysimpl_close(ret);
+		}
+	}
+}
+
+static int
+register_block(int dev, int fd, int flags, off_t size)
+{
+	char key[16], rkey[16], num[16];
+	struct ufs_args ufs;
+	int ret;
+
+	mkkey(key, num, "/dev/block", dev, fd);
+	mkkey(rkey, num, "/dev/rblock", dev, fd);
+	rump_pub_etfs_register_withsize(key, num, RUMP_ETFS_BLK, 0, size);
+	rump_pub_etfs_register_withsize(rkey, num, RUMP_ETFS_CHR, 0, size);
+	ufs.fspec = key;
+	if (flags == O_RDWR)
+		flags = MNT_LOG;
+	else
+		flags = MNT_RDONLY;
+	ret = rump___sysimpl_mount50("ffs", "/", flags, &ufs, sizeof(struct ufs_args));
+	if (ret == -1) {
+		if (flags == MNT_LOG)
+			flags = 0;
+		ret = rump___sysimpl_mount50("ext2fs", "/", flags, &ufs, sizeof(struct ufs_args));
+	}
+	if (ret == 0)
+		atexit(unmount_atexit);
+	return ret;
+}
+
 void
 __franken_fdinit_create()
 {
-	int fd, ret, flags;
-	int root = 0;
-	char key[16], rkey[16], num[16];
+	int fd;
 	int n_reg = 0, n_block = 0;
-	struct ufs_args ufs;
 
 	if (__franken_fd[0].valid) {
 		fd = register_reg(n_reg++, 0, O_RDONLY);
@@ -180,50 +225,10 @@ __franken_fdinit_create()
 			fd = register_reg(n_reg++, fd, __franken_fd[fd].flags & O_ACCMODE);
 			break;
 		case S_IFBLK:
-			mkkey(key, num, "/dev/block", n_block, fd);
-			mkkey(rkey, num, "/dev/rblock", n_block, fd);
-			n_block++;
-			rump_pub_etfs_register_withsize(key, num,
-				RUMP_ETFS_BLK, 0, __franken_fd[fd].st.st_size);
-			rump_pub_etfs_register_withsize(rkey, num,
-				RUMP_ETFS_CHR, 0, __franken_fd[fd].st.st_size);
-			if (root == 0) {
-				ufs.fspec = key;
-				flags = __franken_fd[fd].flags & O_ACCMODE;
-				if (flags == O_RDWR)
-					flags = MNT_LOG;
-				else
-					flags = MNT_RDONLY;
-				ret = rump___sysimpl_mount50("ffs", "/", flags, &ufs, sizeof(struct ufs_args));
-				if (ret == 0) {
-					root = 1;
-				} else {
-					if (flags == MNT_LOG)
-						flags = 0;
-					ret = rump___sysimpl_mount50("ext2fs", "/", flags, &ufs, sizeof(struct ufs_args));
-					if (ret == 0) {
-						root = 1;
-					}
-				}
-				if (root == 1)
-					atexit(unmount_atexit);
-			}
+			register_block(n_block++, fd, __franken_fd[fd].flags & O_ACCMODE, __franken_fd[fd].st.st_size);
 			break;
 		case S_IFSOCK:
-			mkkey(key, num, "virt", fd, fd);
-			ret = rump_pub_netconfig_ifcreate(key);
-			if (ret == 0) {
-				ret = rump___sysimpl_socket30(AF_INET6, SOCK_STREAM, 0);
-				if (ret != -1) {
-					rump_pub_netconfig_auto_ipv6(key);
-					rump___sysimpl_close(ret);
-				}
-				ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
-				if (ret != -1) {
-					rump_pub_netconfig_dhcp_ipv4_oneshot(key);
-					rump___sysimpl_close(ret);
-				}
-			}
+			register_net(fd);
 			break;
 		}
 	}
