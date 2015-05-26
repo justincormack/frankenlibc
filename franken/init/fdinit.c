@@ -135,7 +135,7 @@ register_reg(int dev, int fd, int flags)
 {
 	char key[16], num[16];
 
-	mkkey(key, num, "/dev/vfile", n, fd);
+	mkkey(key, num, "/dev/vfile", dev, fd);
 	rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
 	return rump___sysimpl_open(key, flags);
 }
