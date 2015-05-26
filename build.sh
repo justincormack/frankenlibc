@@ -246,6 +246,8 @@ fi
 RUNTESTS="${RUNTESTS-test}"
 MAKETOOLS="${MAKETOOLS-yes}"
 
+rm -rf ${OUTDIR}
+
 ./buildrump/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
@@ -421,7 +423,6 @@ mkdir -p ${RUMPOBJ}/explode/platform
 )
 
 # install to OUTDIR
-rm -rf ${OUTDIR}
 ${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
 rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
 ${INSTALL-install} ${RUMP}/bin/rexec ${OUTDIR}/bin
