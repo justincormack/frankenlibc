@@ -65,6 +65,17 @@ main(int argc, char **argv)
 			mode = O_RDWR;
 			continue;
 		}
+		if (strcmp(arg, "-noroot") == 0) {
+			fd = open("/dev/null", O_RDONLY);
+			if (fd == -1) {
+				perror("open /dev/null");
+				exit(1);
+			}
+			if (fd != 3) {
+				fprintf(stderr, "-noroot must be specified before any file opened\n");
+				exit(1);
+			}
+		}
 		if (strcmp(arg, "--") == 0) {
 			i++;
 			break;			

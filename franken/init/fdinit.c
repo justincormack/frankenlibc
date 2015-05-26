@@ -162,7 +162,7 @@ register_net(int fd)
 }
 
 static int
-register_block(int dev, int fd, int flags, off_t size)
+register_block(int dev, int fd, int flags, off_t size, int root)
 {
 	char key[16], rkey[16], num[16];
 	struct ufs_args ufs;
@@ -172,6 +172,8 @@ register_block(int dev, int fd, int flags, off_t size)
 	mkkey(rkey, num, "/dev/rblock", dev, fd);
 	rump_pub_etfs_register_withsize(key, num, RUMP_ETFS_BLK, 0, size);
 	rump_pub_etfs_register_withsize(rkey, num, RUMP_ETFS_CHR, 0, size);
+	if (root == 0)
+		return 0;
 	ufs.fspec = key;
 	if (flags == O_RDWR)
 		flags = MNT_LOG;
@@ -217,7 +219,24 @@ __franken_fdinit_create()
 		}
 	}
 
-	for (fd = 3; fd < MAXFD; fd++) {
+	/* XXX would be nicer to be able to detect a file system,
+	   but this also allows us not to mount a block device.
+	   Pros and cons, may change if this is not convenient */
+
+	/* only fd 3 will be mounted as root file system */
+	if (__franken_fd[3].valid) {
+		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
+		case S_IFREG:
+		case S_IFBLK:
+			register_block(n_block++, fd, __franken_fd[fd].flags & O_ACCMODE, __franken_fd[fd].st.st_size, 1);
+			break;
+		case S_IFSOCK:
+			register_net(fd);
+			break;
+		}
+	}
+
+	for (fd = 4; fd < MAXFD; fd++) {
 		if (__franken_fd[fd].valid == 0)
 			break;
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
@@ -225,7 +244,7 @@ __franken_fdinit_create()
 			fd = register_reg(n_reg++, fd, __franken_fd[fd].flags & O_ACCMODE);
 			break;
 		case S_IFBLK:
-			register_block(n_block++, fd, __franken_fd[fd].flags & O_ACCMODE, __franken_fd[fd].st.st_size);
+			register_block(n_block++, fd, __franken_fd[fd].flags & O_ACCMODE, __franken_fd[fd].st.st_size, 0);
 			break;
 		case S_IFSOCK:
 			register_net(fd);
