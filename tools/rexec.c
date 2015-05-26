@@ -45,8 +45,6 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage(argv[0]);
 
-	os_pre();
-
 	for (i = 1; i < argc; i++) {
 		char *arg = argv[i];
 
@@ -75,6 +73,7 @@ main(int argc, char **argv)
 				fprintf(stderr, "-noroot must be specified before any file opened\n");
 				exit(1);
 			}
+			continue;
 		}
 		if (strcmp(arg, "--") == 0) {
 			i++;
@@ -115,6 +114,8 @@ main(int argc, char **argv)
 
 	for (; p < argc; p++)
 		pargs[p] = 0;
+
+	os_post();
 
 	nfds = open("/dev/null", O_RDONLY);
 	close(nfds);

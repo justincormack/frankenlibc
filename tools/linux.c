@@ -322,7 +322,7 @@ getrandom(void *buf, size_t buflen, unsigned int flags)
 }
 
 int
-os_pre()
+os_post()
 {
 	int sock[2];
 	int ret, fd;
@@ -333,8 +333,8 @@ os_pre()
 		fd = open("/dev/urandom", O_RDONLY);
 	}
 
-	/* Linux needs a socket to do ioctls on to get mac addresses */
-	/* XXX Add a tap ioctl to get hwaddr */
+	/* Linux needs a socket to do ioctls on to get mac addresses from macvtap devices */
+	/* Fix upstreamed */
 	ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
 	close(sock[1]);
 

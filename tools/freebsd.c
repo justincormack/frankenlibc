@@ -153,7 +153,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 #endif /* CAPSICUM */
 
 int
-os_pre()
+os_post()
 {
 
 	return 0;
