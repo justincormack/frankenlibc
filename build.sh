@@ -279,6 +279,29 @@ rm -f ${RUMP}/lib/librumpdev_ubt.a
 rm -f ${RUMP}/lib/librumpkern_sys_linux.a
 rm -f ${RUMP}/lib/librumpdev_umass.a
 
+# userspace libraries to build from NetBSD base
+USER_LIBS="m pthread z crypt util prop rmt ipsec"
+NETBSDLIBS="${RUMPSRC}/lib/libc"
+for f in ${USER_LIBS}
+do
+        appendvar NETBSDLIBS "${RUMPSRC}/lib/lib${f}"
+done
+
+RUMPMAKE=${RUMPOBJ}/tooldir/rumpmake
+
+usermtree ${RUMP}
+userincludes ${RUMPSRC} ${NETBSDLIBS}
+
+for lib in ${NETBSDLIBS}; do
+        makeuserlib ${lib}
+done
+
+# permissions set wrong
+chmod -R ug+rw ${RUMP}/include/*
+# install headers
+${INSTALL-install} -d ${OUTDIR}/include
+cp -a ${RUMP}/include/* ${OUTDIR}/include
+
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	ASFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
@@ -332,23 +355,6 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
 	${MAKE} -C libvirtif
-
-# userspace libraries to build from NetBSD base
-USER_LIBS="m pthread z crypt util prop rmt ipsec"
-NETBSDLIBS="${RUMPSRC}/lib/libc"
-for f in ${USER_LIBS}
-do
-	appendvar NETBSDLIBS "${RUMPSRC}/lib/lib${f}"
-done
-
-RUMPMAKE=${RUMPOBJ}/tooldir/rumpmake
-
-usermtree ${RUMP}
-userincludes ${RUMPSRC} ${NETBSDLIBS}
-
-for lib in ${NETBSDLIBS}; do
-	makeuserlib ${lib}
-done
 
 # find which libs we should link
 ALL_LIBS="${RUMP}/lib/librump.a
@@ -423,8 +429,7 @@ mkdir -p ${RUMPOBJ}/explode/platform
 )
 
 # install to OUTDIR
-${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib ${OUTDIR}/include
-rm -rf ${OUTDIR}/bin/* ${OUTDIR}/lib/* ${OUTDIR}/include/*
+${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib
 ${INSTALL-install} ${RUMP}/bin/rexec ${OUTDIR}/bin
 (
 	cd ${RUMP}/lib
@@ -436,9 +441,6 @@ ${INSTALL-install} ${RUMP}/bin/rexec ${OUTDIR}/bin
 ${INSTALL-install} ${RUMP}/lib/*.o ${OUTDIR}/lib
 [ -f ${RUMP}/lib/libg.a ] && ${INSTALL-install} ${RUMP}/lib/libg.a ${OUTDIR}/lib
 ${INSTALL-install} ${RUMPOBJ}/explode/libc.a ${OUTDIR}/lib
-# permissions set wrong
-chmod -R ug+rw ${RUMP}/include/*
-cp -a ${RUMP}/include/* ${OUTDIR}/include
 
 # create toolchain wrappers
 # select these based on compiler defs
