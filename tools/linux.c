@@ -13,6 +13,7 @@
 #include <linux/fs.h>
 #include <net/if.h>
 #include <linux/if_tun.h>
+#include <linux/sockios.h>
 
 #include "rexec.h"
 

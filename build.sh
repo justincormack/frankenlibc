@@ -248,6 +248,15 @@ MAKETOOLS="${MAKETOOLS-yes}"
 
 rm -rf ${OUTDIR}
 
+if [ ${FILTER-x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
+CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
+        CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+        LDFLAGS="${EXTRA_LDFLAGS}" \
+        LDLIBS="${LDLIBS}" \
+        RUMPOBJ="${RUMPOBJ}" \
+        RUMP="${RUMP}" \
+        ${MAKE} ${OS} -C tools
+
 ./buildrump/buildrump.sh \
 	-V RUMP_CURLWP=hypercall -V RUMP_LOCKS_UP=yes \
 	-V MKPIC=no -V RUMP_KERNEL_IS_LIBC=1 \
@@ -339,15 +348,6 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
 	${MAKE} -C librumpuser
-
-if [ ${FILTER-x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
-CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
-	CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
-	LDFLAGS="${EXTRA_LDFLAGS}" \
-	LDLIBS="${LDLIBS}" \
-	RUMPOBJ="${RUMPOBJ}" \
-	RUMP="${RUMP}" \
-	${MAKE} ${OS} -C tools
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
