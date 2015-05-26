@@ -130,6 +130,16 @@ unmount_atexit(void)
 	ret = rump___sysimpl_unmount("/", MNT_FORCE);
 }
 
+static int
+register_reg(int dev, int fd, int flags)
+{
+	char key[16], num[16];
+
+	mkkey(key, num, "/dev/vfile", n, fd);
+	rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
+	return rump___sysimpl_open(key, flags);
+}
+
 void
 __franken_fdinit_create()
 {
@@ -140,18 +150,14 @@ __franken_fdinit_create()
 	struct ufs_args ufs;
 
 	if (__franken_fd[0].valid) {
-		mkkey(key, num, "/dev/vfile", n_reg++, 0);
-		rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
-		fd = rump___sysimpl_open(key, O_RDONLY);
+		fd = register_reg(n_reg++, 0, O_RDONLY);
 		if (fd != -1) {
 			rump___sysimpl_dup2(fd, 0);
 			rump___sysimpl_close(fd);
 		}
 	}
 	if (__franken_fd[1].valid) {
-		mkkey(key, num, "/dev/vfile", n_reg++, 1);
-		rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
-		fd = rump___sysimpl_open(key, O_WRONLY);
+		fd = register_reg(n_reg++, 1, O_WRONLY);
 		if (fd != -1) {
 			rump___sysimpl_dup2(fd, 1);
 			rump___sysimpl_close(fd);
@@ -159,9 +165,7 @@ __franken_fdinit_create()
 	}
 
 	if (__franken_fd[2].valid) {
-		mkkey(key, num, "/dev/vfile", n_reg++, 2);
-		rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
-		fd = rump___sysimpl_open(key, O_WRONLY);
+		fd = register_reg(n_reg++, 2, O_WRONLY);
 		if (fd != -1) {
 			rump___sysimpl_dup2(fd, 2);
 			rump___sysimpl_close(fd);
@@ -173,10 +177,7 @@ __franken_fdinit_create()
 			break;
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
 		case S_IFREG:
-			mkkey(key, num, "/dev/vfile", n_reg++, fd);
-			rump_pub_etfs_register(key, num, RUMP_ETFS_REG);
-			flags = __franken_fd[fd].flags & O_ACCMODE;
-			rump___sysimpl_open(key, flags);
+			fd = register_reg(n_reg++, fd, __franken_fd[fd].flags & O_ACCMODE);
 			break;
 		case S_IFBLK:
 			mkkey(key, num, "/dev/block", n_block, fd);
