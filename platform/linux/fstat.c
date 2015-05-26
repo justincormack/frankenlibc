@@ -48,6 +48,13 @@ fstat(int fd, struct stat *st)
 			}
 		}
 		break;
+	case LINUX_S_IFREG:
+		/* pretend it is a block device */
+		if (fd == 3 || __franken_fd[fd].mounted == 1) {
+			lst.st_mode &= ~LINUX_S_IFMT;
+			lst.st_mode |= LINUX_S_IFBLK;
+		}
+		break;
 	}
 	st->st_mode = (LINUX_S_ISDIR (lst.st_mode) ? S_IFDIR  : 0) |
 		      (LINUX_S_ISCHR (lst.st_mode) ? S_IFCHR  : 0) |

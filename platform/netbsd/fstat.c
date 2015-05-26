@@ -22,6 +22,10 @@ fstat(int fd, struct stat *st)
 	if (S_ISBLK(nst.st_mode)) {
 		/* XXX block device size is messy in NetBSD, work out */
 	}
+	if (S_ISREG(nst.st_mode) && (fd == 3 || __franken_fd[fd].mounted == 1)) {
+		nst.st_mode &= ~S_IFMT;
+		nst.st_mode |= S_IFBLK;
+	}
 
 	st->st_mode = nst.st_mode;
 

@@ -40,6 +40,11 @@ fstat(int fd, struct stat *st)
 			__platform_npoll++;
 		}
 		break;
+	case FREEBSD_S_IFREG:
+		if (fd == 3 || __franken_fd[fd].mounted == 1) {
+			fst.st_mode &= ~FREEBSD_S_IFMT;
+			fst.st_mode |= FREEBSD_S_IFBLK;
+		}
 	}
 
 	st->st_mode = (FREEBSD_S_ISDIR (fst.st_mode) ? S_IFDIR  : 0) |

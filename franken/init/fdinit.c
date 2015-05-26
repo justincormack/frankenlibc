@@ -228,7 +228,11 @@ __franken_fdinit_create()
 		switch (__franken_fd[fd].st.st_mode & S_IFMT) {
 		case S_IFREG:
 		case S_IFBLK:
-			register_block(n_block++, fd, __franken_fd[fd].flags & O_ACCMODE, __franken_fd[fd].st.st_size, 1);
+			if (register_block(n_block++, fd,
+			    __franken_fd[fd].flags & O_ACCMODE,
+			    __franken_fd[fd].st.st_size, 1) == 0) {
+				__franken_fd[fd].mounted = 1;
+			}
 			break;
 		case S_IFSOCK:
 			register_net(fd);

@@ -12,6 +12,7 @@ struct __fdtable {
 	int seek;
 	struct stat st;
 	struct thread *wake;
+	int mounted;
 };
 
 extern struct __fdtable __franken_fd[MAXFD];
