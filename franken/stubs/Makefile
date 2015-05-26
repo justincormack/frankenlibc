@@ -24,6 +24,7 @@ OBJ+=$(OBJDIR)/stub___sigaltstack14.o $(OBJDIR)/stub___sigaction_sigtramp.o
 OBJ+=$(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub_sigqueueinfo.o
 OBJ+=$(OBJDIR)/stub___sigsuspend14.o $(OBJDIR)/stub_____sigtimedwait50.o
 OBJ+=$(OBJDIR)/stub_swapctl.o $(OBJDIR)/stub_undelete.o
+OBJ+=$(OBJDIR)/stub__sys.o
 OBJ+=$(OBJDIR)/stub_uuidgen.o
 OBJ+=$(OBJDIR)/stub___vfork14.o $(OBJDIR)/stub___wait450.o
 INCLUDES=-I../include -I../../platform/include
@@ -164,6 +165,9 @@ $(OBJDIR)/stub_____sigtimedwait50.o:	____sigtimedwait50.c
 
 $(OBJDIR)/stub_swapctl.o:		swapctl.c
 					$(COMPILE.c) -o $@ swapctl.c
+
+$(OBJDIR)/stub__sys.o:			_sys.c
+					$(COMPILE.c) -o $@ _sys.c
 
 $(OBJDIR)/stub_undelete.o:		undelete.c
 					$(COMPILE.c) -o $@ undelete.c
