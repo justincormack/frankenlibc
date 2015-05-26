@@ -555,6 +555,7 @@ then
 	( mktool mount sbin/mount )
 	( mktool ifconfig sbin/ifconfig )
 	( mktool route sbin/route )
+	( mktool rtadvd usr.sbin/rtadvd )
 	( mktool ping sbin/ping )
 	( mktool ping6 sbin/ping6 )
 	( mktool rmdir bin/rmdir )
