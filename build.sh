@@ -43,8 +43,9 @@ helpme()
 	printf "\t-p: huge page size to use eg 2M or 1G\n"
 	printf "\t-r: release build, without debug settings\n"
 	printf "\t-s: location of source tree.  default: PWD/rumpsrc\n"
-	printf "\t-o: location of object files. defaule PWD/rumpobj\n"
-	printf "\t-d: location of installed files. defaule PWD/rump\n"
+	printf "\t-o: location of object files. default PWD/rumpobj\n"
+	printf "\t-d: location of installed files. default PWD/rump\n"
+	printf "\t-b: location of binaries. default PWD/rump/bin\n"
 	printf "\tseccomp|noseccomp: select Linux seccomp (default off)\n"
 	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
@@ -107,8 +108,12 @@ appendvar ()
 
 . ./buildrump/subr.sh
 
-while getopts '?d:F:Hhj:L:M:m:o:p:qrs:V:' opt; do
+while getopts '?b:d:F:Hhj:L:M:m:o:p:qrs:V:' opt; do
 	case "$opt" in
+	"b")
+		mkdir -p ${OPTARG}
+		BINDIR=$(abspath ${OPTARG})
+		;;
 	"d")
 		mkdir -p ${OPTARG}
 		OUTDIR=$(abspath ${OPTARG})
@@ -196,6 +201,8 @@ while getopts '?d:F:Hhj:L:M:m:o:p:qrs:V:' opt; do
 	esac
 done
 shift $((${OPTIND} - 1))
+
+if [ -z ${BINDIR+x} ]; then BINDIR=${OUTDIR}/bin; fi
 
 for arg in "$@"; do
         case ${arg} in
@@ -429,8 +436,8 @@ mkdir -p ${RUMPOBJ}/explode/platform
 )
 
 # install to OUTDIR
-${INSTALL-install} -d ${OUTDIR}/bin ${OUTDIR}/lib
-${INSTALL-install} ${RUMP}/bin/rexec ${OUTDIR}/bin
+${INSTALL-install} -d ${BINDIR} ${OUTDIR}/lib
+${INSTALL-install} ${RUMP}/bin/rexec ${BINDIR}
 (
 	cd ${RUMP}/lib
 	for f in ${USER_LIBS}
@@ -463,14 +470,14 @@ then
 	if ${CC-cc} -I${OUTDIR}/include --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} tests/hello.c -o /dev/null 2>/dev/null
 	then
 		# can use sysroot with clang
-		printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
+		printf "#!/bin/sh\n\nexec ${CC-cc} --sysroot=${OUTDIR} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${BINDIR}/${TOOL_PREFIX}-clang
 	else
 		# sysroot does not work with linker eg NetBSD
 		appendvar COMPILER_FLAGS "-I${OUTDIR}/include -L${OUTDIR}/lib -B${OUTDIR}/lib"
-		printf "#!/bin/sh\n\nexec ${CC-cc} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-clang
+		printf "#!/bin/sh\n\nexec ${CC-cc} -static ${COMPILER_FLAGS} \"\$@\"\n" > ${BINDIR}/${TOOL_PREFIX}-clang
 	fi
 	COMPILER="${TOOL_PREFIX}-clang"
-	( cd ${OUTDIR}/bin
+	( cd ${BINDIR}
 	  ln -s ${COMPILER} ${TOOL_PREFIX}-cc
 	  ln -s ${COMPILER} rumprun-cc
 	)
@@ -497,17 +504,17 @@ else
 		-e "s#@ENDFILE@#${ENDFILE}#g" \
 		-e "s/--sysroot=[^ ]*//" \
 		> ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec
-	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec ${COMPILER_FLAGS} -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-gcc
+	printf "#!/bin/sh\n\nexec ${CC-cc} -specs ${OUTDIR}/lib/${TOOL_PREFIX}gcc.spec ${COMPILER_FLAGS} -static -nostdinc -isystem ${OUTDIR}/include \"\$@\"\n" > ${BINDIR}/${TOOL_PREFIX}-gcc
 	COMPILER="${TOOL_PREFIX}-gcc"
-	( cd ${OUTDIR}/bin
+	( cd ${BINDIR}
 	  ln -s ${COMPILER} ${TOOL_PREFIX}-cc
 	  ln -s ${COMPILER} rumprun-cc
 	)
 fi
-printf "#!/bin/sh\n\nexec ${AR-ar} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-ar
-printf "#!/bin/sh\n\nexec ${NM-nm} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-nm
-printf "#!/bin/sh\n\nexec ${OBJCOPY-objcopy} \"\$@\"\n" > ${OUTDIR}/bin/${TOOL_PREFIX}-objcopy
-chmod +x ${OUTDIR}/bin/${TOOL_PREFIX}-*
+printf "#!/bin/sh\n\nexec ${AR-ar} \"\$@\"\n" > ${BINDIR}/${TOOL_PREFIX}-ar
+printf "#!/bin/sh\n\nexec ${NM-nm} \"\$@\"\n" > ${BINDIR}/${TOOL_PREFIX}-nm
+printf "#!/bin/sh\n\nexec ${OBJCOPY-objcopy} \"\$@\"\n" > ${BINDIR}/${TOOL_PREFIX}-objcopy
+chmod +x ${BINDIR}/${TOOL_PREFIX}-*
 
 # test for duplicated symbols
 
@@ -539,8 +546,8 @@ mktool()
 	MKDOC=no \
 	MKMAN=no \
 	MKRUMP=no \
-		${RUMPOBJ}/tooldir/rumpmake CC="${OUTDIR}/bin/${COMPILER}" MAKEOBJDIR=${OBJDIR}
-	${INSTALL-install} ${OBJDIR}/$1 ${OUTDIR}/bin/rump.$1
+		${RUMPOBJ}/tooldir/rumpmake CC="${BINDIR}/${COMPILER}" MAKEOBJDIR=${OBJDIR}
+	${INSTALL-install} ${OBJDIR}/$1 ${BINDIR}/rump.$1
 }
 
 if [ ${MAKETOOLS} = "yes" ]
@@ -565,7 +572,7 @@ then
 	( mktool chmod bin/chmod )
 	( mktool chown sbin/chown )
 	(
-		cd ${OUTDIR}/bin
+		cd ${BINDIR}
 		ln rump.pax rump.tar
 		ln rump.pax rump.cpio
 	)
@@ -573,8 +580,9 @@ fi
 
 if [ ${RUNTESTS} = "test" ]
 then
-	CC="${OUTDIR}/bin/${COMPILER}" \
+	CC="${BINDIR}/${COMPILER}" \
 		RUMPDIR="${OUTDIR}" \
 		RUMPOBJ="${RUMPOBJ}" \
+		BINDIR="${BINDIR}" \
 		${MAKE} -C tests
 fi

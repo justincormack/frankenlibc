@@ -18,6 +18,4 @@ RUN apt-get update && apt-get install -y \
 
 COPY . /usr/src/frankenlibc
 
-ENV PATH=/usr/local/rump/bin:$PATH
-
-RUN cd /usr/src/frankenlibc && ./build.sh -d /usr/local/rump seccomp notests && rumprun-cc -g -O2 tests/hello.c -o /usr/local/rump/bin/rump.helloworld && make clean
+RUN cd /usr/src/frankenlibc && ./build.sh -d /usr/local/rump -d /usr/local/bin seccomp notests && rumprun-cc -g -O2 tests/hello.c -o /usr/local/rump/bin/rump.helloworld && make clean
