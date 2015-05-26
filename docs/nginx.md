@@ -68,8 +68,6 @@ sudo ip link set dev macvtap0 up
 sudo chown justin /dev/tap6
 
 # alternatively you can use a normal tap device if you add it to a bridge
-# however there may currently be issues with these devices blocking even in
-# nonblock mode, so macvtap recommended for now.
 sudo ip tuntap add dev tap0 mode tap user justin
 sudo ip link set dev tap0 up
 # add to bridge then you can refer to this as tun:tap0 instead of /dev/tap6 below
