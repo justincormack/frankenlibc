@@ -17,6 +17,9 @@
 #include <sys/socket.h>
 #include <linux/if_packet.h>
 #include <net/ethernet.h>
+#ifdef CAPABILITIES
+#include <sys/capability.h>
+#endif
 
 #include "rexec.h"
 
@@ -324,6 +327,21 @@ getrandom(void *buf, size_t buflen, unsigned int flags)
 	return syscall(SYS_getrandom, buf, buflen, flags);
 }
 
+#ifdef CAPABILITIES
+static void
+dropcaps()
+{
+	cap_t caps;
+
+	caps = cap_get_proc();
+	cap_clear(caps);
+	if (cap_set_proc(caps) == -1) {
+		perror("Drop caps");
+		exit(1);
+	}
+}
+#endif
+
 int
 os_post()
 {
@@ -340,6 +358,11 @@ os_post()
 	/* Fix upstreamed */
 	ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
 	close(sock[1]);
+
+#ifdef CAPABILITIES
+	/* drop any capabilities */
+	dropcaps();
+#endif
 
 	return ret;
 }

@@ -13,7 +13,6 @@ TARGET=$(LC_ALL=C ${CC-cc} -v 2>&1 | sed -n 's/^Target: //p' )
 case ${TARGET} in
 *-linux*)
 	OS=linux
-	FILTER="-DNOSECCOMP"
 	NCPU=$(nproc )
 	;;
 *-netbsd*)
@@ -47,6 +46,7 @@ helpme()
 	printf "\t-d: location of installed files. default PWD/rump\n"
 	printf "\t-b: location of binaries. default PWD/rump/bin\n"
 	printf "\tseccomp|noseccomp: select Linux seccomp (default off)\n"
+	printf "\tcaps|nocaps: drop linux capabilities (default off)\n"
 	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
 	printf "\tnotests: do not run tests\n"
@@ -210,10 +210,16 @@ for arg in "$@"; do
 		${MAKE} clean
 		;;
 	"noseccomp")
-		FILTER="-DNOSECCOMP"
 		;;
 	"seccomp")
-		FILTER="-DSECCOMP"
+		appendvar FILTER "-DSECCOMP"
+		appendvar TOOLS_LDLIBS "-lseccomp"
+		;;
+	"nocaps")
+		;;
+	"caps")
+		appendvar FILTER "-DCAPABILITIES"
+		appendvar TOOLS_LDLIBS "-lcap"
 		;;
 	"nocapsicum")
 		FILTER="-DNOCAPSICUM"
@@ -255,11 +261,10 @@ MAKETOOLS="${MAKETOOLS-yes}"
 
 rm -rf ${OUTDIR}
 
-if [ ${FILTER-x} = "-DSECCOMP" ]; then LDLIBS="-lseccomp"; fi
 CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
         CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
         LDFLAGS="${EXTRA_LDFLAGS}" \
-        LDLIBS="${LDLIBS}" \
+        LDLIBS="${TOOLS_LDLIBS}" \
         RUMPOBJ="${RUMPOBJ}" \
         RUMP="${RUMP}" \
         ${MAKE} ${OS} -C tools
