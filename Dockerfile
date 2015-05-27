@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
   libc6-dev \
   libseccomp2 \
   libseccomp-dev \
+  strace \
   make
 
 COPY . /usr/src/frankenlibc
