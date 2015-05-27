@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y \
   gcc \
   git \
   libc6-dev \
+  libcap2 \
+  libcap-dev \
   libseccomp2 \
   libseccomp-dev \
   strace \
