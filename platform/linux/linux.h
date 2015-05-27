@@ -1,4 +1,5 @@
 #include <sys/types.h>
+#include <netinet/in.h>
 
 #define LINUX_EAGAIN	11
 #define LINUX_ESPIPE	29
@@ -50,6 +51,7 @@ struct linux_timespec {
 #define	IFNAMSIZ	16
 
 typedef unsigned short sa_family_t;
+typedef uint16_t in_port_t;
 
 struct sockaddr
 {
@@ -67,6 +69,13 @@ struct sockaddr_ll {
 	unsigned char	sll_pkttype;
 	unsigned char	sll_halen;
 	unsigned char	sll_addr[8];
+};
+
+struct sockaddr_in {
+	sa_family_t    sin_family;
+	in_port_t      sin_port;
+	struct in_addr sin_addr;
+	unsigned char  sin_zero[8];
 };
 
 struct ifmap {
@@ -157,3 +166,6 @@ struct pollfd {
 #define TUNSETIFF	_IOW('T', 202, int)
 #define SIOCGIFHWADDR	0x8927
 #define SIOCGIFNAME	0x8910
+#define SIOCGIFADDR	0x8915
+#define SIOCGIFBRDADDR	0x8919
+#define SIOCGIFNETMASK	0x891b

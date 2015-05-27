@@ -33,10 +33,20 @@ fstat(int fd, struct stat *st)
 			ifr.ifr_ifindex = sa.sll_ifindex;
 			ret = syscall(SYS_ioctl, fd, SIOCGIFNAME, &ifr);
 			ret = syscall(SYS_ioctl, fd, SIOCGIFHWADDR, &ifr);
-			if (ret == 0) {
+			if (ret == 0)
 				memcpy(st->st_hwaddr, ifr.ifr_addr.sa_data, 6);
-			}
-			/* XXX need IP address */
+			/* XXX need IP address, probably should move this code */
+			/* XXX disabled for now, its not possible to find route
+			ret = syscall(SYS_ioctl, fd, SIOCGIFADDR, &ifr);
+			if (ret == 0)
+				memcpy(&__franken_fd[fd].addr, (struct sockaddr_in *)&ifr.ifr_addr, 4);
+			ret = syscall(SYS_ioctl, fd, SIOCGIFNETMASK, &ifr);
+			if (ret == 0)
+				memcpy(&__franken_fd[fd].netmask, (struct sockaddr_in *)&ifr.ifr_addr, 4);
+			ret = syscall(SYS_ioctl, fd, SIOCGIFBRDADDR, &ifr);
+			if (ret == 0)
+				memcpy(&__franken_fd[fd].broadcast, (struct sockaddr_in *)&ifr.ifr_addr, 4);
+			*/
 		} else {
 			lst.st_mode = 0;
 		}

@@ -25,10 +25,12 @@ int rump_pub_etfs_remove(const char *);
 int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_auto_ipv6(const char *) __attribute__ ((weak));
+int rump_pub_netconfig_ifup(const char *) __attribute__ ((weak));
 
 int rump_pub_netconfig_ifcreate(const char *interface) {return 0;}
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *interface) {return 0;}
 int rump_pub_netconfig_auto_ipv6(const char *interface) {return 0;}
+int rump_pub_netconfig_ifup(const char *interface) {return 0;}
 
 struct __fdtable __franken_fd[MAXFD];
 
@@ -155,8 +157,13 @@ register_net(int fd)
 		}
 		ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
 		if (ret != -1) {
-			rump_pub_netconfig_dhcp_ipv4_oneshot(key);
-			rump___sysimpl_close(ret);
+			if (__franken_fd[fd].addr.s_addr == 0) {
+				rump_pub_netconfig_dhcp_ipv4_oneshot(key);
+				rump___sysimpl_close(ret);
+			} else {
+				rump_pub_netconfig_ifup(key);
+				/* set address */
+			}
 		}
 	}
 }
