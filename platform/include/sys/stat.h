@@ -8,6 +8,7 @@
 struct stat {
 	mode_t		st_mode;
 	off_t		st_size;
+	/* XXX should be moved to __fd store */
 	uint8_t		st_hwaddr[6];
 };
 
