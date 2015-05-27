@@ -14,6 +14,9 @@
 #include <net/if.h>
 #include <linux/if_tun.h>
 #include <linux/sockios.h>
+#include <sys/socket.h>
+#include <linux/if_packet.h>
+#include <net/ethernet.h>
 
 #include "rexec.h"
 
@@ -361,6 +364,31 @@ os_open(char *pre, char *post)
 			return -1;
 
 		return fd;
+	}
+
+	/* eg packet:eth0 for packet socket on eth0 */
+	if (strcmp(pre, "packet") == 0) {
+		struct ifreq ifr;
+		int sock;
+		struct sockaddr_ll sa = {0};
+
+		sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+		if (sock == -1) {
+			/* probably missing CAP_NET_RAW */
+			perror("socket AF_PACKET");
+			return -1;
+		}
+		strncpy(ifr.ifr_name, post, IFNAMSIZ);
+		if (ioctl(sock, SIOCGIFINDEX, &ifr) == -1)
+			return -1;
+		sa.sll_family = AF_PACKET;
+		sa.sll_ifindex = ifr.ifr_ifindex;
+		sa.sll_protocol = htons(ETH_P_ALL);
+		if (bind(sock, (struct sockaddr *)&sa, sizeof(sa)) == -1) {
+			perror("bind AF_PACKET");
+			return -1;
+		}
+		return sock;
 	}
 
 	fprintf(stderr, "platform does not support %s:%s\n", pre, post);

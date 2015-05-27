@@ -219,7 +219,11 @@ colon_open(char *pre, char *post)
 		return -1;
 	}
 
-	return os_open(pre, post);
+	fd = os_open(pre, post);
+	if (fd == -1)
+		exit(1);
+
+	return fd;
 }
 
 /* create an empty working directory, chroot if able */
