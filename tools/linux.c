@@ -254,7 +254,7 @@ filter_fd(int fd, int flags, struct stat *st)
 
 /* without being able to exec a file descriptor, we cannot lock down as
    much, but this is only a very recent facility in Linux */
-#ifdef SYS_execveat
+#ifdef EXECVEAT
 /* not yet defined by libc */
 int execveat(int, const char *, char *const [], char *const [], int);
 
