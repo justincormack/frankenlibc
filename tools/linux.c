@@ -227,10 +227,16 @@ filter_fd(int fd, int flags, struct stat *st)
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, SIOCGIFHWADDR));
 		if (ret < 0) return ret;
 	}
-	/* XXX be more specific only for our dummy socket */
+	/* XXX for dummy socket and packet sockets */
 	if (S_ISSOCK(st->st_mode)) {
 		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
 			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, SIOCGIFHWADDR));
+		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ioctl), 2,
+			SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, SIOCGIFNAME));
+		if (ret < 0) return ret;
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(getsockname), 1,
+			SCMP_A0(SCMP_CMP_EQ, fd));
 		if (ret < 0) return ret;
 	}
 
@@ -392,7 +398,7 @@ os_open(char *pre, char *post)
 	/* eg packet:eth0 for packet socket on eth0 */
 	if (strcmp(pre, "packet") == 0) {
 		struct ifreq ifr;
-		int sock;
+		int sock, flags;
 		struct sockaddr_ll sa = {0};
 
 		sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
@@ -404,13 +410,20 @@ os_open(char *pre, char *post)
 		strncpy(ifr.ifr_name, post, IFNAMSIZ);
 		if (ioctl(sock, SIOCGIFINDEX, &ifr) == -1)
 			return -1;
+
 		sa.sll_family = AF_PACKET;
 		sa.sll_ifindex = ifr.ifr_ifindex;
+		sa.sll_halen = ETH_ALEN;
 		sa.sll_protocol = htons(ETH_P_ALL);
 		if (bind(sock, (struct sockaddr *)&sa, sizeof(sa)) == -1) {
 			perror("bind AF_PACKET");
 			return -1;
 		}
+		flags = fcntl(sock, F_GETFL, 0);
+		if (flags == -1)
+			return -1;
+		if (fcntl(sock, F_SETFL, flags | O_NONBLOCK) == -1)
+			return -1;
 		return sock;
 	}
 

@@ -36,6 +36,8 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 	int fd, ret;
 	struct linux_stat lst;
 	struct ifreq ifr;
+	struct sockaddr_ll sa;
+	int slen = sizeof(sa);
 
         for (i = 0; envp[i]; i++);
         auxv = (void *)(envp + i + 1);
@@ -58,6 +60,12 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 		switch (lst.st_mode & LINUX_S_IFMT) {
 		case LINUX_S_IFSOCK:
 			__platform_socket_fd = fd;
+			ret = syscall(SYS_getsockname, fd, &sa, &slen);
+			if (ret == 0 && sa.sll_family == AF_PACKET) {
+				__platform_pollfd[__platform_npoll].fd = fd;
+				__platform_pollfd[__platform_npoll].events = POLLIN | POLLPRI;
+				__platform_npoll++;
+			}
 			break;
 		case LINUX_S_IFCHR:
 			/* /dev/urandom */

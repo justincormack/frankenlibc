@@ -13,7 +13,9 @@ fstat(int fd, struct stat *st)
 {
 	int ret;
 	struct linux_stat lst;
-	struct ifreq ifr;
+	struct ifreq ifr = {0};
+	struct sockaddr_ll sa;
+	int slen = sizeof(sa);
 
 	ret = syscall(SYS_fstat, fd, &lst);
 	if (ret == -1) {
@@ -25,15 +27,26 @@ fstat(int fd, struct stat *st)
 
 	switch (lst.st_mode & LINUX_S_IFMT) {
 	case LINUX_S_IFSOCK:
-		/* currently no support for raw socket networking */
-		lst.st_mode = 0;
+		/* is this a raw socket? */
+		ret = syscall(SYS_getsockname, fd, &sa, &slen);
+		if (ret == 0 && sa.sll_family == AF_PACKET) {
+			ifr.ifr_ifindex = sa.sll_ifindex;
+			ret = syscall(SYS_ioctl, fd, SIOCGIFNAME, &ifr);
+			ret = syscall(SYS_ioctl, fd, SIOCGIFHWADDR, &ifr);
+			if (ret == 0) {
+				memcpy(st->st_hwaddr, ifr.ifr_addr.sa_data, 6);
+			}
+			/* XXX need IP address */
+		} else {
+			lst.st_mode = 0;
+		}
 		break;
 	case LINUX_S_IFBLK:
 		syscall(SYS_ioctl, fd, BLKGETSIZE64, &st->st_size);
 		break;
 	case LINUX_S_IFCHR:
 		/* macvtap has a dynamic major number, so hard to test */
-		if (lst.st_rdev != makedev(10, 200) && major(lst.st_rdev) < 128)
+		if (lst.st_rdev != makedev(10, 200) && major(lst.st_rdev) < 138)
 			break;
 		ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
 		if (ret == 0) {
@@ -56,6 +69,7 @@ fstat(int fd, struct stat *st)
 		}
 		break;
 	}
+
 	st->st_mode = (LINUX_S_ISDIR (lst.st_mode) ? S_IFDIR  : 0) |
 		      (LINUX_S_ISCHR (lst.st_mode) ? S_IFCHR  : 0) |
 		      (LINUX_S_ISBLK (lst.st_mode) ? S_IFBLK  : 0) |

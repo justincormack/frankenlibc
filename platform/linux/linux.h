@@ -57,6 +57,18 @@ struct sockaddr
 	char sa_data[14];
 };
 
+#define AF_PACKET 17
+
+struct sockaddr_ll {
+	unsigned short	sll_family;
+	unsigned short	sll_protocol;
+	int		sll_ifindex;
+	unsigned short	sll_hatype;
+	unsigned char	sll_pkttype;
+	unsigned char	sll_halen;
+	unsigned char	sll_addr[8];
+};
+
 struct ifmap {
 	unsigned long int mem_start;
 	unsigned long int mem_end;
@@ -144,3 +156,4 @@ struct pollfd {
 #define TUNGETIFF	_IOR('T', 210, unsigned int)
 #define TUNSETIFF	_IOW('T', 202, int)
 #define SIOCGIFHWADDR	0x8927
+#define SIOCGIFNAME	0x8910
