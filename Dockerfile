@@ -23,6 +23,6 @@ COPY . /usr/src/frankenlibc
 
 RUN \
   cd /usr/src/frankenlibc && \
-  ./build.sh -d /usr/local/rump -b /usr/local/bin seccomp notests && \
+  ./build.sh -d /usr/local/rump -b /usr/local/bin seccomp caps notests && \
   rumprun-cc -g -O2 tests/hello.c -o /usr/local/bin/rump.helloworld && \
   make clean
