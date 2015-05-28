@@ -26,11 +26,15 @@ int rump_pub_netconfig_ifcreate(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_auto_ipv6(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_ifup(const char *) __attribute__ ((weak));
+int rump_pub_netconfig_ipv4_ifaddr(const char *, const char *, const char *) __attribute__ ((weak));
+int rump_pub_netconfig_ipv4_gw(const char *) __attribute__ ((weak));
 
 int rump_pub_netconfig_ifcreate(const char *interface) {return 0;}
 int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *interface) {return 0;}
 int rump_pub_netconfig_auto_ipv6(const char *interface) {return 0;}
 int rump_pub_netconfig_ifup(const char *interface) {return 0;}
+int rump_pub_netconfig_ipv4_ifaddr(const char *interface, const char *addr, const char *mask) {return 0;}
+int rump_pub_netconfig_ipv4_gw(const char *interface) {return 0;}
 
 struct __fdtable __franken_fd[MAXFD];
 
@@ -146,6 +150,7 @@ register_net(int fd)
 {
 	char key[16], num[16];
 	int ret;
+	char *addr, *mask, *gw;
 
 	mkkey(key, num, "virt", fd, fd);
 	ret = rump_pub_netconfig_ifcreate(key);
@@ -157,12 +162,17 @@ register_net(int fd)
 		}
 		ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
 		if (ret != -1) {
-			if (__franken_fd[fd].addr.s_addr == 0) {
+			/* XXX move to autodetect later, but gateway complex */
+			addr = getenv("FIXED_ADDRESS");
+			mask = getenv("FIXED_MASK");
+			gw = getenv("FIXED_GATEWAY");
+			if (addr == NULL || mask == NULL || gw == NULL) {
 				rump_pub_netconfig_dhcp_ipv4_oneshot(key);
 				rump___sysimpl_close(ret);
 			} else {
 				rump_pub_netconfig_ifup(key);
-				/* set address */
+				rump_pub_netconfig_ipv4_ifaddr(key, addr, mask);
+				rump_pub_netconfig_ipv4_gw(gw);
 			}
 		}
 	}
