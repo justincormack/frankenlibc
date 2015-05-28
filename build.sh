@@ -55,7 +55,7 @@ helpme()
 	printf "\tclean: clean object directory first\n"
 	printf "Other options are passed to buildrump.sh\n"
 	printf "\n"
-	printf "Supported platforms are currently: linux, netbsd, freebsd, qemu-arm\n"
+	printf "Supported platforms are currently: linux, netbsd, freebsd, qemu-arm, spike\n"
 	exit 1
 }
 
