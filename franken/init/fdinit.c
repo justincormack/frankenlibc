@@ -27,6 +27,7 @@ int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_auto_ipv6(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_ifup(const char *) __attribute__ ((weak));
 int rump_pub_netconfig_ipv4_ifaddr(const char *, const char *, const char *) __attribute__ ((weak));
+int rump_pub_netconfig_ipv4_ifaddr_cidr(const char *, const char *, int) __attribute__ ((weak));
 int rump_pub_netconfig_ipv4_gw(const char *) __attribute__ ((weak));
 
 int rump_pub_netconfig_ifcreate(const char *interface) {return 0;}
@@ -34,6 +35,7 @@ int rump_pub_netconfig_dhcp_ipv4_oneshot(const char *interface) {return 0;}
 int rump_pub_netconfig_auto_ipv6(const char *interface) {return 0;}
 int rump_pub_netconfig_ifup(const char *interface) {return 0;}
 int rump_pub_netconfig_ipv4_ifaddr(const char *interface, const char *addr, const char *mask) {return 0;}
+int rump_pub_netconfig_ipv4_ifaddr_cidr(const char *interface, const char *addr, int mask) {return 0;};
 int rump_pub_netconfig_ipv4_gw(const char *interface) {return 0;}
 
 struct __fdtable __franken_fd[MAXFD];
@@ -171,7 +173,7 @@ register_net(int fd)
 				rump___sysimpl_close(ret);
 			} else {
 				rump_pub_netconfig_ifup(key);
-				rump_pub_netconfig_ipv4_ifaddr(key, addr, mask);
+				rump_pub_netconfig_ipv4_ifaddr_cidr(key, addr, atoi(mask));
 				rump_pub_netconfig_ipv4_gw(gw);
 			}
 		}
