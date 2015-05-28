@@ -395,11 +395,15 @@ os_open(char *pre, char *post)
 		ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
 
 		fd = open("/dev/net/tun", O_RDWR | O_NONBLOCK);
-		if (fd == -1)
+		if (fd == -1) {
+			perror("open /dev/net/tun");
 			return -1;
+		}
 
-		if (ioctl(fd, TUNSETIFF, &ifr) == -1)
+		if (ioctl(fd, TUNSETIFF, &ifr) == -1) {
+			perror("TUNSETIFF");
 			return -1;
+		}
 
 		return fd;
 	}
