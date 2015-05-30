@@ -114,6 +114,15 @@ struct ufs_args {
 	char *fspec;
 };
 
+struct tmpfs_args {
+	int ta_version;
+	ino_t ta_nodes_max;
+	off_t ta_size_max;
+	uid_t ta_root_uid;
+	gid_t ta_root_gid;
+	mode_t ta_root_mode;
+};
+
 #define MNT_RDONLY	0x00000001
 #define MNT_LOG		0x02000000
 #define MNT_FORCE	0x00080000
@@ -124,10 +133,29 @@ int rump___sysimpl_dup2(int, int);
 int rump___sysimpl_mount50(const char *, const char *, int, void *, size_t);
 int rump___sysimpl_unmount(const char *, int);
 int rump___sysimpl_socket30(int, int, int);
+int rump___sysimpl_mkdir(const char *, mode_t);
 
 #define AF_INET 2
 #define AF_INET6 24
 #define SOCK_STREAM 1
+
+static void
+mount_tmpfs(void)
+{
+	struct tmpfs_args ta = {
+		.ta_version = 1,
+		.ta_nodes_max = 0,
+		.ta_size_max = 0,
+		.ta_root_uid = 0,
+		.ta_root_gid = 0,
+		.ta_root_mode = 0777,
+	};
+
+	/* try to mount tmpfs if possible, useful for ro root fs */
+	rump___sysimpl_mkdir("/tmp", 0777);
+	/* might fail if no /tmp directory, or tmpfs not included in system */
+	rump___sysimpl_mount50("tmpfs", "/tmp", 0, &ta, sizeof(struct tmpfs_args));
+}
 
 static void
 unmount_atexit(void)
@@ -274,4 +302,7 @@ __franken_fdinit_create()
 			break;
 		}
 	}
+
+	/* now some generic stuff */
+	mount_tmpfs();
 }
