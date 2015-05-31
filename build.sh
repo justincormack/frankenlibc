@@ -529,7 +529,7 @@ chmod +x ${BINDIR}/${TOOL_PREFIX}-*
 
 # test for duplicated symbols
 
-DUPSYMS=$(nm ${OUTDIR}/lib/libc.a | grep ' T ' | sed 's/.* T //g' | sort | uniq -c -d)
+DUPSYMS=$(nm ${OUTDIR}/lib/libc.a | grep ' T ' | sed 's/.* T //g' | sort | uniq -d )
 
 if [ -n "${DUPSYMS}" ]
 then
