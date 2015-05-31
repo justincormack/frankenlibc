@@ -2,6 +2,7 @@
 #include <errno.h>
 
 #include "netbsd.h"
+#include "init.h"
 
 int __ioctl(int, unsigned long, ...);
 int __fstat(int, struct netbsd_stat *);

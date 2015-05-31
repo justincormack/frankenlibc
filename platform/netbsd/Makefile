@@ -15,7 +15,7 @@ OBJ+=$(OBJDIR)/getrandom.o
 OBJ+=$(OBJDIR)/___start.o
 OBJ+=$(OBJDIR)/syscall.o
 HEADERS=i386/syscall.h x86_64/syscall.h arm/syscall.h netbsd.h
-INCLUDES=-I../include -I../../franken/include -I.
+INCLUDES=-I../include -I../../franken/include -I../../franken/init -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
