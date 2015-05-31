@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-int filter_init(char *);
+int filter_init(char *, int);
 int filter_fd(int, int, struct stat *);
 int filter_load_exec(char *, char **, char **);
 

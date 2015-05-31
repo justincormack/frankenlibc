@@ -41,6 +41,7 @@ main(int argc, char **argv)
 	struct stat st;
 	char *path;
 	char prog[4096];
+	int nx = 0;
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -61,6 +62,10 @@ main(int argc, char **argv)
 		}
 		if (strcmp(arg, "-rw") == 0) {
 			mode = O_RDWR;
+			continue;
+		}
+		if (strcmp(arg, "-nx") == 0) {
+			nx = 1;
 			continue;
 		}
 		if (strcmp(arg, "-noroot") == 0) {
@@ -149,7 +154,7 @@ main(int argc, char **argv)
 		program = prog;
 	}
 
-	ret = filter_init(program);
+	ret = filter_init(program, nx);
 	if (ret < 0) {
 		fprintf(stderr, "filter_init failed\n");
 		exit(1);

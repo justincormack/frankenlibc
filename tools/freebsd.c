@@ -15,9 +15,13 @@
 
 #ifdef NOCAPSICUM
 int
-filter_init(char *program)
+filter_init(char *program, int nx)
 {
 
+	if (nx == 1) {
+		fprintf(stderr, "cannot disable mprotect execution\n");
+		exit(1);
+	}
 	return 0;
 }
 
@@ -55,11 +59,15 @@ filter_load_exec(char *program, char **argv, char **envp)
 int pfd = -1;
 
 int
-filter_init(char *program)
+filter_init(char *program, int nx)
 {
 	cap_rights_t rights;
 	int ret;
 
+	if (nx == 1) {
+		fprintf(stderr, "cannot disable mprotect execution\n");
+		exit(1);
+	}
 	pfd = open(program, O_EXEC | O_CLOEXEC);
 	if (pfd == -1) {
 		perror("open");

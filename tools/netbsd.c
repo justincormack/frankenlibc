@@ -8,9 +8,13 @@
 #include "rexec.h"
 
 int
-filter_init(char *program)
+filter_init(char *program, int nx)
 {
 
+	if (nx == 1) {
+		fprintf(stderr, "cannot disable mprotect execution\n");
+		exit(1);
+	}
 	return 0;
 }
 

@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/syscall.h>
+#include <sys/mman.h>
 #include <linux/fs.h>
 #include <net/if.h>
 #include <linux/if_tun.h>
@@ -50,10 +51,14 @@
 
 #ifndef SECCOMP
 int
-filter_init(char *program)
+filter_init(char *program, int nx)
 {
 	int ret;
 
+	if (nx == 1) {
+		fprintf(stderr, "cannot disable mprotect execution\n");
+		exit(1);
+	}
 	return 0;
 }
 
@@ -88,7 +93,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 scmp_filter_ctx ctx;
 
 int
-filter_init(char *program)
+filter_init(char *program, int nx)
 {
 	int ret, i;
 
@@ -133,15 +138,20 @@ filter_init(char *program)
 	if (ret < 0) return ret;
 
 	/* mmap(a, b, c, d, -1, e) */
-#ifdef SYS_mmap2
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap2), 0);
-#else
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 0);
-#endif
+	if (nx == 0)
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 1,
+			SCMP_A4(SCMP_CMP_EQ, -1));
+	else
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 2,
+			SCMP_A2(SCMP_CMP_MASKED_EQ, PROT_EXEC, 0), SCMP_A4(SCMP_CMP_EQ, -1));
 	if (ret < 0) return ret;
 
-	/* mprotect(a, b, c) XXX allow disable exec */
-	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mprotect), 0);
+	/* mprotect(a, b, c) */
+	if (nx == 0)
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mprotect), 0);
+	else /* do not allow executable pages */
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mprotect), 1,
+			SCMP_A2(SCMP_CMP_MASKED_EQ, PROT_EXEC, 0));
 	if (ret < 0) return ret;
 
 	/* munmap(a, b) */
@@ -314,8 +324,6 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execve), 0);
 	if (ret < 0) return ret;
-
-	/* seccomp_export_pfc(ctx, 1); */
 
 	ret = seccomp_load(ctx);
 	if (ret < 0) return ret;
