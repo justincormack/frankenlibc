@@ -238,11 +238,7 @@ main(int argc, char **argv)
 		fprintf(stderr, "Running as root user, must set -u\n");
 		exit(1);
 	}
-	if (getgid() == 0 || getegid() == 0) {
-		fprintf(stderr, "Running as wheel group, must set -g\n");
-		exit(1);
-	}
-	if (setuid(0) != -1 || setgid(0) != -1) {
+	if (setuid(0) != -1) {
 		fprintf(stderr, "Can change uid to root, aborting\n");
 		exit(1);
 	}
