@@ -200,17 +200,11 @@ main(int argc, char **argv)
 	/* if possible cd/chroot into empty dir, but only if have some fexecve call */
 	os_emptydir();
 
-	/* if running suid, revert to original group if none specified */
-	if (group == 0 && getegid() == 0 && getgid() != 0)
-		group = getgid();
+	/* if running suid, revert to original uid if none specified */
 	if (user == 0 && geteuid() == 0 && getuid() != 0)
 		user = getuid();
-	if (group == 0 && getenv("SUDO_GID") != NULL)
-		group = atoi(getenv("SUDO_GID"));
 	if (user == 0 && getenv("SUDO_UID") != NULL)
 		user = atoi(getenv("SUDO_UID"));
-	if (group == 0 && user != 0)
-		group = user;
 	if (group != 0) {
 		if (setgid(group) == -1) {
 			perror("setgid");
