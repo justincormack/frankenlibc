@@ -17,7 +17,7 @@ int pfd = -1;
 
 #ifdef NOCAPSICUM
 int
-filter_init(char *program, int nx)
+os_init(char *program, int nx)
 {
 
 	if (nx == 1) {
@@ -32,6 +32,18 @@ filter_init(char *program, int nx)
 	}
 
 	return 0;
+}
+
+int
+os_pre()
+{
+
+	return 0;
+}
+
+void
+os_dropcaps()
+{
 }
 
 int
@@ -45,10 +57,8 @@ filter_fd(int fd, int flags, struct stat *st)
 #include <sys/capability.h>
 
 int
-filter_init(char *program, int nx)
+os_init(char *program, int nx)
 {
-	cap_rights_t rights;
-	int ret;
 
 	if (nx == 1) {
 		fprintf(stderr, "cannot disable mprotect execution\n");
@@ -60,6 +70,14 @@ filter_init(char *program, int nx)
 		exit(1);
 	}
 
+	return 0;
+}
+
+int
+os_pre()
+{
+	int ret;
+
 	if (cap_enter() == -1) {
 		perror("cap_enter");
 		exit(1);
@@ -70,6 +88,11 @@ filter_init(char *program, int nx)
 	if (ret == -1) return ret;
 
 	return 0;
+}
+
+void
+os_dropcaps()
+{
 }
 
 int
@@ -154,7 +177,7 @@ os_emptydir()
 }
 
 int
-os_post()
+os_extrafiles()
 {
 
 	return 0;

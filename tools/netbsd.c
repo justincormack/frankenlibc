@@ -8,7 +8,7 @@
 #include "rexec.h"
 
 int
-filter_init(char *program, int nx)
+os_init(char *program, int nx)
 {
 
 	if (nx == 1) {
@@ -23,6 +23,11 @@ filter_fd(int fd, int flags, struct stat *st)
 {
 
 	return 0;
+}
+
+void
+os_dropcaps()
+{
 }
 
 int
@@ -47,7 +52,7 @@ os_emptydir()
 }
 
 int
-os_post()
+os_extrafiles()
 {
 
 	return 0;

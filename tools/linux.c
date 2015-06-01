@@ -51,7 +51,7 @@
 
 #ifndef SECCOMP
 int
-filter_init(char *program, int nx)
+os_init(char *program, int nx)
 {
 	int ret;
 
@@ -71,6 +71,13 @@ filter_fd(int fd, int flags, struct stat *st)
 
 int
 os_emptydir()
+{
+
+	return 0;
+}
+
+int
+os_pre()
 {
 
 	return 0;
@@ -104,7 +111,7 @@ int pfd = -1;
 #endif
 
 int
-filter_init(char *program, int nx)
+os_init(char *program, int nx)
 {
 	int ret, i;
 
@@ -189,6 +196,13 @@ filter_init(char *program, int nx)
 	/* allow ppoll for network readiness */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(ppoll), 0);
 	if (ret < 0) return ret;
+
+	return 0;
+}
+
+int
+os_pre()
+{
 
 	return 0;
 }
@@ -376,8 +390,8 @@ getrandom(void *buf, size_t buflen, unsigned int flags)
 }
 
 #ifdef CAPABILITIES
-static void
-dropcaps()
+void
+os_dropcaps()
 {
 	cap_t caps;
 
@@ -388,10 +402,15 @@ dropcaps()
 		exit(1);
 	}
 }
+#else
+void
+os_dropcaps()
+{
+}
 #endif
 
 int
-os_post()
+os_extrafiles()
 {
 	int sock[2];
 	int ret, fd;
@@ -406,11 +425,6 @@ os_post()
 	/* Fix upstreamed */
 	ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
 	close(sock[1]);
-
-#ifdef CAPABILITIES
-	/* drop any capabilities */
-	dropcaps();
-#endif
 
 	return ret;
 }

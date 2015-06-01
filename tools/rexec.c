@@ -189,7 +189,7 @@ main(int argc, char **argv)
 		exit(1);
 	}
 
-	ret = filter_init(program, nx);
+	ret = os_init(program, nx);
 	if (ret < 0) {
 		fprintf(stderr, "filter_init failed\n");
 		exit(1);
@@ -209,7 +209,6 @@ main(int argc, char **argv)
 		user = atoi(getenv("SUDO_UID"));
 	if (group == 0 && user != 0)
 		group = user;
-	/* change uid,gid if requested before os_post as in Linux that drops caps */
 	if (group != 0) {
 		if (setgid(group) == -1) {
 			perror("setgid");
@@ -222,7 +221,8 @@ main(int argc, char **argv)
 			exit(1);
 		}
 	}
-	os_post();
+	os_dropcaps();
+	os_extrafiles();
 	/* see how many file descriptors open */
 	nfds = socket(AF_UNIX, SOCK_STREAM, 0);
 	if (nfds == -1) {
@@ -246,7 +246,7 @@ main(int argc, char **argv)
 		fprintf(stderr, "Can change uid to root, aborting\n");
 		exit(1);
 	}
-
+	os_pre();
 	for (fd = 0; fd < nfds; fd++) {
 		fl = fcntl(fd, F_GETFL);
 		if (fl == -1) {
