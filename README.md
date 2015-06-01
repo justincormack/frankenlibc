@@ -16,7 +16,8 @@ libc that you can just use to link against applications to make them run
 against a rump kernel rather than the host.
 
 Currently there are three userspace implementations included, NetBSD, Linux and FreeBSD,
-and one very basic baremetal implementation, qemu-arm. The currently supported and tested architecture/OS
+and one very basic baremetal implementation, qemu-arm, plus a work in progress spike target
+for the riscv simulator. The currently supported and tested architecture/OS
 combinations are: Linux x86\_64, i386, arm, powerpc64, mips, NetBSD x86\_64, i386, arm, FreeBSD
 x86\_64, i386. There is work in progress support for powerpc, aarch64 and riscv64. Both arm
 and mips work with hard and soft float. Powerpc64 supports the v1 ELF ABI only at present, arm is
@@ -29,7 +30,8 @@ clock, so runs are completely repeatable.
 There is a wrapper called rexec ("rump exec") that can pass in files, block devices
 and tap devices as network devices, and will also run the program in a seccomp
 sandbox on Linux or under Capsicum on FreeBSD. These are pretty aggressive, eg
-open cannot be called, but you may want to add further sandboxing in addition.
+open cannot be called, but you may want to add further sandboxing in addition. The
+wrapper will also drop any root privileges and capabilities.
 
 A compiler wrapper is generated in rump/bin to compile your own programs, which works out
 the best method to wrap the compiler. Essentially you just need to use the include files,
@@ -52,3 +54,6 @@ A docker repository with the tools built for linux is available at
 docker pull justincormack/frankenlibc
 docker run -e RUMP_VERBOSE=1 justincormack/frankenlibc rexec rump.helloworld
 ```
+
+Some more experimental docker repositories with application builds are also available at the
+same location, with builds of Nginx, Nginx with Lua.
