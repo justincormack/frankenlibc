@@ -262,7 +262,7 @@ main(int argc, char **argv)
 	}
 	os_pre();
 	for (fd = 0; fd < nfds; fd++) {
-		ret = filter_fd(fd, fls[i], &stats[i]);
+		ret = filter_fd(fd, fls[fd], &stats[fd]);
 		if (ret < 0) {
 			fprintf(stderr, "filter_fd failed\n");
 			exit(1);
