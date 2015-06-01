@@ -154,6 +154,14 @@ main(int argc, char **argv)
 		program = prog;
 	}
 
+	if (stat(program, &st) == -1) {
+		fprintf(stderr, "Cannot find program %s to execute\n", program);
+		exit(1);
+	}
+	if (! S_ISREG(st.st_mode)) {
+		fprintf(stderr, "Executable not a regular file\n");
+		exit(1);
+	}
 	ret = filter_init(program, nx);
 	if (ret < 0) {
 		fprintf(stderr, "filter_init failed\n");
