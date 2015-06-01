@@ -70,6 +70,13 @@ filter_fd(int fd, int flags, struct stat *st)
 }
 
 int
+os_emptydir()
+{
+
+	return 0;
+}
+
+int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
@@ -92,6 +99,10 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 scmp_filter_ctx ctx;
 
+#ifdef EXECVEAT
+int pfd = -1;
+#endif
+
 int
 filter_init(char *program, int nx)
 {
@@ -100,6 +111,15 @@ filter_init(char *program, int nx)
 	ctx = seccomp_init(SCMP_ACT_KILL);
 	if (ctx == NULL)
 		return -1;
+
+#ifdef EXECVEAT
+        pfd = open(program, O_RDONLY | O_CLOEXEC);
+
+        if (pfd == -1) {
+                perror("open");
+                exit(1);
+        }
+#endif
 
 	/* arch_prctl(ARCH_SET_FS, x) */
 #ifdef SYS_arch_prctl
@@ -277,29 +297,26 @@ execveat(int dirfd, const char *pathname,
 }
 
 int
+os_emptydir()
+{
+
+	return emptydir();
+}
+
+int
 filter_load_exec(char *program, char **argv, char **envp)
 {
 	int ret;
 	const char *emptystring = "";
-	int fd = open(program, O_RDONLY | O_CLOEXEC);
-
-	if (fd == -1) {
-		perror("open");
-		exit(1);
-	}
 
 	/* lock down execveat to exactly what we need to exec program */
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(execveat), 5,
-		SCMP_A0(SCMP_CMP_EQ, fd),
+		SCMP_A0(SCMP_CMP_EQ, pfd),
 		SCMP_A1(SCMP_CMP_EQ, (long)emptystring),
 		SCMP_A2(SCMP_CMP_EQ, (long)argv),
 		SCMP_A3(SCMP_CMP_EQ, (long)envp),
 		SCMP_A4(SCMP_CMP_EQ, AT_EMPTY_PATH));
 	if (ret < 0) return ret;
-	ret = emptydir();
-	if (ret < 0) return ret;
-
-	/* seccomp_export_pfc(ctx, 1); */
 
 	ret = seccomp_load(ctx);
 	if (ret < 0) {
@@ -309,7 +326,7 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	seccomp_release(ctx);
 
-	if (execveat(fd, emptystring, argv, envp, AT_EMPTY_PATH) == -1) {
+	if (execveat(pfd, emptystring, argv, envp, AT_EMPTY_PATH) == -1) {
 		perror("execveat");
 		exit(1);
 	}
@@ -317,6 +334,14 @@ filter_load_exec(char *program, char **argv, char **envp)
 	return 0;
 }
 #else /* execveat */
+int
+os_emptydir()
+{
+
+	/* need to be able to see executable */
+	return 0;
+}
+
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {

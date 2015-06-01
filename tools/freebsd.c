@@ -13,6 +13,8 @@
 
 #include "rexec.h"
 
+int pfd = -1;
+
 #ifdef NOCAPSICUM
 int
 filter_init(char *program, int nx)
@@ -22,6 +24,13 @@ filter_init(char *program, int nx)
 		fprintf(stderr, "cannot disable mprotect execution\n");
 		exit(1);
 	}
+
+	pfd = open(program, O_EXEC | O_CLOEXEC);
+	if (pfd == -1) {
+		perror("open");
+		exit(1);
+	}
+
 	return 0;
 }
 
@@ -31,32 +40,9 @@ filter_fd(int fd, int flags, struct stat *st)
 
 	return 0;
 }
-
-int
-filter_load_exec(char *program, char **argv, char **envp)
-{
-	int ret, pfd;
-
-	pfd = open(program, O_EXEC | O_CLOEXEC);
-	if (pfd == -1) {
-		perror("open");
-		exit(1);
-	}
-
-	emptydir();
-
-	if (fexecve(pfd, argv, envp) == -1) {
-		perror("fexecve");
-		exit(1);
-	}
-
-	return 0;
-}
 #else
 
 #include <sys/capability.h>
-
-int pfd = -1;
 
 int
 filter_init(char *program, int nx)
@@ -146,6 +132,7 @@ filter_fd(int fd, int flags, struct stat *st)
 
 	return 0;
 }
+#endif /* CAPSICUM */
 
 int
 filter_load_exec(char *program, char **argv, char **envp)
@@ -158,7 +145,13 @@ filter_load_exec(char *program, char **argv, char **envp)
 
 	return 0;
 }
-#endif /* CAPSICUM */
+
+int
+os_emptydir()
+{
+
+	return emptydir();
+}
 
 int
 os_post()

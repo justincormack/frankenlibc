@@ -39,6 +39,14 @@ filter_load_exec(char *program, char **argv, char **envp)
 }
 
 int
+os_emptydir()
+{
+
+	/* no fexec functionality, need to be able to see executable */
+	return 0;
+}
+
+int
 os_post()
 {
 

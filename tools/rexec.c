@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 
 #include "rexec.h"
 
@@ -42,6 +44,8 @@ main(int argc, char **argv)
 	char *path;
 	char prog[4096];
 	int nx = 0;
+	uid_t user = 0;
+	gid_t group = 0;
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -66,6 +70,33 @@ main(int argc, char **argv)
 		}
 		if (strcmp(arg, "-nx") == 0) {
 			nx = 1;
+			continue;
+		}
+		if (strcmp(arg, "-u") == 0) {
+			/* XXX want to support static linking so not supporting named args because glibc */
+			arg = argv[++i];
+			if (i == argc) {
+				fprintf(stderr, "-u needs a user id\n");
+				exit(1);
+			}
+			user = atoi(arg);
+			if (user == 0) {
+				fprintf(stderr, "Will not run code as root\n");
+				exit(1);
+			}
+			continue;
+		}
+		if (strcmp(arg, "-g") == 0) {
+			arg = argv[++i];
+			if (i == argc) {
+				fprintf(stderr, "-g needs a group id\n");
+				exit(1);
+			}
+			group = atoi(arg);
+			if (group == 0) {
+				fprintf(stderr, "Will not run code as wheel\n");
+				exit(1);
+			}
 			continue;
 		}
 		if (strcmp(arg, "-noroot") == 0) {
@@ -120,11 +151,6 @@ main(int argc, char **argv)
 	for (; p < argc; p++)
 		pargs[p] = 0;
 
-	os_post();
-
-	nfds = open("/dev/null", O_RDONLY);
-	close(nfds);
-
 	if (strchr(program, '/') == NULL) {
 		char *part;
 
@@ -162,9 +188,62 @@ main(int argc, char **argv)
 		fprintf(stderr, "Executable not a regular file\n");
 		exit(1);
 	}
+
 	ret = filter_init(program, nx);
 	if (ret < 0) {
 		fprintf(stderr, "filter_init failed\n");
+		exit(1);
+	}
+
+	/* if possible cd/chroot into empty dir, but only if have some fexecve call */
+	os_emptydir();
+
+	/* if running suid, revert to original group if none specified */
+	if (group == 0 && getegid() == 0 && getgid() != 0)
+		group = getgid();
+	if (user == 0 && geteuid() == 0 && getuid() != 0)
+		user = getuid();
+	if (group == 0 && getenv("SUDO_GID") != NULL)
+		group = atoi(getenv("SUDO_GID"));
+	if (user == 0 && getenv("SUDO_UID") != NULL)
+		user = atoi(getenv("SUDO_UID"));
+	if (group == 0 && user != 0)
+		group = user;
+	/* change uid,gid if requested before os_post as in Linux that drops caps */
+	if (group != 0) {
+		if (setgid(group) == -1) {
+			perror("setgid");
+			exit(1);
+		}
+	}
+	if (user != 0) {
+		if (setuid(user) == -1) {
+			perror("setuid");
+			exit(1);
+		}
+	}
+	os_post();
+	/* see how many file descriptors open */
+	nfds = socket(AF_UNIX, SOCK_STREAM, 0);
+	if (nfds == -1) {
+		perror("socket");
+		exit(1);
+	}
+	if (close(nfds) == -1) {
+		perror("close");
+		exit(1);
+	}
+	/* check not root */
+	if (getuid() == 0 || geteuid() == 0) {
+		fprintf(stderr, "Running as root user, must set -u\n");
+		exit(1);
+	}
+	if (getgid() == 0 || getegid() == 0) {
+		fprintf(stderr, "Running as wheel group, must set -g\n");
+		exit(1);
+	}
+	if (setuid(0) != -1 || setgid(0) != -1) {
+		fprintf(stderr, "Can change uid to root, aborting\n");
 		exit(1);
 	}
 

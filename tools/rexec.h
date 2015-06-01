@@ -7,5 +7,6 @@ int filter_load_exec(char *, char **, char **);
 
 int emptydir(void);
 int colon_open(char *, char *);
+int os_emptydir(void);
 int os_post(void);
 int os_open(char *, char *);
