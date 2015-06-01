@@ -84,10 +84,6 @@ os_pre()
 		exit(1);
 	}
 
-	cap_rights_init(&rights, CAP_READ, CAP_FEXECVE);
-	ret = cap_rights_limit(pfd, &rights);
-	if (ret == -1) return ret;
-
 	return 0;
 }
 
@@ -104,8 +100,14 @@ filter_fd(int fd, int flags, struct stat *st)
 	unsigned long ioctlb[1] = {DIOCGMEDIASIZE};
 	unsigned long ioctlc[1] = {SIOCGIFADDR};
 
-	/* XXX we could cut capabilities down a little further */
+	if (fd == pfd) {
+		cap_rights_init(&rights, CAP_READ, CAP_FEXECVE);
+		ret = cap_rights_limit(pfd, &rights);
+		if (ret == -1) return ret;
+		return 0;
+	}
 
+	/* XXX we could cut capabilities down a little further */
 	switch (flags & O_ACCMODE) {
 	case O_RDONLY:
 		if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {

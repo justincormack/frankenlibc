@@ -36,16 +36,18 @@ main(int argc, char **argv)
 	char *pargs[argc];
 	int mode = O_RDWR;
 	int ret;
-	int fl;
 	struct timespec ts;
 	struct fdinfo *fds;
 	int nfds = 3;
+	int fl;
 	struct stat st;
 	char *path;
 	char prog[4096];
 	int nx = 0;
 	uid_t user = 0;
 	gid_t group = 0;
+	int *fls;
+	struct stat *stats;
 
 	if (argc < 2)
 		usage(argv[0]);
@@ -242,24 +244,32 @@ main(int argc, char **argv)
 		fprintf(stderr, "Can change uid to root, aborting\n");
 		exit(1);
 	}
-	os_pre();
+	fls = calloc(sizeof(int), nfds);
+	stats = calloc(sizeof(struct stat), nfds);
 	for (fd = 0; fd < nfds; fd++) {
 		fl = fcntl(fd, F_GETFL);
 		if (fl == -1) {
 			perror("fcntl");
 			exit(1);
 		}
+		fls[fd] = fl;
 		ret = fstat(fd, &st);
 		if (ret == -1) {
 			perror("fstat");
 			exit(1);
 		}
-		ret = filter_fd(fd, fl, &st);
+		memcpy(&stats[fd], &st, sizeof(struct stat));
+	}
+	os_pre();
+	for (fd = 0; fd < nfds; fd++) {
+		ret = filter_fd(fd, fls[i], &stats[i]);
 		if (ret < 0) {
 			fprintf(stderr, "filter_fd failed\n");
 			exit(1);
 		}
 	}
+	free(fls);
+	free(stats);
 
 	ret = filter_load_exec(program, pargs, environ);
 	if (ret < 0) {
