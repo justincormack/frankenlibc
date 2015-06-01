@@ -248,8 +248,13 @@ filter_fd(int fd, int flags, struct stat *st)
 	if (ret < 0) return ret;
 
 	/* fcntl(fd, F_GETFL, ...) */
+#ifdef SYS_fcntl64
+	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl64), 2,
+		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, F_GETFL));
+#else
 	ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(fcntl), 2,
 		SCMP_A0(SCMP_CMP_EQ, fd), SCMP_A1(SCMP_CMP_EQ, F_GETFL));
+#endif
 	if (ret < 0) return ret;
 
 	/* ioctl(fd, BLKGETSIZE64) for block devices */
