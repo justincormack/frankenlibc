@@ -38,10 +38,10 @@ freebsd:		$(OBJ) $(OBJDIR)/freebsd.o
 netbsd:			$(OBJ) $(OBJDIR)/netbsd.o
 			$(CC) $(LDFLAGS) $(LDSTATIC) $(OBJ) $(OBJDIR)/netbsd.o -o $(BIN)
 
-qemu-arm:		qemu-arm.sh
+qemu-arm:		qemu-arm.sh $(BINDIR)
 			cp qemu-arm.sh $(BIN)
 
-spike:			spike.sh
+spike:			spike.sh $(BINDIR)
 			cp spike.sh $(BIN)
 
 .PHONY:			clean $(PLATFORMS)
