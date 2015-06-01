@@ -17,7 +17,6 @@
 #include <linux/sockios.h>
 #include <sys/socket.h>
 #include <linux/if_packet.h>
-#include <net/ethernet.h>
 #ifdef CAPABILITIES
 #include <sys/capability.h>
 #endif
