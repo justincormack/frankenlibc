@@ -74,7 +74,7 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 				break;
 			}
 			/* macvtap has a dynamic major number, so hard to test */
-			if (lst.st_rdev != makedev(10, 200) && major(lst.st_rdev) < 128)
+			if (lst.st_rdev != makedev(10, 200) && major(lst.st_rdev) < 138)
 				break;
 			ret = syscall(SYS_ioctl, fd, TUNGETIFF, &ifr);
 			if (ret == 0) {
