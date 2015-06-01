@@ -28,7 +28,7 @@ fstat(int fd, struct stat *st)
 	switch (lst.st_mode & LINUX_S_IFMT) {
 	case LINUX_S_IFSOCK:
 		/* is this a raw socket? */
-		ret = socketcall(getsockname, fd, &sa, &slen, 0, 0, 0);
+		ret = syscall(SYS_getsockname, fd, &sa, &slen);
 		if (ret == 0 && sa.sll_family == AF_PACKET) {
 			ifr.ifr_ifindex = sa.sll_ifindex;
 			ret = syscall(SYS_ioctl, fd, SIOCGIFNAME, &ifr);

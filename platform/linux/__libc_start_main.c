@@ -60,7 +60,7 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 		switch (lst.st_mode & LINUX_S_IFMT) {
 		case LINUX_S_IFSOCK:
 			__platform_socket_fd = fd;
-			ret = socketcall(getsockname, fd, &sa, &slen, 0, 0, 0);
+			ret = syscall(SYS_getsockname, fd, &sa, &slen);
 			if (ret == 0 && sa.sll_family == AF_PACKET) {
 				__platform_pollfd[__platform_npoll].fd = fd;
 				__platform_pollfd[__platform_npoll].events = POLLIN | POLLPRI;
