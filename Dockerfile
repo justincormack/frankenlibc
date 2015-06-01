@@ -21,8 +21,10 @@ RUN apt-get update && apt-get install -y \
 
 COPY . /usr/src/frankenlibc
 
+ENV SUDO_UID=1000
+
 RUN \
   cd /usr/src/frankenlibc && \
-  ./build.sh -d /usr/local/rump -b /usr/local/bin seccomp caps notests && \
-  rumprun-cc -g -O2 tests/hello.c -o /usr/local/bin/rump.helloworld && \
+  ./build.sh -d /usr/local/rump -b /usr/local/bin seccomp caps && \
+  cp rumpobj/tests/hello /usr/local/bin/rump.helloworld && \
   make clean
