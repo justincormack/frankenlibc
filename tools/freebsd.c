@@ -76,6 +76,7 @@ os_init(char *program, int nx)
 int
 os_pre()
 {
+	cap_rights_t rights;
 	int ret;
 
 	if (cap_enter() == -1) {
