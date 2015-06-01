@@ -25,6 +25,11 @@ filter_fd(int fd, int flags, struct stat *st)
 	return 0;
 }
 
+int
+os_pre()
+{
+}
+
 void
 os_dropcaps()
 {
