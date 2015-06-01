@@ -165,11 +165,16 @@ os_init(char *program, int nx)
 	if (ret < 0) return ret;
 
 	/* mmap(a, b, c, d, -1, e) */
+#ifdef SYS_mmap2
+#define MMAP SCMP_SYS(mmap2)
+#else
+#define MMAP SCMP_SYS(mmap)
+#endif
 	if (nx == 0)
-		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 1,
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, MMAP, 1,
 			SCMP_A4(SCMP_CMP_EQ, -1));
 	else
-		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(mmap), 2,
+		ret = seccomp_rule_add(ctx, SCMP_ACT_ALLOW, MMAP, 2,
 			SCMP_A2(SCMP_CMP_MASKED_EQ, PROT_EXEC, 0), SCMP_A4(SCMP_CMP_EQ, -1));
 	if (ret < 0) return ret;
 
