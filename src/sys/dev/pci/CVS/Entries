@@ -38,7 +38,7 @@
 /atppc_puc.c/1.14/Sat Mar 29 19:28:24 2014//
 /auacer.c/1.32/Sat Mar 29 19:28:24 2014//
 /auacerreg.h/1.4/Mon Apr 28 20:23:54 2008//
-/auich.c/1.145/Mon Apr 13 16:33:25 2015//
+/auich.c/1.148/Sun May 24 22:03:02 2015//
 /auichreg.h/1.12/Thu Sep  3 14:29:42 2009//
 /auixp.c/1.41/Sat Oct 18 08:33:28 2014//
 /auixpreg.h/1.3/Sun Dec 11 12:22:48 2005//
@@ -146,7 +146,7 @@
 /if_atw_pci.c/1.26/Sat Mar 29 19:28:24 2014//
 /if_bce.c/1.40/Mon Apr 13 16:33:25 2015//
 /if_bcereg.h/1.4/Sun Dec 11 12:22:49 2005//
-/if_bge.c/1.290/Mon May 18 01:06:35 2015//
+/if_bge.c/1.291/Sat May 23 13:44:40 2015//
 /if_bgereg.h/1.91/Sun May 17 12:06:26 2015//
 /if_bgevar.h/1.19/Sun May 17 12:06:26 2015//
 /if_bnx.c/1.57/Wed Jul  9 16:30:11 2014//
@@ -177,7 +177,7 @@
 /if_iwi.c/1.98/Wed Jan  7 07:05:48 2015//
 /if_iwireg.h/1.19/Mon Sep  8 23:36:54 2008//
 /if_iwivar.h/1.17/Wed Jan  7 07:05:48 2015//
-/if_iwm.c/1.34/Sat May 16 07:58:19 2015//
+/if_iwm.c/1.35/Fri May 22 15:32:21 2015//
 /if_iwmreg.h/1.2/Mon Feb 16 13:22:19 2015//
 /if_iwmvar.h/1.7/Fri May 15 08:44:15 2015//
 /if_iwn.c/1.74/Sun Nov  9 14:40:54 2014//
@@ -235,8 +235,8 @@
 /if_vtereg.h/1.2/Thu Apr 28 17:32:48 2011//
 /if_vtevar.h/1.4/Tue Apr 14 20:32:36 2015//
 /if_wi_pci.c/1.55/Sat Mar 29 19:28:25 2014//
-/if_wm.c/1.321/Sat May 16 22:41:59 2015//
-/if_wmreg.h/1.71/Sat May 16 22:41:59 2015//
+/if_wm.c/1.322/Fri May 22 03:15:43 2015//
+/if_wmreg.h/1.72/Fri May 22 03:15:43 2015//
 /if_wmvar.h/1.24/Sat May 16 22:41:59 2015//
 /if_wpi.c/1.71/Fri Jan  9 15:25:23 2015//
 /if_wpireg.h/1.13/Wed Jul  2 00:15:41 2014//

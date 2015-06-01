@@ -1,4 +1,4 @@
-#	$NetBSD: bsd.own.mk,v 1.848 2015/05/12 08:25:28 martin Exp $
+#	$NetBSD: bsd.own.mk,v 1.852 2015/05/29 14:15:14 martin Exp $
 
 # This needs to be before bsd.init.mk
 .if defined(BSD_MK_COMPAT_FILE)
@@ -820,6 +820,7 @@ MACHINE_GNU_PLATFORM?=${MACHINE_GNU_ARCH}--netbsd
 .if !empty(MACHINE_ARCH:M*arm*)
 # Flags to pass to CC for using the old APCS ABI on ARM for compat or stand.
 ARM_APCS_FLAGS=	-mabi=apcs-gnu -mfloat-abi=soft
+ARM_APCS_FLAGS+=${${ACTIVE_CC} == "gcc":? -marm :}
 ARM_APCS_FLAGS+=${${ACTIVE_CC} == "clang":? -target ${MACHINE_GNU_ARCH}--netbsdelf -B ${TOOLDIR}/${MACHINE_GNU_PLATFORM}/bin :}
 .endif
 
@@ -898,7 +899,7 @@ MK${var}:=	yes
     || ${MACHINE_ARCH} == "riscv64"
 MKCOMPAT?=	yes
 .elif !empty(MACHINE_ARCH:Mearm*)
-MKCOMPAT?=	no
+MKCOMPAT?=	yes
 .else
 # Don't let this build where it really isn't supported.
 MKCOMPAT:=	no
@@ -1298,7 +1299,7 @@ X11SRCDIR.xf86-input-${_i}?=	${X11SRCDIRMIT}/xf86-input-${_i}/dist
 
 .for _v in \
 	ag10e apm ark ast ati ati-kms chips cirrus crime \
-	geode glint i128 i740 igs imstt intel mach64 mga \
+	geode glint i128 i740 igs imstt intel intel-old mach64 mga \
 	neomagic newport nsc nv nvxbox openchrome pnozz \
 	r128 radeonhd rendition \
 	s3 s3virge savage siliconmotion sis suncg14 \
@@ -1306,12 +1307,6 @@ X11SRCDIR.xf86-input-${_i}?=	${X11SRCDIRMIT}/xf86-input-${_i}/dist
 	tdfx tga trident tseng vesa vga vmware wsfb xgi
 X11SRCDIR.xf86-video-${_v}?=	${X11SRCDIRMIT}/xf86-video-${_v}/dist
 .endfor
-
-# Build the ati 6.x (UMS supported) or 7.x (KMS demanded) drivers
-.if ${MACHINE_ARCH} == "x86_64" || ${MACHINE_ARCH} == "i386"
-MKX11RADEONKMS?=		yes
-.endif
-MKX11RADEONKMS?=		no
 
 # Only install the radeon firmware on DRM-happy systems.
 .if ${MACHINE_ARCH} == "x86_64" || ${MACHINE_ARCH} == "i386"

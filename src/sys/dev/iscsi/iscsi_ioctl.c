@@ -1,4 +1,4 @@
-/*	$NetBSD: iscsi_ioctl.c,v 1.8 2015/05/15 16:24:30 joerg Exp $	*/
+/*	$NetBSD: iscsi_ioctl.c,v 1.12 2015/05/30 20:09:47 joerg Exp $	*/
 
 /*-
  * Copyright (c) 2004,2005,2006,2011 The NetBSD Foundation, Inc.
@@ -477,7 +477,7 @@ kill_connection(connection_t *conn, uint32_t status, int logout, bool recover)
 		/* of logging in */
 		if (logout >= 0) {
 			conn->state = ST_WINDING_DOWN;
-			SET_CONN_TIMEOUT(conn, CONNECTION_TIMEOUT);
+			callout_schedule(&conn->timeout, CONNECTION_TIMEOUT);
 
 			if (sess->ErrorRecoveryLevel < 2 &&
 			    logout == RECOVER_CONNECTION) {
@@ -498,10 +498,6 @@ kill_connection(connection_t *conn, uint32_t status, int logout, bool recover)
 			 */
 		}
 	}
-
-#ifdef ISCSI_TEST_MODE
-	test_remove_connection(conn);
-#endif
 
 	conn->terminating = status;
 	conn->state = ST_SETTLING;
@@ -720,10 +716,6 @@ create_connection(iscsi_login_parameters_t *par, session_t *session,
 	 * increments performed in get_socket().
 	 */
 
-#ifdef ISCSI_TEST_MODE
-	test_assign_connection(connection);
-#endif
-
 	if ((rc = send_login(connection)) != 0) {
 		DEBC(connection, 0, ("Login failed (rc %d)\n", rc));
 		/* Don't attempt to recover, there seems to be something amiss */
@@ -858,7 +850,7 @@ recreate_connection(iscsi_login_parameters_t *par, session_t *session,
 			}
 			resend_pdu(ccb);
 		} else {
-			SET_CCB_TIMEOUT(connection, ccb, COMMAND_TIMEOUT);
+			callout_schedule(&ccb->timeout, COMMAND_TIMEOUT);
 		}
 	}
 
@@ -1601,8 +1593,9 @@ iscsi_cleanup_thread(void *par)
  */
 
 int
-iscsiioctl(dev_t dev, u_long cmd, void *addr, int flag, struct lwp *l)
+iscsiioctl(struct file *fp, u_long cmd, void *addr)
 {
+	struct lwp *l = curlwp;
 
 	DEB(1, ("ISCSI Ioctl cmd = %x\n", (int) cmd));
 
@@ -1664,42 +1657,6 @@ iscsiioctl(dev_t dev, u_long cmd, void *addr, int flag, struct lwp *l)
 	case ISCSI_POLL_EVENT:
 		check_event((iscsi_wait_event_parameters_t *) addr, FALSE);
 		break;
-
-#ifdef ISCSI_PERFTEST
-	case ISCSI_PERFDATA_START:
-		perf_start((iscsi_perf_startstop_parameters_t *) addr);
-		break;
-
-	case ISCSI_PERFDATA_STOP:
-		perf_stop((iscsi_perf_startstop_parameters_t *) addr);
-		break;
-
-	case ISCSI_PERFDATA_GET:
-		perf_get((iscsi_perf_get_parameters_t *) addr);
-		break;
-#endif
-
-#ifdef ISCSI_TEST_MODE
-	case ISCSI_TEST_DEFINE:
-		test_define((iscsi_test_define_parameters_t *) addr);
-		break;
-
-	case ISCSI_TEST_ADD_NEGOTIATION:
-		test_add_neg((iscsi_test_add_negotiation_parameters_t *) addr);
-		break;
-
-	case ISCSI_TEST_ADD_MODIFICATION:
-		test_add_mod(l->l_proc, (iscsi_test_add_modification_parameters_t *) addr);
-		break;
-
-	case ISCSI_TEST_SEND_PDU:
-		test_send_pdu(l->l_proc, (iscsi_test_send_pdu_parameters_t *) addr);
-		break;
-
-	case ISCSI_TEST_CANCEL:
-		test_cancel((iscsi_test_cancel_parameters_t *) addr);
-		break;
-#endif
 
 	default:
 		DEBOUT(("Invalid IO-Control Code\n"));

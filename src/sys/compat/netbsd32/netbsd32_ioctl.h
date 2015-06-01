@@ -1,4 +1,4 @@
-/*	$NetBSD: netbsd32_ioctl.h,v 1.45 2015/05/18 06:38:59 martin Exp $	*/
+/*	$NetBSD: netbsd32_ioctl.h,v 1.52 2015/06/01 16:07:27 roy Exp $	*/
 
 /*
  * Copyright (c) 1998, 2001 Matthew R. Green
@@ -426,6 +426,37 @@ struct netbsd32_ifmediareq {
 /* from <sys/sockio.h> */
 #define	SIOCGIFMEDIA32	_IOWR('i', 54, struct netbsd32_ifmediareq) /* get net media */
 
+/* from net/if_pppoe.h */
+struct netbsd32_pppoediscparms {
+	char	ifname[IFNAMSIZ];	/* pppoe interface name */
+	char	eth_ifname[IFNAMSIZ];	/* external ethernet interface name */
+	netbsd32_charp ac_name;		/* access concentrator name (or NULL) */
+	netbsd32_size_t	ac_name_len;		/* on write: length of buffer for ac_name */
+	netbsd32_charp service_name;	/* service name (or NULL) */
+	netbsd32_size_t	service_name_len;	/* on write: length of buffer for service name */
+};
+#define	PPPOESETPARMS32	_IOW('i', 110, struct netbsd32_pppoediscparms)
+#define	PPPOEGETPARMS32	_IOWR('i', 111, struct netbsd32_pppoediscparms)
+
+/* from net/if_sppp.h */
+struct netbsd32_spppauthcfg {
+	char	ifname[IFNAMSIZ];	/* pppoe interface name */
+	u_int	hisauth;		/* one of SPPP_AUTHPROTO_* above */
+	u_int	myauth;			/* one of SPPP_AUTHPROTO_* above */
+	u_int	myname_length;		/* includes terminating 0 */
+	u_int	mysecret_length;	/* includes terminating 0 */
+	u_int	hisname_length;		/* includes terminating 0 */
+	u_int	hissecret_length;	/* includes terminating 0 */
+	u_int	myauthflags;
+	u_int	hisauthflags;
+	netbsd32_charp	myname;
+	netbsd32_charp	mysecret;
+	netbsd32_charp	hisname;
+	netbsd32_charp	hissecret;
+};
+#define SPPPGETAUTHCFG32 _IOWR('i', 120, struct netbsd32_spppauthcfg)
+#define SPPPSETAUTHCFG32 _IOW('i', 121, struct netbsd32_spppauthcfg)
+
 /* from <net/if.h> */
 struct  netbsd32_ifdrv {
 	char		ifd_name[IFNAMSIZ];	/* if name, e.g. "en0" */
@@ -434,7 +465,8 @@ struct  netbsd32_ifdrv {
 	netbsd32_voidp	ifd_data;
 };
 /* from <sys/sockio.h> */
-#define SIOCSDRVSPEC32	_IOW('i', 123, struct netbsd32_ifdrv)   /* set driver-specific */
+#define SIOCSDRVSPEC32	_IOW('i', 123, struct netbsd32_ifdrv)	/* set driver-specific */
+#define SIOCGDRVSPEC32	_IOWR('i', 123, struct netbsd32_ifdrv)	/* get driver-specific */
 
 /* from <netinet/ip_mroute.h> */
 struct netbsd32_sioc_vif_req {
@@ -450,9 +482,9 @@ struct netbsd32_sioc_vif_req {
 struct netbsd32_sioc_sg_req {
 	struct	in_addr src;
 	struct	in_addr grp;
-	u_long	pktcnt;
-	u_long	bytecnt;
-	u_long	wrong_if;
+	netbsd32_u_long	pktcnt;
+	netbsd32_u_long	bytecnt;
+	netbsd32_u_long	wrong_if;
 };
 /* from <sys/sockio.h> */
 #define	SIOCGETSGCNT32	_IOWR('u', 52, struct netbsd32_sioc_sg_req) /* sg pkt cnt */
@@ -533,3 +565,49 @@ struct netbsd32_clockctl_ntp_adjtime {
 #define CLOCKCTL_NTP_ADJTIME32 _IOWR('C', 0x8, \
     struct netbsd32_clockctl_ntp_adjtime)
 
+#ifdef KIOCGSYMBOL
+struct netbsd32_ksyms_gsymbol {
+	netbsd32_charp kg_name;
+	union {
+		Elf_Sym ku_sym;
+	} _un;
+};
+
+struct netbsd32_ksyms_gvalue {
+	netbsd32_charp kv_name;
+	uint64_t kv_value;
+};
+
+#define	KIOCGVALUE32	_IOWR('l', 4, struct netbsd32_ksyms_gvalue)
+#define	KIOCGSYMBOL32	_IOWR('l', 5, struct netbsd32_ksyms_gsymbol)
+#endif /* KIOCGSYMBOL */
+
+/* From net/npf/npf.h */
+typedef struct in6_addr		netbsd32_npf_addr_t;
+typedef uint8_t			netbsd32_npf_netmask_t;
+
+typedef struct netbsd32_npf_ioctl_ent {
+	int			alen;
+	netbsd32_npf_addr_t	addr;
+	netbsd32_npf_netmask_t	mask;
+} netbsd32_npf_ioctl_ent_t;
+
+typedef struct netbsd32_npf_ioctl_buf {
+	netbsd32_voidp		buf;
+	netbsd32_size_t		len;
+} netbsd32_npf_ioctl_buf_t;
+
+typedef struct netbsd32_npf_ioctl_table {
+	int			nct_cmd;
+	netbsd32_charp		nct_name;
+	union {
+		netbsd32_npf_ioctl_ent_t ent;
+		netbsd32_npf_ioctl_buf_t buf;
+	} nct_data;
+} netbsd32_npf_ioctl_table_t;
+
+#define IOC_NPF_LOAD32          _IOWR('N', 102, struct netbsd32_plistref)
+#define IOC_NPF_TABLE32         _IOW('N', 103, struct netbsd32_npf_ioctl_table)
+#define IOC_NPF_STATS32         _IOW('N', 104, netbsd32_voidp)
+#define IOC_NPF_SAVE32          _IOR('N', 105, struct netbsd32_plistref)
+#define IOC_NPF_RULE32          _IOWR('N', 107, struct netbsd32_plistref)

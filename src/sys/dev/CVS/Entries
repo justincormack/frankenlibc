@@ -22,7 +22,7 @@
 /clock_subr.h/1.25/Thu Nov 20 16:26:34 2014//
 /clockctl.c/1.32/Fri Jul 25 08:10:35 2014//
 /cninit.c/1.11/Tue Feb  8 20:20:26 2011//
-/cons.c/1.74/Thu Mar  5 14:02:55 2015//
+/cons.c/1.75/Fri May 29 16:26:45 2015//
 /cons.h/1.27/Tue Feb  8 20:20:26 2011//
 /dev_verbose.c/1.1/Sun Sep 21 14:30:22 2014//
 /dev_verbose.h/1.1/Sun Sep 21 14:30:22 2014//
@@ -68,6 +68,6 @@
 /verified_exec.c/1.71/Sun Apr 26 09:45:40 2015//
 /video.c/1.32/Fri Jul 25 08:10:35 2014//
 /video_if.h/1.7/Fri Dec 24 20:54:28 2010//
-/vnd.c/1.243/Sun Apr 26 15:15:20 2015//
-/vndvar.h/1.33/Mon Jun  3 16:42:32 2013//
+/vnd.c/1.245/Mon May 25 21:02:37 2015//
+/vndvar.h/1.34/Mon May 25 20:57:18 2015//
 D

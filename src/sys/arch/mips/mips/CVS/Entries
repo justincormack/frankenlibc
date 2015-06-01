@@ -3,7 +3,7 @@
 /bus_space_alignstride_chipdep.c/1.23/Fri Feb 27 14:44:16 2015//
 /cache.c/1.49/Wed Apr 29 08:32:00 2015//
 /cache_ls2.c/1.4/Wed Jun  8 17:47:48 2011//
-/cache_mipsNN.c/1.14/Fri Apr 29 22:19:30 2011//
+/cache_mipsNN.c/1.15/Wed May 20 07:04:49 2015//
 /cache_octeon.c/1.1/Wed Apr 29 08:32:00 2015//
 /cache_r10k.c/1.5/Sun Feb 20 07:45:47 2011//
 /cache_r3k.c/1.5/Sun Feb 20 07:45:47 2011//
@@ -18,7 +18,7 @@
 /copy.S/1.15/Tue Aug 16 06:55:11 2011//
 /core_machdep.c/1.7/Wed Jan  1 18:57:15 2014//
 /cpu_exec.c/1.64/Sun Jul 10 23:21:58 2011//
-/cpu_subr.c/1.18/Mon May 18 01:32:52 2015//
+/cpu_subr.c/1.19/Tue May 26 02:09:34 2015//
 /db_disasm.c/1.24/Thu Aug 18 21:04:23 2011//
 /db_interface.c/1.75/Thu Aug 18 21:04:23 2011//
 /db_trace.c/1.42/Fri Apr 29 22:14:59 2011//
@@ -31,7 +31,7 @@
 /linux_trap.c/1.10/Sat Nov 21 17:40:28 2009//
 /lock_stubs_llsc.S/1.2/Sun Jul 10 23:21:59 2011//
 /lock_stubs_ras.S/1.4/Sat Aug 27 13:23:52 2011//
-/locore.S/1.190/Fri Mar  1 18:25:47 2013//
+/locore.S/1.191/Tue May 19 00:00:23 2015//
 /locore_mips1.S/1.84/Sun Feb 19 21:06:17 2012//
 /locore_mips3.S/1.102/Tue Aug 16 06:55:11 2011//
 /locore_octeon.S/1.1/Wed Apr 29 08:32:00 2015//
@@ -43,13 +43,13 @@
 /mips3_subr.S/1.6/Sun Jul 31 15:39:29 2011//
 /mips64_subr.S/1.6/Sun Jul 31 15:39:29 2011//
 /mips64r2_subr.S/1.2/Sun Jul 31 15:39:29 2011//
-/mipsX_subr.S/1.56/Sun Feb 19 21:06:18 2012//
+/mipsX_subr.S/1.57/Tue May 26 02:18:20 2015//
 /mips_dsp.c/1.4/Fri May 16 00:48:41 2014//
 /mips_emul.c/1.26/Thu Nov  1 22:15:25 2012//
 /mips_fixup.c/1.10/Wed Nov  9 17:05:50 2011//
 /mips_fpu.c/1.12/Fri May 16 00:48:41 2014//
 /mips_fputrap.c/1.10/Sat Feb 26 15:41:32 2011//
-/mips_machdep.c/1.263/Wed Apr 29 08:32:00 2015//
+/mips_machdep.c/1.264/Mon May 25 23:45:54 2015//
 /mips_mcclock.c/1.19/Sun Feb 20 07:45:48 2011//
 /mips_mcclock.h/1.6/Sun Feb 20 07:45:48 2011//
 /mips_mcclock_loop.S/1.5/Mon Mar 28 12:26:59 2011//

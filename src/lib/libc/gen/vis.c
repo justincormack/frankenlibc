@@ -1,4 +1,4 @@
-/*	$NetBSD: vis.c,v 1.66 2014/09/26 15:58:59 roy Exp $	*/
+/*	$NetBSD: vis.c,v 1.70 2015/05/26 21:42:46 christos Exp $	*/
 
 /*-
  * Copyright (c) 1989, 1993
@@ -57,7 +57,7 @@
 
 #include <sys/cdefs.h>
 #if defined(LIBC_SCCS) && !defined(lint)
-__RCSID("$NetBSD: vis.c,v 1.66 2014/09/26 15:58:59 roy Exp $");
+__RCSID("$NetBSD: vis.c,v 1.70 2015/05/26 21:42:46 christos Exp $");
 #endif /* LIBC_SCCS and not lint */
 #ifdef __FBSDID
 __FBSDID("$FreeBSD$");
@@ -97,6 +97,30 @@ static wchar_t *do_svis(wchar_t *, wint_t, int, wint_t, const wchar_t *);
 
 #undef BELL
 #define BELL L'\a'
+ 
+#if defined(LC_C_LOCALE)
+#define iscgraph(c)      isgraph_l(c, LC_C_LOCALE)
+#else
+/* Keep it simple for now, no locale stuff */
+#define iscgraph(c)	isgraph(c)
+#ifdef notyet
+#include <locale.h>
+static int
+iscgraph(int c) {
+	int rv;
+	char *ol;
+
+	ol = setlocale(LC_CTYPE, "C");
+	rv = isgraph(c);
+	if (ol)
+		setlocale(LC_CTYPE, ol);
+	return rv;
+}
+#endif
+#endif
+
+#define ISGRAPH(flags, c) \
+    (((flags) & VIS_NOLOCALE) ? iscgraph(c) : iswgraph(c))
 
 #define iswoctal(c)	(((u_char)(c)) >= L'0' && ((u_char)(c)) <= L'7')
 #define iswwhite(c)	(c == L' ' || c == L'\t' || c == L'\n')
@@ -232,7 +256,7 @@ do_mbyte(wchar_t *dst, wint_t c, int flags, wint_t nextc, int iswextra)
 		case L'$': /* vis(1) -l */
 			break;
 		default:
-			if (iswgraph(c) && !iswoctal(c)) {
+			if (ISGRAPH(flags, c) && !iswoctal(c)) {
 				*dst++ = L'\\';
 				*dst++ = c;
 				return dst;
@@ -284,7 +308,7 @@ do_svis(wchar_t *dst, wint_t c, int flags, wint_t nextc, const wchar_t *extra)
 	uint64_t bmsk, wmsk;
 
 	iswextra = wcschr(extra, c) != NULL;
-	if (!iswextra && (iswgraph(c) || iswwhite(c) ||
+	if (!iswextra && (ISGRAPH(flags, c) || iswwhite(c) ||
 	    ((flags & VIS_SAFE) && iswsafe(c)))) {
 		*dst++ = c;
 		return dst;
@@ -334,7 +358,7 @@ makeextralist(int flags, const char *src)
 	if ((dst = calloc(len + MAXEXTRAS, sizeof(*dst))) == NULL)
 		return NULL;
 
-	if (mbstowcs(dst, src, len) == (size_t)-1) {
+	if ((flags & VIS_NOLOCALE) || mbstowcs(dst, src, len) == (size_t)-1) {
 		size_t i;
 		for (i = 0; i < len; i++)
 			dst[i] = (wchar_t)(u_char)src[i];
@@ -373,7 +397,7 @@ istrsenvisx(char *mbdst, size_t *dlen, const char *mbsrc, size_t mblength,
 	uint64_t bmsk, wmsk;
 	wint_t c;
 	visfun_t f;
-	int clen = 0, cerr = 0, error = -1, i, shft;
+	int clen = 0, cerr, error = -1, i, shft;
 	ssize_t mbslength, maxolen;
 
 	_DIAGASSERT(mbdst != NULL);
@@ -402,9 +426,13 @@ istrsenvisx(char *mbdst, size_t *dlen, const char *mbsrc, size_t mblength,
 	dst = pdst;
 	src = psrc;
 
-	/* Use caller's multibyte conversion error flag. */
-	if (cerr_ptr)
-		cerr = *cerr_ptr;
+	if (flags & VIS_NOLOCALE) {
+		/* Do one byte at a time conversion */
+		cerr = 1;
+	} else {
+		/* Use caller's multibyte conversion error flag. */
+		cerr = cerr_ptr ? *cerr_ptr : 0;
+	}
 
 	/*
 	 * Input loop.
@@ -531,9 +559,11 @@ istrsenvisx(char *mbdst, size_t *dlen, const char *mbsrc, size_t mblength,
 	/* Terminate the output string. */
 	*mbdst = '\0';
 
-	/* Pass conversion error flag out. */
-	if (cerr_ptr)
-		*cerr_ptr = cerr;
+	if (flags & VIS_NOLOCALE) {
+		/* Pass conversion error flag out. */
+		if (cerr_ptr)
+			*cerr_ptr = cerr;
+	}
 
 	free(extra);
 	free(pdst);

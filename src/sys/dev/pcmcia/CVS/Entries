@@ -26,7 +26,7 @@
 /if_sm_pcmcia.c/1.55/Sat Oct 27 17:18:37 2012//
 /if_tr_pcmcia.c/1.25/Sat Oct 27 17:18:37 2012//
 /if_wi_pcmcia.c/1.90/Sat Mar 30 03:22:14 2013//
-/if_xi.c/1.74/Sun Aug 10 16:44:36 2014//
+/if_xi.c/1.75/Mon May 25 08:29:01 2015//
 /if_xireg.h/1.8/Sun Dec 11 12:23:23 2005//
 /if_xivar.h/1.9/Mon Apr 13 16:33:25 2015//
 /isic_pcmcia.c/1.41/Sat Oct 27 17:18:37 2012//

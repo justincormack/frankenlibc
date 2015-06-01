@@ -1,4 +1,4 @@
-#	$NetBSD: files.net,v 1.2 2014/12/02 19:32:09 christos Exp $
+#	$NetBSD: files.net,v 1.6 2015/06/01 00:15:07 roy Exp $
 
 # XXX CLEANUP
 define	net

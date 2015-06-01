@@ -32,10 +32,10 @@
 /cpufunc_asm_armv5.S/1.7/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_armv5_ec.S/1.6/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_armv6.S/1.7/Fri Aug  1 05:53:31 2014//
-/cpufunc_asm_armv7.S/1.22/Sat May 16 07:22:37 2015//
+/cpufunc_asm_armv7.S/1.24/Sat May 30 21:25:22 2015//
 /cpufunc_asm_fa526.S/1.7/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_ixp12x0.S/1.4/Sun Mar 30 01:15:03 2014//
-/cpufunc_asm_pj4b.S/1.9/Thu May 14 17:15:56 2015//
+/cpufunc_asm_pj4b.S/1.11/Wed May 20 02:59:57 2015//
 /cpufunc_asm_sa1.S/1.15/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_sa11x0.S/1.6/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_sheeva.S/1.6/Mon Apr 14 20:50:46 2014//

@@ -7,7 +7,7 @@
 /uvm_anon.h/1.30/Sat Aug  6 17:25:03 2011//
 /uvm_aobj.c/1.122/Sun May 25 18:55:11 2014//
 /uvm_aobj.h/1.23/Fri Oct 18 17:48:44 2013//
-/uvm_bio.c/1.82/Fri Sep  5 09:24:21 2014//
+/uvm_bio.c/1.83/Wed May 27 19:43:40 2015//
 /uvm_coredump.c/1.6/Tue Jan  7 07:59:03 2014//
 /uvm_ddb.h/1.15/Tue May 17 04:18:07 2011//
 /uvm_device.c/1.64/Sun Dec 14 23:48:58 2014//

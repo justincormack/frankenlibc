@@ -11,8 +11,8 @@
 /memmove.c/1.2/Mon Dec  2 21:21:33 2013//
 /memset.c/1.10/Mon Dec  2 21:21:33 2013//
 /memset2.c/1.5/Fri Mar  2 16:22:27 2012//
-/popcount32.c/1.4/Sun Aug 21 21:25:04 2011//
-/popcount64.c/1.7/Fri Mar  9 15:41:16 2012//
+/popcount32.c/1.5/Fri May 29 19:39:41 2015//
+/popcount64.c/1.8/Fri May 29 19:39:41 2015//
 /strcasecmp.c/1.2/Mon Jun  4 18:19:27 2007//
 /strcat.c/1.2/Mon Jun  4 18:19:27 2007//
 /strchr.c/1.5/Wed Aug 31 15:48:32 2011//

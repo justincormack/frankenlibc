@@ -151,10 +151,10 @@
 /umodem_common.c/1.22/Wed Nov  3 22:34:24 2010//
 /umodemvar.h/1.8/Wed Nov  3 22:34:24 2010//
 /ums.c/1.87/Sat Jan 25 00:03:14 2014//
-/uplcom.c/1.74/Mon Jul 14 12:04:48 2014//
+/uplcom.c/1.75/Sat May 30 16:44:28 2015//
 /urio.c/1.42/Fri Jul 25 08:10:39 2014//
 /urio.h/1.3/Mon Apr 28 20:24:00 2008//
-/usb.c/1.156/Fri Sep 12 16:40:38 2014//
+/usb.c/1.159/Sat May 30 06:41:08 2015//
 /usb.h/1.112/Thu Mar 26 08:08:27 2015//
 /usb_mem.c/1.65/Fri Sep 12 16:40:38 2014//
 /usb_mem.h/1.30/Wed Jan 23 23:44:30 2013//
@@ -174,7 +174,7 @@
 /usbdi_util.h/1.46/Fri Mar 27 12:46:51 2015//
 /usbdivar.h/1.109/Sat Sep  6 10:54:04 2014//
 /usbhid.h/1.14/Tue Jan 17 03:49:20 2012//
-/usbhist.h/1.1/Fri Sep 12 16:40:38 2014//
+/usbhist.h/1.2/Sat May 30 06:41:08 2015//
 /usbroothub_subr.c/1.1/Sun Feb  3 10:57:13 2008//
 /usbroothub_subr.h/1.1/Sun Feb  3 10:57:13 2008//
 /uscanner.c/1.75/Fri Jul 25 08:10:39 2014//

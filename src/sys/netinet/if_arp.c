@@ -1,4 +1,4 @@
-/*	$NetBSD: if_arp.c,v 1.165 2015/05/16 12:12:46 roy Exp $	*/
+/*	$NetBSD: if_arp.c,v 1.169 2015/05/22 07:44:46 ozaki-r Exp $	*/
 
 /*-
  * Copyright (c) 1998, 2000, 2008 The NetBSD Foundation, Inc.
@@ -68,7 +68,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: if_arp.c,v 1.165 2015/05/16 12:12:46 roy Exp $");
+__KERNEL_RCSID(0, "$NetBSD: if_arp.c,v 1.169 2015/05/22 07:44:46 ozaki-r Exp $");
 
 #include "opt_ddb.h"
 #include "opt_inet.h"
@@ -152,6 +152,8 @@ static int	arp_debug = 0;
 #endif
 #define arplog(x)	do { if (arp_debug) log x; } while (/*CONSTCOND*/ 0)
 
+static	void arp_init(void);
+
 static	struct sockaddr *arp_setgate(struct rtentry *, struct sockaddr *,
 	    const struct sockaddr *);
 static	void arptfree(struct llinfo_arp *);
@@ -161,6 +163,9 @@ static	struct llinfo_arp *arplookup1(struct mbuf *, const struct in_addr *,
 static	struct llinfo_arp *arplookup(struct mbuf *, const struct in_addr *,
 					  int, int);
 static	void in_arpinput(struct mbuf *);
+static	void in_revarpinput(struct mbuf *);
+static	void revarprequest(struct ifnet *);
+
 static	void arp_drainstub(void);
 
 static void arp_dad_timer(struct ifaddr *);
@@ -373,7 +378,7 @@ arp_drainstub(void)
 void
 arp_drain(void)
 {
-	struct llinfo_arp *la, *nla;
+	struct llinfo_arp *la;
 	int count = 0;
 	struct mbuf *mold;
 
@@ -384,11 +389,9 @@ arp_drain(void)
 		return;
 	}
 
-	for (la = LIST_FIRST(&llinfo_arp); la != NULL; la = nla) {
-		nla = LIST_NEXT(la, la_list);
-
+	LIST_FOREACH(la, &llinfo_arp, la_list) {
 		mold = la->la_hold;
-		la->la_hold = 0;
+		la->la_hold = NULL;
 
 		if (mold) {
 			m_freem(mold);
@@ -421,10 +424,9 @@ arptimer(void *arg)
 	}
 
 	callout_reset(&arptimer_ch, arpt_prune * hz, arptimer, NULL);
-	for (la = LIST_FIRST(&llinfo_arp); la != NULL; la = nla) {
+	LIST_FOREACH_SAFE(la, &llinfo_arp, la_list, nla) {
 		struct rtentry *rt = la->la_rt;
 
-		nla = LIST_NEXT(la, la_list);
 		if (rt->rt_expire == 0)
 			continue;
 		if ((rt->rt_expire - time_second) < arpt_refresh &&
@@ -553,7 +555,7 @@ arp_rtrequest(int req, struct rtentry *rt, const struct rt_addrinfo *info)
 				rt->rt_rmx.rmx_mtu = FDDIIPMTU;
 			break;
 #endif
-#if NARC > 0
+#if NARCNET > 0
 		case IFT_ARCNET:
 		    {
 			int arcipifmtu;
@@ -601,7 +603,7 @@ arp_rtrequest(int req, struct rtentry *rt, const struct rt_addrinfo *info)
 					rt->rt_rmx.rmx_mtu = FDDIIPMTU;
 				break;
 #endif
-#if NARC > 0
+#if NARCNET > 0
 			case IFT_ARCNET:
 			    {
 				int arcipifmtu;
@@ -737,7 +739,7 @@ arp_rtrequest(int req, struct rtentry *rt, const struct rt_addrinfo *info)
 
 		s = splnet();
 		mold = la->la_hold;
-		la->la_hold = 0;
+		la->la_hold = NULL;
 		splx(s);
 
 		if (mold)
@@ -918,7 +920,7 @@ arpintr(void)
 		s = splnet();
 		IF_DEQUEUE(&arpintrq, m);
 		splx(s);
-		if (m == 0 || (m->m_flags & M_PKTHDR) == 0)
+		if (m == NULL || (m->m_flags & M_PKTHDR) == 0)
 			panic("arpintr");
 
 		MCLAIM(m, &arpdomain.dom_mowner);
@@ -1238,7 +1240,7 @@ in_arpinput(struct mbuf *m)
 
 		s = splnet();
 		mold = la->la_hold;
-		la->la_hold = 0;
+		la->la_hold = NULL;
 		splx(s);
 
 		if (mold) {

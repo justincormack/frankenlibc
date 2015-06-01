@@ -1,4 +1,4 @@
-/*	$NetBSD: iscsi_utils.c,v 1.6 2015/05/15 16:24:30 joerg Exp $	*/
+/*	$NetBSD: iscsi_utils.c,v 1.8 2015/05/30 18:12:09 joerg Exp $	*/
 
 /*-
  * Copyright (c) 2004,2005,2006,2008 The NetBSD Foundation, Inc.
@@ -233,7 +233,6 @@ get_ccb(connection_t *conn, bool waitok)
 			if (!waitok || conn->terminating) {
 				return NULL;
 			}
-			PDEBOUT(("Waiting for CCB!\n"));
 			tsleep(&sess->ccb_pool, PWAIT, "get_ccb", 0);
 		}
 	} while (ccb == NULL);
@@ -409,8 +408,6 @@ wake_ccb(ccb_t *ccb, uint32_t status)
 	ccb->status = status;
 	splx(s);
 
-	PERF_END(ccb);
-
 	switch (disp) {
 	case CCBDISP_FREE:
 		free_ccb(ccb);
@@ -467,7 +464,6 @@ get_pdu(connection_t *conn, bool waitok)
 		if (pdu == NULL) {
 			if (!waitok || conn->terminating)
 				return NULL;
-			PDEBOUT(("Waiting for PDU!\n"));
 			tsleep(&conn->pdu_pool, PWAIT, "get_pdu_c", 0);
 		}
 	} while (pdu == NULL);
@@ -595,7 +591,6 @@ add_sernum(sernum_buffer_t *buff, uint32_t num)
 	diff = (num - n) + 1;
 
 	if (diff <= 0) {
-		PDEB(1, ("Rx Duplicate Block: SN %u < Next SN %u\n", num, n));
 		return 0;				/* ignore if SN is smaller than expected (dup or retransmit) */
 	}
 
@@ -605,7 +600,7 @@ add_sernum(sernum_buffer_t *buff, uint32_t num)
 
 	for (i = 0; i < diff; i++) {
 		buff->sernum[t] = n++;
-		buff->ack[t] = 0;
+		buff->ack[t] = false;
 		t = (t + 1) % SERNUM_BUFFER_LENGTH;
 		if (t == b) {
 			DEB(1, ("AddSernum: Buffer Full! num %d, diff %d\n", num, diff));
@@ -653,7 +648,7 @@ ack_sernum(sernum_buffer_t *buff, uint32_t num)
 			if (b == buff->bottom)
 				buff->bottom = (b + 1) % SERNUM_BUFFER_LENGTH;
 			else
-				buff->ack[b] = 1;
+				buff->ack[b] = true;
 		}
 
 		for (b = buff->bottom, num = buff->sernum[b] - 1;
