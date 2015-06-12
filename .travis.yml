@@ -5,4 +5,4 @@ compiler:
   - clang
 
 script:
-  - ./build.sh
+  - ./build.sh nocaps
