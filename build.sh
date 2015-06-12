@@ -373,8 +373,16 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
 	RUMP="${RUMP}" \
 	${MAKE} -C libvirtif
 
+(
+	cd libtc
+	${RUMPMAKE}
+	cp libfranken_tc.a ${RUMP}/lib/
+	${RUMPMAKE} clean
+)
+
 # find which libs we should link
 ALL_LIBS="${RUMP}/lib/librump.a
+	${RUMP}/lib/libfranken_tc.a
 	${RUMP}/lib/librumpdev*.a
 	${RUMP}/lib/librumpnet*.a
 	${RUMP}/lib/librumpfs*.a
@@ -383,7 +391,7 @@ ALL_LIBS="${RUMP}/lib/librump.a
 
 if [ ! -z ${LIBS+x} ]
 then
-	ALL_LIBS="${RUMP}/lib/librump.a"
+	ALL_LIBS="${RUMP}/lib/librump.a ${RUMP}/lib/libfranken_tc.a"
 	for l in $(echo ${LIBS} | tr "," " ")
 	do
 		case ${l} in
