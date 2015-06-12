@@ -12,8 +12,6 @@ RUN apt-get update && apt-get install -y \
   gcc \
   git \
   libc6-dev \
-  libcap2 \
-  libcap-dev \
   libseccomp2 \
   libseccomp-dev \
   strace \
@@ -25,6 +23,6 @@ ENV SUDO_UID=1000
 
 RUN \
   cd /usr/src/frankenlibc && \
-  ./build.sh -d /usr/local/rump -b /usr/local/bin seccomp caps && \
+  ./build.sh -d /usr/local/rump -b /usr/local/bin seccomp && \
   cp rumpobj/tests/hello /usr/local/bin/rump.helloworld && \
   make clean

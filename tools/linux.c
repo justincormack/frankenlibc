@@ -17,9 +17,7 @@
 #include <linux/sockios.h>
 #include <sys/socket.h>
 #include <linux/if_packet.h>
-#ifdef CAPABILITIES
 #include <sys/capability.h>
-#endif
 
 #include "rexec.h"
 
@@ -398,25 +396,18 @@ getrandom(void *buf, size_t buflen, unsigned int flags)
 	return syscall(SYS_getrandom, buf, buflen, flags);
 }
 
-#ifdef CAPABILITIES
 void
 os_dropcaps()
 {
-	cap_t caps;
+	struct __user_cap_header_struct hdr = {.version = _LINUX_CAPABILITY_VERSION_3, .pid = 0};
+	struct __user_cap_data_struct data[2];
 
-	caps = cap_get_proc();
-	cap_clear(caps);
-	if (cap_set_proc(caps) == -1) {
-		perror("Drop caps");
+	memset(data, 0, sizeof(data));
+	if (capset(&hdr, data) == -1) {
+		perror("capset");
 		exit(1);
 	}
 }
-#else
-void
-os_dropcaps()
-{
-}
-#endif
 
 int
 os_extrafiles()
