@@ -2,7 +2,7 @@
 
 FROM ubuntu:15.04
 
-MAINTAINER Justin Cormack
+MAINTAINER Justin Cormack <justin@specialbusservice.com>
 
 RUN apt-get update && apt-get install -y \
   binutils \
