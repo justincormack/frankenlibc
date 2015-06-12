@@ -4,7 +4,7 @@
 int os_init(char *, int);
 int filter_fd(int, int, struct stat *);
 int filter_load_exec(char *, char **, char **);
-
+void uuid(void);
 int emptydir(void);
 int colon_open(char *, char *);
 int os_emptydir(void);

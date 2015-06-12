@@ -52,6 +52,8 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage(argv[0]);
 
+	uuid();
+
 	for (i = 1; i < argc; i++) {
 		char *arg = argv[i];
 
@@ -368,4 +370,69 @@ emptydir()
 	}
 
 	return 0;	
+}
+
+void
+uuid()
+{
+	char *e = getenv("UUID");
+	unsigned char rd[16];
+	char uuid[37];
+	char hex[3];
+	int i;
+	char c = 0, d = 0;
+	int fd;
+	size_t count;
+
+	if (e) return;
+	fd = open("/dev/urandom", O_RDONLY);
+	if (fd == -1) {
+		perror("open /dev/urandom");
+		exit(1);
+	}
+	count = read(fd, rd, 16);
+	if (count == -1) {
+		perror("read /dev/urandom");
+		exit(1);
+	}
+	if (count != 16) {
+		fprintf(stderr, "short read frpom /dev/urandom");
+		exit(1);
+	}
+	if (close(fd) == -1) {
+		perror("close");
+		exit(1);
+	}
+	for (i = 0; i < 4; i++) {
+		snprintf(hex, 3, "%02x", (int)rd[c++]);
+		memcpy(&uuid[d], hex, 2);
+		d += 2;
+	}
+	uuid[d++] = '-';
+	for (i = 0; i < 2; i++) {
+		snprintf(hex, 3, "%02x", (int)rd[c++]);
+		memcpy(&uuid[d], hex, 2);
+		d += 2;
+	}
+	uuid[d++] = '-';
+	for (i = 0; i < 2; i++) {
+		snprintf(hex, 3, "%02x", (int)rd[c++]);
+		memcpy(&uuid[d], hex, 2);
+		d += 2;
+	}
+	uuid[d++] = '-';
+	for (i = 0; i < 2; i++) {
+		snprintf(hex, 3, "%02x", (int)rd[c++]);
+		memcpy(&uuid[d], hex, 2);
+		d += 2;
+	}
+	uuid[d++] = '-';
+	for (i = 0; i < 6; i++) {
+		snprintf(hex, 3, "%02x", (int)rd[c++]);
+		memcpy(&uuid[d], hex, 2);
+		d += 2;
+	}
+	uuid[d++] = 0;
+	setenv("UUID", uuid, 0);
+	fprintf(stderr, "%s\n", uuid);
 }
