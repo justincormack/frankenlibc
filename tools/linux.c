@@ -18,7 +18,7 @@
 #include <sys/socket.h>
 #include <linux/if_packet.h>
 #ifndef NOCAPS
-#include <sys/capability.h>
+#include <linux/capability.h>
 #endif
 
 #include "rexec.h"
