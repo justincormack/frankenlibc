@@ -60,7 +60,6 @@ printk(const char *msg)
 int
 rumpuser_init(int version, const struct rumpuser_hyperup *hyp)
 {
-	int rv;
 
 	if (version != RUMPUSER_VERSION) {
 		printk("rumpuser version mismatch\n");
