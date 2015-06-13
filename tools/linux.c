@@ -17,9 +17,7 @@
 #include <linux/sockios.h>
 #include <sys/socket.h>
 #include <linux/if_packet.h>
-#ifndef NOCAPS
 #include <linux/capability.h>
-#endif
 
 #include "rexec.h"
 
@@ -398,12 +396,6 @@ getrandom(void *buf, size_t buflen, unsigned int flags)
 	return syscall(SYS_getrandom, buf, buflen, flags);
 }
 
-#ifdef NOCAPS
-void
-os_dropcaps()
-{
-}
-#else
 void
 os_dropcaps()
 {
@@ -416,7 +408,6 @@ os_dropcaps()
 		exit(1);
 	}
 }
-#endif
 
 int
 os_extrafiles()

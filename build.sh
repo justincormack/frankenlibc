@@ -46,7 +46,6 @@ helpme()
 	printf "\t-d: location of installed files. default PWD/rump\n"
 	printf "\t-b: location of binaries. default PWD/rump/bin\n"
 	printf "\tseccomp|noseccomp: select Linux seccomp (default off)\n"
-	printf "\tcaps|nocaps: drop linux capabilities (default on)\n"
 	printf "\texecveat: use new linux execveat call default off)\n"
 	printf "\tcapsicum|nocapsicum: select FreeBSD capsicum (default on)\n"
 	printf "\tdeterministic: make deterministic\n"
@@ -215,11 +214,6 @@ for arg in "$@"; do
 	"seccomp")
 		appendvar FILTER "-DSECCOMP"
 		appendvar TOOLS_LDLIBS "-lseccomp"
-		;;
-	"nocaps")
-		appendvar FILTER "-DNOCAPS"
-		;;
-	"caps")
 		;;
 	"noexecveat")
 		;;
