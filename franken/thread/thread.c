@@ -511,7 +511,6 @@ static int
 wait(struct waithead *wh, time_t msec)
 {
 	struct waiter w;
-	time_t wakeup;
 
 	w.who = get_current();
 	TAILQ_INSERT_TAIL(wh, &w, entries);
