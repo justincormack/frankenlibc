@@ -379,7 +379,7 @@ uuid()
 	int i;
 	int c = 0, d = 0;
 	int fd;
-	size_t count;
+	ssize_t count;
 
 	if (e) return;
 	fd = open("/dev/urandom", O_RDONLY);
