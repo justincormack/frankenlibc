@@ -13,6 +13,7 @@
 #include <sys/mman.h>
 #include <linux/fs.h>
 #include <net/if.h>
+#include <arpa/inet.h>
 #include <linux/if_tun.h>
 #include <linux/sockios.h>
 #include <sys/socket.h>
@@ -20,6 +21,9 @@
 #include <linux/capability.h>
 
 #include "rexec.h"
+
+/* only in libcap header, not linux header */
+int capset(cap_user_header_t, cap_user_data_t);
 
 /* only in linux/fcntl.h that cannot be included */
 #ifndef AT_EMPTY_PATH
@@ -50,7 +54,6 @@
 int
 os_init(char *program, int nx)
 {
-	int ret;
 
 	if (nx == 1) {
 		fprintf(stderr, "cannot disable mprotect execution\n");
@@ -83,7 +86,6 @@ os_pre()
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {
-	int ret;
 
 	if (execve(program, argv, envp) == -1) {
 		perror("execve");
@@ -413,7 +415,8 @@ int
 os_extrafiles()
 {
 	int sock[2];
-	int ret, fd;
+	int ret;
+	int fd __attribute__((unused));
 	char buf[1];
 
 	/* if getrandom() syscall works we do not need to pass random source in */

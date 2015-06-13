@@ -36,8 +36,6 @@ main(int argc, char **argv)
 	char *pargs[argc];
 	int mode = O_RDWR;
 	int ret;
-	struct timespec ts;
-	struct fdinfo *fds;
 	int nfds = 3;
 	int fl;
 	struct stat st;
@@ -326,7 +324,6 @@ emptydir()
 {
 	char template[20] = "/tmp/dirXXXXXX";
 	char *dir;
-	int ret;
 	int dirfd;
 
 	dirfd = open(".", O_RDONLY|O_DIRECTORY);
@@ -380,7 +377,7 @@ uuid()
 	char uuid[37];
 	char hex[3];
 	int i;
-	char c = 0, d = 0;
+	int c = 0, d = 0;
 	int fd;
 	size_t count;
 
