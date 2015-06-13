@@ -260,8 +260,10 @@ MAKETOOLS="${MAKETOOLS-yes}"
 
 rm -rf ${OUTDIR}
 
+FRANKEN_CFLAGS="-D_GNU_SOURCE -std=c99 -Wall -Wextra -Wno-missing-braces -Wno-unused-parameter -Wno-missing-field-initializers"
+
 CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
-        CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+        CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${FRANKEN_CFLAGS}" \
         LDFLAGS="${EXTRA_LDFLAGS}" \
         LDLIBS="${TOOLS_LDLIBS}" \
         RUMPOBJ="${RUMPOBJ}" \
@@ -322,7 +324,7 @@ chmod -R ug+rw ${RUMP}/include/*
 ${INSTALL-install} -d ${OUTDIR}/include
 cp -a ${RUMP}/include/* ${OUTDIR}/include
 
-CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE} ${FRANKEN_CFLAGS}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	ASFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
@@ -334,7 +336,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 # should clean up how deterministic build is done
 if [ ${DETERMINSTIC-x} = "deterministic" ]
 then
-	CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
+	CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE} ${FRANKEN_CFLAGS}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	ASFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
@@ -344,7 +346,7 @@ then
 	${MAKE} deterministic -C platform
 fi 
 
-CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE} ${FRANKEN_CFLAGS}" \
 	AFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	ASFLAGS="${EXTRA_AFLAGS} ${DBG_F}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
@@ -353,14 +355,14 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE}" \
 	RUMP="${RUMP}" \
 	${MAKE} -C franken
 
-CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${FRANKEN_CFLAGS}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS} ${RUMPUSER_FLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
 	${MAKE} -C librumpuser
 
-CFLAGS="${EXTRA_CFLAGS} ${DBG_F}" \
+CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${FRANKEN_CFLAGS}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS} ${RUMPUSER_FLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \

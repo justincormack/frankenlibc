@@ -80,7 +80,7 @@ int
 rumpuser_iovread(int fd, struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
-	size_t n;
+	ssize_t n;
 
 	if (roff == RUMPUSER_IOV_NOSEEK || __franken_fd[fd].seek == 0) {
 		n = readv(fd, (struct iovec *)ruiov, iovlen);
@@ -101,7 +101,7 @@ int
 rumpuser_iovwrite(int fd, const struct rumpuser_iovec *ruiov, size_t iovlen,
 	int64_t roff, size_t *retp)
 {
-	size_t n;
+	ssize_t n;
 
 	if (roff == RUMPUSER_IOV_NOSEEK || __franken_fd[fd].seek == 0) {
 		n = writev(fd, (struct iovec *)ruiov, iovlen);
