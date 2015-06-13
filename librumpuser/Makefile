@@ -2,7 +2,8 @@ COMPILE.c?=$(CC) -c $(CPPFLAGS) $(CFLAGS)
 
 RUMPOBJ?=../rumpobj
 RUMP?=$(RUMPOBJ)/rump
-LIB=$(RUMP)/lib/librumpuser.a
+LIBLIB=$(RUMP)/lib
+LIB=$(LIBLIB)/librumpuser.a
 
 CPPFLAGS+=-DLIBRUMPUSER
 
@@ -22,12 +23,15 @@ OBJS+=$(OBJDIR)/rumpuser_component.o
 OBJS+=$(OBJDIR)/rumpuser_sp.o $(OBJDIR)/rumpuser_file.o
 OBJS+=$(OBJDIR)/rumpuser_daemonize.o $(OBJDIR)/rumpuser_dl.o
 
-default:			$(OBJDIR) $(LIB)
+default:			$(LIB)
 
 $(OBJDIR):			
 				mkdir -p $(OBJDIR)
 
-$(LIB):				$(OBJS)
+$(LIBLIB):
+				mkdir -p $(LIBLIB)
+
+$(LIB):				$(OBJS) $(LIBLIB)
 				$(AR) cr $@ $(OBJS)
 
 $(OBJDIR)/rumpuser.o:		rumpuser.c $(DEPS)
