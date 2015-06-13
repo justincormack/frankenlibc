@@ -72,8 +72,6 @@ __franken_fdinit()
 {
 	int fd;
 	struct stat st;
-	char *mem;
-	int ret;
 
 	/* iterate over numbered descriptors, stopping when one does not exist */
 	for (fd = 0; fd < MAXFD; fd++) {
