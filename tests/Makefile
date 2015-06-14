@@ -12,9 +12,7 @@ DEPS=$(OBJDIR) $(LIBDIR)/libc.a
 
 OBJ=$(OBJDIR)/hello $(OBJDIR)/ctor $(OBJDIR)/cat
 
-default:		test
-
-test:			run
+default:		$(OBJ)
 
 run:			$(OBJ)
 			RUMP_VERBOSE=1 ${REXEC} $(OBJDIR)/hello

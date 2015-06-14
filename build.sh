@@ -607,11 +607,18 @@ then
 	)
 fi
 
+# Always make tests to exercise compiler
+CC="${BINDIR}/${COMPILER}" \
+	RUMPDIR="${OUTDIR}" \
+	RUMPOBJ="${RUMPOBJ}" \
+	BINDIR="${BINDIR}" \
+	${MAKE} -C tests
+
 if [ ${RUNTESTS} = "test" ]
 then
 	CC="${BINDIR}/${COMPILER}" \
 		RUMPDIR="${OUTDIR}" \
 		RUMPOBJ="${RUMPOBJ}" \
 		BINDIR="${BINDIR}" \
-		${MAKE} -C tests
+		${MAKE} -C tests run
 fi
