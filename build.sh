@@ -614,6 +614,9 @@ CC="${BINDIR}/${COMPILER}" \
 	BINDIR="${BINDIR}" \
 	${MAKE} -C tests
 
+# test for executable stack
+readelf -lW ${RUMPOBJ}/tests/hello | grep GNU_STACK | grep -q RWE && echo "Executable stack found" && exit 1
+
 if [ ${RUNTESTS} = "test" ]
 then
 	CC="${BINDIR}/${COMPILER}" \
