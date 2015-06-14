@@ -44,9 +44,10 @@ void
 mkkey(char *k, char *n, const char *pre, int dev, int fd)
 {
 	int i, d;
+	int len = strlen(pre);
 
 	if (fd > 99 || dev > 99) abort();
-	for (i = 0; i < strlen(pre); i++)
+	for (i = 0; i < len; i++)
 		*k++ = pre[i];
 	if (dev > 9) {
 		d = (dev / 10) + '0';
