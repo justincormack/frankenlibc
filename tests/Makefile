@@ -8,7 +8,9 @@ INCDIR=$(RUMPDIR)/include
 LDFLAGS+=-static
 CFLAGS+=-g
 
-DEPS=$(OBJDIR) $(LIBDIR)/libc.a
+MKOBJDIR=mkdir -p $(OBJDIR)
+
+DEPS=$(LIBDIR)/libc.a
 
 OBJ=$(OBJDIR)/hello $(OBJDIR)/ctor $(OBJDIR)/cat
 
@@ -18,9 +20,6 @@ run:			$(OBJ)
 			RUMP_VERBOSE=1 ${REXEC} $(OBJDIR)/hello
 			${REXEC} $(OBJDIR)/ctor
 			echo frankenlibc | ${REXEC} $(OBJDIR)/cat
-
-$(OBJDIR):		
-			mkdir -p $(OBJDIR)
 
 $(OBJDIR)/ctor:		ctor.c $(DEPS)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ ctor.c
