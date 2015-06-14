@@ -8,17 +8,16 @@ RUMP?=$(RUMPOBJ)/rump
 INCLUDES=-I../include -I../../platform/include -I. -I$(RUMP)/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
-DEPS=$(OBJDIR) init.h
+DEPS=init.h
 
 default:			$(OBJ)
 
-$(OBJDIR):			
-				mkdir -p $(OBJDIR)
-
 $(OBJDIR)/fdinit.o:		fdinit.c $(DEPS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ fdinit.c
 
 $(OBJDIR)/start_main.o:		start_main.c $(DEPS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ start_main.c
 
 .PHONY:				clean

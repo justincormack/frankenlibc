@@ -11,27 +11,29 @@ CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-g -fno-stack-protector
 LDFLAGS+=-static -B$(LIBDIR)
 LDLIBS=-Wl,--start-group -L$(STUBLIBCDIR) -lc -L$(LIBDIR) -lfranken -lplatform -Wl,--end-group
-DEPS=$(OUTDIR)
+DEPS=
 
 default:		test
 
-$(OUTDIR):		
-			mkdir -p $(OUTDIR)
-
 $(OUTDIR)/args:		args.c $(DEPS)
+			@mkdir -p $(OUTDIR)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ args.c $(LDLIBS)
 
 $(OUTDIR)/env:		env.c $(DEPS)
+			@mkdir -p $(OUTDIR)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ env.c $(LDLIBS)
 
 $(OUTDIR)/_exit:	_exit.c $(DEPS)
+			@mkdir -p $(OUTDIR)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ _exit.c $(LDLIBS)
 
 $(OUTDIR)/mmap:		mmap.c $(DEPS)
+			@mkdir -p $(OUTDIR)
 			$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $(LDSTATIC) -o $@ mmap.c $(LDLIBS)
 
 .PHONY:			test
-test:			$(OUTDIR) $(FILES)
+test:			$(FILES)
+			@mkdir -p $(OUTDIR)
 			$(OUTDIR)/args franken rump
 			FRANKEN=RUMP $(OUTDIR)/env
 			$(OUTDIR)/_exit

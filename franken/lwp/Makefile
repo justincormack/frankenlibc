@@ -7,24 +7,26 @@ INCLUDES=-I../include -I../../platform/include -I.
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
-default:			$(OBJDIR) $(OBJ)
-
-$(OBJDIR):			
-				mkdir -p $(OBJDIR)
+default:			$(OBJ)
 
 $(OBJDIR)/__libc_static_tls_setup.o:	__libc_static_tls_setup.c
+					@mkdir -p $(OBJDIR)
 					$(COMPILE.c) -o $@ __libc_static_tls_setup.c
 
 $(OBJDIR)/_lwp_exit.o:		_lwp_exit.c
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ _lwp_exit.c
 
 $(OBJDIR)/_lwp_kill.o:		_lwp_kill.c
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ _lwp_kill.c
 
 $(OBJDIR)/___lwp_park60.o:	___lwp_park60.c
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ ___lwp_park60.c
 
 $(OBJDIR)/_lwp_self.o:		_lwp_self.c
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ _lwp_self.c
 
 .PHONY:				clean

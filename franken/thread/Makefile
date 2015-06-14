@@ -8,17 +8,16 @@ HEADERS=thread.h
 INCLUDES=-I../include -I../ucontext -I../../librumpuser -I../../platform/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
-DEPS=$(HEADERS) $(OBJDIR)
+DEPS=$(HEADERS)
 
 default:		$(OBJ)
 
-$(OBJDIR):
-			mkdir -p $(OBJDIR)
-
 $(OBJDIR)/errno.o:	errno.c $(DEPS)
+			@mkdir -p $(OBJDIR)
 			$(COMPILE.c) -o $@ errno.c
 
 $(OBJDIR)/thread.o:	thread.c $(DEPS)
+			@mkdir -p $(OBJDIR)
 			$(COMPILE.c) -o $@ thread.c
 
 .PHONY:			clean

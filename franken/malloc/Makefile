@@ -6,14 +6,11 @@ OBJ+=$(OBJDIR)/malloc.o
 INCLUDES=-I../include -I../../platform/include
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
-DEPS=$(OBJDIR)
 
 default:			$(OBJ)
 
-$(OBJDIR):			
-				mkdir -p $(OBJDIR)
-
-$(OBJDIR)/malloc.o:		malloc.c $(DEPS)
+$(OBJDIR)/malloc.o:		malloc.c
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ malloc.c
 
 .PHONY:				clean
