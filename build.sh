@@ -615,7 +615,7 @@ CC="${BINDIR}/${COMPILER}" \
 	${MAKE} -C tests
 
 # test for executable stack
-readelf -lW ${RUMPOBJ}/tests/hello | grep GNU_STACK | grep -q RWE && echo "Executable stack found" && exit 1
+readelf -lW ${RUMPOBJ}/tests/hello | grep GNU_STACK | grep -q RWE && echo "WARNING: Executable stack found" >2
 
 if [ ${RUNTESTS} = "test" ]
 then
