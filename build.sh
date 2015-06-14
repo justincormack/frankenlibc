@@ -13,19 +13,30 @@ TARGET=$(LC_ALL=C ${CC-cc} -v 2>&1 | sed -n 's/^Target: //p' )
 case ${TARGET} in
 *-linux*)
 	OS=linux
-	NCPU=$(nproc )
 	;;
 *-netbsd*)
 	OS=netbsd
-	NCPU=$(sysctl -n hw.ncpu )
 	;;
 *-freebsd*)
 	OS=freebsd
 	FILTER="-DCAPSICUM"
-	NCPU=$(sysctl -n hw.ncpu )
 	;;
 *)
 	OS=unknown
+esac
+
+HOST=$(uname -s)
+
+case ${HOST} in
+Linux)
+	NCPU=$(nproc)
+	;;
+NetBSD)
+	NCPU=$(sysctl -n hw.ncpu)
+	;;
+FreeBSD)
+	NCPU=$(sysctl -n hw.ncpu)
+	;;
 esac
 
 STDJ="-j ${NCPU}"
@@ -260,7 +271,9 @@ MAKETOOLS="${MAKETOOLS-yes}"
 
 rm -rf ${OUTDIR}
 
-FRANKEN_CFLAGS="-D_GNU_SOURCE -std=c99 -Wall -Wextra -Wno-missing-braces -Wno-unused-parameter -Wno-missing-field-initializers"
+FRANKEN_CFLAGS="-std=c99 -Wall -Wextra -Wno-missing-braces -Wno-unused-parameter -Wno-missing-field-initializers"
+
+if [ "${HOST}" = "Linux" ]; then appendvar FRANKEN_CFLAGS "-D_GNU_SOURCE"; fi
 
 CPPFLAGS="${EXTRA_CPPFLAGS} ${FILTER}" \
         CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${FRANKEN_CFLAGS}" \
