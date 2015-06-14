@@ -615,7 +615,14 @@ CC="${BINDIR}/${COMPILER}" \
 	${MAKE} -C tests
 
 # test for executable stack
-readelf -lW ${RUMPOBJ}/tests/hello | grep GNU_STACK | grep -q RWE && echo "WARNING: Executable stack found" >2
+case ${TARGET} in
+qemu-arm)
+	# does not have protection
+	;;
+*)
+	readelf -lW ${RUMPOBJ}/tests/hello | grep RWE && echo "Writeable executable section (stack?) found" && exit 1
+	;;
+esac
 
 if [ ${RUNTESTS} = "test" ]
 then
