@@ -20,15 +20,15 @@ run:			$(OBJ)
 			echo frankenlibc | ${REXEC} $(OBJDIR)/cat
 
 $(OBJDIR)/ctor:		ctor.c $(DEPS)
-			mkdir -p $(OBJDIR)
+			@mkdir -p $(OBJDIR)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ ctor.c
 
 $(OBJDIR)/hello:	hello.c $(DEPS)
-			mkdir -p $(OBJDIR)
+			@mkdir -p $(OBJDIR)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ hello.c
 
 $(OBJDIR)/cat:		cat.c $(DEPS)
-			mkdir -p $(OBJDIR)
+			@mkdir -p $(OBJDIR)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ cat.c
 
 .PHONY:			test clean
