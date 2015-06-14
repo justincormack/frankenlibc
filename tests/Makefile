@@ -8,8 +8,6 @@ INCDIR=$(RUMPDIR)/include
 LDFLAGS+=-static
 CFLAGS+=-g
 
-MKOBJDIR=mkdir -p $(OBJDIR)
-
 DEPS=$(LIBDIR)/libc.a
 
 OBJ=$(OBJDIR)/hello $(OBJDIR)/ctor $(OBJDIR)/cat
@@ -22,12 +20,15 @@ run:			$(OBJ)
 			echo frankenlibc | ${REXEC} $(OBJDIR)/cat
 
 $(OBJDIR)/ctor:		ctor.c $(DEPS)
+			mkdir -p $(OBJDIR)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ ctor.c
 
 $(OBJDIR)/hello:	hello.c $(DEPS)
+			mkdir -p $(OBJDIR)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ hello.c
 
 $(OBJDIR)/cat:		cat.c $(DEPS)
+			mkdir -p $(OBJDIR)
 			${CC} ${CFLAGS} ${LDFLAGS} -o $@ cat.c
 
 .PHONY:			test clean
