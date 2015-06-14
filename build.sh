@@ -615,8 +615,8 @@ CC="${BINDIR}/${COMPILER}" \
 	${MAKE} -C tests
 
 # test for executable stack
-case ${TARGET} in
-qemu-arm)
+case ${OS} in
+qemu-arm|spike)
 	# does not have protection
 	;;
 *)
