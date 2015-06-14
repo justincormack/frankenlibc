@@ -488,7 +488,7 @@ if $(${CC-cc} -v 2>&1 | grep -q clang)
 then
 	TOOL_PREFIX=$(basename $(ls ${RUMPOBJ}/tooldir/bin/*-clang) | sed -e 's/-clang//' -e 's/--/-rumprun-/')
 	# possibly some will need to be filtered if compiler complains. Also de-dupe.
-	COMPILER_FLAGS="-fno-stack-protector ${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
+	COMPILER_FLAGS="-fno-stack-protector -Wno-unused-command-line-argument ${EXTRA_CPPFLAGS} ${UNDEF} ${EXTRA_CFLAGS} ${EXTRA_LDSCRIPT_CC}"
 	COMPILER_FLAGS="$(echo ${COMPILER_FLAGS} | sed 's/--sysroot=[^ ]*//g')"
 	# set up sysroot to see if it works
 	( cd ${OUTDIR} && ln -s . usr )
