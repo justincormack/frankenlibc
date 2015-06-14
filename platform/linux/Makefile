@@ -38,111 +38,137 @@ INCLUDES=-I../include -I../../franken/include -I../../franken/init -I../../frank
 CPPFLAGS+=-nostdinc $(INCLUDES)
 CFLAGS+=-fno-stack-protector
 
-default:			$(CRTDIR) $(OBJDIR) $(OBJ)
+default:			$(OBJ)
 
-$(OBJDIR):			
-				mkdir -p $(OBJDIR)
-
-$(CRTDIR):			
-				mkdir -p $(CRTDIR)
-
-$(CRTDIR)/crt1.o:		crt1.c $(CRTDIR)
+$(CRTDIR)/crt1.o:		crt1.c
+				@mkdir -p $(CRTDIR)
 				$(COMPILE.c) -o $@ crt1.c
 
 $(CRTDIR)/Scrt1.o:		$(CRTDIR)/crt1.o
 				ln -f $(CRTDIR)/crt1.o $@
 
-$(CRTDIR)/crti.o:		$(CRTDIR)
+$(CRTDIR)/crti.o:
+				@mkdir -p $(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtn.o:		$(CRTDIR)
+$(CRTDIR)/crtn.o:
+				@mkdir -p $(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtbegin.o:		$(CRTDIR)
+$(CRTDIR)/crtbegin.o:
+				@mkdir -p $(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtbeginT.o:		$(CRTDIR)
+$(CRTDIR)/crtbeginT.o:
+				@mkdir -p $(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
-$(CRTDIR)/crtend.o:		$(CRTDIR)
+$(CRTDIR)/crtend.o:
+				@mkdir -p $(CRTDIR)
 				printf "\n" | $(COMPILE.c) -o $@ -x c -
 
 $(OBJDIR)/clock_getres.o:	clock_getres.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ clock_getres.c
 
 $(OBJDIR)/clock_gettime.o:	clock_gettime.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ clock_gettime.c
 
 $(OBJDIR)/clock_nanosleep.o:	clock_nanosleep.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ clock_nanosleep.c
 
 $(OBJDIR)/_exit.o:		_exit.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ _exit.c
 
 $(OBJDIR)/fcntl.o:		fcntl.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ fcntl.c
 
 $(OBJDIR)/fstat.o:		fstat.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ fstat.c
 
 $(OBJDIR)/fsync.o:		fsync.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ fsync.c
 
 $(OBJDIR)/getpagesize.o:	getpagesize.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ getpagesize.c
 
 $(OBJDIR)/getrandom.o:		getrandom.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ getrandom.c
 
 $(OBJDIR)/kill.o:		kill.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ kill.c
 
 $(OBJDIR)/__libc_start_main.o:	__libc_start_main.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ __libc_start_main.c
 
 $(OBJDIR)/mmap.o:		mmap.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ mmap.c
 
 $(OBJDIR)/mprotect.o:		mprotect.c
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ mprotect.c
 
 $(OBJDIR)/munmap.o:		munmap.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ munmap.c
 
 $(OBJDIR)/pread.o:		pread.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ pread.c
 
 $(OBJDIR)/preadv.o:		preadv.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ preadv.c
 
 $(OBJDIR)/pwrite.o:		pwrite.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ pwrite.c
 
 $(OBJDIR)/pwritev.o:		pwritev.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ pwritev.c
 
 $(OBJDIR)/read.o:		read.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ read.c
 
 $(OBJDIR)/readv.o:		readv.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ readv.c
 
 $(OBJDIR)/set_thread_area.o:	set_thread_area.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ set_thread_area.c
 
 $(OBJDIR)/syscall.o:		syscall.S $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.S) -o $@ syscall.S
 
 $(OBJDIR)/syscall_ret.o:	syscall_ret.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ syscall_ret.c
 
 $(OBJDIR)/vdso.o:		vdso.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ vdso.c
 
 $(OBJDIR)/write.o:		write.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ write.c
 
 $(OBJDIR)/writev.o:		writev.c $(HEADERS)
+				@mkdir -p $(OBJDIR)
 				$(COMPILE.c) -o $@ writev.c
 
 .PHONY:				clean
