@@ -8,6 +8,8 @@ RUMPSRC=${PWD}/src
 OUTDIR=${PWD}/rump
 NCPU=1
 
+EXTRA_AFLAGS="-Wa,--noexecstack"
+
 TARGET=$(LC_ALL=C ${CC-cc} -v 2>&1 | sed -n 's/^Target: //p' )
 
 case ${TARGET} in
