@@ -37,19 +37,20 @@
 
 #include "rumpuser_int.h"
 
-static int pagesize = 0;
+static size_t pagesize = 0;
 
 int
 rumpuser_malloc(size_t size, int alignment, void **memp)
 {
 	void *mem;
 	int af = 0;
+	int sizevoid = sizeof(void *);
 
 	pagesize = (pagesize == 0) ? getpagesize() : pagesize;
 
 	if (size < pagesize) {
-		if (alignment < sizeof(void *))
-			alignment = sizeof(void *);
+		if (alignment < sizevoid)
+			alignment = sizevoid;
 		return posix_memalign(memp, alignment, size);
 	}
 
