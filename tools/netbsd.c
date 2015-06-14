@@ -28,6 +28,8 @@ filter_fd(int fd, int flags, struct stat *st)
 int
 os_pre()
 {
+
+	return 0;
 }
 
 void
@@ -38,7 +40,6 @@ os_dropcaps()
 int
 filter_load_exec(char *program, char **argv, char **envp)
 {
-	int ret;
 
 	if (execve(program, argv, envp) == -1) {
 		perror("execve");
