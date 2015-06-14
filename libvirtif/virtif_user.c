@@ -102,7 +102,7 @@ rcvthread(void *arg)
 int
 rumpns_virt_hwaddr(char *ifname, uint8_t hwaddr[6])
 {
-	int ret, fd;
+	int fd;
 
 	if (strlen(ifname) < 5 || strncmp(ifname, "virt", 4) != 0)
 		return -1;
@@ -141,8 +141,10 @@ VIFHYPER_CREATE(const char *devstr, struct virtif_sc *vif_sc, uint8_t *enaddr,
 	viu->viu_devnum = devnum;
 
 	viu->viu_rcvthr = create_thread(devstr, NULL, rcvthread, viu, NULL, 0, 1);
-	if (! viu->viu_rcvthr)
+	if (! viu->viu_rcvthr) {
+		rv = ENOMEM;
 		goto oerr2;
+	}
 
 	rumpuser_component_schedule(cookie);
 	*viup = viu;
@@ -152,7 +154,7 @@ VIFHYPER_CREATE(const char *devstr, struct virtif_sc *vif_sc, uint8_t *enaddr,
 	free(viu);
  oerr1:
 	rumpuser_component_schedule(cookie);
-	return rumpuser_component_errtrans(rv);
+	return rv;
 }
 
 void
