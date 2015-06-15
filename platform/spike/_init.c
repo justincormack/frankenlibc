@@ -28,8 +28,8 @@ static long handle_frontend_syscall(long which, long arg0, long arg1, long arg2)
 // In setStats, we might trap reading uarch-specific counters.
 // The trap handler will skip over the instruction and write 0,
 // but only if a0 is the destination register.
-#define read_csr_safe(reg) ({ register long __tmp asm("a0"); \
-  asm volatile ("csrr %0, " #reg : "=r"(__tmp)); \
+#define read_csr_safe(reg) ({ register long __tmp __asm__("a0"); \
+  __asm__ volatile ("csrr %0, " #reg : "=r"(__tmp)); \
   __tmp; })
 
 #define NUM_COUNTERS 18
@@ -39,7 +39,7 @@ static int handle_stats(int enable)
 {
   //use csrs to set stats register
   if (enable)
-    asm volatile ("csrrs a0, stats, 1" ::: "a0");
+    __asm__ volatile ("csrrs a0, stats, 1" ::: "a0");
   int i = 0;
 #define READ_CTR(name) do { \
     while (i >= NUM_COUNTERS) ; \
@@ -54,7 +54,7 @@ static int handle_stats(int enable)
   READ_CTR(uarch12); READ_CTR(uarch13); READ_CTR(uarch14); READ_CTR(uarch15);
 #undef READ_CTR
   if (!enable)
-    asm volatile ("csrrc a0, stats, 1" ::: "a0");
+    __asm__ volatile ("csrrc a0, stats, 1" ::: "a0");
   return 0;
 }
 
@@ -67,7 +67,7 @@ static void tohost_exit(int code)
 long handle_trap(long cause, long epc, long regs[32])
 {
   int* csr_insn;
-  asm ("jal %0, 1f; csrr a0, stats; 1:" : "=r"(csr_insn));
+  __asm__ ("jal %0, 1f; csrr a0, stats; 1:" : "=r"(csr_insn));
   long sys_ret = 0;
 
   if (cause == CAUSE_ILLEGAL_INSTRUCTION &&
@@ -88,11 +88,11 @@ long handle_trap(long cause, long epc, long regs[32])
 
 long _syscall(long num, long arg0, long arg1, long arg2)
 {
-  register long a7 asm("a7") = num;
-  register long a0 asm("a0") = arg0;
-  register long a1 asm("a1") = arg1;
-  register long a2 asm("a2") = arg2;
-  asm volatile ("scall" : "+r"(a0) : "r"(a1), "r"(a2), "r"(a7));
+  register long a7 __asm__("a7") = num;
+  register long a0 __asm__("a0") = arg0;
+  register long a1 __asm__("a1") = arg1;
+  register long a2 __asm__("a2") = arg2;
+  __asm__ volatile ("scall" : "+r"(a0) : "r"(a1), "r"(a2), "r"(a7));
   return a0;
 }
 
@@ -117,7 +117,7 @@ int __attribute__((weak)) main(int argc, char** argv)
 
 static void init_tls()
 {
-  register void* thread_pointer asm("tp");
+  register void* thread_pointer __asm__("tp");
   extern char _tls_data;
   extern __thread char _tdata_begin, _tdata_end, _tbss_end;
   size_t tdata_size = &_tdata_end - &_tdata_begin;
