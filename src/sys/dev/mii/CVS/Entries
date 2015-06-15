@@ -41,7 +41,7 @@
 /makphyreg.h/1.6/Tue May 13 02:53:54 2014//
 /mdio.h/1.3/Mon Apr 15 16:19:48 2013//
 /micphy.c/1.3/Fri Sep 26 08:05:00 2014//
-/mii.c/1.50/Fri Dec  4 22:37:35 2009//
+/mii.c/1.51/Thu Jun 11 05:22:55 2015//
 /mii.h/1.18/Mon Jun 16 14:43:22 2014//
 /mii_bitbang.c/1.12/Sun May  4 17:06:09 2008//
 /mii_bitbang.h/1.6/Tue May 12 14:31:27 2009//
@@ -49,9 +49,9 @@
 /mii_physubr.c/1.80/Thu Jun 20 13:56:29 2013//
 /mii_verbose.c/1.3/Sun Jul 25 14:44:34 2010//
 /mii_verbose.h/1.2/Sun Jun  6 18:58:22 2010//
-/miidevs/1.122/Sun Nov  9 17:53:37 2014//
-/miidevs.h/1.125/Sun Nov  9 18:40:19 2014//
-/miidevs_data.h/1.113/Sun Nov  9 17:54:02 2014//
+/miidevs/1.123/Tue Jun  9 21:41:23 2015//
+/miidevs.h/1.126/Tue Jun  9 21:41:55 2015//
+/miidevs_data.h/1.114/Tue Jun  9 21:41:55 2015//
 /miivar.h/1.62/Wed May 28 09:49:55 2014//
 /mvphy.c/1.10/Mon Jun 16 16:48:16 2014//
 /mvphyreg.h/1.1/Fri Jul 21 23:55:27 2006//

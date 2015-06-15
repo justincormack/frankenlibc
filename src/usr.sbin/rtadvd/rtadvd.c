@@ -1,4 +1,4 @@
-/*	$NetBSD: rtadvd.c,v 1.46 2014/02/27 17:43:02 joerg Exp $	*/
+/*	$NetBSD: rtadvd.c,v 1.50 2015/06/15 04:15:33 ozaki-r Exp $	*/
 /*	$KAME: rtadvd.c,v 1.92 2005/10/17 14:40:02 suz Exp $	*/
 
 /*
@@ -175,7 +175,7 @@ int
 main(int argc, char *argv[])
 {
 	struct pollfd set[2];
-	struct timeval *timeout;
+	struct timespec *timeout;
 	int i, ch;
 	int fflag = 0, logopt;
 	struct passwd *pw;
@@ -311,20 +311,20 @@ main(int argc, char *argv[])
 				getconfig(*argv++, 0);
 		}
 
+		/* timer expiration check and reset the timer */
+		timeout = rtadvd_check_timer();
+
 		if (do_die) {
 			die();
 			/*NOTREACHED*/
 		}
-
-		/* timer expiration check and reset the timer */
-		timeout = rtadvd_check_timer();
 
 		if (timeout != NULL) {
 			syslog(LOG_DEBUG,
 			    "<%s> set timer to %ld:%ld. waiting for "
 			    "inputs or timeout", __func__,
 			    (long int)timeout->tv_sec,
-			    (long int)timeout->tv_usec);
+			    (long int)timeout->tv_nsec);
 		} else {
 			syslog(LOG_DEBUG,
 			    "<%s> there's no timer. waiting for inputs",
@@ -332,11 +332,11 @@ main(int argc, char *argv[])
 		}
 
 		if ((i = poll(set, 2, timeout ? (timeout->tv_sec * 1000 +
-		    timeout->tv_usec / 1000) : INFTIM)) < 0) {
+		    (timeout->tv_nsec + 999999) / 1000000) : INFTIM)) < 0)
+		{
 			/* EINTR would occur upon SIGUSR1 for status dump */
 			if (errno != EINTR)
-				syslog(LOG_ERR, "<%s> poll: %s",
-				    __func__, strerror(errno));
+				syslog(LOG_ERR, "<%s> poll: %m", __func__);
 			continue;
 		}
 		if (i == 0)	/* timeout */
@@ -991,7 +991,7 @@ void
 ra_timer_set_short_delay(struct rainfo *rai)
 {
 	long delay;	/* must not be greater than 1000000 */
-	struct timeval interval, now, min_delay, tm_tmp, *rest;
+	struct timespec interval, now, min_delay, tm_tmp, *rest;
 
 	/*
 	 * Compute a random delay. If the computed value
@@ -1002,9 +1002,9 @@ ra_timer_set_short_delay(struct rainfo *rai)
 	 */
 	delay = arc4random() % MAX_RA_DELAY_TIME;
 	interval.tv_sec = 0;
-	interval.tv_usec = delay;
+	interval.tv_nsec = delay;
 	rest = rtadvd_timer_rest(rai->timer);
-	if (TIMEVAL_LT(*rest, interval)) {
+	if (timespeccmp(rest, &interval, <)) {
 		syslog(LOG_DEBUG, "<%s> random delay is larger than "
 		    "the rest of current timer", __func__);
 		interval = *rest;
@@ -1017,13 +1017,13 @@ ra_timer_set_short_delay(struct rainfo *rai)
 	 * MIN_DELAY_BETWEEN_RAS plus the random value after the
 	 * previous advertisement was sent.
 	 */
-	gettimeofday(&now, NULL);
-	TIMEVAL_SUB(&now, &rai->lastsent, &tm_tmp);
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	timespecsub(&now, &rai->lastsent, &tm_tmp);
 	min_delay.tv_sec = MIN_DELAY_BETWEEN_RAS;
-	min_delay.tv_usec = 0;
-	if (TIMEVAL_LT(tm_tmp, min_delay)) {
-		TIMEVAL_SUB(&min_delay, &tm_tmp, &min_delay);
-		TIMEVAL_ADD(&min_delay, &interval, &interval);
+	min_delay.tv_nsec = 0;
+	if (timespeccmp(&tm_tmp, &min_delay, <)) {
+		timespecsub(&min_delay, &tm_tmp, &min_delay);
+		timespecadd(&min_delay, &interval, &interval);
 	}
 	rtadvd_set_timer(&interval, rai->timer);
 }
@@ -1199,7 +1199,7 @@ prefix_check(struct nd_opt_prefix_info *pinfo,
 	struct prefix *pp;
 	int inconsistent = 0;
 	char ntopbuf[INET6_ADDRSTRLEN], prefixbuf[INET6_ADDRSTRLEN];
-	struct timeval now;
+	struct timespec now;
 
 #if 0				/* impossible */
 	if (pinfo->nd_opt_pi_type != ND_OPT_PREFIX_INFORMATION)
@@ -1245,7 +1245,7 @@ prefix_check(struct nd_opt_prefix_info *pinfo,
 		 * XXX: can we really expect that all routers on the link
 		 * have synchronized clocks?
 		 */
-		gettimeofday(&now, NULL);
+		clock_gettime(CLOCK_MONOTONIC, &now);
 		preferred_time += now.tv_sec;
 
 		if (!pp->timer && rai->clockskew &&
@@ -1281,7 +1281,7 @@ prefix_check(struct nd_opt_prefix_info *pinfo,
 
 	valid_time = ntohl(pinfo->nd_opt_pi_valid_time);
 	if (pp->vltimeexpire) {
-		gettimeofday(&now, NULL);
+		clock_gettime(CLOCK_MONOTONIC, &now);
 		valid_time += now.tv_sec;
 
 		if (!pp->timer && rai->clockskew &&
@@ -1499,21 +1499,27 @@ sock_open(void)
 				CMSG_SPACE(sizeof(int));
 	rcvcmsgbuf = malloc(rcvcmsgbuflen);
 	if (rcvcmsgbuf == NULL) {
-		syslog(LOG_ERR, "<%s> not enough core", __func__);
+		syslog(LOG_ERR, "<%s> malloc: %m", __func__);
 		exit(1);
 	}
 
-	sndcmsgbuflen = CMSG_SPACE(sizeof(struct in6_pktinfo)) + 
-				CMSG_SPACE(sizeof(int));
+	sndcmsgbuflen = CMSG_SPACE(sizeof(struct in6_pktinfo));
 	sndcmsgbuf = malloc(sndcmsgbuflen);
 	if (sndcmsgbuf == NULL) {
-		syslog(LOG_ERR, "<%s> not enough core", __func__);
+		syslog(LOG_ERR, "<%s> malloc: %m", __func__);
 		exit(1);
 	}
 
 	if ((sock = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6)) < 0) {
-		syslog(LOG_ERR, "<%s> socket: %s", __func__,
-		       strerror(errno));
+		syslog(LOG_ERR, "<%s> socket: %m", __func__);
+		exit(1);
+	}
+
+	/* RFC 4861 Section 4.2 */
+	on = 255;
+	if (setsockopt(sock, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &on,
+		       sizeof(on)) == -1) {
+		syslog(LOG_ERR, "<%s> IPV6_MULTICAST_HOPS: %m", __func__);
 		exit(1);
 	}
 
@@ -1522,15 +1528,13 @@ sock_open(void)
 #ifdef IPV6_RECVPKTINFO
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_RECVPKTINFO, &on,
 		       sizeof(on)) < 0) {
-		syslog(LOG_ERR, "<%s> IPV6_RECVPKTINFO: %s",
-		       __func__, strerror(errno));
+		syslog(LOG_ERR, "<%s> IPV6_RECVPKTINFO: %m", __func__);
 		exit(1);
 	}
 #else  /* old adv. API */
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_PKTINFO, &on,
 		       sizeof(on)) < 0) {
-		syslog(LOG_ERR, "<%s> IPV6_PKTINFO: %s",
-		       __func__, strerror(errno));
+		syslog(LOG_ERR, "<%s> IPV6_PKTINFO: %m", __func__);
 		exit(1);
 	}
 #endif 
@@ -1540,15 +1544,13 @@ sock_open(void)
 #ifdef IPV6_RECVHOPLIMIT
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_RECVHOPLIMIT, &on,
 		       sizeof(on)) < 0) {
-		syslog(LOG_ERR, "<%s> IPV6_RECVHOPLIMIT: %s",
-		       __func__, strerror(errno));
+		syslog(LOG_ERR, "<%s> IPV6_RECVHOPLIMIT: %m", __func__);
 		exit(1);
 	}
 #else  /* old adv. API */
 	if (setsockopt(sock, IPPROTO_IPV6, IPV6_HOPLIMIT, &on,
 		       sizeof(on)) < 0) {
-		syslog(LOG_ERR, "<%s> IPV6_HOPLIMIT: %s",
-		       __func__, strerror(errno));
+		syslog(LOG_ERR, "<%s> IPV6_HOPLIMIT: %m", __func__);
 		exit(1);
 	}
 #endif
@@ -1560,8 +1562,7 @@ sock_open(void)
 		ICMP6_FILTER_SETPASS(ICMP6_ROUTER_RENUMBERING, &filt);
 	if (setsockopt(sock, IPPROTO_ICMPV6, ICMP6_FILTER, &filt,
 		       sizeof(filt)) < 0) {
-		syslog(LOG_ERR, "<%s> IICMP6_FILTER: %s",
-		       __func__, strerror(errno));
+		syslog(LOG_ERR, "<%s> IICMP6_FILTER: %m", __func__);
 		exit(1);
 	}
 
@@ -1579,8 +1580,8 @@ sock_open(void)
 		mreq.ipv6mr_interface = ra->ifindex;
 		if (setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, &mreq,
 			       sizeof(mreq)) < 0) {
-			syslog(LOG_ERR, "<%s> IPV6_JOIN_GROUP(link) on %s: %s",
-			       __func__, ra->ifname, strerror(errno));
+			syslog(LOG_ERR, "<%s> IPV6_JOIN_GROUP(link) on %s: %m",
+			       __func__, ra->ifname);
 			exit(1);
 		}
 	}
@@ -1611,10 +1612,9 @@ sock_open(void)
 		if (setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP,
 			       &mreq, sizeof(mreq)) < 0) {
 			syslog(LOG_ERR,
-			       "<%s> IPV6_JOIN_GROUP(site) on %s: %s",
+			       "<%s> IPV6_JOIN_GROUP(site) on %s: %m",
 			       __func__,
-			       mcastif ? mcastif : ra->ifname,
-			       strerror(errno));
+			       mcastif ? mcastif : ra->ifname);
 			exit(1);
 		}
 	}
@@ -1644,8 +1644,7 @@ static void
 rtsock_open(void)
 {
 	if ((rtsock = socket(PF_ROUTE, SOCK_RAW, 0)) < 0) {
-		syslog(LOG_ERR,
-		       "<%s> socket: %s", __func__, strerror(errno));
+		syslog(LOG_ERR, "<%s> socket: %m", __func__);
 		exit(1);
 	}
 }
@@ -1692,17 +1691,6 @@ ra_output(struct rainfo *rai)
 	memset(&pi->ipi6_addr, 0, sizeof(pi->ipi6_addr));	/*XXX*/
 	pi->ipi6_ifindex = rai->ifindex;
 
-	/* specify the hop limit of the packet */
-	{
-		int hoplimit = 255;
-
-		cm = CMSG_NXTHDR(&sndmhdr, cm);
-		cm->cmsg_level = IPPROTO_IPV6;
-		cm->cmsg_type = IPV6_HOPLIMIT;
-		cm->cmsg_len = CMSG_LEN(sizeof(int));
-		memcpy(CMSG_DATA(cm), &hoplimit, sizeof(int));
-	}
-
 	syslog(LOG_DEBUG,
 	       "<%s> send RA on %s, # of waitings = %d",
 	       __func__, rai->ifname, rai->waiting); 
@@ -1711,9 +1699,8 @@ ra_output(struct rainfo *rai)
 
 	if (i < 0 || (size_t)i != rai->ra_datalen)  {
 		if (i < 0) {
-			syslog(LOG_ERR, "<%s> sendmsg on %s: %s",
-			       __func__, rai->ifname,
-			       strerror(errno));
+			syslog(LOG_ERR, "<%s> sendmsg on %s: %m",
+			       __func__, rai->ifname);
 		}
 	}
 
@@ -1729,9 +1716,8 @@ ra_output(struct rainfo *rai)
 		if (i < 0 || i != rai->ra_datalen)  {
 			if (i < 0) {
 				syslog(LOG_ERR,
-				    "<%s> unicast sendmsg on %s: %s",
-				    __func__, rai->ifname,
-				    strerror(errno));
+				    "<%s> unicast sendmsg on %s: %m",
+				    __func__, rai->ifname);
 			}
 		}
 #endif
@@ -1767,7 +1753,7 @@ ra_output(struct rainfo *rai)
 	rai->raoutput++;
 
 	/* update timestamp */
-	gettimeofday(&rai->lastsent, NULL);
+	clock_gettime(CLOCK_MONOTONIC, &rai->lastsent);
 
 	/* reset waiting conter */
 	rai->waiting = 0;
@@ -1796,7 +1782,7 @@ ra_timeout(void *data)
 
 /* update RA timer */
 void
-ra_timer_update(void *data, struct timeval *tm)
+ra_timer_update(void *data, struct timespec *tm)
 {
 	struct rainfo *rai = (struct rainfo *)data;
 	long interval;
@@ -1823,12 +1809,12 @@ ra_timer_update(void *data, struct timeval *tm)
 		interval = MAX_INITIAL_RTR_ADVERT_INTERVAL;
 
 	tm->tv_sec = interval;
-	tm->tv_usec = 0;
+	tm->tv_nsec = 0;
 
 	syslog(LOG_DEBUG,
 	       "<%s> RA timer on %s is set to %ld:%ld",
 	       __func__, rai->ifname,
-	       (long int)tm->tv_sec, (long int)tm->tv_usec);
+	       (long int)tm->tv_sec, (long int)tm->tv_nsec);
 
 	return;
 }

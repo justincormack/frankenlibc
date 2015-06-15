@@ -7,7 +7,7 @@
 /bsd.doc.mk/1.67/Sun Jul  6 18:22:03 2014//
 /bsd.endian.mk/1.22/Fri Sep 19 17:45:42 2014//
 /bsd.files.mk/1.43/Sat Apr  6 15:39:19 2013//
-/bsd.gcc.mk/1.10/Mon Dec 10 23:49:39 2012//
+/bsd.gcc.mk/1.11/Sun Jun  7 15:04:28 2015//
 /bsd.host.mk/1.2/Thu Apr 10 19:02:18 2014//
 /bsd.hostlib.mk/1.19/Mon Dec  1 01:34:30 2014//
 /bsd.hostprog.mk/1.74/Mon Dec  1 01:34:30 2014//
@@ -19,14 +19,14 @@
 /bsd.kinc.mk/1.36/Thu Mar 16 18:43:34 2006//
 /bsd.klinks.mk/1.13/Sun Aug 10 05:57:31 2014//
 /bsd.kmodule.mk/1.53/Sat May  2 18:18:13 2015//
-/bsd.lib.mk/1.356/Mon Dec  1 01:34:30 2014//
+/bsd.lib.mk/1.358/Thu Jun  4 06:01:24 2015//
 /bsd.links.mk/1.34/Fri Apr 10 16:16:12 2009//
 /bsd.lua.mk/1.7/Sat Jul 19 18:38:34 2014//
 /bsd.man.mk/1.117/Fri Dec 19 22:25:39 2014//
 /bsd.nls.mk/1.47/Sat Sep 10 16:57:35 2011//
 /bsd.obj.mk/1.49/Mon Jan 25 00:43:00 2010//
-/bsd.own.mk/1.852/Fri May 29 14:15:14 2015//
-/bsd.prog.mk/1.291/Mon Dec  1 01:34:30 2014//
+/bsd.own.mk/1.853/Thu Jun  4 05:56:23 2015//
+/bsd.prog.mk/1.292/Sun Jun  7 15:04:28 2015//
 /bsd.rpc.mk/1.13/Sun Dec 15 00:28:45 2013//
 /bsd.shlib.mk/1.8/Thu Aug 23 21:21:17 2012//
 /bsd.subdir.mk/1.52/Wed May 26 00:48:15 2010//

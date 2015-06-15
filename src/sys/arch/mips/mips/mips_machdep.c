@@ -1,4 +1,4 @@
-/*	$NetBSD: mips_machdep.c,v 1.264 2015/05/25 23:45:54 matt Exp $	*/
+/*	$NetBSD: mips_machdep.c,v 1.269 2015/06/11 15:48:57 matt Exp $	*/
 
 /*
  * Copyright 2002 Wasabi Systems, Inc.
@@ -111,7 +111,7 @@
  */
 
 #include <sys/cdefs.h>			/* RCS ID & Copyright macro defns */
-__KERNEL_RCSID(0, "$NetBSD: mips_machdep.c,v 1.264 2015/05/25 23:45:54 matt Exp $");
+__KERNEL_RCSID(0, "$NetBSD: mips_machdep.c,v 1.269 2015/06/11 15:48:57 matt Exp $");
 
 #define __INTR_PRIVATE
 #include "opt_cputype.h"
@@ -172,10 +172,10 @@ __KERNEL_RCSID(0, "$NetBSD: mips_machdep.c,v 1.264 2015/05/25 23:45:54 matt Exp 
 
 #ifdef _LP64
 #define	_LOAD_V0_L_PRIVATE_A0	_MKINSN(OP_LD, _R_A0, _R_V0, 0, offsetof(lwp_t, l_private))
-#define	_MTC0_V0_USERLOCAL	_MKINSN(OP_COP0, OP_DMT, _R_V0, MIPS_COP_0_TLB_CONTEXT, 4)
+#define	_MTC0_V0_USERLOCAL	_MKINSN(OP_COP0, OP_DMT, _R_V0, MIPS_COP_0_TLB_CONTEXT, 2)
 #else
 #define	_LOAD_V0_L_PRIVATE_A0	_MKINSN(OP_LW, _R_A0, _R_V0, 0, offsetof(lwp_t, l_private))
-#define	_MTC0_V0_USERLOCAL	_MKINSN(OP_COP0, OP_MT, _R_V0, MIPS_COP_0_TLB_CONTEXT, 4)
+#define	_MTC0_V0_USERLOCAL	_MKINSN(OP_COP0, OP_MT, _R_V0, MIPS_COP_0_TLB_CONTEXT, 2)
 #endif
 #define	JR_RA			_MKINSN(OP_SPECIAL, _R_RA, 0, 0, OP_JR)
 
@@ -239,7 +239,6 @@ extern const mips_locore_jumpvec_t mips64_locore_vec;
 #endif
 
 #if defined(MIPS64R2)
-static void	mips64r2_vector_init(const struct splsw *);
 extern const struct locoresw mips64r2_locoresw;
 extern const mips_locore_jumpvec_t mips64r2_locore_vec;
 #endif
@@ -490,6 +489,13 @@ static const struct pridtab cputab[] = {
 	  MIPS_CP0FL_CONFIG | MIPS_CP0FL_CONFIG1 | MIPS_CP0FL_CONFIG2 |
 	  MIPS_CP0FL_CONFIG3 | MIPS_CP0FL_CONFIG6 | MIPS_CP0FL_CONFIG7,
 	  0, "1004K" },
+	{ MIPS_PRID_CID_MTI, MIPS_1074K, -1, -1,	-1, 0,
+	  MIPS32_FLAGS | CPU_MIPS_DOUBLE_COUNT,
+	  MIPS_CP0FL_USE |
+	  MIPS_CP0FL_EBASE | MIPS_CP0FL_USERLOCAL | MIPS_CP0FL_HWRENA |
+	  MIPS_CP0FL_CONFIG | MIPS_CP0FL_CONFIG1 | MIPS_CP0FL_CONFIG2 |
+	  MIPS_CP0FL_CONFIG3 | MIPS_CP0FL_CONFIG6 | MIPS_CP0FL_CONFIG7,
+	  0, "1074K" },
 
 	{ MIPS_PRID_CID_BROADCOM, MIPS_BCM3302, -1, -1, -1, 0,
 	  MIPS32_FLAGS | CPU_MIPS_DOUBLE_COUNT, 0, 0, "BCM3302"	},
@@ -1005,7 +1011,7 @@ mips64_vector_init(const struct splsw *splsw)
 #endif /* MIPS64 */
 
 #if defined(MIPS64R2)
-static void
+void
 mips64r2_vector_init(const struct splsw *splsw)
 {
 	/* r4000 exception handler address */
@@ -1041,7 +1047,13 @@ mips64r2_vector_init(const struct splsw *splsw)
 		panic("startup: %s vector code too large",
 		    "interrupt exception");
 
-	memcpy((void *)MIPS_UTLB_MISS_EXC_VEC, mips64r2_tlb_miss,
+	const intptr_t ebase = (intptr_t)mipsNN_cp0_ebase_read();
+	const int cpunum = ebase & MIPS_EBASE_CPUNUM;
+
+	// This may need to be on CPUs other CPU0 so use EBASE to fetch
+	// the appropriate address for exception code.  EBASE also contains
+	// the cpunum so remove that.
+	memcpy((void *)(ebase & ~MIPS_EBASE_CPUNUM), mips64r2_tlb_miss,
 	      mips64r2_intr_end - mips64r2_tlb_miss);
 
 	/*
@@ -1062,7 +1074,7 @@ mips64r2_vector_init(const struct splsw *splsw)
 	 * If this CPU doesn't have a COP0 USERLOCAL register, at the end
 	 * of cpu_switch resume overwrite the instructions which update it.
 	 */
-	if (!(cp0flags & MIPS_CP0FL_USERLOCAL)) {
+	if (!(cp0flags & MIPS_CP0FL_USERLOCAL) && cpunum == 0) {
 		extern uint32_t mips64r2_cpu_switch_resume[];
 		for (uint32_t *insnp = mips64r2_cpu_switch_resume;; insnp++) {
 			KASSERT(insnp[0] != JR_RA);
@@ -1078,7 +1090,8 @@ mips64r2_vector_init(const struct splsw *splsw)
 	/*
 	 * Copy locore-function vector.
 	 */
-	mips_locore_jumpvec = mips64r2_locore_vec;
+	if (cpunum == 0)
+		mips_locore_jumpvec = mips64r2_locore_vec;
 
 	mips_icache_sync_all();
 	mips_dcache_wbinv_all();
@@ -1803,7 +1816,6 @@ cpu_dump(void)
 		cpuhdrp->pg_v      = MIPS1_PG_V;
 	}
 	cpuhdrp->sysmappa   = MIPS_KSEG0_TO_PHYS(Sysmap);
-	cpuhdrp->sysmapsize = Sysmapsize;
 	cpuhdrp->nmemsegs   = mem_cluster_cnt;
 
 	/*
@@ -2382,7 +2394,7 @@ mm_md_kernacc(void *ptr, vm_prot_t prot, bool *handled)
 	if (v < MIPS_XKPHYS_START) {
 		return EFAULT;
 	}
-	if (MIPS_XKPHYS_P(v) && v > MIPS_PHYS_TO_XKPHYS_CACHED(mips_avail_end +
+	if (MIPS_XKPHYS_P(v) && v > MIPS_PHYS_TO_XKPHYS_CACHED(pmap_limits.avail_end +
 	    mips_round_page(MSGBUFSIZE))) {
 		return EFAULT;
 	}
@@ -2397,7 +2409,7 @@ mm_md_kernacc(void *ptr, vm_prot_t prot, bool *handled)
 	if (v < MIPS_KSEG0_START) {
 		return EFAULT;
 	}
-	if (v < MIPS_PHYS_TO_KSEG0(mips_avail_end +
+	if (v < MIPS_PHYS_TO_KSEG0(pmap_limits.avail_end +
 	    mips_round_page(MSGBUFSIZE))) {
 		*handled = true;
 		return 0;

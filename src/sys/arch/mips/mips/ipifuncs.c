@@ -1,4 +1,4 @@
-/*	$NetBSD: ipifuncs.c,v 1.8 2015/04/14 22:36:53 jmcneill Exp $	*/
+/*	$NetBSD: ipifuncs.c,v 1.10 2015/06/10 22:31:00 matt Exp $	*/
 
 /*-
  * Copyright (c) 2010 The NetBSD Foundation, Inc.
@@ -32,7 +32,7 @@
 #include "opt_ddb.h"
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: ipifuncs.c,v 1.8 2015/04/14 22:36:53 jmcneill Exp $");
+__KERNEL_RCSID(0, "$NetBSD: ipifuncs.c,v 1.10 2015/06/10 22:31:00 matt Exp $");
 
 #include <sys/param.h>
 #include <sys/cpu.h>
@@ -44,7 +44,6 @@ __KERNEL_RCSID(0, "$NetBSD: ipifuncs.c,v 1.8 2015/04/14 22:36:53 jmcneill Exp $"
 #include <uvm/uvm_extern.h>
 
 #include <mips/cache.h>
-#include <mips/cpuset.h>
 #ifdef DDB
 #include <mips/db_machdep.h>
 #endif
@@ -61,6 +60,7 @@ static const char * const ipi_names[] = {
 	[IPI_HALT]	= "ipi halt",
 	[IPI_XCALL]	= "ipi xcall",
 	[IPI_GENERIC]	= "ipi generic",
+	[IPI_WDOG]	= "ipi wdog",
 };
 
 static void
@@ -101,7 +101,7 @@ ipi_halt(void)
 {
 	const u_int my_cpu = cpu_number();
 	printf("cpu%u: shutting down\n", my_cpu);
-	CPUSET_ADD(cpus_halted, my_cpu);
+	kcpuset_set(cpus_halted, my_cpu);
 	splhigh();
 	for (;;)
 		;
@@ -154,7 +154,7 @@ ipi_init(struct cpu_info *ci)
 	    NULL, device_xname(ci->ci_dev), "ipi");
 
 	for (size_t i = 0; i < NIPIS; i++) {
-		KASSERT(ipi_names[i] != NULL);
+		KASSERTMSG(ipi_names[i] != NULL, "%zu", i);
 		evcnt_attach_dynamic(&ci->ci_evcnt_per_ipi[i], EVCNT_TYPE_INTR,
 		    NULL, device_xname(ci->ci_dev), ipi_names[i]);
 	}

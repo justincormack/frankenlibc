@@ -1,4 +1,4 @@
-#	$NetBSD: Makefile.inc,v 1.27 2015/05/17 22:08:24 justin Exp $
+#	$NetBSD: Makefile.inc,v 1.29 2015/06/07 15:06:24 matt Exp $
 
 .ifnmake obj
 .include "${NETBSDSRCDIR}/common/lib/libc/arch/arm/features.mk"

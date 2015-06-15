@@ -17,11 +17,11 @@
 /lfs_pages.c/1.1/Fri May 16 09:34:03 2014//
 /lfs_rename.c/1.8/Fri Mar 27 17:27:56 2015//
 /lfs_rfw.c/1.20/Sun May 31 15:48:03 2015//
-/lfs_segment.c/1.240/Sun May 31 15:48:03 2015//
+/lfs_segment.c/1.241/Sun Jun  7 13:39:48 2015//
 /lfs_subr.c/1.80/Sun Jul 28 01:05:52 2013//
 /lfs_syscalls.c/1.160/Sun May 31 15:48:03 2015//
-/lfs_vfsops.c/1.324/Sun May 31 15:48:03 2015//
-/lfs_vnops.c/1.272/Sun May 31 15:48:03 2015//
+/lfs_vfsops.c/1.325/Sun Jun  7 13:39:48 2015//
+/lfs_vnops.c/1.273/Sun Jun  7 13:39:48 2015//
 /ulfs_bmap.c/1.5/Sun Jul 28 01:10:49 2013//
 /ulfs_bswap.h/1.6/Fri Oct 18 15:15:22 2013//
 /ulfs_dinode.h/1.11/Sat Jun  8 22:19:01 2013//

@@ -5,7 +5,7 @@
 /ansi.h/1.17/Mon Feb 24 16:57:57 2014//
 /aout_machdep.h/1.7/Mon Feb 24 16:57:57 2014//
 /apmvar.h/1.2/Mon Feb 24 16:57:57 2014//
-/armreg.h/1.106/Sat May 30 20:39:56 2015//
+/armreg.h/1.107/Tue Jun  9 08:08:14 2015//
 /asm.h/1.27/Tue Mar  4 15:27:58 2014//
 /atomic.h/1.11/Wed Nov 19 06:39:17 2008//
 /blockio.h/1.2/Sat Jun  2 10:44:56 2001//
@@ -43,7 +43,7 @@
 /kcore.h/1.1/Tue Jan  1 14:06:43 2008//
 /limits.h/1.18/Mon Feb 24 16:57:57 2014//
 /lock.h/1.32/Wed Feb 25 13:52:42 2015//
-/locore.h/1.23/Thu May 28 21:52:36 2015//
+/locore.h/1.26/Tue Jun  9 08:13:17 2015//
 /math.h/1.4/Fri Jan 31 19:38:06 2014//
 /mcontext.h/1.18/Tue Mar 24 08:38:29 2015//
 /mutex.h/1.20/Wed Feb 25 13:52:42 2015//

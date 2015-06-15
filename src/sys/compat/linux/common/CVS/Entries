@@ -11,7 +11,7 @@
 /linux_exec.c/1.117/Sun Nov  9 17:48:08 2014//
 /linux_exec.h/1.51/Fri Feb 21 07:53:53 2014//
 /linux_exec_aout.c/1.67/Sun Nov  9 17:48:08 2014//
-/linux_exec_elf32.c/1.92/Fri Mar 20 20:36:27 2015//
+/linux_exec_elf32.c/1.93/Thu Jun 11 02:54:00 2015//
 /linux_exec_elf64.c/1.3/Mon Apr 28 20:23:43 2008//
 /linux_fadvise64.c/1.3/Sun Nov  9 17:48:08 2014//
 /linux_fadvise64_64.c/1.3/Sun Nov  9 17:48:08 2014//

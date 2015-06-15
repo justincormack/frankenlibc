@@ -36,13 +36,13 @@
 /fssvar.h/1.28/Fri Feb 28 10:16:51 2014//
 /keylock.c/1.3/Tue Feb 25 18:30:09 2014//
 /keylock.h/1.1/Sat Aug 15 09:43:58 2009//
-/kloader.c/1.26/Sat Jan 25 10:14:29 2014//
+/kloader.c/1.27/Thu Jun 11 08:14:38 2015//
 /kloader.h/1.7/Mon Sep  8 23:36:54 2008//
 /kttcp.c/1.37/Fri Aug  8 03:05:44 2014//
 /kttcpio.h/1.1/Fri Jun 28 23:27:14 2002//
 /ld.c/1.83/Sat May  2 08:00:08 2015//
 /ldvar.h/1.23/Sat May  2 08:00:08 2015//
-/lockstat.c/1.22/Wed Mar 11 16:00:54 2015//
+/lockstat.c/1.23/Sun Jun  7 06:08:37 2015//
 /lockstat.h/1.13/Mon Mar  9 01:41:41 2015//
 /md.c/1.74/Sun Apr 26 15:15:20 2015//
 /md.h/1.11/Mon Dec 14 03:11:22 2009//

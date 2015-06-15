@@ -1,4 +1,4 @@
-/*	$NetBSD: tty.c,v 1.262 2014/09/05 05:33:39 matt Exp $	*/
+/*	$NetBSD: tty.c,v 1.264 2015/06/14 16:19:31 gson Exp $	*/
 
 /*-
  * Copyright (c) 2008 The NetBSD Foundation, Inc.
@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: tty.c,v 1.262 2014/09/05 05:33:39 matt Exp $");
+__KERNEL_RCSID(0, "$NetBSD: tty.c,v 1.264 2015/06/14 16:19:31 gson Exp $");
 
 #include "opt_compat_netbsd.h"
 

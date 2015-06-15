@@ -1,4 +1,4 @@
-/*	$NetBSD: locore.h,v 1.23 2015/05/28 21:52:36 matt Exp $	*/
+/*	$NetBSD: locore.h,v 1.26 2015/06/09 08:13:17 skrll Exp $	*/
 
 /*
  * Copyright (c) 1994-1996 Mark Brinicombe.
@@ -79,7 +79,7 @@
 	mrs	r0, cpsr ; \
 	bic	r0, r0, #(I32_bit) ; \
 	msr	cpsr_c, r0 ; \
-	ldmfd	sp!, {r0}		
+	ldmfd	sp!, {r0}
 #else
 /* Not yet used in 26-bit code */
 #endif
@@ -93,7 +93,7 @@
 #define GET_CURCPU(rX)		GET_CURLWP(rX); ldr rX, [rX, #L_CPU]
 #elif defined(_ARM_ARCH_7)
 #define GET_CURCPU(rX)		movw rX, #:lower16:cpu_info_store; movt rX, #:upper16:cpu_info_store
-#else 
+#else
 #define GET_CURCPU(rX)		ldr rX, =_C_LABEL(cpu_info_store)
 #endif
 #elif !defined(MULTIPROCESSOR)
@@ -133,7 +133,11 @@
 		((r15) & (R15_IRQ_DISABLE | R15_FIQ_DISABLE)) == 0)
 #endif
 
-
+/*
+ * Translation Table Base Register Share/Cache settings
+ */
+#define	TTBR_UPATTR	(TTBR_S | TTBR_RGN_WBNWA | TTBR_C)
+#define	TTBR_MPATTR	(TTBR_S | TTBR_RGN_WBNWA /* | TTBR_NOS */ | TTBR_IRGN_WBNWA)
 
 /* The address of the vector page. */
 extern vaddr_t vector_page;

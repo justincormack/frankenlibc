@@ -1,4 +1,4 @@
-/*	$NetBSD: rrenum.c,v 1.16 2013/05/17 07:53:05 skrll Exp $	*/
+/*	$NetBSD: rrenum.c,v 1.18 2015/06/05 15:41:59 roy Exp $	*/
 /*	$KAME: rrenum.c,v 1.14 2004/06/14 05:36:00 itojun Exp $	*/
 
 /*
@@ -165,8 +165,7 @@ do_use_prefix(int len, struct rr_pco_match *rpm,
 		irr->irr_useprefix.sin6_addr = in6addr_any;
 		if (ioctl(s, rrcmd2pco[rpm->rpm_code], irr) < 0 &&
 		    errno != EADDRNOTAVAIL)
-			syslog(LOG_ERR, "<%s> ioctl: %s", __func__,
-			       strerror(errno));
+			syslog(LOG_ERR, "<%s> ioctl: %m", __func__);
 		return;
 	}
 
@@ -197,8 +196,7 @@ do_use_prefix(int len, struct rr_pco_match *rpm,
 
 		if (ioctl(s, rrcmd2pco[rpm->rpm_code], irr) < 0 &&
 		    errno != EADDRNOTAVAIL)
-			syslog(LOG_ERR, "<%s> ioctl: %s", __func__,
-			       strerror(errno));
+			syslog(LOG_ERR, "<%s> ioctl: %m", __func__);
 
 		/* very adhoc: should be rewritten */
 		if (rpm->rpm_code == RPM_PCO_CHANGE &&
@@ -209,7 +207,7 @@ do_use_prefix(int len, struct rr_pco_match *rpm,
 				continue; /* non-advertising IF */
 
 			TAILQ_FOREACH(pp, &rai->prefix, next) {
-				struct timeval now;
+				struct timespec now;
 
 				if (prefix_match(&pp->prefix, pp->prefixlen,
 						 &rpm->rpm_prefix,
@@ -218,13 +216,15 @@ do_use_prefix(int len, struct rr_pco_match *rpm,
 					pp->validlifetime = ntohl(rpu->rpu_vltime);
 					pp->preflifetime = ntohl(rpu->rpu_pltime);
 					if (irr->irr_rrf_decrvalid) {
-						gettimeofday(&now, 0);
+						clock_gettime(CLOCK_MONOTONIC,
+						    &now);
 						pp->vltimeexpire =
 							now.tv_sec + pp->validlifetime;
 					} else
 						pp->vltimeexpire = 0;
 					if (irr->irr_rrf_decrprefd) {
-						gettimeofday(&now, 0);
+						clock_gettime(CLOCK_MONOTONIC,
+						    &now);
 						pp->pltimeexpire =
 							now.tv_sec + pp->preflifetime;
 					} else
@@ -250,8 +250,7 @@ do_pco(struct icmp6_router_renum *rr, int len, struct rr_pco_match *rpm)
 		return 1;
 
 	if (s == -1 && (s = socket(AF_INET6, SOCK_DGRAM, 0)) < 0) {
-		syslog(LOG_ERR, "<%s> socket: %s", __func__,
-		       strerror(errno));
+		syslog(LOG_ERR, "<%s> socket: %m", __func__);
 		exit(1);
 	}
 
@@ -281,8 +280,7 @@ do_pco(struct icmp6_router_renum *rr, int len, struct rr_pco_match *rpm)
 	if (errno == ENXIO)
 		return 0;
 	else if (errno) {
-		syslog(LOG_ERR, "<%s> if_indextoname: %s", __func__,
-		       strerror(errno));
+		syslog(LOG_ERR, "<%s> if_indextoname: %m", __func__);
 		return 1;
 	}
 	return 0;

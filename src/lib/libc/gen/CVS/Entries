@@ -193,7 +193,7 @@
 /nlist_ecoff.c/1.23/Tue Mar 20 00:31:24 2012//
 /nlist_elf32.c/1.38/Wed May 20 04:37:45 2015//
 /nlist_elf64.c/1.6/Sat Jul 26 19:24:43 2003//
-/nlist_private.h/1.22/Tue Mar 20 16:36:05 2012//
+/nlist_private.h/1.23/Sat Jun 13 17:28:42 2015//
 /opendir.c/1.39/Wed Nov 26 16:48:43 2014//
 /pause.3/1.15/Thu Aug  7 16:42:55 2003//
 /pause.c/1.11/Sun Jun 24 15:26:03 2012//

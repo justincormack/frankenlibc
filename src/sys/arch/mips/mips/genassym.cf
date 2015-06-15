@@ -1,4 +1,4 @@
-#	$NetBSD: genassym.cf,v 1.54 2011/04/06 05:38:19 matt Exp $
+#	$NetBSD: genassym.cf,v 1.61 2015/06/11 15:50:17 matt Exp $
 #
 # Copyright (c) 1992, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -80,6 +80,7 @@ include <sys/proc.h>
 include <sys/mbuf.h>
 include <sys/mutex.h>
 include <sys/cpu.h>
+include <sys/bitops.h>
 
 include <uvm/uvm.h>
 
@@ -91,6 +92,10 @@ include <mips/pte.h>
 include <mips/locore.h>
 
 define	PAGE_SIZE		PAGE_SIZE
+define	PGSHIFT			PGSHIFT
+define	NBPG			NBPG
+define	USPACE			USPACE
+define	UPAGES			UPAGES
 
 ifdef __HAVE_FAST_SOFTINTS
 define	__HAVE_FAST_SOFTINTS	1
@@ -195,6 +200,7 @@ define	TF_REG_S5		offsetof(struct trapframe, tf_regs[_R_S5])
 define	TF_REG_S6		offsetof(struct trapframe, tf_regs[_R_S6])
 define	TF_REG_S7		offsetof(struct trapframe, tf_regs[_R_S7])
 define	TF_REG_T8		offsetof(struct trapframe, tf_regs[_R_T8])
+define	TF_MIPS_CURLWP		offsetof(struct trapframe, tf_regs[_R_T8])
 define	TF_REG_T9		offsetof(struct trapframe, tf_regs[_R_T9])
 define	TF_REG_K0		offsetof(struct trapframe, tf_regs[_R_K0])
 define	TF_REG_K1		offsetof(struct trapframe, tf_regs[_R_K1])
@@ -284,15 +290,22 @@ define	CPU_INFO_IDEPTH		offsetof(struct cpu_info, ci_idepth)
 define	CPU_INFO_CURLWP		offsetof(struct cpu_info, ci_curlwp)
 define	CPU_INFO_IDLELWP	offsetof(struct cpu_info, ci_data.cpu_idlelwp)
 define	CPU_INFO_EV_TLBMISSES	offsetof(struct cpu_info, ci_ev_tlbmisses.ev_count)
-define	CPU_INFO_PMAP_SEG0TAB	offsetof(struct cpu_info, ci_pmap_seg0tab)
 ifdef _LP64
-define	CPU_INFO_PMAP_SEGTAB	offsetof(struct cpu_info, ci_pmap_segtab)
+define	CPU_INFO_PMAP_SEGTAB	offsetof(struct cpu_info, ci_pmap_segtabs[0])
+define	CPU_INFO_PMAP_SEG0TAB	offsetof(struct cpu_info, ci_pmap_seg0tabs[0])
+else
+define	CPU_INFO_PMAP_SEG0TAB	offsetof(struct cpu_info, ci_pmap_segtabs[0])
 endif
 define	CPU_INFO_DIVISOR_DELAY	offsetof(struct cpu_info, ci_divisor_delay)
 define	CPU_INFO_MTX_COUNT	offsetof(struct cpu_info, ci_mtx_count)
 define	CPU_INFO_MTX_OLDSPL	offsetof(struct cpu_info, ci_mtx_oldspl)
+define	CPU_INFO_NMI_STACK	offsetof(struct cpu_info, ci_nmi_stack)
+
 ifdef MULTIPROCESSOR
+define	CPU_INFO_FLAGS		offsetof(struct cpu_info, ci_flags)
 define	CPU_INFO_KSP_TLB_SLOT	offsetof(struct cpu_info, ci_ksp_tlb_slot)
+
+define	CPUF_PRESENT		CPUF_PRESENT
 endif
 
 define	IPL_NONE		IPL_NONE
@@ -304,6 +317,9 @@ define	IPL_VM			IPL_VM
 define	IPL_SCHED		IPL_SCHED
 define	IPL_DDB			IPL_DDB
 define	IPL_HIGH		IPL_HIGH
+
+define	V_MIPS3_SR_SR		ilog2(MIPS3_SR_SR)
+define	V_MIPS_SR_BEV		ilog2(MIPS_SR_BEV)
 
 ifdef __HAVE_PREEMPTION
 define	__HAVE_PREEMPTION	1
@@ -321,3 +337,6 @@ define	MO_FPU_ID		offsetof(struct mips_options, mips_fpu_id)
 define	MO_NUM_TLB_ENTRIES	offsetof(struct mips_options, mips_num_tlb_entries)
 
 define	MCI_SDCACHE_SIZE	offsetof(struct mips_cache_info, mci_sdcache_size)
+
+define	MIPS_CURLWP_LABEL	MIPS_CURLWP_LABEL
+define	MIPS_CURLWP_REG		MIPS_CURLWP_REG

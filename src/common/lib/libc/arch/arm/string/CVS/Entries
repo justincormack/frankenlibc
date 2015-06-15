@@ -1,6 +1,6 @@
 /ffs.S/1.9/Sun May 17 22:14:38 2015//
 /memcmp.S/1.5/Thu Mar 26 13:34:51 2015//
-/memcpy.S/1.7/Thu Mar 26 13:34:51 2015//
+/memcpy.S/1.8/Sun Jun  7 11:41:59 2015//
 /memcpy_arm.S/1.5/Mon Dec  2 21:21:33 2013//
 /memcpy_neon.S/1.1/Thu Jan  3 09:34:44 2013//
 /memcpy_xscale.S/1.5/Tue Dec 17 01:27:21 2013//
