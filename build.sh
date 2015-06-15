@@ -346,7 +346,7 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE} ${FRANKEN_CFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
-	${MAKE} ${OS} -C platform
+	${MAKE} ${STDJ} ${OS} -C platform
 
 # should clean up how deterministic build is done
 if [ ${DETERMINSTIC-x} = "deterministic" ]
@@ -368,21 +368,21 @@ CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${HUGEPAGESIZE} ${FRANKEN_CFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS} ${FRANKEN_FLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
-	${MAKE} -C franken
+	${MAKE} ${STDJ} -C franken
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${FRANKEN_CFLAGS}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS} ${RUMPUSER_FLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
-	${MAKE} -C librumpuser
+	${MAKE} ${STDJ} -C librumpuser
 
 CFLAGS="${EXTRA_CFLAGS} ${DBG_F} ${FRANKEN_CFLAGS}" \
 	LDFLAGS="${EXTRA_LDFLAGS}" \
 	CPPFLAGS="${EXTRA_CPPFLAGS} ${RUMPUSER_FLAGS}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	RUMP="${RUMP}" \
-	${MAKE} -C libvirtif
+	${MAKE} ${STDJ} -C libvirtif
 
 (
 	cd libtc
@@ -579,6 +579,7 @@ mktool()
 	${INSTALL-install} ${OBJDIR}/$1 ${BINDIR}/rump.$1
 }
 
+# XXX these should be parallel builds
 if [ ${MAKETOOLS} = "yes" ]
 then
 	( mktool pax bin/pax )
@@ -612,7 +613,7 @@ CC="${BINDIR}/${COMPILER}" \
 	RUMPDIR="${OUTDIR}" \
 	RUMPOBJ="${RUMPOBJ}" \
 	BINDIR="${BINDIR}" \
-	${MAKE} -C tests
+	${MAKE} ${STDJ} -C tests
 
 # test for executable stack
 case ${OS} in
