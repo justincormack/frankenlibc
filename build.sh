@@ -557,55 +557,14 @@ then
 fi
 
 # install some useful applications
-
-mktool()
-{
-	echo "Building $1"
-	cd ${RUMPSRC}/$2
-	OBJDIR=${RUMPOBJ}/$1
-	mkdir -p ${OBJDIR}
-
-	LIBCRT0= \
-	LIBCRTBEGIN= \
-	LIBC="${OUTDIR}/lib/libc.a" \
-	LIBUTIL="${OUTDIR}/lib/libutil.a" \
-	LIBRMT="${OUTDIR}/lib/librmt.a" \
-	MAKESYSPATH="${RUMPSRC}/share/mk" \
-	DESTDIR=${OUTDIR} \
-	MKDOC=no \
-	MKMAN=no \
-	MKRUMP=no \
-		${RUMPOBJ}/tooldir/rumpmake CC="${BINDIR}/${COMPILER}" MAKEOBJDIR=${OBJDIR}
-	${INSTALL-install} ${OBJDIR}/$1 ${BINDIR}/rump.$1
-}
-
-# XXX these should be parallel builds
 if [ ${MAKETOOLS} = "yes" ]
 then
-	( mktool pax bin/pax )
-	( mktool newfs sbin/newfs )
-	( mktool fsck_ffs sbin/fsck_ffs )
-	( mktool mknod sbin/mknod )
-	( mktool mkdir bin/mkdir )
-	( mktool ls bin/ls )
-	( mktool rm bin/rm )
-	( mktool ln bin/ln )
-	( mktool dd bin/dd )
-	( mktool df bin/df )
-	( mktool mount sbin/mount )
-	( mktool ifconfig sbin/ifconfig )
-	( mktool route sbin/route )
-	( mktool rtadvd usr.sbin/rtadvd )
-	( mktool ping sbin/ping )
-	( mktool ping6 sbin/ping6 )
-	( mktool rmdir bin/rmdir )
-	( mktool chmod bin/chmod )
-	( mktool chown sbin/chown )
-	(
-		cd ${BINDIR}
-		ln rump.pax rump.tar
-		ln rump.pax rump.cpio
-	)
+	CC="${BINDIR}/${COMPILER}" \
+	RUMPSRC=${RUMPSRC} \
+	RUMPOBJ=${RUMPOBJ} \
+	OUTDIR=${OUTDIR} \
+	BINDIR=${BINDIR} \
+		${MAKE} ${STDJ} -C utilities
 fi
 
 # Always make tests to exercise compiler
