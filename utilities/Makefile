@@ -10,12 +10,19 @@ RUMPMAKE=$(RUMPOBJ)/tooldir/rumpmake
 UTILS=$(BINDIR)/rump.pax $(BINDIR)/rump.mkdir $(BINDIR)/rump.ls $(BINDIR)/rump.rm $(BINDIR)/rump.ln $(BINDIR)/rump.dd \
 	$(BINDIR)/rump.df $(BINDIR)/rump.rmdir $(BINDIR)/rump.chmod \
 	$(BINDIR)/rump.mknod $(BINDIR)/rump.mount $(BINDIR)/rump.chown $(BINDIR)/rump.ifconfig $(BINDIR)/rump.route \
-	$(BINDIR)/rump.newfs $(BINDIR)/rump.fsck_ffs $(BINDIR)/rump.ping $(BINDIR)/rump.ping6 $(BINDIR)/rump.rtadvd
+	$(BINDIR)/rump.newfs $(BINDIR)/rump.fsck_ffs $(BINDIR)/rump.ping $(BINDIR)/rump.ping6 $(BINDIR)/rump.rtadvd \
+	$(BINDIR)/rump.tar $(BINDIR)/rump.cpio
 
 default:			$(UTILS)
 
 $(BINDIR)/rump.pax:		$(RUMPSRC)/bin/pax
 				RUMPMAKE=$(RUMPMAKE) CC=$(CC) OUTDIR=$(OUTDIR) RUMPSRC=$(RUMPSRC) OBJDIR=$(OBJDIR) ./util.sh pax $(RUMPSRC)/bin/pax $@ 
+
+$(BINDIR)/rump.tar:		$(BINDIR)/rump.pax
+				ln $(BINDIR)/rump.pax $@
+
+$(BINDIR)/rump.cpio:		$(BINDIR)/rump.pax
+				ln $(BINDIR)/rump.pax $@
 
 $(BINDIR)/rump.mkdir:		$(RUMPSRC)/bin/mkdir
 				RUMPMAKE=$(RUMPMAKE) CC=$(CC) OUTDIR=$(OUTDIR) RUMPSRC=$(RUMPSRC) OBJDIR=$(OBJDIR) ./util.sh mkdir $(RUMPSRC)/bin/mkdir $@
