@@ -1,23 +1,35 @@
 # Basic build of frankenlibc with Docker
 
-FROM ubuntu:15.04
+# XXX 3.2 not working yet, will fix shortly
+FROM alpine:3.1
 
 MAINTAINER Justin Cormack <justin@specialbusservice.com>
 
-RUN apt-get update && apt-get install -y \
-  binutils \
-  cpp \
-  curl \
-  g++ \
-  gcc \
+RUN \
+  apk update && \
+  apk upgrade && \
+  apk add \
+  build-base \
+  linux-headers \
+  gawk \
+  sed \
+  zlib-dev \
+  openssl-dev \
+  ncurses-dev \
+  file \
+  wget \
   git \
-  libc6-dev \
-  libcap2 \
-  libcap-dev \
-  libseccomp2 \
-  libseccomp-dev \
+  rsync \
+  m4 \
   strace \
-  make
+  cdrkit \
+  coreutils \
+  curl
+
+# While still in testing
+RUN \
+  apk -X http://nl.alpinelinux.org/alpine/edge/testing update && \
+  apk -X http://nl.alpinelinux.org/alpine/edge/testing add libseccomp libseccomp-dev
 
 COPY . /usr/src/frankenlibc
 
