@@ -112,7 +112,7 @@ int pfd = -1;
 int
 os_init(char *program, int nx)
 {
-	int ret, i;
+	int ret;
 
 	ctx = seccomp_init(SCMP_ACT_KILL);
 	if (ctx == NULL)
