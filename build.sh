@@ -31,7 +31,7 @@ HOST=$(uname -s)
 
 case ${HOST} in
 Linux)
-	NCPU=$(nproc)
+	NCPU=$(nproc 2>/dev/null || echo 1)
 	;;
 NetBSD)
 	NCPU=$(sysctl -n hw.ncpu)
