@@ -36,6 +36,6 @@ ENV SUDO_UID=1000
 
 RUN \
   cd /usr/src/frankenlibc && \
-  ./build.sh -F CPPFLAGS=-U_FORTIFY_SOURCE -d /usr/local/rump -b /usr/local/bin seccomp && \
+  LDSTATIC=-static ./build.sh -F CPPFLAGS=-U_FORTIFY_SOURCE -d /usr/local/rump -b /usr/local/bin seccomp && \
   cp rumpobj/tests/hello /usr/local/bin/rump.helloworld && \
   make clean
