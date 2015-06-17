@@ -1,7 +1,6 @@
 # Basic build of frankenlibc with Docker
 
-# XXX 3.2 not working yet, will fix shortly
-FROM alpine:3.1
+FROM alpine:3.2
 
 MAINTAINER Justin Cormack <justin@specialbusservice.com>
 
@@ -37,6 +36,6 @@ ENV SUDO_UID=1000
 
 RUN \
   cd /usr/src/frankenlibc && \
-  ./build.sh -d /usr/local/rump -b /usr/local/bin seccomp && \
+  ./build.sh -F CPPFLAGS=-U_FORTIFY_SOURCE -d /usr/local/rump -b /usr/local/bin seccomp && \
   cp rumpobj/tests/hello /usr/local/bin/rump.helloworld && \
   make clean
