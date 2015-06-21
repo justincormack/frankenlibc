@@ -1,9 +1,9 @@
-/Makefile/1.57/Sat Jul  5 19:22:05 2014//
+/Makefile/1.58/Wed Jun 17 17:43:23 2015//
 /Makefile.boot/1.21/Mon Feb 24 07:23:44 2014//
 /arch.c/1.63/Tue Jun 12 19:21:50 2012//
 /buf.c/1.25/Tue Apr 24 20:26:58 2012//
 /buf.h/1.17/Tue Apr 24 20:26:58 2012//
-/compat.c/1.96/Sun Sep  7 20:55:34 2014//
+/compat.c/1.100/Fri Jun 19 14:32:04 2015//
 /cond.c/1.68/Tue May  5 21:51:09 2015//
 /config.h/1.21/Sat Mar 31 00:12:24 2012//
 /dir.c/1.67/Tue Mar  5 22:01:43 2013//
@@ -22,6 +22,8 @@
 /make_malloc.h/1.4/Sat Jan 24 14:43:29 2009//
 /meta.c/1.38/Sat Apr 11 05:24:30 2015//
 /meta.h/1.3/Sat Mar 23 05:31:29 2013//
+/metachar.c/1.5/Fri Jun 19 08:03:35 2015//
+/metachar.h/1.4/Sun Jun 21 20:26:02 2015//
 /nonints.h/1.68/Tue May  5 21:51:09 2015//
 /parse.c/1.204/Thu Sep 18 08:06:13 2014//
 /pathnames.h/1.17/Sat Apr 11 09:41:18 2009//
@@ -34,5 +36,5 @@
 /trace.c/1.11/Sun Dec 28 18:31:51 2008//
 /trace.h/1.3/Mon Apr 28 20:24:14 2008//
 /util.c/1.54/Tue Nov 26 13:44:41 2013//
-/var.c/1.192/Tue May  5 21:51:09 2015//
+/var.c/1.195/Fri Jun 19 14:25:16 2015//
 D
