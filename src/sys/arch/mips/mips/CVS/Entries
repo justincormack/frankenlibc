@@ -33,7 +33,7 @@
 /lock_stubs_ras.S/1.5/Sun Jun  7 06:07:49 2015//
 /locore.S/1.197/Thu Jun 11 07:30:10 2015//
 /locore_mips1.S/1.85/Thu Jun 11 07:30:10 2015//
-/locore_mips3.S/1.110/Tue Jun 16 18:12:18 2015//
+/locore_mips3.S/1.109/Thu Jun 11 07:30:10 2015//
 /locore_octeon.S/1.7/Wed Jun 10 22:31:00 2015//
 /loongson2_subr.S/1.1/Sun Jul 31 15:39:29 2011//
 /mips32_subr.S/1.6/Sun Jul 31 15:39:29 2011//

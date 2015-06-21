@@ -1,4 +1,4 @@
-/*	$NetBSD: var.c,v 1.195 2015/06/19 14:25:16 christos Exp $	*/
+/*	$NetBSD: var.c,v 1.192 2015/05/05 21:51:09 sjg Exp $	*/
 
 /*
  * Copyright (c) 1988, 1989, 1990, 1993
@@ -69,14 +69,14 @@
  */
 
 #ifndef MAKE_NATIVE
-static char rcsid[] = "$NetBSD: var.c,v 1.195 2015/06/19 14:25:16 christos Exp $";
+static char rcsid[] = "$NetBSD: var.c,v 1.192 2015/05/05 21:51:09 sjg Exp $";
 #else
 #include <sys/cdefs.h>
 #ifndef lint
 #if 0
 static char sccsid[] = "@(#)var.c	8.3 (Berkeley) 3/19/94";
 #else
-__RCSID("$NetBSD: var.c,v 1.195 2015/06/19 14:25:16 christos Exp $");
+__RCSID("$NetBSD: var.c,v 1.192 2015/05/05 21:51:09 sjg Exp $");
 #endif
 #endif /* not lint */
 #endif
@@ -138,7 +138,6 @@ __RCSID("$NetBSD: var.c,v 1.195 2015/06/19 14:25:16 christos Exp $");
 #include    "buf.h"
 #include    "dir.h"
 #include    "job.h"
-#include    "metachar.h"
 
 extern int makelevel;
 /*
@@ -2246,7 +2245,7 @@ VarGetPattern(GNode *ctxt, Var_Parse_State *vpstate MAKE_ATTR_UNUSED,
 /*-
  *-----------------------------------------------------------------------
  * VarQuote --
- *	Quote shell meta-characters and space characters in the string
+ *	Quote shell meta-characters in the string
  *
  * Results:
  *	The quoted string
@@ -2261,25 +2260,29 @@ VarQuote(char *str)
 {
 
     Buffer  	  buf;
+    /* This should cover most shells :-( */
+    static const char meta[] = "\n \t'`\";&<>()|*?{}[]\\$!#^~";
     const char	*newline;
-    size_t nlen;
+    size_t len, nlen;
 
     if ((newline = Shell_GetNewline()) == NULL)
 	    newline = "\\\n";
     nlen = strlen(newline);
 
     Buf_Init(&buf, 0);
-
-    for (; *str != '\0'; str++) {
-	if (*str == '\n') {
+    while (*str != '\0') {
+	if ((len = strcspn(str, meta)) != 0) {
+	    Buf_AddBytes(&buf, len, str);
+	    str += len;
+	} else if (*str == '\n') {
 	    Buf_AddBytes(&buf, nlen, newline);
-	    continue;
-	}
-	if (isspace((unsigned char)*str) || ismeta((unsigned char)*str))
+	    ++str;
+	} else {
 	    Buf_AddByte(&buf, '\\');
-	Buf_AddByte(&buf, *str);
+	    Buf_AddByte(&buf, *str);
+	    ++str;
+	}
     }
-
     str = Buf_Destroy(&buf, FALSE);
     if (DEBUG(VAR))
 	fprintf(debug_file, "QuoteMeta: [%s]\n", str);

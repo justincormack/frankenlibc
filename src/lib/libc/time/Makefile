@@ -5,7 +5,7 @@
 PACKAGE=	tzcode
 
 # Version numbers of the code and data distributions.
-VERSION=	2015e
+VERSION=	2015d
 
 # Email address for bug reports.
 BUGEMAIL=	tz@iana.org
@@ -293,24 +293,23 @@ TAB_CHAR=	'	'
 SAFE_CHARSET1=	$(TAB_CHAR)' !\"'$$sharp'$$%&'\''()*+,./0123456789:;<=>?@'
 SAFE_CHARSET2=	'ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\^_`'
 SAFE_CHARSET3=	'abcdefghijklmnopqrstuvwxyz{|}~'
-SAFE_CHARSET=	$(SAFE_CHARSET1)$(SAFE_CHARSET2)$(SAFE_CHARSET3)
-SAFE_CHAR=	'[]'$(SAFE_CHARSET)'-]'
-
-# OK_CHAR matches any character allowed in the distributed files.
-# This is the same as SAFE_CHAR, except that multibyte letters are
-# also allowed so that commentary can contain people's names and quote
-# non-English sources.  For non-letters the sources are limited to
+SAFE_CHARSET=	]$(SAFE_CHARSET1)$(SAFE_CHARSET2)$(SAFE_CHARSET3)-
+SAFE_CHAR=	'['$(SAFE_CHARSET)']'
+# NONSYM_CHAR is a regular expression that matches any character
+# except for a small number of symbols, where we prefer to stick with
 # ASCII renderings for the convenience of maintainers whose text editors
 # mishandle UTF-8 by default (e.g., XEmacs 21.4.22).
-OK_CHAR=	'[][:alpha:]'$(SAFE_CHARSET)'-]'
+NONSYM_CHAR=	'[^–—°′″≈≠≤≥±−×÷∞←→↔·•§¶«»‘’‚‛“”„‟‹›「」『』〝〞〟]'
 
 # SAFE_LINE matches a line of safe characters.
-# SAFE_SHARP_LINE is similar, except any OK character can follow '#';
+# SAFE_SHARP_LINE is similar, except any character can follow '#';
 # this is so that comments can contain non-ASCII characters.
-# OK_LINE matches a line of OK characters.
+# NONSYM_LINE matches a line of non-symbols.
+# VALID_LINE matches a line of any validly-encoded characters.
 SAFE_LINE=	'^'$(SAFE_CHAR)'*$$'
-SAFE_SHARP_LINE='^'$(SAFE_CHAR)'*('$$sharp$(OK_CHAR)'*)?$$'
-OK_LINE=	'^'$(OK_CHAR)'*$$'
+SAFE_SHARP_LINE='^'$(SAFE_CHAR)'*('$$sharp$(NONSYM_CHAR)'*)?$$'
+NONSYM_LINE=	'^'$(NONSYM_CHAR)'*$$'
+VALID_LINE=	'^.*$$'
 
 # Flags to give 'tar' when making a distribution.
 # Try to use flags appropriate for GNU tar.
@@ -324,8 +323,6 @@ TARFLAGS=	`if tar $(GNUTARFLAGS) --version >/dev/null 2>&1; \
 GZIPFLAGS=	-9 ${GZIP_N_FLAG}
 
 ###############################################################################
-
-#MAKE=		make
 
 cc=		cc
 CC=		$(cc) -DTZDIR=\"$(TZDIR)\"
@@ -375,7 +372,7 @@ SHELL=		/bin/sh
 
 all:		tzselect zic zdump libtz.a $(TABDATA)
 
-ALL:		all date $(ENCHILADA)
+ALL:		all date
 
 install:	all $(DATA) $(REDO) $(MANS)
 		mkdir -p $(DESTDIR)$(ETCDIR) $(DESTDIR)$(TZDIR) \
@@ -479,11 +476,14 @@ check:		check_character_set check_white_space check_links check_sorted \
 check_character_set: $(ENCHILADA)
 		LC_ALL=en_US.utf8 && export LC_ALL && \
 		sharp='#' && \
-		! grep -Env $(SAFE_LINE) Makefile $(MANS) date.1 $(MANTXTS) \
+		! grep -Env $(SAFE_LINE) $(MANS) date.1 $(MANTXTS) \
 			$(MISC) $(SOURCES) $(WEB_PAGES) && \
 		! grep -Env $(SAFE_SHARP_LINE) $(TDATA) backzone \
-			leapseconds yearistype.sh zone.tab && \
-		! grep -Env $(OK_LINE) $(ENCHILADA)
+			iso3166.tab leapseconds yearistype.sh zone.tab && \
+		test $$(grep -Ecv $(SAFE_SHARP_LINE) Makefile) -eq 1 && \
+		! grep -Env $(NONSYM_LINE) CONTRIBUTING NEWS README Theory \
+			$(MANS) date.1 zone1970.tab && \
+		! grep -Env $(VALID_LINE) $(ENCHILADA)
 
 check_white_space: $(ENCHILADA)
 		! grep -En ' '$(TAB_CHAR)"|$$(printf '[\f\r\v]')" $(ENCHILADA)
@@ -574,9 +574,9 @@ set-timestamps.out: $(ENCHILADA)
 # The zics below ensure that each data file can stand on its own.
 # We also do an all-files run to catch links to links.
 
-check_public:
-		$(MAKE) maintainer-clean
-		$(MAKE) "CFLAGS=$(GCC_DEBUG_FLAGS)" ALL
+check_public:	$(ENCHILADA)
+		make maintainer-clean
+		make "CFLAGS=$(GCC_DEBUG_FLAGS)" $(ENCHILADA) all
 		mkdir tzpublic
 		for i in $(TDATA) ; do \
 		  $(zic) -v -d tzpublic $$i 2>&1 || exit; \
@@ -595,8 +595,8 @@ check_time_t_alternatives:
 		zones=`$(AWK) '/^[^#]/ { print $$3 }' <zone1970.tab` && \
 		for type in $(TIME_T_ALTERNATIVES); do \
 		  mkdir -p tzpublic/$$type && \
-		  $(MAKE) clean_misc && \
-		  $(MAKE) TOPDIR=`pwd`/tzpublic/$$type \
+		  make clean_misc && \
+		  make TOPDIR=`pwd`/tzpublic/$$type \
 		    CFLAGS='$(CFLAGS) -Dtime_tz='"'$$type'" \
 		    REDO='$(REDO)' \
 		    install && \
@@ -642,12 +642,12 @@ tzdata$(VERSION).tar.gz.asc: tzdata$(VERSION).tar.gz
 		gpg --armor --detach-sign $?
 
 typecheck:
-		$(MAKE) clean
+		make clean
 		for i in "long long" unsigned; \
 		do \
-			$(MAKE) CFLAGS="-DTYPECHECK -D__time_t_defined -D_TIME_T \"-Dtime_t=$$i\"" ; \
+			make CFLAGS="-DTYPECHECK -D__time_t_defined -D_TIME_T \"-Dtime_t=$$i\"" ; \
 			./zdump -v Europe/Rome ; \
-			$(MAKE) clean ; \
+			make clean ; \
 		done
 
 zonenames:	$(TDATA)

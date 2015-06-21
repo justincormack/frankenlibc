@@ -1,6 +1,6 @@
-/Makefile/1.29/Sun Jun 21 16:06:51 2015//
+/Makefile/1.28/Tue Apr 28 17:00:24 2015//
 /Makefile.inc/1.21/Wed Oct  8 05:44:03 2014//
-/NEWS/1.12/Sun Jun 21 16:06:51 2015//
+/NEWS/1.11/Tue Apr 28 17:00:24 2015//
 /README/1.9/Tue Oct  7 21:51:03 2014//
 /Theory/1.17/Tue Mar 24 20:01:18 2015//
 /asctime.c/1.20/Thu Oct 23 18:45:58 2014//
@@ -10,9 +10,9 @@
 /getdate.3/1.8/Fri Dec 14 23:26:17 2012//
 /getdate.c/1.3/Thu Sep 18 13:58:20 2014//
 /leapseconds.awk/1.1/Thu Dec 26 18:34:28 2013//
-/localtime.c/1.95/Sun Jun 21 16:06:51 2015//
+/localtime.c/1.94/Tue Mar 24 20:01:18 2015//
 /offtime.3/1.3/Thu Apr 14 05:50:50 2011//
-/private.h/1.41/Sun Jun 21 16:06:51 2015//
+/private.h/1.40/Tue Apr 28 17:00:24 2015//
 /strftime.3/1.30/Fri Sep 20 19:06:54 2013//
 /strftime.c/1.33/Tue Oct  7 21:51:03 2014//
 /strptime.3/1.31/Mon Apr  6 14:38:22 2015//
@@ -24,11 +24,11 @@
 /tzfile.5/1.22/Tue Oct  7 21:51:03 2014//
 /tzfile.h/1.16/Tue Oct  7 21:51:03 2014//
 /tzselect.8/1.6/Fri Aug 15 11:04:07 2014//
-/tzselect.ksh/1.14/Sun Jun 21 16:06:51 2015//
+/tzselect.ksh/1.13/Sat Jan 31 18:55:17 2015//
 /tzset.3/1.32/Sun Apr  5 08:36:38 2015//
 /version.h/1.2/Fri Sep 20 19:06:54 2013//
 /zdump.8/1.14/Thu Oct 23 18:45:58 2014//
-/zdump.c/1.41/Sun Jun 21 16:06:51 2015//
-/zic.8/1.25/Sun Jun 21 16:06:51 2015//
-/zic.c/1.54/Sun Jun 21 16:06:51 2015//
+/zdump.c/1.40/Thu Oct 23 21:19:53 2014//
+/zic.8/1.24/Tue Oct  7 21:51:03 2014//
+/zic.c/1.53/Tue Apr 28 17:00:24 2015//
 D

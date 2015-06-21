@@ -1,4 +1,4 @@
-/*	$NetBSD: fsutil.c,v 1.26 2015/06/21 04:01:40 dholland Exp $	*/
+/*	$NetBSD: fsutil.c,v 1.24 2013/01/13 19:53:16 mlelstv Exp $	*/
 
 /*
  * Copyright (c) 1990, 1993
@@ -31,19 +31,8 @@
 
 #include <sys/cdefs.h>
 #ifndef lint
-__RCSID("$NetBSD: fsutil.c,v 1.26 2015/06/21 04:01:40 dholland Exp $");
+__RCSID("$NetBSD: fsutil.c,v 1.24 2013/01/13 19:53:16 mlelstv Exp $");
 #endif /* not lint */
-
-/*
- * used by sbin/fsck
- * used by sbin/fsck_ext2fs
- * used by sbin/fsck_ffs
- * used by sbin/fsck_lfs
- * used by sbin/fsck_msdos
- * used by sbin/fsck_v7fs
- * used by sbin/fsdb
- * used by usr.sbin/quotacheck
- */
 
 #include <sys/param.h>
 
@@ -63,8 +52,6 @@ __RCSID("$NetBSD: fsutil.c,v 1.26 2015/06/21 04:01:40 dholland Exp $");
 
 #include "fsutil.h"
 #include "exitvalues.h"
-
-volatile sig_atomic_t returntosingle;
 
 static const char *dev = NULL;
 static int hot = 0;
