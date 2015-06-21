@@ -1,4 +1,4 @@
-/*	$NetBSD: main.c,v 1.81 2013/01/22 09:39:11 dholland Exp $	*/
+/*	$NetBSD: main.c,v 1.83 2015/06/16 23:58:30 christos Exp $	*/
 
 /*
  * Copyright (c) 1980, 1986, 1993
@@ -39,7 +39,7 @@ __COPYRIGHT("@(#) Copyright (c) 1980, 1986, 1993\
 #if 0
 static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 5/14/95";
 #else
-__RCSID("$NetBSD: main.c,v 1.81 2013/01/22 09:39:11 dholland Exp $");
+__RCSID("$NetBSD: main.c,v 1.83 2015/06/16 23:58:30 christos Exp $");
 #endif
 #endif /* not lint */
 
@@ -123,7 +123,7 @@ main(int argc, char *argv[])
 			cvtlevel = argtoi('c', "conversion level", optarg, 10);
 			if (cvtlevel > 4) {
 				cvtlevel = 4;
-				warnx("Using maximum conversion level of %d\n",
+				warnx("Using maximum conversion level of %d",
 				    cvtlevel);
 			}
 			break;
@@ -188,7 +188,7 @@ main(int argc, char *argv[])
 
 	if (snap_backup || snap_internal) {
 		if (!nflag || yflag) {
-			warnx("Cannot use -x or -X without -n\n");
+			warnx("Cannot use -x or -X without -n");
 			snap_backup = NULL;
 			snap_internal = 0;
 		}

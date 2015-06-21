@@ -165,9 +165,9 @@
 /usb_verbose.h/1.4/Sun Sep 21 14:30:22 2014//
 /usbcdc.h/1.11/Mon Apr 28 20:24:00 2008//
 /usbdevices.config/1.24/Sun Mar 16 09:34:45 2014//
-/usbdevs/1.696/Mon Apr  6 17:15:32 2015//
-/usbdevs.h/1.688/Mon Apr  6 17:16:25 2015//
-/usbdevs_data.h/1.689/Mon Apr  6 17:16:25 2015//
+/usbdevs/1.697/Wed Jun 17 14:20:14 2015//
+/usbdevs.h/1.689/Wed Jun 17 14:21:22 2015//
+/usbdevs_data.h/1.690/Wed Jun 17 14:21:22 2015//
 /usbdi.c/1.163/Mon Feb  9 20:12:47 2015//
 /usbdi.h/1.90/Thu Jul 17 18:42:37 2014//
 /usbdi_util.c/1.64/Fri Mar 27 12:46:51 2015//
