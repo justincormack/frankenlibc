@@ -1,9 +1,9 @@
 ### Frankenlibc ###
 
-Frankenlibc is an experimental build tool to make writing applications
-against rump kernels easier, and to unify code.
+Frankenlibc is a build tool to build applications with userspace rump kernels
+based unikernels, as well as for some bare metal platforms.
 
-There are known and unknown bugs! Buildbot for various platforms at [build.myriabit.eu:8014/waterfall](http://build.myriabit.eu:8014/waterfall).
+Buildbot for various platforms at [build.myriabit.eu:8014/waterfall](http://build.myriabit.eu:8014/waterfall).
 
 [![Build Status](https://travis-ci.org/justincormack/frankenlibc.png?branch=master)](https://travis-ci.org/justincormack/frankenlibc)
 
