@@ -122,7 +122,7 @@ os_init(char *program, int nx)
         pfd = open(program, O_RDONLY | O_CLOEXEC);
 
         if (pfd == -1) {
-                perror("open");
+                perror("open executable");
                 exit(1);
         }
 #endif
@@ -422,6 +422,10 @@ os_extrafiles()
 	/* if getrandom() syscall works we do not need to pass random source in */
 	if (getrandom(buf, 1, 0) == -1 && errno == ENOSYS) {
 		fd = open("/dev/urandom", O_RDONLY);
+		if (fd == -1) {
+			perror("open /dev/urandom");
+			exit(1);
+		}
 	}
 
 	/* Linux needs a socket to do ioctls on to get mac addresses from macvtap devices */

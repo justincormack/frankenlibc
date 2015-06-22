@@ -129,7 +129,7 @@ main(int argc, char **argv)
 		} else {
 			fd = open(arg, mode);
 			if (fd == -1) {
-				perror("open");
+				fprintf(stderr, "open %s\n", strerror(errno));
 				exit(1);
 			}
 			fl = fcntl(fd, F_GETFL);
