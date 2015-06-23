@@ -575,18 +575,7 @@ CC="${BINDIR}/${COMPILER}" \
 	${MAKE} ${STDJ} -C tests
 
 # test for executable stack
-case ${OS} in
-qemu-arm|spike)
-	# does not have protection
-	;;
-netbsd)
-	# XXX unclear why this is happening, needs investigating
-	readelf -lW ${RUMPOBJ}/tests/hello | grep RWE && echo "Writeable executable section (stack?) found"
-	;;
-*)
-	readelf -lW ${RUMPOBJ}/tests/hello | grep RWE && echo "Writeable executable section (stack?) found" && exit 1
-	;;
-esac
+readelf -lW ${RUMPOBJ}/tests/hello | grep RWE 1>&2 && echo "WARNING: writeable executable section (stack?) found" 1>&2
 
 if [ ${RUNTESTS} = "test" ]
 then
