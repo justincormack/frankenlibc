@@ -431,5 +431,4 @@ uuid()
 	}
 	uuid[d++] = 0;
 	setenv("UUID", uuid, 0);
-	fprintf(stderr, "%s\n", uuid);
 }
