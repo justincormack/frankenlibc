@@ -1,4 +1,4 @@
-/*	$NetBSD: membar_ops.S,v 1.6 2015/06/01 23:16:54 matt Exp $	*/
+/*	$NetBSD: membar_ops.S,v 1.8 2015/06/23 20:56:17 matt Exp $	*/
 
 /*-
  * Copyright (c) 2006, 2007 The NetBSD Foundation, Inc.
@@ -31,22 +31,11 @@
 
 #include "atomic_op_asm.h"
 
-#if defined(_KERNEL)
-
-#ifdef _KERNEL_OPT
-#include "opt_cputype.h"
-#include "opt_lockdebug.h"
-#include "opt_multiprocessor.h"
-#endif
-
-
-#include <machine/cpu.h>
-
-#if (MIPS_HAS_LLSC != 0 && defined(MULTIPROCESSOR)) || !defined(__mips_o32)
-#define	SYNC		sync
-#endif
-#elif !defined(__mips_o32)
-#define	SYNC		sync
+// If we are on building for MIPS III or later, put in SYNCs
+#if __mips >= 3 || !defined(__mips_o32)
+# define SYNC		sync
+#else
+# define SYNC		nop
 #endif
 
 	.text
@@ -54,11 +43,7 @@
 
 LEAF(_membar_sync)
 	j	ra
-#ifdef SYNC
 	 SYNC
-#else
-	 nop
-#endif
 END(_membar_sync)
 
 #ifdef __OCTEON__

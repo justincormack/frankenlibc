@@ -1,4 +1,4 @@
-/*	$NetBSD: pthread_types.h,v 1.13 2008/08/02 19:46:30 matt Exp $	*/
+/*	$NetBSD: pthread_types.h,v 1.16 2015/06/26 11:25:22 pooka Exp $	*/
 
 /*-
  * Copyright (c) 2001, 2008 The NetBSD Foundation, Inc.

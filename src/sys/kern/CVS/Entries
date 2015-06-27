@@ -48,7 +48,7 @@
 /kern_lock.c/1.157/Sat Apr 11 15:24:25 2015//
 /kern_lwp.c/1.179/Sat Oct 18 08:33:29 2014//
 /kern_malloc.c/1.145/Fri Feb  6 18:21:29 2015//
-/kern_module.c/1.105/Sun Mar  8 01:17:42 2015//
+/kern_module.c/1.106/Mon Jun 22 16:35:13 2015//
 /kern_module_vfs.c/1.13/Tue Dec  2 13:00:38 2014//
 /kern_mutex.c/1.62/Mon May 25 21:02:37 2015//
 /kern_mutex_obj.c/1.5/Tue Sep 27 01:02:38 2011//
@@ -86,7 +86,7 @@
 /kern_uuid.c/1.20/Sun Oct  5 10:00:03 2014//
 /kern_veriexec.c/1.8/Mon Apr 27 20:21:19 2015//
 /kern_xxx.c/1.72/Thu Sep  1 18:25:44 2011//
-/kgdb_stub.c/1.28/Sun Sep 21 17:17:15 2014//
+/kgdb_stub.c/1.29/Fri Jun 26 14:26:38 2015//
 /makesyscalls.sh/1.153/Sat May  9 10:57:04 2015//
 /sched_4bsd.c/1.30/Tue Jun 24 10:08:45 2014//
 /sched_m2.c/1.32/Tue Jun 24 10:08:45 2014//
@@ -188,10 +188,10 @@
 /vfs_lookup.c/1.202/Tue Apr 21 03:19:03 2015//
 /vfs_mount.c/1.35/Wed May  6 15:57:08 2015//
 /vfs_quotactl.c/1.40/Sat Jun 28 22:27:50 2014//
-/vfs_subr.c/1.446/Wed May  6 15:57:08 2015//
+/vfs_subr.c/1.447/Tue Jun 23 10:42:34 2015//
 /vfs_syscalls.c/1.499/Fri Jun 12 19:06:32 2015//
 /vfs_trans.c/1.33/Wed May  6 15:57:08 2015//
-/vfs_vnode.c/1.42/Mon Apr 20 19:36:55 2015//
+/vfs_vnode.c/1.44/Tue Jun 23 10:41:59 2015//
 /vfs_vnops.c/1.193/Wed Feb  4 07:09:37 2015//
 /vfs_wapbl.c/1.61/Sat Oct 18 08:33:29 2014//
 /vfs_xattr.c/1.33/Fri Sep  5 09:20:59 2014//

@@ -45,11 +45,11 @@
 /locore.h/1.99/Tue Jun  9 15:01:05 2015//
 /math.h/1.7/Fri Jan 31 19:38:06 2014//
 /mcontext.h/1.21/Tue May 26 02:16:38 2015//
-/mips1_pte.h/1.19/Sun Feb 20 07:45:47 2011//
+/mips1_pte.h/1.20/Fri Jun 26 22:56:36 2015//
 /mips3_clock.h/1.5/Tue Jan  8 14:46:28 2008//
 /mips3_pte.h/1.28/Thu Sep 22 05:08:52 2011//
 /mipsNN.h/1.5/Tue Aug 16 06:58:15 2011//
-/mips_opcode.h/1.20/Thu Jun  4 02:26:49 2015//
+/mips_opcode.h/1.21/Sat Jun 27 03:30:01 2015//
 /mips_param.h/1.37/Thu Jun 11 15:43:36 2015//
 /mutex.h/1.7/Sun Feb 20 07:45:47 2011//
 /netbsd32_machdep.h/1.4/Sun May 17 18:52:37 2015//
@@ -60,7 +60,7 @@
 /proc.h/1.27/Sun Feb 20 07:45:47 2011//
 /profile.h/1.21/Sun Feb 20 07:45:47 2011//
 /psl.h/1.18/Mon Dec 14 00:46:05 2009//
-/pte.h/1.21/Thu Jun 11 08:22:09 2015//
+/pte.h/1.22/Sat Jun 27 21:44:06 2015//
 /ptrace.h/1.12/Fri Jan 25 12:03:36 2008//
 /r3900regs.h/1.7/Mon Apr 28 20:23:28 2008//
 /reg.h/1.15/Tue Aug 16 06:58:15 2011//

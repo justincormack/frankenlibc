@@ -1,7 +1,7 @@
 /Makefile/1.16/Wed Dec 15 18:37:55 2010//
 /prog_ops.h/1.2/Wed Feb  9 11:22:49 2011//
 /raidctl.8/1.67/Thu Apr  3 18:54:10 2014//
-/raidctl.c/1.59/Wed May 27 17:55:23 2015//
+/raidctl.c/1.60/Fri Jun 26 01:16:54 2015//
 /raidctl_hostops.c/1.2/Wed Feb  9 11:22:49 2011//
 /raidctl_rumpops.c/1.2/Wed Feb  9 11:22:49 2011//
 /rf_configure.c/1.25/Wed Jan 27 18:34:02 2010//

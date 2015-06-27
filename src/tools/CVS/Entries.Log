@@ -67,6 +67,8 @@ A D/m68k-elf2aout////
 A D/macppc-fixcoff////
 A D/make////
 A D/makefs////
+A D/makekeys////
+A D/makestrs////
 A D/makewhatis////
 A D/mandoc////
 A D/mdsetimage////

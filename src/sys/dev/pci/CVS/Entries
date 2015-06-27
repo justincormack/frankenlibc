@@ -235,7 +235,7 @@
 /if_vtereg.h/1.2/Thu Apr 28 17:32:48 2011//
 /if_vtevar.h/1.4/Tue Apr 14 20:32:36 2015//
 /if_wi_pci.c/1.55/Sat Mar 29 19:28:25 2014//
-/if_wm.c/1.335/Sat Jun 13 15:47:58 2015//
+/if_wm.c/1.336/Fri Jun 26 06:57:17 2015//
 /if_wmreg.h/1.78/Sat Jun 13 15:47:58 2015//
 /if_wmvar.h/1.29/Sat Jun  6 04:39:12 2015//
 /if_wpi.c/1.71/Fri Jan  9 15:25:23 2015//
@@ -324,9 +324,9 @@
 /pcibusprint.c/1.3/Sun Dec 11 12:22:50 2005//
 /pciconf.c/1.37/Fri Sep  5 05:29:16 2014//
 /pciconf.h/1.12/Sat Sep  8 05:02:41 2012//
-/pcidevs/1.1227/Tue Jun  2 02:07:54 2015//
-/pcidevs.h/1.1221/Tue Jun  2 02:11:22 2015//
-/pcidevs_data.h/1.1220/Tue Jun  2 02:11:22 2015//
+/pcidevs/1.1228/Fri Jun 26 07:31:18 2015//
+/pcidevs.h/1.1222/Fri Jun 26 07:31:44 2015//
+/pcidevs_data.h/1.1221/Fri Jun 26 07:31:44 2015//
 /pciide.c/1.219/Sat Nov  6 00:29:09 2010//
 /pciide_acard_reg.h/1.8/Wed May 14 13:29:29 2008//
 /pciide_acer_reg.h/1.12/Mon Oct 19 18:41:15 2009//

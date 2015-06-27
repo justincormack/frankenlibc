@@ -1,4 +1,4 @@
-/Makefile/1.153/Mon Apr 13 21:55:52 2015//
+/Makefile/1.154/Fri Jun 26 14:38:54 2015//
 /acct.h/1.27/Sun Jan 11 02:45:55 2009//
 /agpio.h/1.10/Tue Feb 15 08:57:01 2011//
 /aio.h/1.12/Sat Jan  7 19:48:19 2012//
@@ -35,6 +35,7 @@
 /common_int_mwgwtypes.h/1.1/Fri Jul 25 21:43:13 2014//
 /common_int_types.h/1.1/Fri Jul 25 21:43:13 2014//
 /common_limits.h/1.2/Tue Aug 19 15:46:46 2014//
+/common_lock.h/1.1/Fri Jun 26 14:27:35 2015//
 /common_wchar_limits.h/1.1/Mon Aug 18 22:21:39 2014//
 /condvar.h/1.12/Sat Dec  5 22:38:19 2009//
 /conf.h/1.145/Fri Jul 25 07:56:14 2014//
@@ -136,7 +137,7 @@
 /md5.h/1.9/Mon Dec 26 18:41:36 2005//
 /midiio.h/1.15/Mon Apr 28 20:24:11 2008//
 /mman.h/1.48/Sun Aug  3 19:14:24 2014//
-/module.h/1.37/Fri Jun 19 14:23:59 2015//
+/module.h/1.38/Mon Jun 22 16:35:13 2015//
 /mount.h/1.217/Wed May  6 15:57:08 2015//
 /mqueue.h/1.17/Sat Jun 20 14:41:54 2015//
 /msg.h/1.25/Wed May 13 01:16:15 2015//
