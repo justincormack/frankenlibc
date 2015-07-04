@@ -23,6 +23,7 @@ RUN \
   strace \
   cdrkit \
   coreutils \
+  bash \
   curl
 
 # While still in testing
