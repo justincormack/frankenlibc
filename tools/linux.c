@@ -441,7 +441,7 @@ os_open(char *pre, char *post)
 {
 
 	/* eg tun:tap0 for tap0 */
-	if (strcmp(pre, "tun") == 0) {
+	if (strcmp(pre, "tun") == 0 || strcmp(pre, "tap") == 0) {
 		struct ifreq ifr;
 		int fd;
 
