@@ -27,6 +27,7 @@ RUN \
   dnsmasq \
   iproute2 \
   bridge-utils \
+  ethtool \
   curl
 
 # While still in testing
