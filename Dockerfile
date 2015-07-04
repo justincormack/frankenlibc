@@ -24,6 +24,7 @@ RUN \
   cdrkit \
   coreutils \
   bash \
+  dnsmasq \
   curl
 
 # While still in testing
