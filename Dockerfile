@@ -25,6 +25,8 @@ RUN \
   coreutils \
   bash \
   dnsmasq \
+  iproute2 \
+  bridge-utils \
   curl
 
 # While still in testing
