@@ -11,7 +11,7 @@ UTILS=$(BINDIR)/rump.pax $(BINDIR)/rump.mkdir $(BINDIR)/rump.ls $(BINDIR)/rump.r
 	$(BINDIR)/rump.df $(BINDIR)/rump.rmdir $(BINDIR)/rump.chmod $(BINDIR)/rump.cat \
 	$(BINDIR)/rump.mknod $(BINDIR)/rump.mount $(BINDIR)/rump.chown $(BINDIR)/rump.ifconfig $(BINDIR)/rump.route \
 	$(BINDIR)/rump.newfs $(BINDIR)/rump.fsck_ffs $(BINDIR)/rump.ping $(BINDIR)/rump.ping6 $(BINDIR)/rump.rtadvd \
-	$(BINDIR)/rump.sysctl \
+	$(BINDIR)/rump.sysctl $(BINDIR)/rump.uname \
 	$(BINDIR)/rump.tar $(BINDIR)/rump.cpio
 
 default:			$(UTILS)
@@ -81,6 +81,9 @@ $(BINDIR)/rump.ping6:		$(RUMPSRC)/sbin/ping6
 
 $(BINDIR)/rump.sysctl:		$(RUMPSRC)/sbin/sysctl
 				RUMPMAKE=$(RUMPMAKE) CC=$(CC) OUTDIR=$(OUTDIR) RUMPSRC=$(RUMPSRC) OBJDIR=$(OBJDIR) ./util.sh sysctl $(RUMPSRC)/sbin/sysctl $@
+
+$(BINDIR)/rump.uname:		$(RUMPSRC)/usr.bin/uname
+				RUMPMAKE=$(RUMPMAKE) CC=$(CC) OUTDIR=$(OUTDIR) RUMPSRC=$(RUMPSRC) OBJDIR=$(OBJDIR) ./util.sh uname $(RUMPSRC)/usr.bin/uname $@
 
 $(BINDIR)/rump.rtadvd:		$(RUMPSRC)/usr.sbin/rtadvd
 				RUMPMAKE=$(RUMPMAKE) CC=$(CC) OUTDIR=$(OUTDIR) RUMPSRC=$(RUMPSRC) OBJDIR=$(OBJDIR) ./util.sh rtadvd $(RUMPSRC)/usr.sbin/rtadvd $@
