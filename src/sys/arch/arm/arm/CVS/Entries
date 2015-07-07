@@ -17,7 +17,7 @@
 /cpu_in_cksum_buffer.S/1.8/Sun Dec 23 13:24:22 2012//
 /cpu_in_cksum_fold.S/1.4/Sun Dec 23 13:26:21 2012//
 /cpu_in_cksum_v4hdr.S/1.4/Thu Dec 20 07:16:01 2012//
-/cpufunc.c/1.155/Wed Jun  3 02:30:11 2015//
+/cpufunc.c/1.156/Thu Jul  2 08:33:31 2015//
 /cpufunc_asm.S/1.16/Sun Aug 18 06:28:18 2013//
 /cpufunc_asm_arm10.S/1.11/Sun Mar 30 01:15:03 2014//
 /cpufunc_asm_arm11.S/1.17/Wed Oct 29 16:22:31 2014//

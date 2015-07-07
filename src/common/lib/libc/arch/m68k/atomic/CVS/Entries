@@ -1,7 +1,7 @@
 /Makefile.inc/1.14/Thu Nov 20 07:07:13 2014//
 /atomic_add.S/1.10/Mon Jun 23 21:53:45 2014//
 /atomic_and.S/1.11/Mon Jun 23 21:53:45 2014//
-/atomic_cas.S/1.10/Sat Feb 22 17:08:30 2014//
+/atomic_cas.S/1.12/Sat Jul  4 07:11:45 2015//
 /atomic_cas_68000.S/1.6/Wed Jan 29 10:20:11 2014//
 /atomic_dec.S/1.6/Tue Jul 16 23:24:18 2013//
 /atomic_inc.S/1.6/Tue Jul 16 23:24:18 2013//

@@ -25,7 +25,7 @@
 /netbsd32_lwp.c/1.18/Fri May 15 07:56:25 2015//
 /netbsd32_mod.c/1.6/Sat Jun 13 22:17:04 2015//
 /netbsd32_module.c/1.2/Sun Jun 21 06:51:05 2015//
-/netbsd32_mqueue.c/1.3/Sun Jun 21 08:47:15 2015//
+/netbsd32_mqueue.c/1.5/Tue Jun 30 11:56:27 2015//
 /netbsd32_netbsd.c/1.196/Sun Jun 21 12:54:33 2015//
 /netbsd32_nfssvc.c/1.2/Tue Jun 23 06:28:29 2015//
 /netbsd32_select.c/1.19/Fri Apr 23 15:19:20 2010//

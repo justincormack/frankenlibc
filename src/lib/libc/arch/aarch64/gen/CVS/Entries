@@ -3,6 +3,9 @@
 /_setjmp.S/1.1/Sun Aug 10 05:47:36 2014//
 /fabs_ieee754.S/1.1/Sun Aug 10 05:47:36 2014//
 /flt_rounds.c/1.1/Sun Aug 10 05:47:36 2014//
+/fpgetmask.c/1.1/Sun Jul  5 22:07:09 2015//
+/fpgetround.c/1.1/Sun Jul  5 22:07:09 2015//
+/fpgetsticky.c/1.1/Sun Jul  5 22:07:09 2015//
 /makecontext.c/1.1/Sun Aug 10 05:47:36 2014//
 /nanf.c/1.1/Sun Aug 10 05:47:36 2014//
 /resumecontext.c/1.1/Sun Aug 10 05:47:36 2014//

@@ -6,7 +6,7 @@
 /compat_13_machdep.c/1.1/Sun Dec 14 21:27:49 2014//
 /compat_16_machdep.c/1.5/Sun Dec 14 21:27:49 2014//
 /copy.S/1.18/Wed Jul  7 01:13:29 2010//
-/cpu_in_cksum.S/1.2/Sat Jun 22 05:56:32 2013//
+/cpu_in_cksum.S/1.3/Tue Jun 30 21:08:24 2015//
 /cpufunc.S/1.25/Wed Feb 12 23:24:09 2014//
 /db_disasm.c/1.22/Tue May 12 23:16:47 2015//
 /db_interface.c/1.24/Thu Aug 11 19:52:52 2011//

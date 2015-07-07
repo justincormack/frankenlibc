@@ -53,7 +53,7 @@
 /prep_bus_funcs.h/1.1/Fri Jul  1 17:29:39 2011//
 /proc.h/1.13/Fri Aug 23 06:19:46 2013//
 /profile.h/1.9/Thu Sep 12 15:36:17 2013//
-/psl.h/1.19/Fri Feb 28 05:27:38 2014//
+/psl.h/1.20/Mon Jul  6 05:36:26 2015//
 /pte.h/1.9/Sat Aug  5 21:26:49 2006//
 /ptrace.h/1.11/Tue Jan 18 01:02:54 2011//
 /reg.h/1.11/Tue Aug 12 20:27:10 2014//
@@ -67,7 +67,7 @@
 /spr.h/1.45/Thu Feb 25 23:30:04 2010//
 /trap.h/1.13/Mon Mar  3 15:36:36 2014//
 /types.h/1.50/Sun Dec 14 23:49:17 2014//
-/userret.h/1.28/Mon Mar 10 00:04:04 2014//
+/userret.h/1.30/Mon Jul  6 05:55:37 2015//
 /vmparam.h/1.19/Sat Oct 18 08:33:26 2014//
 /wchar_limits.h/1.3/Mon Apr 28 20:23:32 2008//
 D
