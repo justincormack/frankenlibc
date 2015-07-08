@@ -1,6 +1,6 @@
 # Basic build of frankenlibc with Docker
 
-FROM alpine:3.2
+FROM alpine:3.1
 
 MAINTAINER Justin Cormack <justin@specialbusservice.com>
 
