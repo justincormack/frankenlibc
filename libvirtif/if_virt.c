@@ -376,6 +376,11 @@ VIF_DELIVERPKT(struct virtif_sc *sc, struct iovec *iov, size_t iovlen)
 		passup = false;
 	}
 
+	/* deal with checksum offload */
+	m->m_pkthdr.csum_flags |= M_CSUM_IPv4;
+				| M_CSUM_TCPv4 | M_CSUM_UDPv4
+				| M_CSUM_TCPv6 | M_CSUM_UDPv6;
+
 	if (passup) {
 		ifp->if_ipackets++;
 		m->m_pkthdr.rcvif = ifp;
