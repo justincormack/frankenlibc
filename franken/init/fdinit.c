@@ -109,6 +109,27 @@ __franken_fdinit()
 /* XXX would be much nicer to build these functions against NetBSD libc headers, but at present
    they are not built, or installed, yet. Need to reorder the build process */
 
+#define IOCPARM_MASK    0x1fff
+#define IOCPARM_SHIFT   16
+#define IOCGROUP_SHIFT  8
+#define IOCPARM_LEN(x)  (((x) >> IOCPARM_SHIFT) & IOCPARM_MASK)
+#define IOCBASECMD(x)   ((x) & ~(IOCPARM_MASK << IOCPARM_SHIFT))
+#define IOCGROUP(x)     (((x) >> IOCGROUP_SHIFT) & 0xff)
+
+#define IOC_VOID        (unsigned long)0x20000000
+#define IOC_OUT         (unsigned long)0x40000000
+#define IOC_IN          (unsigned long)0x80000000
+#define IOC_INOUT       (IOC_IN|IOC_OUT)
+#define IOC_DIRMASK     (unsigned long)0xe0000000
+
+#define _IOC(inout, group, num, len) \
+    ((inout) | (((len) & IOCPARM_MASK) << IOCPARM_SHIFT) | \
+    ((group) << IOCGROUP_SHIFT) | (num))
+#define _IO(g,n)        _IOC(IOC_VOID,  (g), (n), 0)
+#define _IOR(g,n,t)     _IOC(IOC_OUT,   (g), (n), sizeof(t))
+#define _IOW(g,n,t)     _IOC(IOC_IN,    (g), (n), sizeof(t))
+#define _IOWR(g,n,t)    _IOC(IOC_INOUT, (g), (n), sizeof(t))
+
 struct ufs_args {
 	char *fspec;
 };
@@ -126,6 +147,17 @@ struct tmpfs_args {
 #define MNT_LOG		0x02000000
 #define MNT_FORCE	0x00080000
 
+#define IFNAMSIZ 16
+
+struct ifcapreq {
+	char		ifcr_name[IFNAMSIZ];
+	uint64_t	ifcr_capabilities;
+	uint64_t	ifcr_capenable;
+};
+
+#define SIOCGIFCAP	_IOWR('i', 118, struct ifcapreq)
+#define SIOCSIFCAP	_IOW('i', 117, struct ifcapreq)
+
 int rump___sysimpl_open(const char *, int, ...);
 int rump___sysimpl_close(int);
 int rump___sysimpl_dup2(int, int);
@@ -133,7 +165,9 @@ int rump___sysimpl_mount50(const char *, const char *, int, void *, size_t);
 int rump___sysimpl_unmount(const char *, int);
 int rump___sysimpl_socket30(int, int, int);
 int rump___sysimpl_mkdir(const char *, mode_t);
+int rump___sysimpl_ioctl(int, unsigned long, void *);
 
+#define AF_UNSPEC 0
 #define AF_INET 2
 #define AF_INET6 24
 #define SOCK_STREAM 1
@@ -179,30 +213,46 @@ register_net(int fd)
 {
 	char key[16], num[16];
 	int ret;
+	int sock;
 	char *addr, *mask, *gw;
+	int af = AF_UNSPEC;
+	struct ifcapreq cap;
 
 	mkkey(key, num, "virt", fd, fd);
 	ret = rump_pub_netconfig_ifcreate(key);
 	if (ret == 0) {
-		ret = rump___sysimpl_socket30(AF_INET6, SOCK_STREAM, 0);
-		if (ret != -1) {
+		sock = rump___sysimpl_socket30(AF_INET6, SOCK_STREAM, 0);
+		if (sock != -1) {
 			rump_pub_netconfig_auto_ipv6(key);
-			rump___sysimpl_close(ret);
+			rump___sysimpl_close(sock);
+			af = AF_INET6;
 		}
-		ret = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
-		if (ret != -1) {
+		sock = rump___sysimpl_socket30(AF_INET, SOCK_STREAM, 0);
+		if (sock != -1) {
 			/* XXX move to autodetect later, but gateway complex */
 			addr = getenv("FIXED_ADDRESS");
 			mask = getenv("FIXED_MASK");
 			gw = getenv("FIXED_GATEWAY");
 			if (addr == NULL || mask == NULL || gw == NULL) {
 				rump_pub_netconfig_dhcp_ipv4_oneshot(key);
-				rump___sysimpl_close(ret);
 			} else {
 				rump_pub_netconfig_ifup(key);
 				rump_pub_netconfig_ipv4_ifaddr_cidr(key, addr, atoi(mask));
 				rump_pub_netconfig_ipv4_gw(gw);
 			}
+			rump___sysimpl_close(sock);
+			af = AF_INET;
+		}
+		/* enable offload features */
+		sock = rump___sysimpl_socket30(af, SOCK_STREAM, 0);
+		if (sock != -1) {
+			strncpy(&cap.ifcr_name, key, IFNAMSIZ);
+			ret = rump___sysimpl_ioctl(sock, SIOCGIFCAP, &cap);
+			if (ret != -1) {
+				cap.ifcr_capenable = cap.ifcr_capabilities;
+				rump___sysimpl_ioctl(sock, SIOCSIFCAP, &cap);
+			}
+			rump___sysimpl_close(sock);
 		}
 	}
 }
