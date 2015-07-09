@@ -123,7 +123,9 @@ virtif_clone(struct if_clone *ifc, int num)
 	ifp->if_dlt = DLT_EN10MB;
 	/* this is a virtual interface, Linux may send packets without checksums */
 	/* XXX ideally should be switchable */
-	ifp->if_capabilities |= IFCAP_CSUM_IPv4_Rx | IFCAP_CSUM_TCPv4_Rx | IFCAP_CSUM_UDPv4_Rx;
+	ifp->if_capabilities |= IFCAP_CSUM_IPv4_Rx |
+		IFCAP_CSUM_TCPv4_Rx | IFCAP_CSUM_UDPv4_Rx |
+		IFCAP_CSUM_TCPv6_Rx | IFCAP_CSUM_UDPv6_Rx;
 
 	if_attach(ifp);
 
@@ -377,7 +379,7 @@ VIF_DELIVERPKT(struct virtif_sc *sc, struct iovec *iov, size_t iovlen)
 	}
 
 	/* deal with checksum offload */
-	m->m_pkthdr.csum_flags |= M_CSUM_IPv4;
+	m->m_pkthdr.csum_flags |= M_CSUM_IPv4
 				| M_CSUM_TCPv4 | M_CSUM_UDPv4
 				| M_CSUM_TCPv6 | M_CSUM_UDPv6;
 
