@@ -121,6 +121,9 @@ virtif_clone(struct if_clone *ifc, int num)
 	ifp->if_stop = virtif_stop;
 	ifp->if_mtu = ETHERMTU;
 	ifp->if_dlt = DLT_EN10MB;
+	/* this is a virtual interface, Linux may send packets without checksums */
+	/* XXX ideally should be switchable */
+	ifp->if_capabilities |= IFCAP_CSUM_IPv4_Rx | IFCAP_CSUM_TCPv4_Rx | IFCAP_CSUM_UDPv4_Rx;
 
 	if_attach(ifp);
 
