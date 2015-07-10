@@ -6,7 +6,7 @@
 %rename cc1_options old_cc1_options
 
 *cc1_options:
-%(old_cc1_options) @CFLAGS@
+%(old_cc1_options) @CFLAGS@ @UNDEF@
 
 *startfile:
 @STARTFILE@
