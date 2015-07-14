@@ -318,6 +318,8 @@ rm -f ${RUMP}/lib/librumpdev_umass.a
 
 # remove crypto for now as very verbose
 rm -f ${RUMP}/lib/librumpkern_crypto.a
+rm -f ${RUMP}/lib/librumpdev_opencrypto.a
+rm -f ${RUMP}/lib/librumpdev_cgd.a
 
 # userspace libraries to build from NetBSD base
 USER_LIBS="m pthread z crypt util prop rmt ipsec"

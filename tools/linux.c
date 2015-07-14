@@ -493,7 +493,7 @@ os_open(char *pre, char *post)
 
 	/* docker networking is packet socket plus fixed addresses */
 	if (strcmp(pre, "docker") == 0) {
-		int sock;
+		int sock, ret;
 		struct ifreq ifr;
 		char addr[16];
 
@@ -502,10 +502,13 @@ os_open(char *pre, char *post)
 		sock = packet_open(post);
 		if (sock == -1)
 			return -1;
-		memcpy(ifr.ifrn_name, post, IF_NAMESIZE);
-		ret = syscall(SYS_ioctl, fd, SIOCGIFADDR, &ifr);		
-		inet_ntop(AF_INET, &ifr.ifru_addr, addr, sizeof(addr));
-		setenv("FIXED_ADDRESS", addr);
+		memcpy(ifr.ifr_ifrn.ifrn_name, post, IF_NAMESIZE);
+		ret = ioctl(sock, SIOCGIFADDR, &ifr);		
+		inet_ntop(AF_INET, &ifr.ifr_ifru.ifru_addr, addr, sizeof(addr));
+	
+		/* XXX tmp */ fprintf(stderr, "address: %s\n", addr);
+
+		setenv("FIXED_ADDRESS", addr, 1);
 
 		/* XXX */
 	}
