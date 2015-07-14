@@ -3,22 +3,23 @@
 #include <string.h>
 #include <time.h>
 #include <signal.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/syscall.h>
 #include <sys/mman.h>
-#include <linux/fs.h>
+#include <sys/socket.h>
 #include <net/if.h>
 #include <arpa/inet.h>
+#include <linux/fs.h>
 #include <linux/if_tun.h>
 #include <linux/sockios.h>
-#include <sys/socket.h>
 #include <linux/if_packet.h>
 #include <linux/capability.h>
+#include <linux/rtnetlink.h>
 
 #include "rexec.h"
 
@@ -428,6 +429,118 @@ os_extrafiles()
 }
 
 int
+readRoutes(int sock, char *buf, size_t size, unsigned int seq, unsigned int pid)
+{
+	struct nlmsghdr *hdr;
+	int n, len = 0;
+
+	do {
+		n = recv(sock, buf, size - len, 0);
+		if (n == -1) {
+			perror("recv");
+			return -1;
+		}
+
+		hdr = (struct nlmsghdr *)buf;
+
+		if ((NLMSG_OK(hdr, n) == 0) || (hdr->nlmsg_type == NLMSG_ERROR))
+			return -1;
+
+		if (hdr->nlmsg_type == NLMSG_DONE)
+			break;
+
+		buf += n;
+		len += n;
+
+		if ((hdr->nlmsg_flags & NLM_F_MULTI) == 0)
+			break;
+
+	} while ((hdr->nlmsg_seq != seq) || (hdr->nlmsg_pid != pid));
+
+	return len;
+}
+
+int
+parseRoutes(struct nlmsghdr *hdr, struct in_addr *dst, struct in_addr *gw)
+{
+	struct rtmsg *msg;
+	struct rtattr *attr;
+	int rtlen;
+
+	msg = (struct rtmsg *)NLMSG_DATA(hdr);
+
+	if ((msg->rtm_family != AF_INET) || (msg->rtm_table != RT_TABLE_MAIN))
+		return -1;
+
+	attr = (struct rtattr *)RTM_RTA(msg);
+	rtlen = RTM_PAYLOAD(hdr);
+
+	for (; RTA_OK(attr,rtlen); attr = RTA_NEXT(attr,rtlen)) {
+		switch(attr->rta_type) {
+		case RTA_OIF:
+			break;
+		case RTA_GATEWAY:
+			memcpy(gw, RTA_DATA(attr), sizeof(struct in_addr));
+			break;
+		case RTA_PREFSRC:
+			break;
+		case RTA_DST:
+			memcpy(dst, RTA_DATA(attr), sizeof(struct in_addr));
+			break;
+		}
+	}
+
+	return 0;
+}
+
+int get_gateway(struct in_addr *gw)
+{
+	struct nlmsghdr *nlmsg;
+	char buf[8192];
+	int sock, len, seq = 0;
+	struct in_addr dest;
+	int ret = -1;
+
+	sock = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
+	if (sock == -1) {
+		perror("socket");
+		return -1;
+	}
+
+	nlmsg = (struct nlmsghdr *)buf;
+
+	nlmsg->nlmsg_len = NLMSG_LENGTH(sizeof(struct rtmsg));
+	nlmsg->nlmsg_type = RTM_GETROUTE;
+	nlmsg->nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST;
+	nlmsg->nlmsg_seq = seq++;
+	nlmsg->nlmsg_pid = getpid();
+
+	if (send(sock, nlmsg, nlmsg->nlmsg_len, 0) == -1) {
+		perror("send");
+		return -1;
+	}
+
+	len = readRoutes(sock, buf, sizeof(buf), nlmsg->nlmsg_seq, nlmsg->nlmsg_pid);
+	if (len == -1) {
+		return -1;
+	}
+
+	for (; NLMSG_OK(nlmsg, len); nlmsg = NLMSG_NEXT(nlmsg, len)) {
+		if (parseRoutes(nlmsg, &dest, gw) == -1)
+			continue;
+
+		if (dest.s_addr == 0) { /* if dest = 0.0.0.0 ie default gw */
+			ret = 0;
+			break;
+		}
+ 	}
+
+	close(sock);
+
+	return ret;
+}
+
+int
 packet_open(char *post)
 {
 	struct ifreq ifr;
@@ -493,24 +606,52 @@ os_open(char *pre, char *post)
 
 	/* docker networking is packet socket plus fixed addresses */
 	if (strcmp(pre, "docker") == 0) {
-		int sock, ret;
+		int sock;
 		struct ifreq ifr;
-		char addr[16];
+		char addr[INET_ADDRSTRLEN];
+		struct sockaddr_in *sa;
+		struct in_addr gw;
+		uint32_t mask;
+		int n = 32;
 
 		if (strlen(post) == 0)
 			post = "eth0";
+
 		sock = packet_open(post);
 		if (sock == -1)
 			return -1;
 		memcpy(ifr.ifr_ifrn.ifrn_name, post, IF_NAMESIZE);
-		ret = ioctl(sock, SIOCGIFADDR, &ifr);		
-		inet_ntop(AF_INET, &ifr.ifr_ifru.ifru_addr, addr, sizeof(addr));
+		if (ioctl(sock, SIOCGIFADDR, &ifr) == -1)
+			return -1;
+		
+		sa = (struct sockaddr_in *)&ifr.ifr_ifru.ifru_addr;
+		inet_ntop(AF_INET, &sa->sin_addr, addr, sizeof(addr));
 	
-		/* XXX tmp */ fprintf(stderr, "address: %s\n", addr);
-
 		setenv("FIXED_ADDRESS", addr, 1);
 
-		/* XXX */
+		if (ioctl(sock, SIOCGIFNETMASK, &ifr) == -1)
+			return -1;
+
+		sa = (struct sockaddr_in *)&ifr.ifr_ifru.ifru_addr;
+		mask = ~htonl(sa->sin_addr.s_addr);
+
+		while (mask) {
+			mask >>= 1;
+			n--;
+		}
+
+		snprintf(addr, sizeof(addr), "%d", n);
+
+		setenv("FIXED_MASK", addr, 1);
+
+		if (get_gateway(&gw) == -1)
+			return -1;
+
+		inet_ntop(AF_INET, &gw, addr, sizeof(addr));
+
+		setenv("FIXED_GATEWAY", addr, 1);
+
+		return sock;
 	}
 
 	fprintf(stderr, "platform does not support %s:%s\n", pre, post);
