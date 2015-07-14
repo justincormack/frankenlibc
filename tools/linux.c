@@ -428,6 +428,39 @@ os_extrafiles()
 }
 
 int
+packet_open(char *post)
+{
+	struct ifreq ifr;
+	int sock, flags;
+	struct sockaddr_ll sa = {0};
+
+	sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+	if (sock == -1) {
+		/* probably missing CAP_NET_RAW */
+		perror("socket AF_PACKET");
+		return -1;
+	}
+	strncpy(ifr.ifr_name, post, IFNAMSIZ);
+	if (ioctl(sock, SIOCGIFINDEX, &ifr) == -1)
+		return -1;
+
+	sa.sll_family = AF_PACKET;
+	sa.sll_ifindex = ifr.ifr_ifindex;
+	sa.sll_halen = ETH_ALEN;
+	sa.sll_protocol = htons(ETH_P_ALL);
+	if (bind(sock, (struct sockaddr *)&sa, sizeof(sa)) == -1) {
+		perror("bind AF_PACKET");
+		return -1;
+	}
+	flags = fcntl(sock, F_GETFL, 0);
+	if (flags == -1)
+		return -1;
+	if (fcntl(sock, F_SETFL, flags | O_NONBLOCK) == -1)
+		return -1;
+	return sock;
+}
+
+int
 os_open(char *pre, char *post)
 {
 
@@ -455,34 +488,26 @@ os_open(char *pre, char *post)
 
 	/* eg packet:eth0 for packet socket on eth0 */
 	if (strcmp(pre, "packet") == 0) {
+		return packet_open(post);
+	}
+
+	/* docker networking is packet socket plus fixed addresses */
+	if (strcmp(pre, "docker") == 0) {
+		int sock;
 		struct ifreq ifr;
-		int sock, flags;
-		struct sockaddr_ll sa = {0};
+		char addr[16];
 
-		sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-		if (sock == -1) {
-			/* probably missing CAP_NET_RAW */
-			perror("socket AF_PACKET");
+		if (strlen(post) == 0)
+			post = "eth0";
+		sock = packet_open(post);
+		if (sock == -1)
 			return -1;
-		}
-		strncpy(ifr.ifr_name, post, IFNAMSIZ);
-		if (ioctl(sock, SIOCGIFINDEX, &ifr) == -1)
-			return -1;
+		memcpy(ifr.ifrn_name, post, IF_NAMESIZE);
+		ret = syscall(SYS_ioctl, fd, SIOCGIFADDR, &ifr);		
+		inet_ntop(AF_INET, &ifr.ifru_addr, addr, sizeof(addr));
+		setenv("FIXED_ADDRESS", addr);
 
-		sa.sll_family = AF_PACKET;
-		sa.sll_ifindex = ifr.ifr_ifindex;
-		sa.sll_halen = ETH_ALEN;
-		sa.sll_protocol = htons(ETH_P_ALL);
-		if (bind(sock, (struct sockaddr *)&sa, sizeof(sa)) == -1) {
-			perror("bind AF_PACKET");
-			return -1;
-		}
-		flags = fcntl(sock, F_GETFL, 0);
-		if (flags == -1)
-			return -1;
-		if (fcntl(sock, F_SETFL, flags | O_NONBLOCK) == -1)
-			return -1;
-		return sock;
+		/* XXX */
 	}
 
 	fprintf(stderr, "platform does not support %s:%s\n", pre, post);
