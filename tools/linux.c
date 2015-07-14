@@ -57,7 +57,7 @@ os_init(char *program, int nx)
 {
 
 	if (nx == 1) {
-		fprintf(stderr, "cannot disable mprotect execution\n");
+		fprintf(stderr, "No seccomp, cannot disable mprotect execution\n");
 		exit(1);
 	}
 	return 0;
@@ -650,6 +650,14 @@ os_open(char *pre, char *post)
 		inet_ntop(AF_INET, &gw, addr, sizeof(addr));
 
 		setenv("FIXED_GATEWAY", addr, 1);
+
+		/* delete address from interface */
+		sa = (struct sockaddr_in *) &ifr.ifr_ifru.ifru_addr;
+		memset(&sa->sin_addr, 0, sizeof(struct in_addr));
+		if (ioctl(sock, SIOCSIFADDR, &ifr) == -1) {
+			perror("ioctl SIOCSIFADDR (need CAP_NET_ADMIN?)");
+			return -1;
+		}
 
 		return sock;
 	}
