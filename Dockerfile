@@ -28,6 +28,7 @@ RUN \
   iproute2 \
   bridge-utils \
   ethtool \
+  cmake \
   curl
 
 # While still in testing
