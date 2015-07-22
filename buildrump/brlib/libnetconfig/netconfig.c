@@ -30,6 +30,7 @@
 #include <net/if.h>
 #include <net/if_dl.h>
 #include <net/if_ether.h>
+#include <net/if_bridgevar.h>
 #include <net/if_types.h>
 #include <net/route.h>
 
@@ -54,12 +55,12 @@ static struct socket *rtso;
 #define CHECKDOMAIN(dom) if (!(dom)) return EAFNOSUPPORT
 
 static int
-wrapifioctl(struct socket *so, u_long cmd, void *data, struct lwp *l)
+wrapifioctl(struct socket *so, u_long cmd, void *data)
 {
 	int rv;
 
 	KERNEL_LOCK(1, NULL);
-	rv = ifioctl(so, cmd, data, l);
+	rv = ifioctl(so, cmd, data, curlwp);
 	KERNEL_UNLOCK_ONE(NULL);
 
 	return rv;
@@ -72,7 +73,7 @@ rump_netconfig_ifcreate(const char *ifname)
 
 	memset(&ifr, 0, sizeof(ifr));
 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-	return wrapifioctl(in4so, SIOCIFCREATE, &ifr, curlwp);
+	return wrapifioctl(in4so, SIOCIFCREATE, &ifr);
 }
 
 static void
@@ -97,11 +98,11 @@ chflag(const char *ifname, void (*edflag)(short *))
 
 	memset(&ifr, 0, sizeof(ifr));
 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-	if ((rv = wrapifioctl(in4so, SIOCGIFFLAGS, &ifr, curlwp)) != 0)
+	if ((rv = wrapifioctl(in4so, SIOCGIFFLAGS, &ifr)) != 0)
 		return rv;
 	edflag(&ifr.ifr_flags);
 
-	return wrapifioctl(in4so, SIOCSIFFLAGS, &ifr, curlwp);
+	return wrapifioctl(in4so, SIOCSIFFLAGS, &ifr);
 }
 
 int
@@ -129,7 +130,7 @@ rump_netconfig_ifsetlinkstr(const char *ifname, const char *linkstr)
 	ifd.ifd_data = __UNCONST(linkstr);
 	ifd.ifd_len = strlen(linkstr)+1;
 
-	return wrapifioctl(in4so, SIOCSLINKSTR, &ifd, curlwp);
+	return wrapifioctl(in4so, SIOCSLINKSTR, &ifd);
 }
 
 int
@@ -139,7 +140,44 @@ rump_netconfig_ifdestroy(const char *ifname)
 
 	memset(&ifr, 0, sizeof(ifr));
 	strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-	return wrapifioctl(in4so, SIOCIFDESTROY, &ifr, curlwp);
+	return wrapifioctl(in4so, SIOCIFDESTROY, &ifr);
+}
+
+/*
+ * network bridge manipulation (bridge is created with ifbridge)
+ */
+
+static int
+brioctl(const char *bridgename, const char *ifname, unsigned long op)
+{
+	struct ifdrv ifd;
+	struct ifbreq req;
+
+	memset(&req, 0, sizeof(req));
+	strlcpy(req.ifbr_ifsname, ifname, sizeof(req.ifbr_ifsname));
+
+	memset(&ifd, 0, sizeof(ifd));
+	strlcpy(ifd.ifd_name, bridgename, sizeof(ifd.ifd_name));
+	ifd.ifd_cmd = op;
+	ifd.ifd_len = sizeof(req);
+	ifd.ifd_data = &req;
+
+
+	return wrapifioctl(in4so, SIOCSDRVSPEC, &ifd);
+}
+
+int
+rump_netconfig_bradd(const char *bridgename, const char *ifname)
+{
+
+	return brioctl(bridgename, ifname, BRDGADD);
+}
+
+int
+rump_netconfig_brdel(const char *bridgename, const char *ifname)
+{
+
+	return brioctl(bridgename, ifname, BRDGDEL);
 }
 
 static int
@@ -169,7 +207,7 @@ cfg_ipv4(const char *ifname, const char *addr, in_addr_t m_addr)
 	sin->sin_len = sizeof(*sin);
 	sin->sin_addr.s_addr = inet_addr(addr) | ~m_addr;
 
-	rv = wrapifioctl(in4so, SIOCAIFADDR, &ia, curlwp);
+	rv = wrapifioctl(in4so, SIOCAIFADDR, &ia);
 	/*
 	 * small pause so that we can assume interface is usable when
 	 * we return (ARPs have trickled through, etc.)
@@ -227,7 +265,7 @@ rump_netconfig_ipv6_ifaddr(const char *ifname, const char *addr, int prefixlen)
 	memset(&sin6->sin6_addr, 0, sizeof(sin6->sin6_addr));
 	memset(&sin6->sin6_addr, 0xff, prefixlen / 8);
 
-	rv = wrapifioctl(in6so, SIOCAIFADDR_IN6, &ia, curlwp);
+	rv = wrapifioctl(in6so, SIOCAIFADDR_IN6, &ia);
 	/*
 	 * small pause so that we can assume interface is usable when
 	 * we return (ARPs have trickled through, etc.)

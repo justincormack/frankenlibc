@@ -42,13 +42,12 @@
 # that once buildrump.sh is published, the NetBSD sources will be
 # available via git.
 #
-: ${BUILDRUMP_CVSROOT:=:pserver:anoncvs@anoncvs.netbsd.org:/cvsroot}
-NBSRC_CVSDATE="20150108 1800UTC"
+NBSRC_CVSDATE="20150520 1400UTC"
 NBSRC_CVSFLAGS="-z3"
 
 # If set, timestamp for src/sys/rump/listsrcdir.  If unset,
 # NBSRC_CVSDATE is used.
-NBSRC_LISTDATE="20150425 0850UTC"
+NBSRC_LISTDATE="20150615 1130UTC"
 
 # Cherry-pick patches are not in $NBSRC_CVSDATE
 # the format is "date1:dir1 dir2 dir3 ...;date2:dir 4..."
@@ -58,24 +57,56 @@ NBSRC_LISTDATE="20150425 0850UTC"
 #	src/sys/rump'
 #
 NBSRC_EXTRA_sys='
-    20150121 1440UTC:
-	src/sys/rump/librump/rumpkern/lwproc.c;
-    20150204 1300UTC:
-	src/sys/rump/librump/rumpkern/Makefile.rumpkern;
-    20150209 2245UTC:
-	src/lib/libc/Makefile
-	src/lib/libc/compat/arch/i386/Makefile.inc
-	src/lib/libc/compat/arch/x86_64/Makefile.inc;
-    20150516 1505UTC:
-	src/sys/rump/dev/lib/libvirtio_ld/ld_at_virtio.c'
+    20150526 1650UTC:
+	src/sys/rump/librump/rumpkern/cons.c
+	src/sys/rump/librump/rumpvfs/rumpblk.c;
+    20150531 1200UTC:
+	src/sys/dev/pci/auich.c
+	src/sys/rump/net/Makefile.rumpnetcomp
+	src/sys/rump/net/lib/libtap;
+    20150602 0040UTC:
+	src/sys/modules/hdaudio
+	src/sys/modules/hdaudio_pci;
+    20150603 1445UTC:
+	src/sys/rump/Makefile.rump
+	src/sys/rump/README.compileopts
+	src/sys/rump/dev/lib/libpci
+	src/sys/rump/include/sys/bus.h
+	src/sys/rump/dev/Makefile.rumpdevcomp
+	src/sys/rump/dev/lib/libpci_auich;
+    20150608 1220UTC:
+	src/sys/rump/librump/rumpkern/rump.c
+	src/sys/rump/librump/rumpvfs/devnodes.c
+	src/sys/rump/librump/rumpvfs/rump_vfs_private.h
+	src/sys/rump/dev/lib/libaudio/audio_component.c;
+    20150615 1545UTC:
+	src/sys/rump/dev/lib/libumass/Makefile
+	src/sys/rump/dev/lib/libpci;
+    20150618 2230UTC:
+	src/sys/kern/syscalls.master
+	src/sys/rump/rump.sysmap
+	src/sys/rump/include/rump/rump_syscalls.h
+	src/sys/rump/librump/rumpkern/rump_syscalls.c
+	src/sys/rump/librump/rumpkern/rumpkern_syscalls.c
+	src/sys/rump/librump/rumpnet/rumpnet_syscalls.c
+	src/sys/rump/librump/rumpvfs/rumpvfs_syscalls.c
+	src/sys/sys/syscall.h
+	src/sys/sys/syscallargs.h
+	src/share/mk/bsd.own.mk;
+    20150715 1430UTC:
+	src/lib/libc/arch/i386/Makefile.inc
+	src/lib/libc/arch/i386/gen/Makefile.inc
+	src/lib/libc/arch/x86_64/Makefile.inc
+	src/lib/libc/arch/x86_64/gen/Makefile.inc'
 
-NBSRC_EXTRA_posix='
-    20150305 0030UTC:
-	src/lib/librumpuser
-	src/lib/librumphijack'
+NBSRC_EXTRA_posix=''
 
 NBSRC_EXTRA_usr='
-    20150401 1500UTC:
+    20150626 0135UTC:
+	src/external/bsd/libc++/dist/libcxxrt/src/exception.cc
+	src/lib/libpthread/pthread_types.h
+	src/sbin/raidctl/raidctl.c;
+    20150712 2100UTC:
 	src/crypto/external/bsd/openssl'
 
 GITREPO='https://github.com/rumpkernel/src-netbsd'
@@ -370,6 +401,18 @@ BRDIR=$(dirname $0)
 SRCDIR=${2}
 
 . ${BRDIR}/subr.sh
+
+# default to the most secure source for githubdate
+if [ -z "${BUILDRUMP_CVSROOT}" ]; then
+	case "${1}" in
+	githubdate)
+		BUILDRUMP_CVSROOT=cvs.netbsd.org:/cvsroot
+		;;
+	*)
+		BUILDRUMP_CVSROOT=:pserver:anoncvs@anoncvs.netbsd.org:/cvsroot
+		;;
+	esac
+fi
 
 case "${1}" in
 cvs|cvsbuildrump)
