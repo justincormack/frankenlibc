@@ -1,4 +1,4 @@
-$NetBSD: pcidevs,v 1.1228 2015/06/26 07:31:18 msaitoh Exp $
+$NetBSD: pcidevs,v 1.1233 2015/08/26 09:23:39 msaitoh Exp $
 
 /*
  * Copyright (c) 1995, 1996 Christopher G. Demetriou
@@ -634,6 +634,7 @@ vendor ASPEED		0x1a03	ASPEED Technology
 vendor EVE		0x1adb	EVE
 vendor QUMRANET		0x1af4	Qumranet
 vendor ASMEDIA		0x1b21  ASMedia
+vendor REDHAT		0x1b36	Red Hat
 vendor FRESCO		0x1b73	Fresco Logic
 vendor QINHENG2		0x1c00	Nanjing QinHeng Electronics (PCIe)
 vendor SYMPHONY2	0x1c1c	Symphony Labs (2nd PCI Vendor ID)
@@ -1164,7 +1165,8 @@ product ASMEDIA ASM1061_01	0x0601	ASM1061 AHCI SATA III Controller
 product ASMEDIA ASM1061_02	0x0602	ASM1061 AHCI SATA III Controller
 product ASMEDIA ASM1061_11	0x0611	ASM1061 AHCI SATA III Controller
 product ASMEDIA ASM1061_12	0x0612	ASM1061 AHCI SATA III Controller
-product	ASMEDIA	ASM1042		0x1042	ASM1042 xHCI USB 3.0
+product	ASMEDIA	ASM1042		0x1042	ASM1042 USB 3.0 Host Controller
+product	ASMEDIA	ASM1042A	0x1142	ASM1042A USB 3.0 Host Controller
 
 /* Asustek products */
 product ASUSTEK HFCPCI		0x0675	ISDN
@@ -2353,6 +2355,9 @@ product MARVELL MV78200		0x7820	MV78200 SoC Discovery Innovation
 product MARVELL MV78230		0x7823	MV78230 SoC Armada XP
 product MARVELL MV78260		0x7826	MV78260 SoC Armada XP
 product MARVELL MV78460		0x7846	MV78460 SoC Armada XP
+product MARVELL 88F6810         0x6810  88F6810 SoC Armada 38x 
+product MARVELL 88F6820         0x6820  88F6820 SoC Armada 38x 
+product MARVELL 88F6828         0x6828  88F6828 SoC Armada 38x 
 product MARVELL 88W8660		0x8660	88W8660 SoC Orion1
 
 product MARVELL2 88SE9120	0x9120	88SE9120 SATA
@@ -2639,6 +2644,7 @@ product INTEL X1000_HS_UART	0x0936	Quark X1000 HS-UART
 product INTEL X1000_MAC		0x0937	Quark X1000 10/100 Ethernet MAC
 product INTEL X1000_EHCI	0x0939	Quark X1000 EHCI
 product INTEL X1000_OHCI	0x093a	Quark X1000 OHCI
+product INTEL PCIE_NVME_SSD	0x0953	PCIe NVMe SSD
 product INTEL X1000_HB		0x0958	Quark X1000 Host Bridge
 product INTEL WIFI_LINK_7265_1	0x095a	Dual Band Wireless AC 7265
 product INTEL WIFI_LINK_7265_2	0x095b	Dual Band Wireless AC 7265
@@ -3533,6 +3539,7 @@ product INTEL 82Q45_HB		0x2e10	82Q45 Host Bridge
 product INTEL 82Q45_EXP		0x2e11	82Q45 PCI Express Bridge
 product INTEL 82Q45_IGD		0x2e12	82Q45 Integrated Graphics Device
 product INTEL 82Q45_IGD_1	0x2e13	82Q45 Integrated Graphics Device
+product INTEL 82Q45_KT_1	0x2e17	82Q45 KT
 product INTEL 82G45_HB		0x2e20	82G45 Host Bridge
 product INTEL 82G45_IGD		0x2e22	82G45 Integrated Graphics Device
 product INTEL 82G41_HB		0x2e30	82G41 Host Bridge
@@ -5290,6 +5297,10 @@ product REALTEK RTL8188CE	0x8176	RTL8188CE Wireless LAN 802.11n PCI-E NIC
 product REALTEK RTL8188EE	0x8179	RTL8188EE Wireless LAN 802.11n PCI-E NIC
 product REALTEK RT8180		0x8180	8180 802.11b
 product REALTEK RT8185		0x8185	8185 802.11a/b/g
+
+/* Red Hat products */
+product REDHAT PPB		0x0001	Qemu PCI-PCI
+product REDHAT QXL		0x0100	QXL Video
 
 /* Renesas products */
 product RENESAS SH7780		0x0002	SH7780 PCI Controller

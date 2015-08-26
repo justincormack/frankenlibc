@@ -1,4 +1,4 @@
-#	$NetBSD: bsd.own.mk,v 1.859 2015/06/27 16:21:07 matt Exp $
+#	$NetBSD: bsd.own.mk,v 1.872 2015/08/17 17:36:06 christos Exp $
 
 # This needs to be before bsd.init.mk
 .if defined(BSD_MK_COMPAT_FILE)
@@ -111,7 +111,7 @@ HAVE_LIBGCC_EH?=	no
 HAVE_LIBGCC_EH?=	yes
 .endif
 
-HAVE_GDB?=	7
+HAVE_GDB?=	79
 
 .if (${MACHINE_ARCH} == "alpha") || \
     (${MACHINE_ARCH} == "hppa") || \
@@ -1030,26 +1030,10 @@ ${var}?=	${${var}.${MACHINE_ARCH}:Uno}
 .endfor
 
 #
-# Do we default to XFree86 or Xorg for this platform?
-#
-.if \
-    ${MACHINE} == "acorn32"	|| \
-    ${MACHINE} == "alpha"	|| \
-    ${MACHINE} == "amiga"	|| \
-    ${MACHINE} == "mac68k"	|| \
-    ${MACHINE} == "pmax"	|| \
-    ${MACHINE} == "sun3"
-X11FLAVOUR?=	XFree86
-.else
-X11FLAVOUR?=	Xorg
-.endif
-
-#
 # Which platforms build the xorg-server drivers (as opposed
 # to just Xnest and Xvfb.)
 #
-.if ${X11FLAVOUR} == "Xorg"	&& ( \
-    ${MACHINE} == "alpha"	|| \
+.if ${MACHINE} == "alpha"	|| \
     ${MACHINE} == "amd64"	|| \
     ${MACHINE} == "bebox"	|| \
     ${MACHINE} == "cats"	|| \
@@ -1073,7 +1057,7 @@ X11FLAVOUR?=	Xorg
     ${MACHINE} == "sparc"	|| \
     ${MACHINE} == "sparc64"	|| \
     ${MACHINE} == "vax"		|| \
-    ${MACHINE} == "zaurus"	)
+    ${MACHINE} == "zaurus"
 MKXORG_SERVER?=yes
 .else
 MKXORG_SERVER?=no
@@ -1241,13 +1225,8 @@ X11SRCDIR=		/usr/xsrc
 .endif
 .endif # !defined(X11SRCDIR)
 
-X11SRCDIR.xc?=		${X11SRCDIR}/xfree/xc
 X11SRCDIR.local?=	${X11SRCDIR}/local
-.if ${X11FLAVOUR} == "Xorg"
 X11ROOTDIR?=		/usr/X11R7
-.else
-X11ROOTDIR?=		/usr/X11R6
-.endif
 X11BINDIR?=		${X11ROOTDIR}/bin
 X11ETCDIR?=		/etc/X11
 X11FONTDIR?=		${X11ROOTDIR}/lib/X11/fonts
@@ -1263,7 +1242,7 @@ X11USRLIBDIR?=		${X11ROOTDIR}/lib${MLIBDIR:D/${MLIBDIR}}
 X11SRCDIRMIT?=		${X11SRCDIR}/external/mit
 .for _lib in \
 	FS ICE SM X11 XScrnSaver XTrap Xau Xcomposite Xcursor Xdamage \
-	Xdmcp Xevie Xext Xfixes Xfont Xft Xi Xinerama Xmu Xpm \
+	Xdmcp Xevie Xext Xfixes Xfont Xft Xi Xinerama Xmu Xpresent Xpm \
 	Xrandr Xrender Xres Xt Xtst Xv XvMC Xxf86dga Xxf86misc Xxf86vm drm \
 	fontenc xkbfile xkbui Xaw Xfontcache pciaccess xcb \
 	pthread-stubs
@@ -1286,7 +1265,8 @@ X11SRCDIR.${_proto}proto?=		${X11SRCDIRMIT}/${_proto}proto/dist
 	glu glw mesa-demos MesaGLUT MesaLib MesaLib7 \
 	ico iceauth listres lndir \
 	luit xproxymanagementprotocol mkfontdir oclock proxymngr rgb \
-	setxkbmap smproxy twm viewres x11perf xauth xcalc xclipboard \
+	rstart setxkbmap showfont smproxy twm viewres \
+	x11perf xauth xcalc xclipboard \
 	xclock xcmsdb xconsole xditview xdpyinfo xdriinfo xdm \
 	xfd xf86dga xfindproxy xfontsel xfwp xgamma xgc xhost xinit \
 	xkill xload xlogo xlsatoms xlsclients xlsfonts xmag xmessage \
@@ -1329,11 +1309,7 @@ MKRADEONFIRMWARE?=		yes
 .endif
 MKRADEONFIRMWARE?=		no
 
-.if ${X11FLAVOUR} == "Xorg"
 X11DRI?=			yes
-.endif
-
-X11DRI?=			no
 X11LOADABLE?=			yes
 
 

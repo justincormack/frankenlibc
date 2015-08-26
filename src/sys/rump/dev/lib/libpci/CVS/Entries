@@ -1,8 +1,8 @@
-/Makefile/1.6/Mon Jun 15 15:38:52 2015//
+/Makefile/1.7/Mon Aug 24 23:21:50 2015//
 /PCI.ioconf/1.1/Fri Apr  4 12:53:59 2014//
 /pci_at_mainbus.c/1.6/Mon Jun 15 15:38:52 2015//
 /pci_user.h/1.5/Mon Jun 15 15:38:52 2015//
 /rumpdev_bus_dma.c/1.5/Mon Jun 15 15:38:52 2015//
-/rumpdev_bus_space.c/1.5/Mon Jun 15 15:38:52 2015//
+/rumpdev_bus_space.c/1.6/Tue Aug 11 22:28:34 2015//
 /rumpdev_pci.c/1.5/Sun May 17 13:51:31 2015//
 D

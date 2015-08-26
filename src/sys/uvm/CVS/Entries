@@ -1,11 +1,11 @@
 /Makefile/1.9/Sat Feb 11 12:45:07 2006//
-/files.uvm/1.24/Sun Apr 12 12:44:13 2015//
+/files.uvm/1.25/Mon Jul 27 09:24:28 2015//
 /uvm.h/1.66/Mon Apr 13 22:04:44 2015//
 /uvm_amap.c/1.107/Sun Apr  8 20:47:10 2012//
 /uvm_amap.h/1.37/Sun Jun 12 03:36:02 2011//
 /uvm_anon.c/1.63/Fri Oct 25 20:08:11 2013//
 /uvm_anon.h/1.30/Sat Aug  6 17:25:03 2011//
-/uvm_aobj.c/1.122/Sun May 25 18:55:11 2014//
+/uvm_aobj.c/1.123/Mon Aug 24 22:50:32 2015//
 /uvm_aobj.h/1.23/Fri Oct 18 17:48:44 2013//
 /uvm_bio.c/1.83/Wed May 27 19:43:40 2015//
 /uvm_coredump.c/1.6/Tue Jan  7 07:59:03 2014//
@@ -23,16 +23,14 @@
 /uvm_io.c/1.27/Fri Jan 27 19:48:41 2012//
 /uvm_km.c/1.139/Fri Feb  6 18:19:22 2015//
 /uvm_km.h/1.20/Fri Jan 27 19:48:41 2012//
-/uvm_kmguard.c/1.11/Tue Feb 25 14:22:59 2014//
-/uvm_kmguard.h/1.2/Sun Feb  5 03:40:07 2012//
 /uvm_loan.c/1.83/Mon Jul 30 23:56:48 2012//
 /uvm_loan.h/1.17/Wed Feb  2 15:13:34 2011//
 /uvm_map.c/1.334/Mon Jun 22 06:24:17 2015//
 /uvm_map.h/1.72/Mon Oct 29 16:00:05 2012//
 /uvm_meter.c/1.65/Mon Dec  1 04:11:14 2014//
-/uvm_mmap.c/1.152/Sun Mar  1 13:43:51 2015//
+/uvm_mmap.c/1.153/Tue Aug  4 18:28:10 2015//
 /uvm_mremap.c/1.17/Sun Jun 12 03:36:03 2011//
-/uvm_object.c/1.12/Tue Mar 11 20:22:47 2014//
+/uvm_object.c/1.13/Mon Aug 24 22:50:32 2015//
 /uvm_object.h/1.33/Fri Sep 14 22:20:50 2012//
 /uvm_page.c/1.187/Sat Apr 11 19:24:13 2015//
 /uvm_page.h/1.80/Mon Mar 23 07:59:12 2015//
@@ -53,10 +51,10 @@
 /uvm_readahead.h/1.4/Wed Jun 10 01:54:08 2009//
 /uvm_stat.c/1.37/Tue May 17 04:18:07 2011//
 /uvm_stat.h/1.52/Wed Mar  5 05:35:55 2014//
-/uvm_swap.c/1.172/Fri Jul 25 08:10:40 2014//
-/uvm_swap.h/1.20/Mon Feb  3 13:20:21 2014//
+/uvm_swap.c/1.173/Thu Jul 30 09:55:57 2015//
+/uvm_swap.h/1.22/Thu Jul 30 10:25:49 2015//
 /uvm_swapstub.c/1.8/Tue Feb 18 06:18:13 2014//
 /uvm_unix.c/1.45/Fri Sep  5 05:36:49 2014//
 /uvm_user.c/1.14/Wed Feb  2 15:13:34 2011//
-/uvm_vnode.c/1.99/Mon Jul 30 23:56:48 2012//
+/uvm_vnode.c/1.100/Mon Aug 24 22:50:32 2015//
 D

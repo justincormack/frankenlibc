@@ -1,4 +1,4 @@
-#	$NetBSD: Makefile.inc,v 1.35 2014/09/08 12:12:19 joerg Exp $
+#	$NetBSD: Makefile.inc,v 1.37 2015/07/30 15:29:52 tsutsui Exp $
 
 SRCS+=	bswap16.S bswap32.S bswap64.S
 SRCS+=	memcmp.S memcpy.S memmove.S memset.S

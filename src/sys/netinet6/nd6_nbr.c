@@ -1,4 +1,4 @@
-/*	$NetBSD: nd6_nbr.c,v 1.108 2015/04/27 10:14:44 ozaki-r Exp $	*/
+/*	$NetBSD: nd6_nbr.c,v 1.110 2015/08/24 22:21:27 pooka Exp $	*/
 /*	$KAME: nd6_nbr.c,v 1.61 2001/02/10 16:06:14 jinmei Exp $	*/
 
 /*
@@ -31,9 +31,11 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: nd6_nbr.c,v 1.108 2015/04/27 10:14:44 ozaki-r Exp $");
+__KERNEL_RCSID(0, "$NetBSD: nd6_nbr.c,v 1.110 2015/08/24 22:21:27 pooka Exp $");
 
+#ifdef _KERNEL_OPT
 #include "opt_inet.h"
+#endif
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -562,7 +564,7 @@ nd6_na_input(struct mbuf *m, int off, int icmp6len)
 	int lladdrlen = 0;
 	struct ifaddr *ifa;
 	struct llinfo_nd6 *ln;
-	struct rtentry *rt;
+	struct rtentry *rt = NULL;
 	struct sockaddr_dl *sdl;
 	union nd_opts ndopts;
 	struct sockaddr_in6 ssin6;
@@ -826,6 +828,8 @@ nd6_na_input(struct mbuf *m, int off, int icmp6len)
 
  freeit:
 	m_freem(m);
+	if (rt != NULL)
+		rtfree(rt);
 	return;
 
  bad:

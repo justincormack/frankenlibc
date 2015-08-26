@@ -3,10 +3,10 @@
 /aesxcbcmac.h/1.1/Tue May 24 19:10:09 2011//
 /criov.c/1.8/Thu Feb 24 19:28:03 2011//
 /crypto.c/1.45/Tue Feb 25 18:30:12 2014//
-/cryptodev.c/1.83/Thu Mar 26 17:40:16 2015//
+/cryptodev.c/1.84/Thu Aug 20 14:40:19 2015//
 /cryptodev.h/1.25/Thu Jun  9 14:41:24 2011//
 /cryptodev_internal.h/1.1/Sat Feb 19 16:26:34 2011//
-/cryptosoft.c/1.46/Wed Jul  2 18:58:42 2014//
+/cryptosoft.c/1.47/Thu Aug 20 14:40:19 2015//
 /cryptosoft.h/1.7/Thu Feb 10 21:00:42 2011//
 /cryptosoft_xform.c/1.27/Thu Nov 27 20:30:21 2014//
 /deflate.c/1.22/Thu Mar 26 17:40:16 2015//

@@ -12,8 +12,8 @@
 /db_interface.c/1.24/Thu Aug 11 19:52:52 2011//
 /db_machdep.c/1.4/Wed Oct  3 17:43:22 2012//
 /gdt.c/1.25/Wed Oct 16 18:07:56 2013//
-/genassym.cf/1.56/Thu Feb 20 18:19:09 2014//
-/kgdb_machdep.c/1.8/Sun Apr  3 22:29:25 2011//
+/genassym.cf/1.59/Wed Aug 26 03:00:53 2015//
+/kgdb_machdep.c/1.9/Sun Jul 26 10:49:05 2015//
 /kobj_machdep.c/1.5/Mon Dec  8 08:41:36 2008//
 /linux32_sigcode.S/1.2/Mon Aug  1 22:21:01 2011//
 /linux32_syscall.c/1.32/Sat Mar  7 18:41:40 2015//
@@ -21,8 +21,8 @@
 /linux_syscall.c/1.32/Sat Mar  7 18:41:40 2015//
 /lock_stubs.S/1.25/Sat Jun 22 06:23:28 2013//
 /locore.S/1.77/Sun Aug 17 21:17:43 2014//
-/machdep.c/1.212/Fri Apr 24 00:04:04 2015//
-/mainbus.c/1.35/Mon Apr 27 07:03:57 2015//
+/machdep.c/1.213/Wed Jul 15 04:10:02 2015//
+/mainbus.c/1.36/Wed Aug  5 07:01:10 2015//
 /mptramp.S/1.17/Wed Jan 15 22:24:41 2014//
 /netbsd32_machdep.c/1.93/Sun Dec 14 21:27:49 2014//
 /netbsd32_sigcode.S/1.7/Mon Apr 28 20:23:12 2008//

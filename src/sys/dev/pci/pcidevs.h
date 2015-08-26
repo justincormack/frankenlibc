@@ -1,10 +1,10 @@
-/*	$NetBSD: pcidevs.h,v 1.1222 2015/06/26 07:31:44 msaitoh Exp $	*/
+/*	$NetBSD: pcidevs.h,v 1.1227 2015/08/26 09:24:01 msaitoh Exp $	*/
 
 /*
  * THIS FILE AUTOMATICALLY GENERATED.  DO NOT EDIT.
  *
  * generated from:
- *	NetBSD: pcidevs,v 1.1228 2015/06/26 07:31:18 msaitoh Exp
+ *	NetBSD: pcidevs,v 1.1233 2015/08/26 09:23:39 msaitoh Exp
  */
 
 /*
@@ -641,6 +641,7 @@
 #define	PCI_VENDOR_EVE	0x1adb		/* EVE */
 #define	PCI_VENDOR_QUMRANET	0x1af4		/* Qumranet */
 #define	PCI_VENDOR_ASMEDIA	0x1b21		/* ASMedia */
+#define	PCI_VENDOR_REDHAT	0x1b36		/* Red Hat */
 #define	PCI_VENDOR_FRESCO	0x1b73		/* Fresco Logic */
 #define	PCI_VENDOR_QINHENG2	0x1c00		/* Nanjing QinHeng Electronics (PCIe) */
 #define	PCI_VENDOR_SYMPHONY2	0x1c1c		/* Symphony Labs (2nd PCI Vendor ID) */
@@ -1171,7 +1172,8 @@
 #define	PCI_PRODUCT_ASMEDIA_ASM1061_02	0x0602		/* ASM1061 AHCI SATA III Controller */
 #define	PCI_PRODUCT_ASMEDIA_ASM1061_11	0x0611		/* ASM1061 AHCI SATA III Controller */
 #define	PCI_PRODUCT_ASMEDIA_ASM1061_12	0x0612		/* ASM1061 AHCI SATA III Controller */
-#define	PCI_PRODUCT_ASMEDIA_ASM1042	0x1042		/* ASM1042 xHCI USB 3.0 */
+#define	PCI_PRODUCT_ASMEDIA_ASM1042	0x1042		/* ASM1042 USB 3.0 Host Controller */
+#define	PCI_PRODUCT_ASMEDIA_ASM1042A	0x1142		/* ASM1042A USB 3.0 Host Controller */
 
 /* Asustek products */
 #define	PCI_PRODUCT_ASUSTEK_HFCPCI	0x0675		/* ISDN */
@@ -2360,6 +2362,9 @@
 #define	PCI_PRODUCT_MARVELL_MV78230	0x7823		/* MV78230 SoC Armada XP */
 #define	PCI_PRODUCT_MARVELL_MV78260	0x7826		/* MV78260 SoC Armada XP */
 #define	PCI_PRODUCT_MARVELL_MV78460	0x7846		/* MV78460 SoC Armada XP */
+#define	PCI_PRODUCT_MARVELL_88F6810	0x6810		/* 88F6810 SoC Armada 38x */
+#define	PCI_PRODUCT_MARVELL_88F6820	0x6820		/* 88F6820 SoC Armada 38x */
+#define	PCI_PRODUCT_MARVELL_88F6828	0x6828		/* 88F6828 SoC Armada 38x */
 #define	PCI_PRODUCT_MARVELL_88W8660	0x8660		/* 88W8660 SoC Orion1 */
 
 #define	PCI_PRODUCT_MARVELL2_88SE9120	0x9120		/* 88SE9120 SATA */
@@ -2646,6 +2651,7 @@
 #define	PCI_PRODUCT_INTEL_X1000_MAC	0x0937		/* Quark X1000 10/100 Ethernet MAC */
 #define	PCI_PRODUCT_INTEL_X1000_EHCI	0x0939		/* Quark X1000 EHCI */
 #define	PCI_PRODUCT_INTEL_X1000_OHCI	0x093a		/* Quark X1000 OHCI */
+#define	PCI_PRODUCT_INTEL_PCIE_NVME_SSD	0x0953		/* PCIe NVMe SSD */
 #define	PCI_PRODUCT_INTEL_X1000_HB	0x0958		/* Quark X1000 Host Bridge */
 #define	PCI_PRODUCT_INTEL_WIFI_LINK_7265_1	0x095a		/* Dual Band Wireless AC 7265 */
 #define	PCI_PRODUCT_INTEL_WIFI_LINK_7265_2	0x095b		/* Dual Band Wireless AC 7265 */
@@ -3540,6 +3546,7 @@
 #define	PCI_PRODUCT_INTEL_82Q45_EXP	0x2e11		/* 82Q45 PCI Express Bridge */
 #define	PCI_PRODUCT_INTEL_82Q45_IGD	0x2e12		/* 82Q45 Integrated Graphics Device */
 #define	PCI_PRODUCT_INTEL_82Q45_IGD_1	0x2e13		/* 82Q45 Integrated Graphics Device */
+#define	PCI_PRODUCT_INTEL_82Q45_KT_1	0x2e17		/* 82Q45 KT */
 #define	PCI_PRODUCT_INTEL_82G45_HB	0x2e20		/* 82G45 Host Bridge */
 #define	PCI_PRODUCT_INTEL_82G45_IGD	0x2e22		/* 82G45 Integrated Graphics Device */
 #define	PCI_PRODUCT_INTEL_82G41_HB	0x2e30		/* 82G41 Host Bridge */
@@ -5297,6 +5304,10 @@
 #define	PCI_PRODUCT_REALTEK_RTL8188EE	0x8179		/* RTL8188EE Wireless LAN 802.11n PCI-E NIC */
 #define	PCI_PRODUCT_REALTEK_RT8180	0x8180		/* 8180 802.11b */
 #define	PCI_PRODUCT_REALTEK_RT8185	0x8185		/* 8185 802.11a/b/g */
+
+/* Red Hat products */
+#define	PCI_PRODUCT_REDHAT_PPB	0x0001		/* Qemu PCI-PCI */
+#define	PCI_PRODUCT_REDHAT_QXL	0x0100		/* QXL Video */
 
 /* Renesas products */
 #define	PCI_PRODUCT_RENESAS_SH7780	0x0002		/* SH7780 PCI Controller */

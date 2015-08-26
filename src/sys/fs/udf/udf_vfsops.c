@@ -1,4 +1,4 @@
-/* $NetBSD: udf_vfsops.c,v 1.68 2015/04/06 08:39:23 hannken Exp $ */
+/* $NetBSD: udf_vfsops.c,v 1.71 2015/08/24 08:31:56 hannken Exp $ */
 
 /*
  * Copyright (c) 2006, 2008 Reinoud Zandijk
@@ -28,7 +28,7 @@
 
 #include <sys/cdefs.h>
 #ifndef lint
-__KERNEL_RCSID(0, "$NetBSD: udf_vfsops.c,v 1.68 2015/04/06 08:39:23 hannken Exp $");
+__KERNEL_RCSID(0, "$NetBSD: udf_vfsops.c,v 1.71 2015/08/24 08:31:56 hannken Exp $");
 #endif /* not lint */
 
 
@@ -259,10 +259,9 @@ free_udf_mountinfo(struct mount *mp)
 		MPFREE(ump->la_pmapping,    M_TEMP);
 		MPFREE(ump->la_lmapping,    M_TEMP);
 
-		mutex_destroy(&ump->ihash_lock);
 		mutex_destroy(&ump->logvol_mutex);
 		mutex_destroy(&ump->allocate_mutex);
-		cv_destroy(&ump->dirtynodes_cv);
+		mutex_destroy(&ump->sync_lock);
 
 		MPFREE(ump->vat_table, M_UDFVOLD);
 
@@ -439,20 +438,28 @@ udf_mount(struct mount *mp, const char *path,
 /* --------------------------------------------------------------------- */
 
 #ifdef DEBUG
+static bool
+udf_sanity_selector(void *cl, struct vnode *vp)
+{
+
+	vprint("", vp);
+	if (VOP_ISLOCKED(vp) == LK_EXCLUSIVE) {
+		printf("  is locked\n");
+	}
+	if (vp->v_usecount > 1)
+		printf("  more than one usecount %d\n", vp->v_usecount);
+	return false;
+}
+
 static void
 udf_unmount_sanity_check(struct mount *mp)
 {
-	struct vnode *vp;
+	struct vnode_iterator *marker;
 
 	printf("On unmount, i found the following nodes:\n");
-	TAILQ_FOREACH(vp, &mp->mnt_vnodelist, v_mntvnodes) {
-		vprint("", vp);
-		if (VOP_ISLOCKED(vp) == LK_EXCLUSIVE) {
-			printf("  is locked\n");
-		}
-		if (vp->v_usecount > 1)
-			printf("  more than one usecount %d\n", vp->v_usecount);
-	}
+	vfs_vnode_iterator_init(mp, &marker);
+	vfs_vnode_iterator_next(marker, udf_sanity_selector, NULL);
+	vfs_vnode_iterator_destroy(marker);
 }
 #endif
 
@@ -581,9 +588,8 @@ udf_mountfs(struct vnode *devvp, struct mount *mp,
 
 	/* init locks */
 	mutex_init(&ump->logvol_mutex, MUTEX_DEFAULT, IPL_NONE);
-	mutex_init(&ump->ihash_lock, MUTEX_DEFAULT, IPL_NONE);
 	mutex_init(&ump->allocate_mutex, MUTEX_DEFAULT, IPL_NONE);
-	cv_init(&ump->dirtynodes_cv, "udfsync2");
+	mutex_init(&ump->sync_lock, MUTEX_DEFAULT, IPL_NONE);
 
 	/* init rbtree for nodes, ordered by their icb address (long_ad) */
 	udf_init_nodes_tree(ump);

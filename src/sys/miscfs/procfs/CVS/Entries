@@ -5,7 +5,7 @@
 /procfs_ctl.c/1.47/Wed Oct 21 21:12:06 2009//
 /procfs_fd.c/1.14/Mon Apr 28 20:24:08 2008//
 /procfs_fpregs.c/1.17/Thu Nov 16 01:33:38 2006//
-/procfs_linux.c/1.70/Sun Aug 10 06:22:06 2014//
+/procfs_linux.c/1.71/Fri Jul 24 13:02:52 2015//
 /procfs_map.c/1.45/Fri Oct 17 20:49:22 2014//
 /procfs_mem.c/1.37/Thu Nov 16 01:33:38 2006//
 /procfs_note.c/1.15/Thu Nov 16 01:33:38 2006//

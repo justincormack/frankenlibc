@@ -1,4 +1,4 @@
-/*	$NetBSD: lfs.h,v 1.162 2015/05/31 15:44:31 hannken Exp $	*/
+/*	$NetBSD: lfs.h,v 1.180 2015/08/12 18:28:01 dholland Exp $	*/
 
 /*  from NetBSD: dinode.h,v 1.22 2013/01/22 09:39:18 dholland Exp  */
 /*  from NetBSD: dir.h,v 1.21 2009/07/22 04:49:19 dholland Exp  */
@@ -148,6 +148,10 @@
 #ifndef _UFS_LFS_LFS_H_
 #define _UFS_LFS_LFS_H_
 
+#if !defined(_KERNEL) && !defined(_STANDALONE)
+#include <stddef.h> /* for offsetof */
+#endif
+
 #include <sys/rwlock.h>
 #include <sys/mutex.h>
 #include <sys/queue.h>
@@ -193,8 +197,6 @@
 
 #define	LFS_V1_SUMMARY_SIZE	512     /* V1 fixed summary size */
 #define	LFS_DFL_SUMMARY_SIZE	512	/* Default summary size */
-
-#define LFS_MAX_DADDR	0x7fffffff	/* Highest addressable fsb */
 
 #define LFS_MAXNAMLEN	255		/* maximum name length in a dir */
 
@@ -351,7 +353,7 @@ struct lfs_odirtemplate {
  * are defined by types with precise widths.
  */
 
-struct ulfs1_dinode {
+struct lfs32_dinode {
 	u_int16_t	di_mode;	/*   0: IFMT, permissions; see below. */
 	int16_t		di_nlink;	/*   2: File link count. */
 	u_int32_t	di_inumber;	/*   4: Inode number. */
@@ -372,7 +374,7 @@ struct ulfs1_dinode {
 	u_int64_t	di_modrev;	/* 120: i_modrev for NFSv4 */
 };
 
-struct ulfs2_dinode {
+struct lfs64_dinode {
 	u_int16_t	di_mode;	/*   0: IFMT, permissions; see below. */
 	int16_t		di_nlink;	/*   2: File link count. */
 	u_int32_t	di_uid;		/*   4: File owner. */
@@ -396,7 +398,13 @@ struct ulfs2_dinode {
 	int64_t		di_db[ULFS_NDADDR]; /* 112: Direct disk blocks. */
 	int64_t		di_ib[ULFS_NIADDR]; /* 208: Indirect disk blocks. */
 	u_int64_t	di_modrev;	/* 232: i_modrev for NFSv4 */
-	int64_t		di_spare[2];	/* 240: Reserved; currently unused */
+	u_int64_t	di_inumber;	/* 240: Inode number */
+	u_int64_t	di_spare[1];	/* 244: Reserved; currently unused */
+};
+
+union lfs_dinode {
+	struct lfs64_dinode u_64;
+	struct lfs32_dinode u_32;
 };
 
 /*
@@ -409,8 +417,8 @@ struct ulfs2_dinode {
 #define	di_rdev		di_db[0]
 
 /* Size of the on-disk inode. */
-#define	LFS_DINODE1_SIZE	(sizeof(struct ulfs1_dinode))	/* 128 */
-#define	LFS_DINODE2_SIZE	(sizeof(struct ulfs2_dinode))
+//#define	LFS_DINODE1_SIZE	(sizeof(struct ulfs1_dinode))	/* 128 */
+//#define	LFS_DINODE2_SIZE	(sizeof(struct ulfs2_dinode))
 
 /* File types, found in the upper bits of di_mode. */
 #define	LFS_IFMT	0170000		/* Mask of file type. */
@@ -424,16 +432,6 @@ struct ulfs2_dinode {
 #define	LFS_IFWHT	0160000		/* Whiteout. */
 
 /*
- * Maximum length of a symlink that can be stored within the inode.
- */
-#define ULFS1_MAXSYMLINKLEN	((ULFS_NDADDR + ULFS_NIADDR) * sizeof(int32_t))
-#define ULFS2_MAXSYMLINKLEN	((ULFS_NDADDR + ULFS_NIADDR) * sizeof(int64_t))
-
-#define ULFS_MAXSYMLINKLEN(ip) \
-	((ip)->i_ump->um_fstype == ULFS1) ? \
-	ULFS1_MAXSYMLINKLEN : ULFS2_MAXSYMLINKLEN
-
-/*
  * "struct buf" associated definitions
  */
 
@@ -444,62 +442,12 @@ struct ulfs2_dinode {
 /* Unused logical block number */
 #define LFS_UNUSED_LBN	-1
 
-# define LFS_LOCK_BUF(bp) do {						\
-	if (((bp)->b_flags & B_LOCKED) == 0 && bp->b_iodone == NULL) {	\
-		mutex_enter(&lfs_lock);					\
-		++locked_queue_count;					\
-		locked_queue_bytes += bp->b_bufsize;			\
-		mutex_exit(&lfs_lock);					\
-	}								\
-	(bp)->b_flags |= B_LOCKED;					\
-} while (0)
-
-# define LFS_UNLOCK_BUF(bp) do {					\
-	if (((bp)->b_flags & B_LOCKED) != 0 && bp->b_iodone == NULL) {	\
-		mutex_enter(&lfs_lock);					\
-		--locked_queue_count;					\
-		locked_queue_bytes -= bp->b_bufsize;			\
-		if (locked_queue_count < LFS_WAIT_BUFS &&		\
-		    locked_queue_bytes < LFS_WAIT_BYTES)		\
-			cv_broadcast(&locked_queue_cv);			\
-		mutex_exit(&lfs_lock);					\
-	}								\
-	(bp)->b_flags &= ~B_LOCKED;					\
-} while (0)
-
 /*
  * "struct inode" associated definitions
  */
 
 /* For convenience */
 #define IN_ALLMOD (IN_MODIFIED|IN_ACCESS|IN_CHANGE|IN_UPDATE|IN_MODIFY|IN_ACCESSED|IN_CLEANING)
-
-#define LFS_SET_UINO(ip, flags) do {					\
-	if (((flags) & IN_ACCESSED) && !((ip)->i_flag & IN_ACCESSED))	\
-		++(ip)->i_lfs->lfs_uinodes;				\
-	if (((flags) & IN_CLEANING) && !((ip)->i_flag & IN_CLEANING))	\
-		++(ip)->i_lfs->lfs_uinodes;				\
-	if (((flags) & IN_MODIFIED) && !((ip)->i_flag & IN_MODIFIED))	\
-		++(ip)->i_lfs->lfs_uinodes;				\
-	(ip)->i_flag |= (flags);					\
-} while (0)
-
-#define LFS_CLR_UINO(ip, flags) do {					\
-	if (((flags) & IN_ACCESSED) && ((ip)->i_flag & IN_ACCESSED))	\
-		--(ip)->i_lfs->lfs_uinodes;				\
-	if (((flags) & IN_CLEANING) && ((ip)->i_flag & IN_CLEANING))	\
-		--(ip)->i_lfs->lfs_uinodes;				\
-	if (((flags) & IN_MODIFIED) && ((ip)->i_flag & IN_MODIFIED))	\
-		--(ip)->i_lfs->lfs_uinodes;				\
-	(ip)->i_flag &= ~(flags);					\
-	if ((ip)->i_lfs->lfs_uinodes < 0) {				\
-		panic("lfs_uinodes < 0");				\
-	}								\
-} while (0)
-
-#define LFS_ITIMES(ip, acc, mod, cre) \
-	while ((ip)->i_flag & (IN_ACCESS | IN_CHANGE | IN_UPDATE | IN_MODIFY)) \
-		lfs_itimes(ip, acc, mod, cre)
 
 /*
  * On-disk and in-memory checkpoint segment usage structure.
@@ -530,73 +478,59 @@ struct segusage_v1 {
 	u_int32_t su_flags;		/* 12: segment flags  */
 };
 
-#define	SEGUPB(fs)	(fs->lfs_sepb)
-#define	SEGTABSIZE_SU(fs)						\
-	(((fs)->lfs_nseg + SEGUPB(fs) - 1) / (fs)->lfs_sepb)
-
-#ifdef _KERNEL
-# define SHARE_IFLOCK(F) 						\
-  do {									\
-	rw_enter(&(F)->lfs_iflock, RW_READER);				\
-  } while(0)
-# define UNSHARE_IFLOCK(F)						\
-  do {									\
-	rw_exit(&(F)->lfs_iflock);					\
-  } while(0)
-#else /* ! _KERNEL */
-# define SHARE_IFLOCK(F)
-# define UNSHARE_IFLOCK(F)
-#endif /* ! _KERNEL */
-
-/* Read in the block with a specific segment usage entry from the ifile. */
-#define	LFS_SEGENTRY(SP, F, IN, BP) do {				\
-	int _e;								\
-	SHARE_IFLOCK(F);						\
-	VTOI((F)->lfs_ivnode)->i_flag |= IN_ACCESS;			\
-	if ((_e = bread((F)->lfs_ivnode,				\
-	    ((IN) / (F)->lfs_sepb) + (F)->lfs_cleansz,			\
-	    (F)->lfs_bsize, 0, &(BP))) != 0)			\
-		panic("lfs: ifile read: %d", _e);			\
-	if ((F)->lfs_version == 1)					\
-		(SP) = (SEGUSE *)((SEGUSE_V1 *)(BP)->b_data +		\
-			((IN) & ((F)->lfs_sepb - 1)));			\
-	else								\
-		(SP) = (SEGUSE *)(BP)->b_data + ((IN) % (F)->lfs_sepb);	\
-	UNSHARE_IFLOCK(F);						\
-} while (0)
-
-#define LFS_WRITESEGENTRY(SP, F, IN, BP) do {				\
-	if ((SP)->su_nbytes == 0)					\
-		(SP)->su_flags |= SEGUSE_EMPTY;				\
-	else								\
-		(SP)->su_flags &= ~SEGUSE_EMPTY;			\
-	(F)->lfs_suflags[(F)->lfs_activesb][(IN)] = (SP)->su_flags;	\
-	LFS_BWRITE_LOG(BP);						\
-} while (0)
-
 /*
  * On-disk file information.  One per file with data blocks in the segment.
+ *
+ * The FINFO structure is a header; it is followed by fi_nblocks block
+ * pointers, which are logical block numbers of the file. (These are the
+ * blocks of the file present in this segment.)
  */
-typedef struct finfo FINFO;
-struct finfo {
+
+typedef struct finfo64 FINFO64;
+struct finfo64 {
+	u_int32_t fi_nblocks;		/* number of blocks */
+	u_int32_t fi_version;		/* version number */
+	u_int64_t fi_ino;		/* inode number */
+	u_int32_t fi_lastlength;	/* length of last block in array */
+	u_int32_t fi_pad;		/* unused */
+};
+
+typedef struct finfo32 FINFO32;
+struct finfo32 {
 	u_int32_t fi_nblocks;		/* number of blocks */
 	u_int32_t fi_version;		/* version number */
 	u_int32_t fi_ino;		/* inode number */
 	u_int32_t fi_lastlength;	/* length of last block in array */
-	int32_t	  fi_blocks[1];		/* array of logical block numbers */
 };
-/* sizeof FINFO except fi_blocks */
-#define	FINFOSIZE	(sizeof(FINFO) - sizeof(int32_t))
+
+typedef union finfo {
+	struct finfo64 u_64;
+	struct finfo32 u_32;
+} FINFO;
 
 /*
  * Index file inode entries.
  */
-typedef struct ifile IFILE;
-struct ifile {
-	u_int32_t if_version;		/* inode version number */
+
+/* magic value for daddrs */
 #define	LFS_UNUSED_DADDR	0	/* out-of-band daddr */
-	int32_t	  if_daddr;		/* inode disk address */
+/* magic value for if_nextfree */
 #define LFS_ORPHAN_NEXTFREE	(~(u_int32_t)0) /* indicate orphaned file */
+
+typedef struct ifile64 IFILE64;
+struct ifile64 {
+	u_int32_t if_version;		/* inode version number */
+	u_int32_t if_pad;		/* 64-bit alignment padding */
+	int64_t	  if_daddr;		/* inode disk address */
+	u_int64_t if_nextfree;		/* next-unallocated inode */
+	u_int32_t if_atime_sec;		/* Last access time, seconds */
+	u_int32_t if_atime_nsec;	/* and nanoseconds */
+};
+
+typedef struct ifile32 IFILE32;
+struct ifile32 {
+	u_int32_t if_version;		/* inode version number */
+	int32_t	  if_daddr;		/* inode disk address */
 	u_int32_t if_nextfree;		/* next-unallocated inode */
 	u_int32_t if_atime_sec;		/* Last access time, seconds */
 	u_int32_t if_atime_nsec;	/* and nanoseconds */
@@ -608,154 +542,92 @@ struct ifile_v1 {
 	int32_t	  if_daddr;		/* inode disk address */
 	u_int32_t if_nextfree;		/* next-unallocated inode */
 #if LFS_ATIME_IFILE
+#error "this cannot work"
 	struct timespec if_atime;	/* Last access time */
 #endif
 };
 
 /*
- * LFSv1 compatibility code is not allowed to touch if_atime, since it
- * may not be mapped!
+ * Note: struct ifile_v1 is often handled by accessing the first three
+ * fields of struct ifile32. (XXX: Blah.  This should be cleaned up as
+ * it may in some cases violate the strict-aliasing rules.)
  */
-/* Read in the block with a specific inode from the ifile. */
-#define	LFS_IENTRY(IP, F, IN, BP) do {					\
-	int _e;								\
-	SHARE_IFLOCK(F);						\
-	VTOI((F)->lfs_ivnode)->i_flag |= IN_ACCESS;			\
-	if ((_e = bread((F)->lfs_ivnode,				\
-	(IN) / (F)->lfs_ifpb + (F)->lfs_cleansz + (F)->lfs_segtabsz,	\
-	(F)->lfs_bsize, 0, &(BP))) != 0)			\
-		panic("lfs: ifile ino %d read %d", (int)(IN), _e);	\
-	if ((F)->lfs_version == 1)					\
-		(IP) = (IFILE *)((IFILE_V1 *)(BP)->b_data +		\
-				 (IN) % (F)->lfs_ifpb);			\
-	else								\
-		(IP) = (IFILE *)(BP)->b_data + (IN) % (F)->lfs_ifpb;	\
-	UNSHARE_IFLOCK(F);						\
-} while (0)
+typedef union ifile {
+	struct ifile64 u_64;
+	struct ifile32 u_32;
+	struct ifile_v1 u_v1;
+} IFILE;
 
 /*
  * Cleaner information structure.  This resides in the ifile and is used
  * to pass information from the kernel to the cleaner.
  */
-typedef struct _cleanerinfo {
-	u_int32_t clean;		/* number of clean segments */
-	u_int32_t dirty;		/* number of dirty segments */
-	int32_t   bfree;		/* disk blocks free */
-	int32_t	  avail;		/* disk blocks available */
-	u_int32_t free_head;		/* head of the inode free list */
-	u_int32_t free_tail;		/* tail of the inode free list */
+
+/* flags for ->flags */
 #define LFS_CLEANER_MUST_CLEAN	0x01
-	u_int32_t flags;		/* status word from the kernel */
+
+typedef struct _cleanerinfo32 {
+	u_int32_t clean;		/* 0: number of clean segments */
+	u_int32_t dirty;		/* 4: number of dirty segments */
+	int32_t   bfree;		/* 8: disk blocks free */
+	int32_t	  avail;		/* 12: disk blocks available */
+	u_int32_t free_head;		/* 16: head of the inode free list */
+	u_int32_t free_tail;		/* 20: tail of the inode free list */
+	u_int32_t flags;		/* 24: status word from the kernel */
+} CLEANERINFO32;
+
+typedef struct _cleanerinfo64 {
+	u_int32_t clean;		/* 0: number of clean segments */
+	u_int32_t dirty;		/* 4: number of dirty segments */
+	int64_t   bfree;		/* 8: disk blocks free */
+	int64_t	  avail;		/* 16: disk blocks available */
+	u_int64_t free_head;		/* 24: head of the inode free list */
+	u_int64_t free_tail;		/* 32: tail of the inode free list */
+	u_int32_t flags;		/* 40: status word from the kernel */
+	u_int32_t pad;			/* 44: must be 64-bit aligned */
+} CLEANERINFO64;
+
+/* this must not go to disk directly of course */
+typedef union _cleanerinfo {
+	CLEANERINFO32 u_32;
+	CLEANERINFO64 u_64;
 } CLEANERINFO;
-
-#define	CLEANSIZE_SU(fs)						\
-	((sizeof(CLEANERINFO) + (fs)->lfs_bsize - 1) >> (fs)->lfs_bshift)
-
-/* Read in the block with the cleaner info from the ifile. */
-#define LFS_CLEANERINFO(CP, F, BP) do {					\
-	SHARE_IFLOCK(F);						\
-	VTOI((F)->lfs_ivnode)->i_flag |= IN_ACCESS;			\
-	if (bread((F)->lfs_ivnode,					\
-	    (daddr_t)0, (F)->lfs_bsize, 0, &(BP)))		\
-		panic("lfs: ifile read");				\
-	(CP) = (CLEANERINFO *)(BP)->b_data;				\
-	UNSHARE_IFLOCK(F);						\
-} while (0)
-
-/*
- * Synchronize the Ifile cleaner info with current avail and bfree.
- */
-#define LFS_SYNC_CLEANERINFO(cip, fs, bp, w) do {		 	\
-    mutex_enter(&lfs_lock);						\
-    if ((w) || (cip)->bfree != (fs)->lfs_bfree ||		 	\
-	(cip)->avail != (fs)->lfs_avail - (fs)->lfs_ravail - 		\
-	(fs)->lfs_favail) {	 					\
-	(cip)->bfree = (fs)->lfs_bfree;				 	\
-	(cip)->avail = (fs)->lfs_avail - (fs)->lfs_ravail -		\
-		(fs)->lfs_favail;				 	\
-	if (((bp)->b_flags & B_GATHERED) == 0) {		 	\
-		(fs)->lfs_flags |= LFS_IFDIRTY;			 	\
-	}								\
-	mutex_exit(&lfs_lock);						\
-	(void) LFS_BWRITE_LOG(bp); /* Ifile */			 	\
-    } else {							 	\
-	mutex_exit(&lfs_lock);						\
-	brelse(bp, 0);						 	\
-    }									\
-} while (0)
-
-/*
- * Get the head of the inode free list.
- * Always called with the segment lock held.
- */
-#define LFS_GET_HEADFREE(FS, CIP, BP, FREEP) do {			\
-	if ((FS)->lfs_version > 1) {					\
-		LFS_CLEANERINFO((CIP), (FS), (BP));			\
-		(FS)->lfs_freehd = (CIP)->free_head;			\
-		brelse(BP, 0);						\
-	}								\
-	*(FREEP) = (FS)->lfs_freehd;					\
-} while (0)
-
-#define LFS_PUT_HEADFREE(FS, CIP, BP, VAL) do {				\
-	(FS)->lfs_freehd = (VAL);					\
-	if ((FS)->lfs_version > 1) {					\
-		LFS_CLEANERINFO((CIP), (FS), (BP));			\
-		(CIP)->free_head = (VAL);				\
-		LFS_BWRITE_LOG(BP);					\
-		mutex_enter(&lfs_lock);					\
-		(FS)->lfs_flags |= LFS_IFDIRTY;				\
-		mutex_exit(&lfs_lock);					\
-	}								\
-} while (0)
-
-#define LFS_GET_TAILFREE(FS, CIP, BP, FREEP) do {			\
-	LFS_CLEANERINFO((CIP), (FS), (BP));				\
-	*(FREEP) = (CIP)->free_tail;					\
-	brelse(BP, 0);							\
-} while (0)
-
-#define LFS_PUT_TAILFREE(FS, CIP, BP, VAL) do {				\
-	LFS_CLEANERINFO((CIP), (FS), (BP));				\
-	(CIP)->free_tail = (VAL);					\
-	LFS_BWRITE_LOG(BP);						\
-	mutex_enter(&lfs_lock);						\
-	(FS)->lfs_flags |= LFS_IFDIRTY;					\
-	mutex_exit(&lfs_lock);						\
-} while (0)
 
 /*
  * On-disk segment summary information
  */
-typedef struct segsum_v1 SEGSUM_V1;
-struct segsum_v1 {
-	u_int32_t ss_sumsum;		/* 0: check sum of summary block */
-	u_int32_t ss_datasum;		/* 4: check sum of data */
-	u_int32_t ss_magic;		/* 8: segment summary magic number */
-#define SS_MAGIC	0x061561
-	int32_t	  ss_next;		/* 12: next segment */
-	u_int32_t ss_create;		/* 16: creation time stamp */
-	u_int16_t ss_nfinfo;		/* 20: number of file info structures */
-	u_int16_t ss_ninos;		/* 22: number of inodes in summary */
 
+/* magic value for ss_magic */
+#define SS_MAGIC	0x061561
+
+/* flags for ss_flags */
 #define	SS_DIROP	0x01		/* segment begins a dirop */
 #define	SS_CONT		0x02		/* more partials to finish this write*/
 #define	SS_CLEAN	0x04		/* written by the cleaner */
 #define	SS_RFW		0x08		/* written by the roll-forward agent */
 #define	SS_RECLAIM	0x10		/* written by the roll-forward agent */
+
+typedef struct segsum_v1 SEGSUM_V1;
+struct segsum_v1 {
+	u_int32_t ss_sumsum;		/* 0: check sum of summary block */
+	u_int32_t ss_datasum;		/* 4: check sum of data */
+	u_int32_t ss_magic;		/* 8: segment summary magic number */
+	int32_t	  ss_next;		/* 12: next segment */
+	u_int32_t ss_create;		/* 16: creation time stamp */
+	u_int16_t ss_nfinfo;		/* 20: number of file info structures */
+	u_int16_t ss_ninos;		/* 22: number of inodes in summary */
 	u_int16_t ss_flags;		/* 24: used for directory operations */
 	u_int16_t ss_pad;		/* 26: extra space */
 	/* FINFO's and inode daddr's... */
 };
 
-typedef struct segsum SEGSUM;
-struct segsum {
+typedef struct segsum32 SEGSUM32;
+struct segsum32 {
 	u_int32_t ss_sumsum;		/* 0: check sum of summary block */
 	u_int32_t ss_datasum;		/* 4: check sum of data */
 	u_int32_t ss_magic;		/* 8: segment summary magic number */
-	int32_t	  ss_next;		/* 12: next segment */
+	int32_t	  ss_next;		/* 12: next segment (disk address) */
 	u_int32_t ss_ident;		/* 16: roll-forward fsid */
-#define ss_ocreate ss_ident /* ident is where create was in v1 */
 	u_int16_t ss_nfinfo;		/* 20: number of file info structures */
 	u_int16_t ss_ninos;		/* 22: number of inodes in summary */
 	u_int16_t ss_flags;		/* 24: used for directory operations */
@@ -766,16 +638,70 @@ struct segsum {
 	/* FINFO's and inode daddr's... */
 };
 
-#define SEGSUM_SIZE(fs) ((fs)->lfs_version == 1 ? sizeof(SEGSUM_V1) : sizeof(SEGSUM))
+typedef struct segsum64 SEGSUM64;
+struct segsum64 {
+	u_int32_t ss_sumsum;		/* 0: check sum of summary block */
+	u_int32_t ss_datasum;		/* 4: check sum of data */
+	u_int32_t ss_magic;		/* 8: segment summary magic number */
+	u_int32_t ss_ident;		/* 12: roll-forward fsid */
+	int64_t	  ss_next;		/* 16: next segment (disk address) */
+	u_int16_t ss_nfinfo;		/* 24: number of file info structures */
+	u_int16_t ss_ninos;		/* 26: number of inodes in summary */
+	u_int16_t ss_flags;		/* 28: used for directory operations */
+	u_int8_t  ss_pad[2];		/* 30: extra space */
+	u_int64_t ss_reclino;           /* 32: inode being reclaimed */
+	u_int64_t ss_serial;		/* 40: serial number */
+	u_int64_t ss_create;		/* 48: time stamp */
+	/* FINFO's and inode daddr's... */
+};
+
+typedef union segsum SEGSUM;
+union segsum {
+	struct segsum64 u_64;
+	struct segsum32 u_32;
+	struct segsum_v1 u_v1;
+};
 
 
 /*
  * On-disk super block.
+ *
+ * We have separate superblock structures for the 32-bit and 64-bit
+ * LFS, and accessor functions to hide the differences.
+ *
+ * For lfs64, the format version is always 2; version 1 lfs is old.
+ * For both, the inode format version is 0; for lfs32 this selects the
+ * same 32-bit inode as always, and for lfs64 this selects the larger
+ * 64-bit inode structure we got from ffsv2.
+ *
+ * In lfs64:
+ *   - inode numbers are still 32 bit
+ *   - segments may not be larger than 4G (counted in bytes)
+ *   - there may not be more than 2^32 (or perhaps 2^31) segments
+ *   - the total volume size is limited to 2^63 frags and/or 2^63
+ *     disk blocks, and probably in practice 2^63 bytes.
  */
+
+#define	       LFS_MAGIC       		0x070162
+#define        LFS_MAGIC_SWAPPED	0x62010700
+
+#define        LFS64_MAGIC     		0x19620701
+#define        LFS64_MAGIC_SWAPPED      0x01076219
+
+#define	       LFS_VERSION     		2
+
+#define LFS_MIN_SBINTERVAL     5	/* min superblock segment spacing */
+#define LFS_MAXNUMSB	       10	/* max number of superblocks */
+
+/* flags for dlfs_pflags */
+#define LFS_PF_CLEAN 0x1
+
+/* Inode format versions */
+#define LFS_44INODEFMT 0
+#define LFS_MAXINODEFMT 0
+
 struct dlfs {
-#define	       LFS_MAGIC       0x070162
 	u_int32_t dlfs_magic;	  /* 0: magic number */
-#define	       LFS_VERSION     2
 	u_int32_t dlfs_version;	  /* 4: version number */
 
 	u_int32_t dlfs_size;	  /* 8: number of blocks in fs (v1) */
@@ -788,8 +714,8 @@ struct dlfs {
 	u_int32_t dlfs_frag;	  /* 28: number of frags in a block in fs */
 
 /* Checkpoint region. */
-	u_int32_t dlfs_freehd;	  /* 32: start of the free list */
-	int32_t   dlfs_bfree;	  /* 36: number of free disk blocks */
+	u_int32_t dlfs_freehd;	  /* 32: start of the free inode list */
+	int32_t   dlfs_bfree;	  /* 36: number of free frags */
 	u_int32_t dlfs_nfiles;	  /* 40: number of allocated inodes */
 	int32_t	  dlfs_avail;	  /* 44: blocks available for writing */
 	int32_t	  dlfs_uinodes;	  /* 48: inodes in cache not yet on disk */
@@ -801,14 +727,13 @@ struct dlfs {
 	int32_t	  dlfs_offset;	  /* 72: offset in curseg for next partial */
 	int32_t	  dlfs_lastpseg;  /* 76: address of last partial written */
 	u_int32_t dlfs_inopf;	  /* 80: v1: time stamp; v2: inodes per frag */
-#define dlfs_otstamp dlfs_inopf
 
 /* These are configuration parameters. */
 	u_int32_t dlfs_minfree;	  /* 84: minimum percentage of free blocks */
 
 /* These fields can be computed from the others. */
 	u_int64_t dlfs_maxfilesize; /* 88: maximum representable file size */
-	u_int32_t dlfs_fsbpseg;	    /* 96: fsb per segment */
+	u_int32_t dlfs_fsbpseg;	    /* 96: frags (fsb) per segment */
 	u_int32_t dlfs_inopb;	  /* 100: inodes per block */
 	u_int32_t dlfs_ifpb;	  /* 104: IFILE entries per block */
 	u_int32_t dlfs_sepb;	  /* 108: SEGUSE entries per block */
@@ -829,29 +754,98 @@ struct dlfs {
 	u_int32_t dlfs_sushift;	  /* 180: fast mult/div for segusage table */
 
 	int32_t	  dlfs_maxsymlinklen; /* 184: max length of an internal symlink */
-#define LFS_MIN_SBINTERVAL     5  /* minimum superblock segment spacing */
-#define LFS_MAXNUMSB	       10 /* 188: superblock disk offsets */
-	int32_t	   dlfs_sboffs[LFS_MAXNUMSB];
+				  /* 188: superblock disk offsets */
+	int32_t	  dlfs_sboffs[LFS_MAXNUMSB];
 
 	u_int32_t dlfs_nclean;	  /* 228: Number of clean segments */
 	u_char	  dlfs_fsmnt[MNAMELEN];	 /* 232: name mounted on */
-#define LFS_PF_CLEAN 0x1
 	u_int16_t dlfs_pflags;	  /* 322: file system persistent flags */
 	int32_t	  dlfs_dmeta;	  /* 324: total number of dirty summaries */
 	u_int32_t dlfs_minfreeseg; /* 328: segments not counted in bfree */
 	u_int32_t dlfs_sumsize;	  /* 332: size of summary blocks */
 	u_int64_t dlfs_serial;	  /* 336: serial number */
 	u_int32_t dlfs_ibsize;	  /* 344: size of inode blocks */
-	int32_t	  dlfs_start;	  /* 348: start of segment 0 */
+	int32_t	  dlfs_s0addr;	  /* 348: start of segment 0 */
 	u_int64_t dlfs_tstamp;	  /* 352: time stamp */
-#define LFS_44INODEFMT 0
-#define LFS_MAXINODEFMT 0
 	u_int32_t dlfs_inodefmt;  /* 360: inode format version */
 	u_int32_t dlfs_interleave; /* 364: segment interleave */
 	u_int32_t dlfs_ident;	  /* 368: per-fs identifier */
 	u_int32_t dlfs_fsbtodb;	  /* 372: fsbtodb and dbtodsb shift constant */
 	u_int32_t dlfs_resvseg;   /* 376: segments reserved for the cleaner */
 	int8_t	  dlfs_pad[128];  /* 380: round to 512 bytes */
+/* Checksum -- last valid disk field. */
+	u_int32_t dlfs_cksum;	  /* 508: checksum for superblock checking */
+};
+
+struct dlfs64 {
+	u_int32_t dlfs_magic;	  /* 0: magic number */
+	u_int32_t dlfs_version;	  /* 4: version number (2) */
+
+	u_int64_t dlfs_size;	  /* 8: number of frags in fs (v2) */
+	u_int64_t dlfs_dsize;	  /* 16: number of disk blocks in fs */
+	u_int32_t dlfs_ssize;	  /* 24: number of bytes per segment (v2) */
+	u_int32_t dlfs_bsize;	  /* 28: file system block size */
+	u_int32_t dlfs_fsize;	  /* 32: size of frag blocks in fs */
+	u_int32_t dlfs_frag;	  /* 36: number of frags in a block in fs */
+
+/* Checkpoint region. */
+	u_int32_t dlfs_freehd;	  /* 40: start of the free inode list */
+	u_int32_t dlfs_nfiles;	  /* 44: number of allocated inodes */
+	int64_t   dlfs_bfree;	  /* 48: number of free frags */
+	int64_t	  dlfs_avail;	  /* 56: blocks available for writing */
+	int64_t	  dlfs_idaddr;	  /* 64: inode file disk address */
+	int32_t	  dlfs_uinodes;	  /* 72: inodes in cache not yet on disk */
+	u_int32_t dlfs_ifile;	  /* 76: inode file inode number */
+	int64_t	  dlfs_lastseg;	  /* 80: address of last segment written */
+	int64_t	  dlfs_nextseg;	  /* 88: address of next segment to write */
+	int64_t	  dlfs_curseg;	  /* 96: current segment being written */
+	int64_t	  dlfs_offset;	  /* 104: offset in curseg for next partial */
+	int64_t	  dlfs_lastpseg;  /* 112: address of last partial written */
+	u_int32_t dlfs_inopf;	  /* 120: inodes per frag */
+
+/* These are configuration parameters. */
+	u_int32_t dlfs_minfree;	  /* 124: minimum percentage of free blocks */
+
+/* These fields can be computed from the others. */
+	u_int64_t dlfs_maxfilesize; /* 128: maximum representable file size */
+	u_int32_t dlfs_fsbpseg;	  /* 136: frags (fsb) per segment */
+	u_int32_t dlfs_inopb;	  /* 140: inodes per block */
+	u_int32_t dlfs_ifpb;	  /* 144: IFILE entries per block */
+	u_int32_t dlfs_sepb;	  /* 148: SEGUSE entries per block */
+	u_int32_t dlfs_nindir;	  /* 152: indirect pointers per block */
+	u_int32_t dlfs_nseg;	  /* 156: number of segments */
+	u_int32_t dlfs_nspf;	  /* 160: number of sectors per fragment */
+	u_int32_t dlfs_cleansz;	  /* 164: cleaner info size in blocks */
+	u_int32_t dlfs_segtabsz;  /* 168: segment table size in blocks */
+	u_int32_t dlfs_bshift;	  /* 172: calc block number from file offset */
+	u_int32_t dlfs_ffshift;	  /* 176: fast mult/div for frag from file */
+	u_int32_t dlfs_fbshift;	  /* 180: fast mult/div for frag from block */
+	u_int64_t dlfs_bmask;	  /* 184: calc block offset from file offset */
+	u_int64_t dlfs_ffmask;	  /* 192: calc frag offset from file offset */
+	u_int64_t dlfs_fbmask;	  /* 200: calc frag offset from block offset */
+	u_int32_t dlfs_blktodb;	  /* 208: blktodb and dbtoblk shift constant */
+	u_int32_t dlfs_sushift;	  /* 212: fast mult/div for segusage table */
+
+				  /* 216: superblock disk offsets */
+	int64_t	   dlfs_sboffs[LFS_MAXNUMSB];
+
+	int32_t	  dlfs_maxsymlinklen; /* 296: max len of an internal symlink */
+	u_int32_t dlfs_nclean;	  /* 300: Number of clean segments */
+	u_char	  dlfs_fsmnt[MNAMELEN];	 /* 304: name mounted on */
+	u_int16_t dlfs_pflags;	  /* 394: file system persistent flags */
+	int32_t	  dlfs_dmeta;	  /* 396: total number of dirty summaries */
+	u_int32_t dlfs_minfreeseg; /* 400: segments not counted in bfree */
+	u_int32_t dlfs_sumsize;	  /* 404: size of summary blocks */
+	u_int32_t dlfs_ibsize;	  /* 408: size of inode blocks */
+	u_int32_t dlfs_inodefmt;  /* 412: inode format version */
+	u_int64_t dlfs_serial;	  /* 416: serial number */
+	int64_t	  dlfs_s0addr;	  /* 424: start of segment 0 */
+	u_int64_t dlfs_tstamp;	  /* 432: time stamp */
+	u_int32_t dlfs_interleave; /* 440: segment interleave */
+	u_int32_t dlfs_ident;	  /* 444: per-fs identifier */
+	u_int32_t dlfs_fsbtodb;	  /* 448: fsbtodb and dbtodsb shift constant */
+	u_int32_t dlfs_resvseg;   /* 452: segments reserved for the cleaner */
+	int8_t	  dlfs_pad[52];   /* 456: round to 512 bytes */
 /* Checksum -- last valid disk field. */
 	u_int32_t dlfs_cksum;	  /* 508: checksum for superblock checking */
 };
@@ -873,70 +867,14 @@ struct segdelta {
  * In-memory super block.
  */
 struct lfs {
-	struct dlfs lfs_dlfs;		/* on-disk parameters */
-#define lfs_magic lfs_dlfs.dlfs_magic
-#define lfs_version lfs_dlfs.dlfs_version
-#define lfs_size lfs_dlfs.dlfs_size
-#define lfs_ssize lfs_dlfs.dlfs_ssize
-#define lfs_dsize lfs_dlfs.dlfs_dsize
-#define lfs_bsize lfs_dlfs.dlfs_bsize
-#define lfs_fsize lfs_dlfs.dlfs_fsize
-#define lfs_frag lfs_dlfs.dlfs_frag
-#define lfs_freehd lfs_dlfs.dlfs_freehd
-#define lfs_bfree lfs_dlfs.dlfs_bfree
-#define lfs_nfiles lfs_dlfs.dlfs_nfiles
-#define lfs_avail lfs_dlfs.dlfs_avail
-#define lfs_uinodes lfs_dlfs.dlfs_uinodes
-#define lfs_idaddr lfs_dlfs.dlfs_idaddr
-#define lfs_ifile lfs_dlfs.dlfs_ifile
-#define lfs_lastseg lfs_dlfs.dlfs_lastseg
-#define lfs_nextseg lfs_dlfs.dlfs_nextseg
-#define lfs_curseg lfs_dlfs.dlfs_curseg
-#define lfs_offset lfs_dlfs.dlfs_offset
-#define lfs_lastpseg lfs_dlfs.dlfs_lastpseg
-#define lfs_otstamp lfs_dlfs.dlfs_inopf
-#define lfs_inopf lfs_dlfs.dlfs_inopf
-#define lfs_minfree lfs_dlfs.dlfs_minfree
-#define lfs_maxfilesize lfs_dlfs.dlfs_maxfilesize
-#define lfs_fsbpseg lfs_dlfs.dlfs_fsbpseg
-#define lfs_inopb lfs_dlfs.dlfs_inopb
-#define lfs_ifpb lfs_dlfs.dlfs_ifpb
-#define lfs_sepb lfs_dlfs.dlfs_sepb
-#define lfs_nindir lfs_dlfs.dlfs_nindir
-#define lfs_nseg lfs_dlfs.dlfs_nseg
-#define lfs_nspf lfs_dlfs.dlfs_nspf
-#define lfs_cleansz lfs_dlfs.dlfs_cleansz
-#define lfs_segtabsz lfs_dlfs.dlfs_segtabsz
-#define lfs_segmask lfs_dlfs.dlfs_segmask
-#define lfs_segshift lfs_dlfs.dlfs_segshift
-#define lfs_bmask lfs_dlfs.dlfs_bmask
-#define lfs_bshift lfs_dlfs.dlfs_bshift
-#define lfs_ffmask lfs_dlfs.dlfs_ffmask
-#define lfs_ffshift lfs_dlfs.dlfs_ffshift
-#define lfs_fbmask lfs_dlfs.dlfs_fbmask
-#define lfs_fbshift lfs_dlfs.dlfs_fbshift
-#define lfs_blktodb lfs_dlfs.dlfs_blktodb
-#define lfs_fsbtodb lfs_dlfs.dlfs_fsbtodb
-#define lfs_sushift lfs_dlfs.dlfs_sushift
-#define lfs_maxsymlinklen lfs_dlfs.dlfs_maxsymlinklen
-#define lfs_sboffs lfs_dlfs.dlfs_sboffs
-#define lfs_cksum lfs_dlfs.dlfs_cksum
-#define lfs_pflags lfs_dlfs.dlfs_pflags
-#define lfs_fsmnt lfs_dlfs.dlfs_fsmnt
-#define lfs_nclean lfs_dlfs.dlfs_nclean
-#define lfs_dmeta lfs_dlfs.dlfs_dmeta
-#define lfs_minfreeseg lfs_dlfs.dlfs_minfreeseg
-#define lfs_sumsize lfs_dlfs.dlfs_sumsize
-#define lfs_serial lfs_dlfs.dlfs_serial
-#define lfs_ibsize lfs_dlfs.dlfs_ibsize
-#define lfs_s0addr lfs_dlfs.dlfs_start
-#define lfs_tstamp lfs_dlfs.dlfs_tstamp
-#define lfs_inodefmt lfs_dlfs.dlfs_inodefmt
-#define lfs_interleave lfs_dlfs.dlfs_interleave
-#define lfs_ident lfs_dlfs.dlfs_ident
-#define lfs_resvseg lfs_dlfs.dlfs_resvseg
+	union {				/* on-disk parameters */
+		struct dlfs u_32;
+		struct dlfs64 u_64;
+	} lfs_dlfs_u;
 
 /* These fields are set at mount time and are meaningless on disk. */
+	unsigned lfs_is64 : 1;		/* are we lfs64 or lfs32? */
+
 	struct segment *lfs_sp;		/* current segment being written */
 	struct vnode *lfs_ivnode;	/* vnode for the ifile */
 	u_int32_t  lfs_seglock;		/* single-thread the segment writer */
@@ -984,7 +922,7 @@ struct lfs {
 	struct pool lfs_segpool;	/* Pool for struct segment */
 #endif /* _KERNEL */
 #define LFS_MAX_CLEANIND 64
-	int32_t  lfs_cleanint[LFS_MAX_CLEANIND]; /* Active cleaning intervals */
+	daddr_t  lfs_cleanint[LFS_MAX_CLEANIND]; /* Active cleaning intervals */
 	int 	 lfs_cleanind;		/* Index into intervals */
 	int lfs_sleepers;		/* # procs sleeping this fs */
 	int lfs_pages;			/* dirty pages blaming this fs */
@@ -993,7 +931,7 @@ struct lfs {
 	int lfs_wrappass;		/* Allow first log wrap requester to pass */
 	int lfs_wrapstatus;		/* Wrap status */
 	int lfs_reclino;		/* Inode being reclaimed */
-	int lfs_startseg;               /* Segment we started writing at */
+	daddr_t lfs_startseg;           /* Segment we started writing at */
 	LIST_HEAD(, segdelta) lfs_segdhd;	/* List of pending trunc accounting events */
 
 #ifdef _KERNEL
@@ -1012,74 +950,31 @@ struct lfs {
 	uint32_t lfs_quota_magic;
 	uint8_t lfs_quota_flags;
 	uint64_t lfs_quotaino[2];
+
+	/* Sleep address replacing &lfs_avail inside the on-disk superblock */
+	/* XXX: should be replaced with a condvar */
+	int lfs_availsleep;
+	/* This one replaces &lfs_nextseg... all ditto */
+	int lfs_nextsegsleep;
 #endif
 };
-
-/* LFS_NINDIR is the number of indirects in a file system block. */
-#define	LFS_NINDIR(fs)	((fs)->lfs_nindir)
-
-/* LFS_INOPB is the number of inodes in a secondary storage block. */
-#define	LFS_INOPB(fs)	((fs)->lfs_inopb)
-/* LFS_INOPF is the number of inodes in a fragment. */
-#define LFS_INOPF(fs)	((fs)->lfs_inopf)
-
-#define	lfs_blksize(fs, ip, lbn) \
-	(((lbn) >= ULFS_NDADDR || (ip)->i_ffs1_size >= ((lbn) + 1) << (fs)->lfs_bshift) \
-	    ? (fs)->lfs_bsize \
-	    : (lfs_fragroundup(fs, lfs_blkoff(fs, (ip)->i_ffs1_size))))
-#define	lfs_blkoff(fs, loc)	((int)((loc) & (fs)->lfs_bmask))
-#define lfs_fragoff(fs, loc)    /* calculates (loc % fs->lfs_fsize) */ \
-    ((int)((loc) & (fs)->lfs_ffmask))
-
-#if defined(_KERNEL)
-#define	LFS_FSBTODB(fs, b)	((b) << ((fs)->lfs_ffshift - DEV_BSHIFT))
-#define	LFS_DBTOFSB(fs, b)	((b) >> ((fs)->lfs_ffshift - DEV_BSHIFT))
-#else
-#define	LFS_FSBTODB(fs, b)	((b) << (fs)->lfs_fsbtodb)
-#define	LFS_DBTOFSB(fs, b)	((b) >> (fs)->lfs_fsbtodb)
-#endif
-
-#define	lfs_lblkno(fs, loc)	((loc) >> (fs)->lfs_bshift)
-#define	lfs_lblktosize(fs, blk)	((blk) << (fs)->lfs_bshift)
-
-#define lfs_fsbtob(fs, b)	((b) << (fs)->lfs_ffshift)
-#define lfs_btofsb(fs, b)	((b) >> (fs)->lfs_ffshift)
-
-#define lfs_numfrags(fs, loc)	/* calculates (loc / fs->lfs_fsize) */	\
-	((loc) >> (fs)->lfs_ffshift)
-#define lfs_blkroundup(fs, size)/* calculates roundup(size, fs->lfs_bsize) */ \
-	((off_t)(((size) + (fs)->lfs_bmask) & (~(fs)->lfs_bmask)))
-#define lfs_fragroundup(fs, size)/* calculates roundup(size, fs->lfs_fsize) */ \
-	((off_t)(((size) + (fs)->lfs_ffmask) & (~(fs)->lfs_ffmask)))
-#define lfs_fragstoblks(fs, frags)/* calculates (frags / fs->fs_frag) */ \
-	((frags) >> (fs)->lfs_fbshift)
-#define lfs_blkstofrags(fs, blks)/* calculates (blks * fs->fs_frag) */ \
-	((blks) << (fs)->lfs_fbshift)
-#define lfs_fragnum(fs, fsb)	/* calculates (fsb % fs->lfs_frag) */	\
-	((fsb) & ((fs)->lfs_frag - 1))
-#define lfs_blknum(fs, fsb)	/* calculates rounddown(fsb, fs->lfs_frag) */ \
-	((fsb) &~ ((fs)->lfs_frag - 1))
-#define lfs_dblksize(fs, dp, lbn) \
-	(((lbn) >= ULFS_NDADDR || (dp)->di_size >= ((lbn) + 1) << (fs)->lfs_bshift)\
-	    ? (fs)->lfs_bsize \
-	    : (lfs_fragroundup(fs, lfs_blkoff(fs, (dp)->di_size))))
-
-#define	lfs_segsize(fs)	((fs)->lfs_version == 1 ?	     		\
-			   lfs_lblktosize((fs), (fs)->lfs_ssize) :	\
-			   (fs)->lfs_ssize)
-#define lfs_segtod(fs, seg) (((fs)->lfs_version == 1     ?	    	\
-			   (fs)->lfs_ssize << (fs)->lfs_blktodb :	\
-			   lfs_btofsb((fs), (fs)->lfs_ssize)) * (seg))
-#define	lfs_dtosn(fs, daddr)	/* block address to segment number */	\
-	((uint32_t)(((daddr) - (fs)->lfs_s0addr) / lfs_segtod((fs), 1)))
-#define lfs_sntod(fs, sn)	/* segment number to disk address */	\
-	((daddr_t)(lfs_segtod((fs), (sn)) + (fs)->lfs_s0addr))
 
 /*
  * Structures used by lfs_bmapv and lfs_markv to communicate information
  * about inodes and data blocks.
  */
 typedef struct block_info {
+	u_int64_t bi_inode;		/* inode # */
+	int64_t	bi_lbn;			/* logical block w/in file */
+	int64_t	bi_daddr;		/* disk address of block */
+	u_int64_t bi_segcreate;		/* origin segment create time */
+	int	bi_version;		/* file version number */
+	int	bi_size;		/* size of the block (if fragment) */
+	void	*bi_bp;			/* data buffer */
+} BLOCK_INFO;
+
+/* Compatibility for 7.0 binaries */
+typedef struct block_info_70 {
 	u_int32_t bi_inode;		/* inode # */
 	int32_t	bi_lbn;			/* logical block w/in file */
 	int32_t	bi_daddr;		/* disk address of block */
@@ -1087,7 +982,7 @@ typedef struct block_info {
 	int	bi_version;		/* file version number */
 	void	*bi_bp;			/* data buffer */
 	int	bi_size;		/* size of the block (if fragment) */
-} BLOCK_INFO;
+} BLOCK_INFO_70;
 
 /* Compatibility for 1.5 binaries */
 typedef struct block_info_15 {
@@ -1100,6 +995,16 @@ typedef struct block_info_15 {
 	int	bi_size;		/* size of the block (if fragment) */
 } BLOCK_INFO_15;
 
+/*
+ * 32/64-bit-clean pointer to block pointers. This points into
+ * already-existing storage; it is mostly used to access the block
+ * pointers following a FINFO.
+ */
+union lfs_blocks {
+	int64_t *b64;
+	int32_t *b32;
+};
+
 /* In-memory description of a segment about to be written. */
 struct segment {
 	struct lfs	 *fs;		/* file system pointer */
@@ -1107,15 +1012,15 @@ struct segment {
 	struct buf	**cbpp;		/* pointer to next available bp */
 	struct buf	**start_bpp;	/* pointer to first bp in this set */
 	struct buf	 *ibp;		/* buffer pointer to inode page */
-	struct ulfs1_dinode    *idp;          /* pointer to ifile dinode */
-	struct finfo	 *fip;		/* current fileinfo pointer */
+	union lfs_dinode *idp;          /* pointer to ifile dinode */
+	FINFO *fip;			/* current fileinfo pointer */
 	struct vnode	 *vp;		/* vnode being gathered */
 	void	 *segsum;		/* segment summary info */
 	u_int32_t ninodes;		/* number of inodes in this segment */
 	int32_t seg_bytes_left;		/* bytes left in segment */
 	int32_t sum_bytes_left;		/* bytes left in summary block */
 	u_int32_t seg_number;		/* number of this segment */
-	int32_t *start_lbp;		/* beginning lbn for this set */
+	union lfs_blocks start_lbp;	/* beginning lbn for this set */
 
 #define SEGM_CKP	0x0001		/* doing a checkpoint */
 #define SEGM_CLEAN	0x0002		/* cleaner call; don't sort */
@@ -1130,60 +1035,6 @@ struct segment {
 	u_int32_t seg_iocount;		/* number of ios pending */
 	int	  ndupino;		/* number of duplicate inodes */
 };
-
-/*
- * Macros for determining free space on the disk, with the variable metadata
- * of segment summaries and inode blocks taken into account.
- */
-/*
- * Estimate number of clean blocks not available for writing because
- * they will contain metadata or overhead.  This is calculated as
- *
- *		E = ((C * M / D) * D + (0) * (T - D)) / T
- * or more simply
- *		E = (C * M) / T
- *
- * where
- * C is the clean space,
- * D is the dirty space,
- * M is the dirty metadata, and
- * T = C + D is the total space on disk.
- *
- * This approximates the old formula of E = C * M / D when D is close to T,
- * but avoids falsely reporting "disk full" when the sample size (D) is small.
- */
-#define LFS_EST_CMETA(F) (int32_t)((					\
-	((F)->lfs_dmeta * (int64_t)(F)->lfs_nclean) / 			\
-	((F)->lfs_nseg)))
-
-/* Estimate total size of the disk not including metadata */
-#define LFS_EST_NONMETA(F) ((F)->lfs_dsize - (F)->lfs_dmeta - LFS_EST_CMETA(F))
-
-/* Estimate number of blocks actually available for writing */
-#define LFS_EST_BFREE(F) ((F)->lfs_bfree > LFS_EST_CMETA(F) ?		     \
-			  (F)->lfs_bfree - LFS_EST_CMETA(F) : 0)
-
-/* Amount of non-meta space not available to mortal man */
-#define LFS_EST_RSVD(F) (int32_t)((LFS_EST_NONMETA(F) *			     \
-				   (u_int64_t)(F)->lfs_minfree) /	     \
-				  100)
-
-/* Can credential C write BB blocks */
-#define ISSPACE(F, BB, C)						\
-	((((C) == NOCRED || kauth_cred_geteuid(C) == 0) &&		\
-	  LFS_EST_BFREE(F) >= (BB)) ||					\
-	 (kauth_cred_geteuid(C) != 0 && IS_FREESPACE(F, BB)))
-
-/* Can an ordinary user write BB blocks */
-#define IS_FREESPACE(F, BB)						\
-	  (LFS_EST_BFREE(F) >= (BB) + LFS_EST_RSVD(F))
-
-/*
- * The minimum number of blocks to create a new inode.  This is:
- * directory direct block (1) + ULFS_NIADDR indirect blocks + inode block (1) +
- * ifile direct block (1) + ULFS_NIADDR indirect blocks = 3 + 2 * ULFS_NIADDR blocks.
- */
-#define LFS_NRESERVE(F) (lfs_btofsb((F), (2 * ULFS_NIADDR + 3) << (F)->lfs_bshift))
 
 /* Statistics Counters */
 struct lfs_stats {	/* Must match sysctl list in lfs_vfsops.h ! */
@@ -1208,13 +1059,13 @@ struct lfs_stats {	/* Must match sysctl list in lfs_vfsops.h ! */
 /* Fcntls to take the place of the lfs syscalls */
 struct lfs_fcntl_markv {
 	BLOCK_INFO *blkiov;	/* blocks to relocate */
-	int blkcnt;		/* number of blocks */
+	int blkcnt;		/* number of blocks (limited to 65536) */
 };
 
 #define LFCNSEGWAITALL	_FCNR_FSPRIV('L', 14, struct timeval)
 #define LFCNSEGWAIT	_FCNR_FSPRIV('L', 15, struct timeval)
-#define LFCNBMAPV	_FCNRW_FSPRIV('L', 2, struct lfs_fcntl_markv)
-#define LFCNMARKV	_FCNRW_FSPRIV('L', 3, struct lfs_fcntl_markv)
+#define LFCNBMAPV	_FCNRW_FSPRIV('L', 16, struct lfs_fcntl_markv)
+#define LFCNMARKV	_FCNRW_FSPRIV('L', 17, struct lfs_fcntl_markv)
 #define LFCNRECLAIM	 _FCNO_FSPRIV('L', 4)
 
 struct lfs_fhandle {

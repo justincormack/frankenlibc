@@ -1,4 +1,4 @@
-/* $NetBSD: reallocarr.c,v 1.1 2015/02/17 20:29:21 joerg Exp $ */
+/* $NetBSD: reallocarr.c,v 1.5 2015/08/20 22:27:49 kamil Exp $ */
 
 /*-
  * Copyright (c) 2015 Joerg Sonnenberger <joerg@NetBSD.org>.
@@ -29,8 +29,12 @@
  * SUCH DAMAGE.
  */
 
+#if HAVE_NBTOOL_CONFIG_H
+#include "nbtool_config.h"
+#endif
+
 #include <sys/cdefs.h>
-__RCSID("$NetBSD: reallocarr.c,v 1.1 2015/02/17 20:29:21 joerg Exp $");
+__RCSID("$NetBSD: reallocarr.c,v 1.5 2015/08/20 22:27:49 kamil Exp $");
 
 #include "namespace.h"
 #include <errno.h>
@@ -40,34 +44,46 @@ __RCSID("$NetBSD: reallocarr.c,v 1.1 2015/02/17 20:29:21 joerg Exp $");
 #include <stdlib.h>
 #include <string.h>
 
-__CTASSERT(65535 < SIZE_MAX / 65535);
-
 #ifdef _LIBC
 #ifdef __weak_alias
 __weak_alias(reallocarr, _reallocarr)
 #endif
 #endif
 
+#define SQRT_SIZE_MAX (((size_t)1) << (sizeof(size_t) * CHAR_BIT / 2))
+
+#if !HAVE_REALLOCARR
 int
-reallocarr(void *ptr, size_t num, size_t size)
+reallocarr(void *ptr, size_t number, size_t size)
 {
 	int saved_errno, result;
 	void *optr;
 	void *nptr;
 
-	memcpy(&optr, ptr, sizeof(ptr));
 	saved_errno = errno;
-	if (num == 0 || size == 0) {
+	memcpy(&optr, ptr, sizeof(ptr));
+	if (number == 0 || size == 0) {
 		free(optr);
 		nptr = NULL;
 		memcpy(ptr, &nptr, sizeof(ptr));
 		errno = saved_errno;
 		return 0;
 	}
-	if ((num >= 65535 || size >= 65535) && num > SIZE_MAX / size)
+
+	/*
+	 * Try to avoid division here.
+	 *
+	 * It isn't possible to overflow during multiplication if neither
+	 * operand uses any of the most significant half of the bits.
+	 */
+	if (__predict_false((number|size) >= SQRT_SIZE_MAX &&
+	                    number > SIZE_MAX / size)) {
+		errno = saved_errno;
 		return EOVERFLOW;
-	nptr = realloc(optr, num * size);
-	if (nptr == NULL) {
+	}
+
+	nptr = realloc(optr, number * size);
+	if (__predict_false(nptr == NULL)) {
 		result = errno;
 	} else {
 		result = 0;
@@ -76,3 +92,4 @@ reallocarr(void *ptr, size_t num, size_t size)
 	errno = saved_errno;
 	return result;
 }
+#endif

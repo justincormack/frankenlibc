@@ -19,7 +19,7 @@
 /cpufunc.h/1.19/Wed Oct 17 19:53:03 2007//
 /cputypes.h/1.2/Fri Feb  9 21:55:01 2007//
 /cpuvar.h/1.1/Sat Apr 26 18:39:39 2003//
-/db_machdep.h/1.14/Thu Oct 17 23:05:08 2013//
+/db_machdep.h/1.15/Sun Jul 26 10:49:05 2015//
 /disklabel.h/1.10/Tue Aug 30 12:39:52 2011//
 /elf_machdep.h/1.4/Thu Mar 18 08:28:33 2010//
 /endian.h/1.1/Sat Apr 26 18:39:40 2003//
@@ -84,7 +84,7 @@
 /sysarch.h/1.6/Mon Apr 16 19:12:17 2007//
 /trap.h/1.1/Sat Apr 26 18:39:48 2003//
 /tss.h/1.5/Sun Oct 26 00:08:15 2008//
-/types.h/1.46/Mon Apr 27 07:03:57 2015//
+/types.h/1.47/Fri Aug 21 14:22:14 2015//
 /userret.h/1.9/Mon Apr 28 20:23:12 2008//
 /vmparam.h/1.36/Thu Jul 24 13:42:28 2014//
 /wchar_limits.h/1.3/Mon Apr 28 20:23:12 2008//

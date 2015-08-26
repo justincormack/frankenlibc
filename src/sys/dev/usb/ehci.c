@@ -1,4 +1,4 @@
-/*	$NetBSD: ehci.c,v 1.241 2015/07/02 09:05:06 skrll Exp $ */
+/*	$NetBSD: ehci.c,v 1.244 2015/08/24 23:55:04 pooka Exp $ */
 
 /*
  * Copyright (c) 2004-2012 The NetBSD Foundation, Inc.
@@ -53,11 +53,14 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: ehci.c,v 1.241 2015/07/02 09:05:06 skrll Exp $");
+__KERNEL_RCSID(0, "$NetBSD: ehci.c,v 1.244 2015/08/24 23:55:04 pooka Exp $");
 
 #include "ohci.h"
 #include "uhci.h"
+
+#ifdef _KERNEL_OPT
 #include "opt_usb.h"
+#endif
 
 #include <sys/param.h>
 
@@ -370,7 +373,7 @@ ehci_init(ehci_softc_t *sc)
 #endif
 
 	mutex_init(&sc->sc_lock, MUTEX_DEFAULT, IPL_SOFTUSB);
-	mutex_init(&sc->sc_intr_lock, MUTEX_DEFAULT, IPL_SCHED);
+	mutex_init(&sc->sc_intr_lock, MUTEX_DEFAULT, IPL_USB);
 	cv_init(&sc->sc_softwake_cv, "ehciab");
 	cv_init(&sc->sc_doorbell, "ehcidi");
 
@@ -421,7 +424,7 @@ ehci_init(ehci_softc_t *sc)
 
 	if (EHCI_HCC_64BIT(cparams)) {
 		/* MUST clear segment register if 64 bit capable. */
-		EWRITE4(sc, EHCI_CTRLDSSEGMENT, 0);
+		EOWRITE4(sc, EHCI_CTRLDSSEGMENT, 0);
 	}
 
 	sc->sc_bus.usbrev = USBREV_2_0;
@@ -452,10 +455,10 @@ ehci_init(ehci_softc_t *sc)
 	 * the controller to host mode.
 	 */
 	if (sc->sc_flags & EHCIF_ETTF) {
-		uint32_t usbmode = EREAD4(sc, EHCI_USBMODE);
+		uint32_t usbmode = EOREAD4(sc, EHCI_USBMODE);
 		usbmode &= ~EHCI_USBMODE_CM;
 		usbmode |= EHCI_USBMODE_CM_HOST;
-		EWRITE4(sc, EHCI_USBMODE, usbmode);
+		EOWRITE4(sc, EHCI_USBMODE, usbmode);
 	}
 
 	/* XXX need proper intr scheduling */

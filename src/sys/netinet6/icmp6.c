@@ -1,4 +1,4 @@
-/*	$NetBSD: icmp6.c,v 1.170 2014/11/25 19:51:17 christos Exp $	*/
+/*	$NetBSD: icmp6.c,v 1.175 2015/08/24 22:21:27 pooka Exp $	*/
 /*	$KAME: icmp6.c,v 1.217 2001/06/20 15:03:29 jinmei Exp $	*/
 
 /*
@@ -62,10 +62,12 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: icmp6.c,v 1.170 2014/11/25 19:51:17 christos Exp $");
+__KERNEL_RCSID(0, "$NetBSD: icmp6.c,v 1.175 2015/08/24 22:21:27 pooka Exp $");
 
+#ifdef _KERNEL_OPT
 #include "opt_inet.h"
 #include "opt_ipsec.h"
+#endif
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1812,9 +1814,9 @@ ni6_store_addrs(struct icmp6_nodeinfo *ni6,
 				ltime = ND6_INFINITE_LIFETIME;
 			else {
 				if (ifa6->ia6_lifetime.ia6t_expire >
-				    time_second)
+				    time_uptime)
 					ltime = ifa6->ia6_lifetime.ia6t_expire -
-					    time_second;
+					    time_uptime;
 				else
 					ltime = 0;
 			}
@@ -2472,8 +2474,10 @@ icmp6_redirect_output(struct mbuf *m0, struct rtentry *rt)
 		len = sizeof(*nd_opt) + ifp->if_addrlen;
 		len = (len + 7) & ~7;	/* round by 8 */
 		/* safety check */
-		if (len + (p - (u_char *)ip6) > maxlen)
+		if (len + (p - (u_char *)ip6) > maxlen) {
+			rtfree(rt_nexthop);
 			goto nolladdropt;
+		}
 		if (!(rt_nexthop->rt_flags & RTF_GATEWAY) &&
 		    (rt_nexthop->rt_flags & RTF_LLINFO) &&
 		    (rt_nexthop->rt_gateway->sa_family == AF_LINK) &&
@@ -2486,6 +2490,7 @@ icmp6_redirect_output(struct mbuf *m0, struct rtentry *rt)
 			memcpy(lladdr, CLLADDR(sdl), ifp->if_addrlen);
 			p += len;
 		}
+		rtfree(rt_nexthop);
 	}
   nolladdropt:;
 
@@ -2714,7 +2719,7 @@ icmp6_mtudisc_timeout(struct rtentry *rt, struct rttimer *r)
 	if ((rt->rt_flags & (RTF_DYNAMIC | RTF_HOST)) ==
 	    (RTF_DYNAMIC | RTF_HOST)) {
 		rtrequest((int) RTM_DELETE, rt_getkey(rt),
-		    rt->rt_gateway, rt_mask(rt), rt->rt_flags, 0);
+		    rt->rt_gateway, rt_mask(rt), rt->rt_flags, NULL);
 	} else {
 		if (!(rt->rt_rmx.rmx_locks & RTV_MTU))
 			rt->rt_rmx.rmx_mtu = 0;
@@ -2729,7 +2734,7 @@ icmp6_redirect_timeout(struct rtentry *rt, struct rttimer *r)
 	if ((rt->rt_flags & (RTF_GATEWAY | RTF_DYNAMIC | RTF_HOST)) ==
 	    (RTF_GATEWAY | RTF_DYNAMIC | RTF_HOST)) {
 		rtrequest((int) RTM_DELETE, rt_getkey(rt),
-		    rt->rt_gateway, rt_mask(rt), rt->rt_flags, 0);
+		    rt->rt_gateway, rt_mask(rt), rt->rt_flags, NULL);
 	}
 }
 

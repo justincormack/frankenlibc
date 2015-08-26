@@ -1,7 +1,7 @@
-#	$NetBSD: files,v 1.1129 2015/03/28 14:09:58 jmcneill Exp $
+#	$NetBSD: files,v 1.1136 2015/08/21 07:19:39 uebayasi Exp $
 #	@(#)files.newconf	7.5 (Berkeley) 5/10/93
 
-version 	20141030
+version 	20150820
 
 #
 # device classes
@@ -26,6 +26,7 @@ defflag				COREDUMP
 defflag	opt_modular.h		MODULAR
 defflag	opt_modular.h		MODULAR_DEFAULT_AUTOLOAD
 defflag				KEYLOCK
+defparam opt_syslimits.h	CHILD_MAX OPEN_MAX
 
 defparam			DEFCORENAME
 defparam			HZ
@@ -333,6 +334,10 @@ attach	video at videobus
 # DTV subsystem
 #
 include "dev/dtv/files.dtv"
+
+# HDMI CEC
+#
+include "dev/hdmicec/files.hdmicec"
 
 # National Semiconductor LM7[89]
 #
@@ -1428,9 +1433,6 @@ defpseudo veriexec
 file	kern/kern_veriexec.c	veriexec
 file	dev/verified_exec.c		veriexec	needs-flag
 
-# isochronous pseudo device for IEEE 1394, i.LINK or FireWire
-defpseudo fwiso:	ieee1394
-
 # driver attach / detach user interface
 defpseudo drvctl
 file	kern/kern_drvctl.c		drvctl		needs-flag
@@ -1491,6 +1493,8 @@ include "uvm/files.uvm"
 include "secmodel/files.secmodel"
 
 include "kern/files.kern"
+
+include "dev/files.dev"
 
 include "net/files.net"
 

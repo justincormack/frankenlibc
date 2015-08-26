@@ -51,7 +51,7 @@
 /insque.3/1.5/Fri Apr 30 10:24:02 2010//
 /insque.c/1.3/Mon Jun 25 22:32:45 2012//
 /jemalloc.3/1.9/Sat Jul 20 21:39:57 2013//
-/jemalloc.c/1.37/Tue Jan 20 18:31:25 2015//
+/jemalloc.c/1.38/Sun Jul 26 17:21:55 2015//
 /jrand48.c/1.9/Tue Oct 22 08:08:51 2013//
 /l64a.c/1.14/Tue Mar 13 21:13:48 2012//
 /labs.c/1.8/Mon Jun 25 22:32:45 2012//
@@ -63,7 +63,7 @@
 /lrand48.c/1.9/Tue Oct 22 08:08:51 2013//
 /lsearch.3/1.3/Tue Jul 12 08:28:42 2005//
 /lsearch.c/1.7/Mon Jun 25 22:32:45 2012//
-/malloc.3/1.41/Fri Feb  6 08:37:39 2015//
+/malloc.3/1.44/Sun Jul 26 22:32:03 2015//
 /malloc.c/1.56/Thu Sep 18 13:58:20 2014//
 /memory.3/1.11/Sun Sep 11 10:05:23 2011//
 /merge.c/1.14/Tue Mar 13 21:13:48 2012//
@@ -82,7 +82,7 @@
 /qdiv.c/1.7/Mon Jun 25 22:32:45 2012//
 /qsort.3/1.14/Fri Sep 19 16:02:58 2014//
 /qsort.c/1.22/Sat May 26 21:47:05 2012//
-/quick_exit.3/1.2/Fri Apr 26 19:36:47 2013//
+/quick_exit.3/1.3/Sun Jul 26 17:03:06 2015//
 /quick_exit.c/1.1/Fri Apr 26 18:29:55 2013//
 /radixsort.3/1.13/Thu Aug  7 16:43:43 2003//
 /radixsort.c/1.19/Sat Sep  5 08:53:06 2009//
@@ -92,10 +92,10 @@
 /rand48.h/1.6/Wed May 18 19:36:36 2011//
 /rand_r.c/1.6/Mon Jun 25 22:32:45 2012//
 /random.3/1.21/Thu Jun 12 18:46:12 2014//
-/reallocarr.3/1.3/Thu Feb 19 23:08:21 2015//
-/reallocarr.c/1.1/Tue Feb 17 20:29:21 2015//
-/reallocarray.3/1.3/Fri Feb  6 08:37:39 2015//
-/reallocarray.c/1.4/Tue Mar 10 13:05:13 2015//
+/reallocarr.3/1.4/Tue Jul 28 17:13:34 2015//
+/reallocarr.c/1.5/Thu Aug 20 22:27:49 2015//
+/reallocarray.3/1.4/Sun Jul 26 02:29:44 2015//
+/reallocarray.c/1.5/Sun Jul 26 02:22:33 2015//
 /remque.c/1.3/Mon Jun 25 22:32:45 2012//
 /seed48.c/1.8/Sun Jun 12 05:21:28 2005//
 /setenv.c/1.44/Tue Jan 20 18:31:25 2015//
@@ -105,13 +105,13 @@
 /strsuftoll.3/1.11/Tue Dec 14 13:00:34 2010//
 /strsuftoll.c/1.9/Sat Oct 22 22:08:47 2011//
 /strtod.3/1.20/Wed Oct 24 13:42:10 2007//
-/strtoi.3/1.2/Sun May  3 12:27:32 2015//
+/strtoi.3/1.3/Sat Jul 11 15:50:56 2015//
 /strtol.3/1.32/Fri May  1 14:17:56 2015//
 /strtol.c/1.18/Wed Aug 20 12:42:26 2008//
 /strtonum.3/1.2/Mon Jan 19 11:47:41 2015//
 /strtonum.c/1.4/Tue Mar 10 12:57:56 2015//
 /strtoq.c/1.19/Wed Aug 20 12:42:26 2008//
-/strtou.3/1.2/Sun May  3 12:28:20 2015//
+/strtou.3/1.3/Sat Jul 11 15:51:33 2015//
 /strtoul.3/1.31/Sun May  3 12:29:28 2015//
 /strtouq.c/1.20/Tue Aug 26 12:21:24 2008//
 /system.3/1.17/Wed Aug 27 06:45:02 2008//

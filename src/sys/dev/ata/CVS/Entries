@@ -1,6 +1,6 @@
 /Makefile/1.6/Sun Dec 11 12:21:14 2005//
 /ata.c/1.132/Wed Sep 10 07:04:48 2014//
-/ata_raid.c/1.35/Sat Oct 27 17:18:14 2012//
+/ata_raid.c/1.36/Thu Aug 20 14:40:17 2015//
 /ata_raid_adaptec.c/1.9/Mon Sep 15 11:44:50 2008//
 /ata_raid_intel.c/1.7/Tue Mar 25 16:19:13 2014//
 /ata_raid_jmicron.c/1.5/Tue Mar 25 16:19:13 2014//

@@ -1,4 +1,4 @@
-/*	$NetBSD: kern_ksyms.c,v 1.76 2015/05/20 02:45:20 matt Exp $	*/
+/*	$NetBSD: kern_ksyms.c,v 1.79 2015/08/21 06:55:25 christos Exp $	*/
 
 /*-
  * Copyright (c) 2008 The NetBSD Foundation, Inc.
@@ -71,7 +71,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: kern_ksyms.c,v 1.76 2015/05/20 02:45:20 matt Exp $");
+__KERNEL_RCSID(0, "$NetBSD: kern_ksyms.c,v 1.79 2015/08/21 06:55:25 christos Exp $");
 
 #if defined(_KERNEL) && defined(_KERNEL_OPT)
 #include "opt_ddb.h"
@@ -95,6 +95,9 @@ __KERNEL_RCSID(0, "$NetBSD: kern_ksyms.c,v 1.76 2015/05/20 02:45:20 matt Exp $")
 #endif
 
 #include "ksyms.h"
+#if NKSYMS > 0
+#include "ioconf.h"
+#endif
 
 #define KSYMS_MAX_ID	65536
 #ifdef KDTRACE_HOOKS
@@ -110,7 +113,6 @@ static bool ksyms_loaded;
 static kmutex_t ksyms_lock __cacheline_aligned;
 static struct ksyms_symtab kernel_symtab;
 
-void ksymsattach(int);
 static void ksyms_hdr_init(void *);
 static void ksyms_sizes_calc(void);
 
@@ -209,11 +211,19 @@ findsym(const char *name, struct ksyms_symtab *table, int type)
 /*
  * The "attach" is in reality done in ksyms_init().
  */
+#if NKSYMS > 0
+/*
+ * ksyms can be loaded even if the kernel has a missing "pseudo-device ksyms"
+ * statement because ddb and modules require it. Fixing it properly requires
+ * fixing config to warn about required, but missing preudo-devices. For now,
+ * if we don't have the pseudo-device we don't need the attach function; this
+ * is fine, as it does nothing.
+ */
 void
 ksymsattach(int arg)
 {
-
 }
+#endif
 
 void
 ksyms_init(void)

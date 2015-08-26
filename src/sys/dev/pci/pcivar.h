@@ -1,4 +1,4 @@
-/*	$NetBSD: pcivar.h,v 1.102 2015/04/27 07:03:58 knakahara Exp $	*/
+/*	$NetBSD: pcivar.h,v 1.104 2015/08/17 06:16:03 knakahara Exp $	*/
 
 /*
  * Copyright (c) 1996, 1997 Christopher G. Demetriou.  All rights reserved.
@@ -280,6 +280,8 @@ int pci_find_rom(const struct pci_attach_args *, bus_space_tag_t,
 
 int pci_get_capability(pci_chipset_tag_t, pcitag_t, int, int *, pcireg_t *);
 int pci_get_ht_capability(pci_chipset_tag_t, pcitag_t, int, int *, pcireg_t *);
+int	pci_msi_count(pci_chipset_tag_t, pcitag_t);
+int	pci_msix_count(pci_chipset_tag_t, pcitag_t);
 
 /*
  * Helper functions for autoconfiguration.
@@ -338,6 +340,8 @@ int	pci_chipset_tag_create(pci_chipset_tag_t, uint64_t,
 	                       void *, pci_chipset_tag_t *);
 void	pci_chipset_tag_destroy(pci_chipset_tag_t);
 int	pci_bus_devorder(pci_chipset_tag_t, int, uint8_t *, int);
+void	*pci_intr_establish_xname(pci_chipset_tag_t, pci_intr_handle_t,
+				  int, int (*)(void *), void *, const char *);
 
 /*
  * Device abstraction for inheritance by elanpci(4), for example.

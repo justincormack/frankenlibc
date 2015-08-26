@@ -211,10 +211,10 @@
 /ds.h/1.10/Sun Feb 12 16:34:11 2012//
 /ds1286reg.h/1.8/Sun Dec 11 12:21:26 2005//
 /ds1687reg.h/1.10/Sun May  4 12:50:38 2008//
-/dwc_gmac.c/1.33/Fri Jun 12 11:54:39 2015//
+/dwc_gmac.c/1.34/Fri Aug 21 20:12:29 2015//
 /dwc_gmac_reg.h/1.14/Fri Nov 28 09:01:05 2014//
 /dwc_gmac_var.h/1.6/Sat Nov 22 18:31:03 2014//
-/dwc_mmc.c/1.6/Thu Jan 22 17:06:15 2015//
+/dwc_mmc.c/1.7/Sun Aug  9 13:01:21 2015//
 /dwc_mmc_reg.h/1.4/Sat Jan 17 19:32:50 2015//
 /dwc_mmc_var.h/1.4/Tue Dec 30 00:19:50 2014//
 /dwc_tmr.c/1.1/Sat Jan 17 15:04:47 2015//
@@ -398,7 +398,7 @@
 /mpt.h/1.8/Sat Sep 27 16:14:16 2014//
 /mpt_debug.c/1.10/Thu Apr 17 16:05:45 2014//
 /mpt_mpilib.h/1.3/Fri Jul 27 13:06:51 2007//
-/mpt_netbsd.c/1.31/Sun Sep 28 11:27:00 2014//
+/mpt_netbsd.c/1.32/Wed Jul 22 08:33:51 2015//
 /mpt_netbsd.h/1.11/Tue Apr  1 23:57:54 2014//
 /mpu.c/1.19/Sat Jan 21 16:49:26 2012//
 /mpuvar.h/1.11/Wed Nov 23 23:07:32 2011//

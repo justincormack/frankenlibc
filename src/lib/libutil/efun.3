@@ -1,4 +1,4 @@
-.\"     $NetBSD: efun.3,v 1.11 2015/01/18 18:09:36 christos Exp $
+.\"     $NetBSD: efun.3,v 1.14 2015/07/26 17:37:38 kamil Exp $
 .\"
 .\" Copyright (c) 2006 The NetBSD Foundation, Inc.
 .\" All rights reserved.
@@ -27,7 +27,7 @@
 .\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.Dd May 3, 2010
+.Dd July 26, 2015
 .Dt EFUN 3
 .Os
 .Sh NAME
@@ -37,6 +37,7 @@
 .Nm emalloc ,
 .Nm ecalloc ,
 .Nm erealloc ,
+.Nm ereallocarr ,
 .Nm estrdup ,
 .Nm estrndup ,
 .Nm estrlcat ,
@@ -56,11 +57,13 @@
 .Ft FILE *
 .Fn efopen "const char *p" "const char *m"
 .Ft void *
-.Fn ecalloc "size_t n" "size_t c"
+.Fn ecalloc "size_t n" "size_t s"
 .Ft void *
 .Fn emalloc "size_t n"
 .Ft void *
 .Fn erealloc "void *p" "size_t n"
+.Ft void
+.Fn ereallocarr "void *p" "size_t n" "size_t s"
 .Ft char *
 .Fn estrdup "const char *s"
 .Ft char *
@@ -82,6 +85,7 @@ The
 .Fn ecalloc ,
 .Fn emalloc ,
 .Fn erealloc ,
+.Fn ereallocarr ,
 .Fn estrdup ,
 .Fn estrndup ,
 .Fn estrlcat ,
@@ -118,6 +122,7 @@ error handler will just call
 .Xr fopen 3 ,
 .Xr malloc 3 ,
 .Xr realloc 3 ,
+.Xr reallocarr 3 ,
 .Xr strdup 3 ,
 .Xr strlcat 3 ,
 .Xr strlcpy 3 ,
@@ -127,8 +132,9 @@ error handler will just call
 .Xr vasprintf 3
 .Sh HISTORY
 The
-.Fn estrtoi
-and
+.Fn estrtoi ,
 .Fn estrtou
+and
+.Fn ereallocarr
 functions were added in
 .Nx 8 .

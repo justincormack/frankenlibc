@@ -2,7 +2,7 @@
 /ehci_mv.c/1.5/Sat Mar 15 13:33:48 2014//
 /files.armada/1.3/Wed Jun  3 04:20:02 2015//
 /files.discovery/1.22/Fri Sep  6 00:56:12 2013//
-/gt.c/1.26/Tue Jul 20 11:42:22 2010//
+/gt.c/1.27/Sat Jul 11 10:32:46 2015//
 /gtbrgreg.h/1.2/Wed Apr 28 13:51:56 2010//
 /gtbrgvar.h/1.1/Wed Apr 28 13:51:56 2010//
 /gtdevbusvar.h/1.1/Wed Apr 28 13:51:56 2010//
@@ -34,8 +34,8 @@
 /mvcesa.c/1.1/Fri Jul 27 03:00:01 2012//
 /mvcesareg.h/1.2/Sat Sep 28 05:46:51 2013//
 /mvgbereg.h/1.8/Mon Dec 23 02:23:25 2013//
-/mvpex.c/1.13/Wed Jun 24 10:00:37 2015//
-/mvpexreg.h/1.1/Tue Jul 13 11:16:02 2010//
+/mvpex.c/1.14/Tue Jul 28 01:57:55 2015//
+/mvpexreg.h/1.2/Sat Aug  8 14:35:06 2015//
 /mvpexvar.h/1.6/Wed Jun 24 10:00:37 2015//
 /mvsata_mv.c/1.7/Sat Mar 15 13:33:48 2014//
 /mvsdio.c/1.5/Sat Mar 15 13:33:48 2014//

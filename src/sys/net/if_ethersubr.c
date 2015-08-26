@@ -1,4 +1,4 @@
-/*	$NetBSD: if_ethersubr.c,v 1.210 2015/06/04 09:19:59 ozaki-r Exp $	*/
+/*	$NetBSD: if_ethersubr.c,v 1.212 2015/08/24 22:21:26 pooka Exp $	*/
 
 /*
  * Copyright (C) 1995, 1996, 1997, and 1998 WIDE Project.
@@ -61,8 +61,9 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: if_ethersubr.c,v 1.210 2015/06/04 09:19:59 ozaki-r Exp $");
+__KERNEL_RCSID(0, "$NetBSD: if_ethersubr.c,v 1.212 2015/08/24 22:21:26 pooka Exp $");
 
+#ifdef _KERNEL_OPT
 #include "opt_inet.h"
 #include "opt_atalk.h"
 #include "opt_mbuftrace.h"
@@ -70,27 +71,20 @@ __KERNEL_RCSID(0, "$NetBSD: if_ethersubr.c,v 1.210 2015/06/04 09:19:59 ozaki-r E
 #include "opt_gateway.h"
 #include "opt_pppoe.h"
 #include "opt_net_mpsafe.h"
+#endif
+
 #include "vlan.h"
 #include "pppoe.h"
 #include "bridge.h"
 #include "arp.h"
 #include "agr.h"
 
-#include <sys/param.h>
-#include <sys/systm.h>
 #include <sys/sysctl.h>
-#include <sys/kernel.h>
-#include <sys/callout.h>
 #include <sys/malloc.h>
 #include <sys/mbuf.h>
-#include <sys/protosw.h>
-#include <sys/socket.h>
+#include <sys/mutex.h>
 #include <sys/ioctl.h>
 #include <sys/errno.h>
-#include <sys/syslog.h>
-#include <sys/kauth.h>
-#include <sys/cpu.h>
-#include <sys/intr.h>
 #include <sys/device.h>
 #include <sys/rnd.h>
 #include <sys/rndsource.h>
@@ -101,6 +95,7 @@ __KERNEL_RCSID(0, "$NetBSD: if_ethersubr.c,v 1.210 2015/06/04 09:19:59 ozaki-r E
 #include <net/if_llc.h>
 #include <net/if_dl.h>
 #include <net/if_types.h>
+#include <net/pktqueue.h>
 
 #include <net/if_media.h>
 #include <dev/mii/mii.h>

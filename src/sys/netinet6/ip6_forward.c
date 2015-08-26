@@ -1,4 +1,4 @@
-/*	$NetBSD: ip6_forward.c,v 1.76 2014/12/10 01:10:14 christos Exp $	*/
+/*	$NetBSD: ip6_forward.c,v 1.78 2015/08/24 22:21:27 pooka Exp $	*/
 /*	$KAME: ip6_forward.c,v 1.109 2002/09/11 08:10:17 sakane Exp $	*/
 
 /*
@@ -31,10 +31,12 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: ip6_forward.c,v 1.76 2014/12/10 01:10:14 christos Exp $");
+__KERNEL_RCSID(0, "$NetBSD: ip6_forward.c,v 1.78 2015/08/24 22:21:27 pooka Exp $");
 
+#ifdef _KERNEL_OPT
 #include "opt_gateway.h"
 #include "opt_ipsec.h"
+#endif
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -93,9 +95,9 @@ ip6_cantforward(const struct ip6_hdr *ip6, const struct ifnet *srcifp,
 	if (dstifp)
 		in6_ifstat_inc(dstifp, ifs6_in_discard);
 
-	if (ip6_log_time + ip6_log_interval >= time_second)
+	if (ip6_log_time + ip6_log_interval >= time_uptime)
 		return;
-	ip6_log_time = time_second;
+	ip6_log_time = time_uptime;
 
 	va_start(ap, fmt);
 	vsnprintf(reason, sizeof(reason), fmt, ap);

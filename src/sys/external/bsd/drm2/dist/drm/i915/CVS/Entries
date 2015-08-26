@@ -12,7 +12,7 @@
 /i915_dma.c/1.16/Fri Apr  3 01:06:05 2015//
 /i915_drv.c/1.6/Sat Jul 26 21:15:45 2014//
 /i915_drv.h/1.11/Tue Nov 11 11:30:21 2014//
-/i915_gem.c/1.31/Thu Jun 25 16:01:20 2015//
+/i915_gem.c/1.32/Sat Aug  1 13:42:32 2015//
 /i915_gem_context.c/1.6/Fri Jul 25 12:53:30 2014//
 /i915_gem_debug.c/1.1.1.2/Wed Jul 16 19:35:25 2014//
 /i915_gem_dmabuf.c/1.1.1.2/Wed Jul 16 19:35:25 2014//
@@ -52,7 +52,7 @@
 /intel_opregion.c/1.8/Tue Nov 25 03:31:12 2014//
 /intel_overlay.c/1.6/Thu Nov  6 12:47:48 2014//
 /intel_panel.c/1.6/Tue Nov  4 03:05:36 2014//
-/intel_pm.c/1.6/Wed Feb 25 13:06:13 2015//
+/intel_pm.c/1.7/Sun Jul 26 15:30:36 2015//
 /intel_ringbuffer.c/1.6/Wed Feb 25 13:35:25 2015//
 /intel_ringbuffer.h/1.4/Wed Jul 16 20:56:25 2014//
 /intel_sdvo.c/1.6/Sun Sep  7 23:03:11 2014//

@@ -1,4 +1,4 @@
-#	$NetBSD: bsd.lib.mk,v 1.358 2015/06/04 06:01:24 mrg Exp $
+#	$NetBSD: bsd.lib.mk,v 1.360 2015/07/29 14:35:04 tsutsui Exp $
 #	@(#)bsd.lib.mk	8.3 (Berkeley) 4/22/94
 
 .include <bsd.init.mk>

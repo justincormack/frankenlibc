@@ -1,4 +1,4 @@
-#	$NetBSD: Makefile.kern.inc,v 1.184 2015/05/01 02:00:41 nat Exp $
+#	$NetBSD: Makefile.kern.inc,v 1.193 2015/08/26 03:00:52 uebayasi Exp $
 #
 # This file contains common `MI' targets and definitions and it is included
 # at the bottom of each `MD' ${MACHINE}/conf/Makefile.${MACHINE}.
@@ -229,9 +229,6 @@ SYSTEM_OBJ?=	${MD_OBJS} ${MI_OBJS} ${OBJS} ${SYSLIBCOMPAT} ${LIBKERN}
 SYSTEM_OBJ?=	${MD_OBJS} ${MI_OBJS} ${OBJS:O} ${SYSLIBCOMPAT} ${LIBKERN}
 .endif
 SYSTEM_DEP+=	Makefile ${SYSTEM_OBJ} .gdbinit
-.if defined(KERNLDSCRIPT)
-SYSTEM_DEP+=	${KERNLDSCRIPT}
-.endif
 .if defined(CTFMERGE)
 SYSTEM_CTFMERGE= ${CTFMERGE} ${CTFMFLAGS} -o ${.TARGET} ${SYSTEM_OBJ} ${EXTRA_OBJ} vers.o
 .else
@@ -242,6 +239,24 @@ SYSTEM_LD?=	@${_MKSHMSG} "   link  ${.CURDIR:T}/${.TARGET}"; \
 		${_MKSHECHO}\
 		${LD} -Map $@.map --cref ${LINKFLAGS} -o $@ '$${SYSTEM_OBJ}' '$${EXTRA_OBJ}' vers.o; \
 		${LD} -Map $@.map --cref ${LINKFLAGS} -o $@ ${SYSTEM_OBJ} ${EXTRA_OBJ} vers.o
+
+# Give MD generated ldscript dependency on ${SYSTEM_OBJ}
+.if defined(KERNLDSCRIPT)
+.if target(${KERNLDSCRIPT})
+${KERNLDSCRIPT}: ${SYSTEM_OBJ}
+.endif
+.endif
+
+.if defined(KERNLDSCRIPT)
+.for k in ${KERNELS}
+EXTRA_CLEAN+=	${k}.ldscript
+${k}: ${k}.ldscript
+${k}.ldscript: ${KERNLDSCRIPT} assym.h
+	${_MKTARGET_CREATE}
+	${CPP} -I. ${KERNLDSCRIPT} | grep -v '^#' | grep -v '^$$' >$@
+.endfor
+LINKSCRIPT=	-T ${.TARGET}.ldscript
+.endif
 
 TEXTADDR?=	${LOADADDRESS}			# backwards compatibility
 LINKTEXT?=	${TEXTADDR:C/.+/-Ttext &/}
@@ -288,15 +303,13 @@ SYSTEM_LD_TAIL_STAGE2+=	${SYSTEM_LD_TAIL_EXTRA}
 ##
 ## (6) port independent targets and dependencies: assym.h, vers.o
 ##
-.if !target(assym.h)
-assym.h: ${GENASSYM_CONF} ${GENASSYM_EXTRAS}
+assym.h: ${GENASSYM_CONF} ${GENASSYM_EXTRAS} $S/conf/genassym.cf
 	${_MKTARGET_CREATE}
-	cat ${GENASSYM_CONF} ${GENASSYM_EXTRAS} | \
+	cat ${GENASSYM_CONF} ${GENASSYM_EXTRAS} $S/conf/genassym.cf | \
 	    ${GENASSYM} -- ${CC} ${CFLAGS:N-Wa,*} ${CPPFLAGS} ${PROF} \
 	    ${GENASSYM_CPPFLAGS} > assym.h.tmp && \
 	mv -f assym.h.tmp assym.h
 ${MD_SFILES:C/\.[Ss]/.o/} ${SFILES:C/\.[Ss]/.o/}: assym.h
-.endif
 
 MKREPRO?=no
 
@@ -308,7 +321,7 @@ _NVFLAGS=${NVFLAGS}
 
 .if !target(vers.o)
 newvers: vers.o
-vers.o: ${SYSTEM_DEP} ${SYSTEM_SWAP_DEP} $S/conf/newvers.sh \
+vers.o: ${SYSTEM_OBJ} Makefile $S/conf/newvers.sh \
 		$S/conf/osrelease.sh ${_NETBSD_VERSION_DEPENDS}
 	${_MKMSG_CREATE} vers.c
 	${HOST_SH} $S/conf/newvers.sh ${_NVFLAGS}
