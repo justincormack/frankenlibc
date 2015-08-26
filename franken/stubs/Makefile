@@ -20,6 +20,7 @@ OBJ+=$(OBJDIR)/stub__sched_getaffinity.o $(OBJDIR)/stub__sched_getparam.o
 OBJ+=$(OBJDIR)/stub__sched_setaffinity.o $(OBJDIR)/stub__sched_setparam.o
 OBJ+=$(OBJDIR)/stub___shmctl50.o $(OBJDIR)/stub_____semctl50.o
 OBJ+=$(OBJDIR)/stub_setcontext.o $(OBJDIR)/stub_setpriority.o
+OBJ+=$(OBJDIR)/stub___sigaction14.o
 OBJ+=$(OBJDIR)/stub___sigaltstack14.o $(OBJDIR)/stub___sigaction_sigtramp.o
 OBJ+=$(OBJDIR)/stub___sigprocmask14.o $(OBJDIR)/stub_sigqueueinfo.o
 OBJ+=$(OBJDIR)/stub___sigsuspend14.o $(OBJDIR)/stub_____sigtimedwait50.o
@@ -177,6 +178,10 @@ $(OBJDIR)/stub_setcontext.o:		setcontext.c
 $(OBJDIR)/stub_setpriority.o:		setpriority.c
 					@mkdir -p $(OBJDIR)
 					$(COMPILE.c) -o $@ setpriority.c
+
+$(OBJDIR)/stub___sigaction14.o:		__sigaction14.c
+					@mkdir -p $(OBJDIR)
+					$(COMPILE.c) -o $@ __sigaction14.c
 
 $(OBJDIR)/stub___sigaction_sigtramp.o:	__sigaction_sigtramp.c
 					@mkdir -p $(OBJDIR)
