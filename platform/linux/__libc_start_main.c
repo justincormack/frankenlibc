@@ -18,7 +18,7 @@ size_t *__auxv;
 size_t __hwcap;
 size_t __sysinfo;
 size_t __pagesize;
-size_t __random;
+uint8_t *__random;
 
 int __platform_random_fd = -1;
 int __platform_socket_fd = -1;
@@ -48,7 +48,7 @@ __libc_start_main(int (*main)(int,char **,char **), int argc, char **argv)
 	__hwcap = aux[AT_HWCAP];
 	__sysinfo = aux[AT_SYSINFO];
 	__pagesize = aux[AT_PAGESZ];
-	__random = aux[AT_RANDOM];
+	__random = (uint8_t *)aux[AT_RANDOM];
 
 	/* init tls; gcc needs this even for some non-tls using programs */
 	__platform_set_thread_area(builtin_tls);
