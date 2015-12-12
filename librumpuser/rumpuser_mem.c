@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/mman.h>
 
 #include <rump/rumpuser.h>
 
@@ -39,13 +40,15 @@
 
 static size_t pagesize = 0;
 
+static void *aligned_mmap(void *, size_t, int, int, int, off_t, size_t);
+
 int
 rumpuser_malloc(size_t size, int alignment, void **memp)
 {
 	void *mem;
-	int af = 0;
 	int sizevoid = sizeof(void *);
 
+	/* Small allocations are used by the mutex code in librump  */
 	pagesize = (pagesize == 0) ? (size_t)getpagesize() : pagesize;
 
 	if (size < pagesize) {
@@ -54,12 +57,7 @@ rumpuser_malloc(size_t size, int alignment, void **memp)
 		return posix_memalign(memp, alignment, size);
 	}
 
-	while (alignment > 1) {
-		alignment >>= 1;
-		af++;
-	}
-
-	mem = mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(af), -1, 0);
+	mem = aligned_mmap(0, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0, alignment);
 	if (mem == MAP_FAILED) {
 		return EINVAL;
 	}
@@ -67,6 +65,43 @@ rumpuser_malloc(size_t size, int alignment, void **memp)
 	*memp = mem;
 
 	return 0;
+}
+
+static void *
+aligned_mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset, size_t align)
+{
+	void *mem;
+	int af = 0;
+	long amask, off;
+
+	if (align == 0 || align <= pagesize) {
+		return  mmap(addr, len, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
+	}
+
+	while (align > 1) {
+		align >>= 1;
+		af++;
+	}
+
+	amask = (1L << af) - 1L;
+
+	mem = mmap(addr, align + len, prot, flags, -1, 0);
+	if (mem == MAP_FAILED) {
+		return mem;
+	}
+
+	off = (long) mem & amask;
+	if (off != 0) {
+		off += align;
+		if (munmap((char *)mem, off) == -1) {
+			return MAP_FAILED;
+		}
+	}
+	if (munmap((char *)(mem + off + len), align - off ) == -1) {
+		return MAP_FAILED;
+	}
+
+	return (void *)(mem + off);
 }
 
 void
@@ -85,8 +120,8 @@ rumpuser_anonmmap(void *prefaddr, size_t size, int alignbit, int exec, void **me
 	void *mem;
 	int prot = PROT_READ | PROT_WRITE | (exec ? PROT_EXEC : 0);
 
-	mem = mmap(prefaddr, size, prot,
-	    MAP_PRIVATE | MAP_ANON | MAP_ALIGNED(alignbit), -1, 0);
+	mem = aligned_mmap(prefaddr, size, prot,
+	    MAP_PRIVATE | MAP_ANON, -1, 0, (size_t)1 << alignbit);
 
 	if (mem == MAP_FAILED) {
 		return errno;

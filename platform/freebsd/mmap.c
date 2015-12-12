@@ -24,11 +24,8 @@ mmap(void *addr, size_t length, int prot, int nflags, int fd, off_t offset)
 	if (nflags & MAP_STACK)
 		flags |= FREEBSD_MAP_STACK; 
 
-	if ((nflags & MAP_ALIGNMENT_MASK) == FREEBSD_MAP_ALIGNED_SUPER)
-		flags &= ~MAP_ALIGNMENT_MASK;
-
 #ifdef HUGEPAGESIZE
-	if (usehuge && length >= HUGEPAGESIZE && ((flags & MAP_ALIGNMENT_MASK) == 0)) {
+	if (usehuge && length >= HUGEPAGESIZE) {
 		void *mem = __mmap(addr, length, prot, flags | FREEBSD_MAP_ALIGNED_SUPER, fd, offset);
 		if (mem != MAP_FAILED)
 			return mem;
